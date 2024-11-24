@@ -16,7 +16,7 @@ export function removeTheme(data: ThemeRemoveRequest): Promise<IResponse<ThemeDa
   })
 }
 
-export function editTheme(id: number, data: ThemeRequest): Promise<IResponse<ThemeData & CommonField>> {
+export function editTheme(id: string, data: ThemeRequest): Promise<IResponse<ThemeData & CommonField>> {
   return request.put({
     url: `system/theme/${id}`,
     data,
@@ -24,7 +24,7 @@ export function editTheme(id: number, data: ThemeRequest): Promise<IResponse<The
   })
 }
 
-export function editThemeConfig(id: number, data: ThemeConfigRequest): Promise<IResponse<ThemeData & CommonField>> {
+export function editThemeConfig(id: string, data: ThemeConfigRequest): Promise<IResponse<ThemeData & CommonField>> {
   return request.put({
     url: `system/theme/config/${id}`,
     data,
@@ -32,7 +32,7 @@ export function editThemeConfig(id: number, data: ThemeConfigRequest): Promise<I
   })
 }
 
-export function showTheme(id: number): Promise<IResponse<ThemeData & CommonField>> {
+export function showTheme(id: string): Promise<IResponse<ThemeData & CommonField>> {
   return request.get({
     url: `system/theme/${id}`,
     token: true,

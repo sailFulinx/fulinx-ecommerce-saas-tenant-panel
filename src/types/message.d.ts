@@ -1,6 +1,6 @@
 interface MessageData {
   /* Message ID */
-  id: number
+  id: string
 
   /* Full Name */
   fullName: string
@@ -37,7 +37,7 @@ interface MessageData {
 }
 
 interface RemoveMessageParams {
-  ids: number[]
+  ids: string[]
 }
 
 interface MessageListParams {

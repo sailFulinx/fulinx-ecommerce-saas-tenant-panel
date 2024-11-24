@@ -1,8 +1,9 @@
 <script setup name="ProductDetail" lang="ts">
 import { createCategoryApi, listCategoryApi } from '@/api/category'
+import { categoryTypes } from '@/data/category'
 import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElSelect } from 'element-plus'
 
 const emit = defineEmits(['getList'])
 const { t: $t } = useLocale()
@@ -19,7 +20,8 @@ const loading = reactive({
 let form = reactive<CategoryCreateRequestParams>({
   languageId: preferenceLanguage.value?.id,
   categoryName: '',
-  parentId: 0,
+  parentId: '',
+  categoryType: 1,
 })
 
 // watch preference language
@@ -34,8 +36,9 @@ watch(
 )
 
 const rules = reactive({
-  parentId: [{ required: true, type: 'number', message: $t('category.rules.parentId'), trigger: 'change' }],
-  categoryName: [{ required: true, type: 'string', message: $t('category.rules.categoryName'), trigger: 'blur' }],
+  parentId: [{ required: true, message: $t('category.error.parentId'), trigger: 'change' }],
+  categoryName: [{ required: true, message: $t('category.error.categoryName'), trigger: 'blur' }],
+  categoryType: [{ required: true, message: $t('category.error.categoryType'), trigger: 'change' }],
 })
 
 const cascaderProps = {
@@ -96,7 +99,8 @@ const resetForm = () =>
   reactive<CategoryCreateRequestParams>({
     languageId: preferenceLanguage.value?.id,
     categoryName: '',
-    parentId: 0,
+    parentId: '',
+    categoryType: 1,
   })
 
 const openDialog = async (val?: CategoryData & CommonField) => {
@@ -112,7 +116,7 @@ const openDialog = async (val?: CategoryData & CommonField) => {
 }
 
 const handleSave = async () => {
-  form.parentId = form.parentIds?.at(-1) as number
+  form.parentId = form.parentIds?.at(-1) as string
   const valid = await formRef.value.validate((valid: boolean) => {
     if (!valid) {
       return false
@@ -134,6 +138,16 @@ defineExpose({
 <template>
   <ElDrawer v-model="dialogVisible" :title="$t('category.create')" size="50%">
     <ElForm ref="formRef" :model="form" :rules="rules" label-width="120px">
+      <ElFormItem :label="$t('category.categoryType')" prop="categoryType">
+        <ElSelect v-model="form.categoryType" :placeholder="$t('category.placeholder.categoryType')">
+          <ElOption
+            v-for="item in categoryTypes"
+            :key="item.id"
+            :label="item.label"
+            :value="item.id"
+          />
+        </ElSelect>
+      </ElFormItem>
       <ElFormItem :label="$t('category.parentId')" prop="parentId">
         <div v-loading="loading.categories">
           <ElCascader

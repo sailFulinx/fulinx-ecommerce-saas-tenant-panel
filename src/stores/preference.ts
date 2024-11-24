@@ -2,12 +2,15 @@ import { useGetPreference, useInitPreference } from '@/hooks/usePreference'
 import { defineStore } from 'pinia'
 
 export const usePreferenceStore = defineStore('preference', () => {
-  const preference = ref(useInitPreference())
+  const preference = ref<any>({})
 
   const getPreferences = () => {
-    return useInitPreference()
+    return preference.value
   }
-  const setPreference = () => {
+  const setPreferences = () => {
+    if (!useGetPreference()) {
+      useInitPreference()
+    }
     preference.value = JSON.parse(useGetPreference())
     return preference.value
   }
@@ -15,6 +18,6 @@ export const usePreferenceStore = defineStore('preference', () => {
   return {
     preference,
     getPreferences,
-    setPreference,
+    setPreferences,
   }
 })

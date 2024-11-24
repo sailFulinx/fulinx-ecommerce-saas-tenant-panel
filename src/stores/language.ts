@@ -18,6 +18,7 @@ export const useLanguageStore = defineStore('language', () => {
     if (!languages.value || languages.value.length === 0) {
       await setLanguages()
     }
+    return languages.value
   }
 
   // 通过languageName获取languageId
@@ -26,12 +27,12 @@ export const useLanguageStore = defineStore('language', () => {
   }
 
   // 通过languageId获取languageName
-  const getLanguageNameById = (languageId: number) => {
+  const getLanguageNameById = (languageId: string) => {
     return languages.value.find(item => item.id === languageId)?.languageName
   }
 
   // 通过languageId获取languageCode
-  const getLanguageCodeById = (languageId: number) => {
+  const getLanguageCodeById = (languageId: string) => {
     return languages.value.find(item => item.id === languageId)?.languageCode
   }
 

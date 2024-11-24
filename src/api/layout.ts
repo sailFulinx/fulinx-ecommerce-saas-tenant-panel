@@ -24,7 +24,7 @@ export function removeLayoutApi(data: RemoveLayoutParams): Promise<IResponse<Lay
   })
 }
 
-export function editLayoutApi(id: number, data: UpdateLayoutParams): Promise<IResponse<LayoutData & CommonField>> {
+export function editLayoutApi(id: string, data: UpdateLayoutParams): Promise<IResponse<LayoutData & CommonField>> {
   return request.put({
     url: `system/layout/${id}`,
     data,
@@ -32,7 +32,7 @@ export function editLayoutApi(id: number, data: UpdateLayoutParams): Promise<IRe
   })
 }
 
-export function showLayoutApi(id: number): Promise<IResponse<LayoutData & CommonField>> {
+export function showLayoutApi(id: string): Promise<IResponse<LayoutData & CommonField>> {
   return request.get({
     url: `system/layout/${id}`,
     token: true,

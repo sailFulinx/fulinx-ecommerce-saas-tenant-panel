@@ -27,7 +27,7 @@ export function fetchRolePaginationApi(
   })
 }
 
-export function fetchRoleDetailApi(id: number): Promise<IResponse<RoleDataType & CommonField>> {
+export function fetchRoleDetailApi(id: string): Promise<IResponse<RoleDataType & CommonField>> {
   return request.get({
     url: `system/role/${id}`,
     token: true,
@@ -40,7 +40,7 @@ export function fetchRoleDetailApi(id: number): Promise<IResponse<RoleDataType &
  * @param data
  * @returns
  */
-export function editRoleApi(id: number | string, data: RoleDataType): Promise<IResponse<RoleDataType & CommonField>> {
+export function editRoleApi(id: string | string, data: RoleDataType): Promise<IResponse<RoleDataType & CommonField>> {
   return request.put({
     url: `system/role/${id}`,
     token: true,

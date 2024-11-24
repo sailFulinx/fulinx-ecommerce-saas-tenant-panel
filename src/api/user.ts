@@ -19,7 +19,7 @@ export function fetchUserPaginationApi(
  * @param id
  * @returns
  */
-export function fetchUserDetailApi(id: number | string): Promise<IResponse<UserDataType & CommonField>> {
+export function fetchUserDetailApi(id: string | string): Promise<IResponse<UserDataType & CommonField>> {
   return request.get({
     url: `system/user/${id}`,
     token: true,
@@ -46,7 +46,7 @@ export function approvalAvatarApi(data: any): Promise<IResponse<UserDataType & C
  * @param data
  * @returns
  */
-export function editUserApi(id: number | string, data: UserRequestParams): Promise<IResponse<UserDataType & CommonField>> {
+export function editUserApi(id: string | string, data: UserRequestParams): Promise<IResponse<UserDataType & CommonField>> {
   return request.put({
     url: `system/user/${id}`,
     token: true,

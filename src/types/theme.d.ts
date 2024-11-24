@@ -4,7 +4,7 @@ interface ThemeListParams {
 
 interface ThemeData {
   /* Theme ID */
-  id: number
+  id: string
 
   /* Theme Name */
   themeName: string
@@ -19,7 +19,7 @@ interface ThemeData {
   themeVersion: string
 
   /* Theme Thumb File ID */
-  themeThumbFileId: number
+  themeThumbFileId: string
 
   themeThumbFileVo: FileData
 
@@ -62,7 +62,7 @@ interface ThemeRequest {
   themeVersion: string
 
   /* Theme Thumb File ID */
-  themeThumbFileId?: number | null
+  themeThumbFileId?: string | null
 
   themeThumbFileVo?: FileData
 
@@ -76,7 +76,7 @@ interface ThemeConfigRequest {
 }
 
 interface ThemeRemoveRequest {
-  ids: number[]
+  ids: string[]
 }
 
 interface LinkData {
@@ -125,9 +125,9 @@ interface ReadContentData {
 }
 
 interface ThemeSettingGlobal {
-  defaultHeaderComponentId: number | null
-  defaultFooterComponentId: number | null
-  homePageLayoutId: number | null
+  defaultHeaderComponentId: string | null
+  defaultFooterComponentId: string | null
+  homePageLayoutId: string | null
 }
 
 interface ThemeSettingDataType {

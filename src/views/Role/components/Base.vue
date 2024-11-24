@@ -50,7 +50,7 @@ watch(
         form.deletedPermissionIds = []
       }
       if (form.rolePermissions && form.rolePermissions.length > 0) {
-        const ids: number[] = []
+        const ids: string[] = []
         form.rolePermissions.map(item => {
           ids.push(item.permissionId)
         })
@@ -102,7 +102,7 @@ const getChecked = () => {
   }
 
   // 计算出被删除的节点KEY
-  const oldIds: number[] = []
+  const oldids: string[] = []
   if (form.rolePermissions && form.rolePermissions.length > 0) {
     form.rolePermissions?.map(item => {
       oldIds.push(item.permissionId)

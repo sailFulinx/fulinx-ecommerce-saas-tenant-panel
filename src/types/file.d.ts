@@ -1,5 +1,6 @@
 interface FileData {
-  id?: number
+  id?: string
+  fileType: number
   uid?: number
   originalFileName: string
   fileName: string

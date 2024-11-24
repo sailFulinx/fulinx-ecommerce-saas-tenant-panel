@@ -17,7 +17,7 @@ interface RoleRequestQueryParameterType {
  * 修改用户
  */
 interface UserDataType {
-  id: number
+  id: string
   username: string
   userType: number | null
   password?: string
@@ -30,7 +30,7 @@ interface UserDataType {
 }
 
 interface UserRequestParams {
-  id: number
+  id: string
   username: string
   userType: number | null
   password?: string
@@ -39,7 +39,7 @@ interface UserRequestParams {
   status: number
   post: string
   gender: number | null
-  roleIds: number[]
+  roleids: string[]
 }
 
 interface UserListParams {
@@ -58,7 +58,7 @@ interface EditUserPasswordType {
  * 用户登录
  */
 interface AuthResponseType {
-  userId: number
+  userId: string
   accessToken: string
   accessTokenExpiration: string
   refreshToken: string
@@ -74,7 +74,7 @@ interface UserDetailResponseType {
   operatorName: string
 
   /* */
-  userId: number
+  userId: string
 
   /* */
   userRoleIds: Record<string, unknown>[]
@@ -83,7 +83,7 @@ interface UserDetailResponseType {
   userType: number
 
   /* */
-  userProfileId: number
+  userProFileId: string
 
   /* */
   username: string
@@ -118,11 +118,11 @@ interface UserAuthorityItem {
 }
 
 interface DeleteUserDataType {
-  ids: number[]
+  ids: string[]
 }
 
 interface UserStatusUpdateRequest {
-  userId: number
+  userId: string
   status: number
 }
 

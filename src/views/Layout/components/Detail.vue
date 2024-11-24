@@ -87,7 +87,7 @@ const getComponentList = debounce(async () => {
 
 getComponentList()
 
-const getComponentDetail = async (id: number) => {
+const getComponentDetail = async (id: string) => {
   loading.init = true
   const { data } = await showCompApi(id).catch(error => {
     loading.init = false

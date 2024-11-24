@@ -206,7 +206,7 @@ const handleClickUpdateCategoryName = (categoryName: string) => {
 const handleCancelUpdateCategoryName = () => {
   inputCategoryNameVisible.value = false
 }
-const editCategoryName = async (categoryDetailId: number) => {
+const editCategoryName = async (categoryDetailId: string) => {
   if (!currentCategoryName.value) {
     ElMessage.warning($t('category.error.categoryName'))
     return
@@ -259,7 +259,7 @@ const handleClickUpdateCategoryDescription = async (categoryDescription: string)
 const handleCancelUpdateCategoryDescription = () => {
   inputCategoryDescriptionVisible.value = false
 }
-const editCategoryDescription = async (categoryDetailId: number) => {
+const editCategoryDescription = async (categoryDetailId: string) => {
   if (!currentCategoryDescription.value) {
     ElMessage.warning($t('category.error.categoryDescription'))
     return
@@ -287,7 +287,7 @@ const handleClickUpdateCategoryMetaTitle = (categoryMetaTitle: string) => {
 const handleCancelUpdateCategoryMetaTitle = () => {
   inputCategoryMetaTitleVisible.value = false
 }
-const editCategoryMetaTitle = async (categorySeoId: number) => {
+const editCategoryMetaTitle = async (categorySeoId: string) => {
   if (!currentCategoryMetaTitle.value) {
     ElMessage.warning($t('category.error.categoryMetaTitle'))
     return
@@ -314,7 +314,7 @@ const handleClickUpdateCategoryMetaDescription = (categoryMetaDescription: strin
 const handleCancelUpdateCategoryMetaDescription = () => {
   inputCategoryMetaDescriptionVisible.value = false
 }
-const editCategoryMetaDescription = async (categorySeoId: number) => {
+const editCategoryMetaDescription = async (categorySeoId: string) => {
   if (!currentCategoryMetaDescription.value) {
     ElMessage.warning($t('category.error.categoryMetaDescription'))
     return

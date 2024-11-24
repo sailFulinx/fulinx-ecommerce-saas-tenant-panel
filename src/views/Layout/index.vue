@@ -77,7 +77,7 @@ const handleEdit = (data: LayoutData) => {
   detail.value = data
 }
 
-const handleCopy = async (id: number) => {
+const handleCopy = async (id: string) => {
   loading.value = true
   await copyLayoutApi({ layoutId: id }).catch(error => {
     loading.value = false

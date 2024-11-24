@@ -13,6 +13,7 @@ import { initPermission } from './permission'
 
 import router from './router'
 
+import { useCurrencyStore } from './stores/currency'
 import { useLanguageStore } from './stores/language'
 import './assets/css/main.css'
 import '@unocss/reset/tailwind.css'
@@ -34,10 +35,10 @@ const setupAll = async () => {
 
   // 初始化权限
   await initPermission()
+  // 初始化语言和货币
+  await Promise.all([useLanguageStore().initLanguageList(), useCurrencyStore().initCurrencyList()])
   // 初始化偏好设置
-  usePreferenceStore().getPreferences()
-  // 初始化系统语言
-  useLanguageStore().initLanguageList()
+  await usePreferenceStore().setPreferences()
 }
 
 setupAll()

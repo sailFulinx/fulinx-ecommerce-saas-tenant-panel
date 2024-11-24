@@ -2,16 +2,16 @@ import request from '@/utils/axios'
 
 /**
  * 新增文章
- * @param {object} params 新增文章请求参数
- * @param {number} params.articleType Article Type
- * @param {number} params.languageId Language Id
- * @param {boolean} params.isCustomLayout Is Custom Layout
- * @param {Array} params.categoryIds 分类ID
- * @param {boolean} params.status 状态
- * @param {Array} params.articleDetailVoList 文章详情请求参数
+ * @param {object} data 新增文章请求参数
+ * @param {number} data.articleType Article Type
+ * @param {number} data.languageId Language Id
+ * @param {boolean} data.isCustomLayout Is Custom Layout
+ * @param {Array} data.categoryIds 分类ID
+ * @param {boolean} data.status 状态
+ * @param {Array} data.articleDetailVoList 文章详情请求参数
  * @returns
  */
-export function CreateArticleApi(data: CreateArticleParams): Promise<CreateRes> {
+export function CreateArticleApi(data: CreateArticleParams): Promise<CreateArticleRes> {
   return request.post({
     url: 'system/article',
     data,

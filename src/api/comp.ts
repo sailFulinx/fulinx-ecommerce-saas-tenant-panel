@@ -24,7 +24,7 @@ export function removeCompApi(data: RemoveCompParams): Promise<IResponse<CompDat
   })
 }
 
-export function editCompApi(id: number, data: UpdateComponentParams): Promise<IResponse<CompData & CommonField>> {
+export function editCompApi(id: string, data: UpdateComponentParams): Promise<IResponse<CompData & CommonField>> {
   return request.put({
     url: `system/component/${id}`,
     data,
@@ -32,7 +32,7 @@ export function editCompApi(id: number, data: UpdateComponentParams): Promise<IR
   })
 }
 
-export function showCompApi(id: number): Promise<IResponse<CompData & CommonField>> {
+export function showCompApi(id: string): Promise<IResponse<CompData & CommonField>> {
   return request.get({
     url: `system/component/${id}`,
     token: true,

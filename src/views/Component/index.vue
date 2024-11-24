@@ -90,7 +90,7 @@ const paginationList = (val: PaginationComponentData) => {
   getList()
 }
 
-const handleCopy = async (id: number) => {
+const handleCopy = async (id: string) => {
   loading.value = true
   await copyCompApi({ componentId: id }).catch(error => {
     loading.value = false

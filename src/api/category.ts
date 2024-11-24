@@ -16,7 +16,7 @@ export function removeCategoryApi(data: RemoveCategoryParams): Promise<IResponse
   })
 }
 
-export function editCategoryApi(id: number, data: CategoryRequestParams): Promise<IResponse<CategoryData & CommonField>> {
+export function editCategoryApi(id: string, data: CategoryRequestParams): Promise<IResponse<CategoryData & CommonField>> {
   return request.put({
     url: `system/category/${id}`,
     data,
@@ -29,6 +29,16 @@ export function editCategoryLayoutApi(
 ): Promise<IResponse<CategoryShowData & CommonField>> {
   return request.post({
     url: 'system/category/update/layout',
+    data,
+    token: true,
+  })
+}
+
+export function editCategoryTypeApi(
+  data: CategoryUpdateCategoryTypeParams,
+): Promise<IResponse<CategoryShowData & CommonField>> {
+  return request.post({
+    url: 'system/category/update/category/type',
     data,
     token: true,
   })

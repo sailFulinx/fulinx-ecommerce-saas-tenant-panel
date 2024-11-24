@@ -8,7 +8,7 @@ interface CreateComponentParams {
 
 interface CopyComponentParams {
   /* Component ID */
-  componentId: number
+  componentId: string
 }
 
 interface UpdateComponentParams {
@@ -22,7 +22,7 @@ interface UpdateComponentParams {
 
 interface CompData {
   /* Component ID */
-  id: number
+  id: string
 
   /* Component Name */
   componentName: string
@@ -32,12 +32,12 @@ interface CompData {
 }
 
 interface RemoveCompParams {
-  ids: number[]
+  ids: string[]
 }
 
 interface CompListParams {
   /* Component ID */
-  id?: number | null
+  id?: string| null
 
   /* Component Name */
   componentName?: string | null

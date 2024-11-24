@@ -1,12 +1,12 @@
 interface CategoryDetailData {
   /* Category Detail ID */
-  id: number
+  id: string
 
   /* Category ID */
-  categoryId: number
+  categoryId: string
 
   /* Language ID */
-  languageId: number
+  languageId: string
 
   /* Language Code */
   languageCode: string
@@ -24,7 +24,7 @@ interface CategoryDetailData {
   categoryDescription: string
 
   /* Category File Id */
-  categoryFileId: number
+  categoryFileId: string
 
   /* */
   fileVo: FileData
@@ -60,15 +60,15 @@ interface CategoryDetailData {
 }
 
 interface RemoveCategoryParams {
-  ids: number[]
+  ids: string[]
 }
 
 interface CategoryListParams {
   /* ID */
-  id?: number | null
+  id?: string | null
 
   /* Language Id */
-  languageId?: number | null
+  languageId?: string | null
 
   /* Language Code */
   languageCode?: string | null
@@ -85,22 +85,22 @@ interface CategoryListParams {
 
 interface CategoryData {
   /* Category ID */
-  id: number
+  id: string
 
   /* Parent ID */
-  parentId: number
+  parentId: string
 
   /* Parent Ids */
-  parentIds: number[]
+  parentIds: string[]
 
   /* Category File ID */
-  categoryFileId: number
+  categoryFileId: string
 
   /* */
   categoryFileVo: FileData
 
   /* Language Id */
-  languageId: number
+  languageId: string
 
   /* Language Code */
   languageCode: string
@@ -129,7 +129,7 @@ interface CategoryData {
   children: CategoryData[]
 
   /* Category Slug ID */
-  slugId: number
+  slugId: string
 
   /* Article Slug */
   slug: string
@@ -137,13 +137,13 @@ interface CategoryData {
 
 interface CategorySeoData {
   /* Category SEO ID */
-  id: number
+  id: string
 
   /* Category ID */
-  categoryId: number
+  categoryId: string
 
   /* Language ID */
-  languageId: number
+  languageId: string
 
   /* Language Code */
   languageCode: string
@@ -184,30 +184,30 @@ interface CategorySeoData {
 
 interface ShowCategoryParams {
   /* Category ID */
-  categoryId: number
+  categoryId: string
 
   /* Language Id */
-  languageId: number | null
+  languageId: string | null
 }
 
 interface CategoryShowData {
   /* Category ID */
-  id: number
+  id: string
 
   /* Parent ID */
-  parentId: number
+  parentId: string
 
   /* Is Custom Layout */
   isCustomLayout: boolean
 
   /* Layout Id */
-  layoutId: number | null
+  layoutid: string | null
 
   /* */
   layoutListResultDo: LayoutData & CommonField
 
   /* Parent Ids */
-  parentIds: number[]
+  parentids: string[]
 
   /* Status, 0: Disabled 1: Enabled */
   status: boolean
@@ -219,7 +219,7 @@ interface CategoryShowData {
   seoListResultDo: CategorySeoData
 
   /* Category Slug ID */
-  slugId: number
+  slugId: string
 
   /* Article Slug */
   slug: string
@@ -253,9 +253,9 @@ interface ListCategoryRes {
 
 interface CategoryRequestParams {
   /* Parent Id */
-  parentId: number
+  parentId: string
 
-  parentIds: number[]
+  parentIds: string[]
 
   /* Status, 0: Disabled 1: Enabled */
   status: boolean
@@ -265,16 +265,17 @@ interface CategoryRequestParams {
 
   categoryDetailDoList?: CategoryDetailItem[]
 
-  deleteLanguageIdList?: number[]
+  deleteLanguageIdList?: string[]
 }
 
 interface CategoryCreateRequestParams {
+  categoryType: number
   /* Parent Id */
-  parentId: number
+  parentId: string
 
-  parentIds?: number[]
+  parentIds?: string[]
 
-  languageId: number
+  languageId: string
 
   /* Category Name */
   categoryName: string
@@ -282,45 +283,52 @@ interface CategoryCreateRequestParams {
 
 interface CategoryUpdateLayoutParams {
   /* Category Id */
-  categoryId: number
+  categoryId: string
 
-  languageId: number
+  languageId: string
 
   /* Is Custom Layout */
   isCustomLayout: boolean
 
   /* Layout Id */
-  layoutId: number
+  layoutId: string
+}
+
+interface CategoryUpdateCategoryTypeParams {
+  /* Category Id */
+  categoryId: string
+
+  categoryType: number
 }
 
 interface CategoryUpdateStatusParams {
   /* Category Id */
-  categoryId: number
+  categoryId: string
 
   /* Status, 0: Disabled 1: Enabled */
   status: boolean
 
   /* Language Id */
-  languageId: number | null
+  languageId: string | null
 }
 
 interface CategoryUpdateParentParams {
   /* Category Id */
-  categoryId: number
+  categoryId: string
 
   /* Parent Id */
-  parentId: number
+  parentId: string
 
   /* Language Id */
-  languageId: number | null
+  languageId: string | null
 }
 
 interface CategoryCreateCategoryNameParams {
   /* Category Id */
-  categoryId: number
+  categoryId: string
 
   /* languageId Id */
-  languageId: number
+  languageId: string
 
   /* Category Name */
   categoryName: string
@@ -328,10 +336,10 @@ interface CategoryCreateCategoryNameParams {
 
 interface CategoryCreateCategorySeoParams {
   /* Category Id */
-  categoryId: number
+  categoryId: string
 
   /* languageId Id */
-  languageId: number
+  languageId: string
 
   /* Meta Title */
   metaTitle: string
@@ -342,10 +350,10 @@ interface CategoryCreateCategorySeoParams {
 
 interface CategoryCreateCategorySlugParams {
   /* Category Id */
-  categoryId: number
+  categoryId: string
 
   /* languageId Id */
-  languageId: number
+  languageId: string
 
   /* Slug */
   slug: string
@@ -353,7 +361,7 @@ interface CategoryCreateCategorySlugParams {
 
 interface CategoryUpdateCategoryNameParams {
   /* Category Detail Id */
-  categoryDetailId: number
+  categoryDetailId: string
 
   /* Category Name */
   categoryName: string
@@ -361,7 +369,7 @@ interface CategoryUpdateCategoryNameParams {
 
 interface CategoryUpdateCategoryDescriptionParams {
   /* Category Detail Id */
-  categoryDetailId: number
+  categoryDetailId: string
 
   /* Category Description */
   categoryDescription: string
@@ -369,15 +377,15 @@ interface CategoryUpdateCategoryDescriptionParams {
 
 interface CategoryUpdateCategoryFileParams {
   /* Category Detail Id */
-  categoryDetailId: number
+  categoryDetailId: string
 
   /* Category File Id */
-  categoryFileId: number | null
+  categoryFileId: string | null
 }
 
 interface CategoryUpdateCategoryCustomParams {
   /* Category Detail Id */
-  categoryDetailId: number
+  categoryDetailId: string
 
   /* Customs */
   customs: string
@@ -385,7 +393,7 @@ interface CategoryUpdateCategoryCustomParams {
 
 interface CategoryUpdateCategorySeoParams {
   /* Category Seo ID */
-  categorySeoId: number
+  categorySeoId: string
 
   /* Meta Title */
   metaTitle: string
@@ -396,11 +404,11 @@ interface CategoryUpdateCategorySeoParams {
 
 interface CategoryUpdateCategorySlugParams {
   /* Category Slug ID */
-  slugId: number
+  slugId: string
 
   /* Slug */
   slug: string
 
   /* Language Id */
-  languageId: number
+  languageId: string
 }

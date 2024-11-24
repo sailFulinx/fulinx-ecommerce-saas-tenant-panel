@@ -15,7 +15,8 @@ const loading = ref(false)
 const imageUrl = ref('')
 
 const fileData = ref<FileData>({
-  id: 0,
+  id: '',
+  fileType: 1,
   originalFileName: '',
   fileName: '',
   fileContentType: '',
@@ -74,7 +75,8 @@ const handleUpload = async ({ file }: { file: File }) => {
 
 const handleDelete = () => {
   fileData.value = {
-    id: 0,
+    id: '',
+    fileType: 1,
     originalFileName: '',
     fileName: '',
     fileContentType: '',
@@ -89,6 +91,7 @@ const handleDelete = () => {
 
 const setFileData = (data: FileData) => {
   fileData.value = data
+  imageUrl.value = sourceUrl + data.fileUrl
 }
 
 const getFileData = () => {

@@ -8,13 +8,13 @@ interface UserRequestQueryParameterType {
 }
 
 interface RolePermissionType {
-  id: number
-  roleId: number
-  permissionId: number
+  id: string
+  roleId: string
+  permissionId: string
 }
 
 interface RoleDataType {
-  id: number
+  id: string
   roleType?: number | null
   roleName: string
   rolePermissions?: RolePermissionType[]
@@ -23,5 +23,5 @@ interface RoleDataType {
 }
 
 interface DeleteRoleDataType {
-  ids: number[]
+  ids: string[]
 }

@@ -25,8 +25,8 @@ const rules = reactive({
 const formRef = ref()
 
 interface ParentForm {
-  parentId: number
-  parentIds: number[]
+  parentId: string
+  parentids: string[]
 }
 let form = reactive<ParentForm>({
   parentId: 0,
@@ -62,7 +62,7 @@ const disableAllChildren = (children: CategoryData[]) => {
 }
 
 // Disable category by id
-const disableCategoryById = (categories: CategoryData[], id: number) => {
+const disableCategoryById = (categories: CategoryData[], id: string) => {
   return categories.map(item => {
     if (item.id === id) {
       item.disabled = true

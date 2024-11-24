@@ -12,10 +12,10 @@ interface StatisticsData {
 
 interface CategoryMissingStatisticsRes {
   /* Category ID */
-  id: number
+  id: string
 
   /* Language ID */
-  languageId: number
+  languageId: string
 
   /* Language Name */
   languageName: string
@@ -23,10 +23,10 @@ interface CategoryMissingStatisticsRes {
 
 interface ArticleMissingStatisticsRes {
   /* Article ID */
-  id: number
+  id: string
 
   /* Language ID */
-  languageId: number
+  languageId: string
 
   /* Language Name */
   languageName: string
@@ -34,10 +34,10 @@ interface ArticleMissingStatisticsRes {
 
 interface CategorySeoCheckRes {
   /* Category ID */
-  id: number
+  id: string
 
   /* Language ID */
-  languageId: number
+  languageId: string
 
   /* Language Name */
   languageName: string
@@ -45,10 +45,10 @@ interface CategorySeoCheckRes {
 
 interface ArticleSeoCheckRes {
   /* Article ID */
-  id: number
+  id: string
 
   /* Language ID */
-  languageId: number
+  languageId: string
 
   /* Language Name */
   languageName: string

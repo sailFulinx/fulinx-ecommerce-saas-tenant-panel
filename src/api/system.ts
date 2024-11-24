@@ -1,6 +1,6 @@
 import request from '@/utils/axios'
 
-export function saveSettingApi(id: number, data: SaveSettingType): Promise<IResponse<SettingData & CommonField>> {
+export function saveSettingApi(id: string, data: SaveSettingType): Promise<IResponse<SettingData & CommonField>> {
   return request.post({
     url: `system/setting/${id}`,
     data,
@@ -8,7 +8,7 @@ export function saveSettingApi(id: number, data: SaveSettingType): Promise<IResp
   })
 }
 
-export function showSettingApi(id: number): Promise<IResponse<SettingData & CommonField>> {
+export function showSettingApi(id: string): Promise<IResponse<SettingData & CommonField>> {
   return request.get({
     url: `system/setting/${id}`,
     token: true,

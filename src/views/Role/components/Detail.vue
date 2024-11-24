@@ -59,7 +59,7 @@ watch(
   { immediate: true },
 )
 
-const getDetail = async (id: number) => {
+const getDetail = async (id: string) => {
   loading.init = true
   const { data } = await fetchRoleDetailApi(id).catch(err => {
     throw err

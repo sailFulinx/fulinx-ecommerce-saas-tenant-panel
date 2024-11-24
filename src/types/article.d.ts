@@ -1,16 +1,16 @@
 // Article File List Result Do
 interface ArticleFileListResultDo {
   /* Article File Relation ID */
-  id: number
+  id: string
 
   /* Article ID */
-  articleId: number
+  articleId: string
 
   /* Language ID */
-  languageId: number
+  languageId: string
 
   /* Article File ID */
-  articleFileId: number
+  articleFileId: string
 
   /* */
   fileVo: FileData & CommonField
@@ -22,13 +22,13 @@ interface ArticleFileListResultDo {
 // Article Tag List Result Do
 interface ArticleTagListResultDo {
   /* Article Tag Relation ID */
-  id: number
+  id: string
 
   /* Article ID */
-  articleId: number
+  articleId: string
 
   /* Language ID */
-  languageId: number
+  languageId: string
 
   /* Tag Name */
   tagName: string
@@ -37,13 +37,13 @@ interface ArticleTagListResultDo {
 // Article SEO List Result Do
 interface ArticleSeoListResultDo {
   /* Article SEO ID */
-  id: number
+  id: string
 
   /* Article ID */
-  articleId: number
+  articleId: string
 
   /* Language ID */
-  languageId: number
+  languageId: string
 
   /* Meta Title */
   metaTitle: string
@@ -76,13 +76,13 @@ interface ArticleSeoListResultDo {
 // Article Category List Result Do
 interface ArticleCategoryListResultDo {
   /* Article Category Relation ID */
-  id: number
+  id: string
 
   /* Article ID */
-  articleId: number
+  articleId: string
 
   /* Category ID */
-  categoryId: number
+  categoryId: string
 
   /* Category Name */
   categoryName: string
@@ -94,13 +94,13 @@ interface ArticleCategoryListResultDo {
 // Article Detail List Result Do
 interface ArticleDetailListResultDo {
   /* Article Detail ID */
-  id: number
+  id: string
 
   /* Article ID */
-  articleId: number
+  articleId: string
 
   /* Language ID */
-  languageId: number
+  languageId: string
 
   /* Article Name */
   articleName: string
@@ -118,7 +118,7 @@ interface ArticleDetailListResultDo {
 // Article File Vo
 interface ArticleFileVo {
   /* Article File ID */
-  articleFileId: number
+  articleFileId: string
 
   /* Is Default, 0 - No, 1 - Yes */
   isDefault: boolean
@@ -132,13 +132,13 @@ interface CreateArticleParams {
   articleType: number | null
 
   /* Language Id */
-  languageId: number
+  languageId: string
 
   /* Is Custom Layout */
   isCustomLayout: boolean
 
   /* Layout Id */
-  layoutId?: number | null
+  layoutId?: string | null
 
   /* 分类ID */
   categoryIds?: number[]
@@ -146,7 +146,7 @@ interface CreateArticleParams {
   /* 状态 */
   status?: boolean
 
-  languageId: number
+  languageId: string
 
   /* 文章名称 */
   articleName: string
@@ -175,7 +175,7 @@ interface CreateArticleBaseParams {
   articleType: number
 
   /* Language Id */
-  languageId: number
+  languageId: string
 
   /* Article Name */
   articleName: string
@@ -193,10 +193,10 @@ interface CreateArticleBaseParams {
 // 新增文章标题
 interface CreateArticleNameParams {
   /* Article ID */
-  articleId: number
+  articleId: string
 
   /* Language Id */
-  languageId: number
+  languageId: string
 
   /* Article Name */
   articleName: string
@@ -205,10 +205,10 @@ interface CreateArticleNameParams {
 // 新增文章分类
 interface CreateArticleCategoryParams {
   /* Article ID */
-  articleId: number
+  articleId: string
 
   /* Language Id */
-  languageId: number
+  languageId: string
 
   /* Category ID Array */
   categoryIds: Record<string, unknown>[]
@@ -217,10 +217,10 @@ interface CreateArticleCategoryParams {
 // 新增文章文件
 interface CreateArticleFileParams {
   /* Article ID */
-  articleId: number
+  articleId: string
 
   /* Language Id */
-  languageId: number
+  languageId: string
 
   /* 文章文件请求参数 */
   articleFileVoList: ArticleFileVo[]
@@ -229,10 +229,10 @@ interface CreateArticleFileParams {
 // 新增文章SEO
 interface CreateArticleSeoParams {
   /* Article ID */
-  articleId: number
+  articleId: string
 
   /* Language Id */
-  languageId: number
+  languageId: string
 
   /* Article Meta Title */
   metaTitle: string
@@ -244,10 +244,10 @@ interface CreateArticleSeoParams {
 // 新增文章Tag
 interface CreateArticleTagParams {
   /* Article ID */
-  articleId: number
+  articleId: string
 
   /* Language Id */
-  languageId: number
+  languageId: string
 
   /* Tag Name */
   tagName: string
@@ -256,25 +256,25 @@ interface CreateArticleTagParams {
 // 删除文章
 interface RemoveArticleParams {
   /* Article Ids */
-  ids: number[]
+  ids: string[]
 }
 
 // 删除文章文件
 interface RemoveArticleFileParams {
   /* articleFileId */
-  articleFileId: number
+  articleFileId: string
 }
 
 // 删除文章文件
 interface RemoveArticleTagParams {
   /* Article Tag Relation ID */
-  articleTagRelationId: number
+  articleTagRelationId: string
 }
 
 // 更新文章描述
 interface UpdateArticleDescriptionParams {
   /* Article Detail ID */
-  articleDetailId: number
+  articleDetailId: string
 
   /* Article Description */
   articleDescription: string
@@ -283,7 +283,7 @@ interface UpdateArticleDescriptionParams {
 // 更新文章名称
 interface UpdateArticleNameParams {
   /* Article Detail ID */
-  articleDetailId: number
+  articleDetailId: string
 
   /* Article Name */
   articleName: string
@@ -292,10 +292,10 @@ interface UpdateArticleNameParams {
 // 更新文章类型
 interface UpdateArticleTypeParams {
   /* Article ID */
-  articleId: number
+  articleId: string
 
   /* Language Id */
-  languageId: number
+  languageId: string
 
   /* Article Type */
   articleType: number
@@ -304,13 +304,13 @@ interface UpdateArticleTypeParams {
 // 更新文章分类
 interface UpdateArticleCategoryParams {
   /* Article ID */
-  articleId: number
+  articleId: string
 
   /* Language Id */
-  languageId: number
+  languageId: string
 
   /* Article Category ID Array */
-  categoryIds: number[]
+  categoryids: string[]
 
   /* Deleted Category ID Array */
   deletedCategoryIds?: number[]
@@ -319,7 +319,7 @@ interface UpdateArticleCategoryParams {
 // 更新文章自定义信息
 interface UpdateArticleCustomsParams {
   /* Article Detail ID */
-  articleDetailId: number
+  articleDetailId: string
 
   /* Customs */
   customs: string
@@ -328,22 +328,22 @@ interface UpdateArticleCustomsParams {
 // 更新文章是否自定义布局
 interface UpdateArticleIsCustomLayoutParams {
   /* Article ID */
-  articleId: number
+  articleId: string
 
   /* Language Id */
-  languageId: number
+  languageId: string
 
   /* Is Custom Layout */
   isCustomLayout: boolean
 
   /* Layout ID */
-  layoutId: number
+  layoutId: string
 }
 
 // 更新文章SEO
 interface UpdateArticleSeoParams {
   /* Article SEO ID */
-  articleSeoId: number
+  articleSeoId: string
 
   /* Article Meta Title */
   metaTitle: string
@@ -355,10 +355,10 @@ interface UpdateArticleSeoParams {
 // 更新文章状态
 interface UpdateArticleStatusParams {
   /* Article ID */
-  articleId: number
+  articleId: string
 
   /* Language Id */
-  languageId: number
+  languageId: string
 
   /* Status */
   status: boolean
@@ -367,22 +367,22 @@ interface UpdateArticleStatusParams {
 // 更新文章文件
 interface UpdateArticleFileParams {
   /* Article ID */
-  articleId: number
+  articleId: string
 
   /* Language ID */
-  languageId: number
+  languageId: string
 
   /* 文章文件请求参数 */
   articleFileVoList?: ArticleFileVo[]
 
   /* Article File Delete ID Array */
-  articleFileDeletedIds: number[]
+  articleFileDeletedids: string[]
 }
 
 // 更新文章标签
 interface UpdateArticleTagParams {
   /* Article Tag ID */
-  articleTagId: number
+  articleTagId: string
 
   /* Tag Name */
   tagName: string
@@ -393,12 +393,12 @@ interface ShowArticleParams {
   articleId?: number
 
   /* Language Id */
-  languageId: number
+  languageId: string
 }
 
-interface CreateRes {
+interface CreateArticleRes {
   /* Article ID */
-  id: number
+  id: string
 
   /* Article Type, 1-Blog, 2-Page, 3-Product, 4-Video,5-image */
   articleType: number
@@ -410,7 +410,7 @@ interface CreateRes {
   isCustomLayout: boolean
 
   /* Layout ID */
-  layoutId: number
+  layoutId: string
 
   /* Soft Delete Flag */
   isDelete: number
@@ -436,16 +436,16 @@ interface CreateRes {
 
 // 文章列表请求参数
 interface ArticleListParams {
-  languageId: number
+  languageId: string
   articleName?: string | null
-  articleId?: number | null | string
+  articleId?: string | null | string
   articleType?: string | null
 }
 
 // 文章列表单元数据
 interface ArticleListData {
   /* Article ID */
-  id: number
+  id: string
 
   /* Article Type */
   articleType: number
@@ -454,7 +454,7 @@ interface ArticleListData {
   articleTypeLabel: string
 
   /* Category Ids */
-  categoryIds: number[]
+  categoryids: string[]
 
   /* Status, 0 - Disabled , 1 - Enabled */
   status: boolean
@@ -463,13 +463,13 @@ interface ArticleListData {
   isCustomLayout: boolean
 
   /* Layout ID */
-  layoutId: number
+  layoutId: string
 
   /* */
   layoutListResultDo: LayoutData & CommonField
 
   /* Language ID */
-  languageId: number
+  languageId: string
 
   /* Article Name */
   articleName: string
@@ -493,7 +493,7 @@ interface ArticleListData {
   articleTagListResultDos: (ArticleTagListResultDo & CommonField)[]
 
   /* Slug ID */
-  slugId: number
+  slugId: string
 
   /* Article Slug */
   slug: string
@@ -523,7 +523,7 @@ interface ArticleListData {
 // 文章新增，更新返回数据
 interface ArticleShowData {
   /* Article ID */
-  id: number
+  id: string
 
   /* Article Type */
   articleType: number
@@ -532,7 +532,7 @@ interface ArticleShowData {
   articleTypeLabel: string
 
   /* Category Ids */
-  categoryIds: number[]
+  categoryids: string[]
 
   /* Status, 0 - Disabled , 1 - Enabled */
   status: boolean
@@ -541,7 +541,7 @@ interface ArticleShowData {
   isCustomLayout: boolean
 
   /* Layout ID */
-  layoutId: number | null
+  layoutId: string | null
 
   /* */
   layoutListResultDo: LayoutData & CommonField
@@ -565,7 +565,7 @@ interface ArticleShowData {
   articleTagListResultDos: (ArticleTagListResultDo & CommonField)[]
 
   /* Slug ID */
-  slugId: number
+  slugId: string
 
   /* Article Slug */
   slug: string
@@ -600,7 +600,7 @@ interface ArticleTypeListParams {
 // 文章类型数据
 interface ArticleTypeData {
   code: string
-  id: number
+  id: string
   articleTypeName: string
 }
 
@@ -611,7 +611,7 @@ interface ListArticleTypeRes {
 }
 
 interface CustomDataType {
-  id: number
+  id: string
   customFieldName: string
   customType: string
   customTitle: string
@@ -621,10 +621,10 @@ interface CustomDataType {
 // 新增文章Slug
 interface CreateArticleSlugParams {
   /* Article ID */
-  articleId: number
+  articleId: string
 
   /* Language Id */
-  languageId: number
+  languageId: string
 
   /* Slug */
   slug: string
@@ -633,10 +633,10 @@ interface CreateArticleSlugParams {
 // 更新文章Slug
 interface UpdateArticleSlugParams {
   /* Slug ID */
-  slugId: number
+  slugId: string
 
   /* Language Id */
-  languageId: number
+  languageId: string
 
   /* Slug */
   slug: string

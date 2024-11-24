@@ -1,7 +1,7 @@
 interface PermissionDataType {
-  id: number
+  id: string
   permissionName: string
-  permissionParentId: number
+  permissionparentId: string
   permissionCode: string
   permissionType: number
   description: string

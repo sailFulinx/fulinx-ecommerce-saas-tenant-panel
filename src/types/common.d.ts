@@ -75,7 +75,7 @@ type Component<T = any> =
  * 分页
  */
 interface Pagination {
-  id?: number | null
+  id?: string | null
   status?: number | null
   isDelete?: number | null
   pageNumber?: number
@@ -88,7 +88,7 @@ interface PaginationComponentData {
 }
 
 interface CommonField {
-  id: number
+  id: string
   isDelete?: number | null
   remark?: string | null
   recordVersion?: number | null
@@ -110,4 +110,5 @@ interface PaginationComponentDataType {
 
 interface PreferenceType {
   language: LanguageData
+  currency: CurrencyData
 }

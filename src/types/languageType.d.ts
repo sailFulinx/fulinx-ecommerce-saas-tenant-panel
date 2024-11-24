@@ -4,7 +4,7 @@ interface LanguageListParams {
 
 interface LanguageData {
   languageCode: string
-  id: number
+  id: string
   languageName: string
 }
 

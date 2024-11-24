@@ -341,7 +341,7 @@ const handleClickUpdateArticleName = (articleName: string) => {
 const handleCancelUpdateArticleName = () => {
   inputArticleNameVisible.value = false
 }
-const editArticleName = async (articleDetailId: number) => {
+const editArticleName = async (articleDetailId: string) => {
   if (!currentArticleName.value) {
     ElMessage.warning($t('article.error.articleName'))
     return
@@ -400,7 +400,7 @@ const handleClickUpdateArticleDescription = async (articleDescription: string) =
 const handleCancelUpdateArticleDescription = () => {
   inputArticleDescriptionVisible.value = false
 }
-const editArticleDescription = async (articleDetailId: number) => {
+const editArticleDescription = async (articleDetailId: string) => {
   currentArticleDescription.value = editorRef.value?.getEditorContent()
   loading.init = true
   const { data } = await updateArticleDescriptionApi({
@@ -579,7 +579,7 @@ const handleClickUpdateArticleMetaTitle = (articleMetaTitle: string) => {
 const handleCancelUpdateArticleMetaTitle = () => {
   inputArticleMetaTitleVisible.value = false
 }
-const editArticleMetaTitle = async (articleSeoId: number) => {
+const editArticleMetaTitle = async (articleSeoId: string) => {
   if (!currentArticleMetaTitle.value) {
     ElMessage.warning($t('article.error.articleMetaTitle'))
     return
@@ -629,7 +629,7 @@ const handleClickUpdateArticleMetaDescription = (articleMetaDescription: string)
 const handleCancelUpdateArticleMetaDescription = () => {
   inputArticleMetaDescriptionVisible.value = false
 }
-const editArticleMetaDescription = async (articleSeoId: number) => {
+const editArticleMetaDescription = async (articleSeoId: string) => {
   if (!currentArticleMetaDescription.value) {
     ElMessage.warning($t('article.error.articleMetaDescription'))
     return

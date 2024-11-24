@@ -4,9 +4,9 @@ interface SiteListParams {
 
 interface SiteData {
   /* Site ID */
-  id: number
+  id: string
 
-  themeId: number | null
+  themeId: string | null
 
   themeVo: ThemeData
 
@@ -14,7 +14,7 @@ interface SiteData {
   domain: string
 
   /* Language ID */
-  languageId: number
+  languageId: string
 
   /* Site Name */
   siteName: string
@@ -26,10 +26,10 @@ interface SiteData {
   metaDescription: string
 
   /* Logo File ID */
-  logoFileId: number
+  logoFileId: string
 
   /* Favicon File ID */
-  faviconFileId: number
+  faviconFileId: string
 
   /* Status, 0 - Disabled , 1 - Enabled */
   status: boolean
@@ -60,13 +60,13 @@ interface SiteData {
 }
 
 interface SiteRequest {
-  themeId: number | null
+  themeid: string | null
 
   /* Domain */
   domain: string
 
   /* Language ID */
-  languageId: number | null
+  languageId: string | null
 
   /* Site Name */
   siteName: string
@@ -78,10 +78,10 @@ interface SiteRequest {
   metaDescription?: string
 
   /* Logo File ID */
-  logoFileId: number | null
+  logoFileId: string | null
 
   /* Favicon File ID */
-  faviconFileId?: number | null
+  faviconFileId?: string | null
 
   /* Status, 0 - Disabled , 1 - Enabled */
   status: boolean | number
@@ -91,5 +91,5 @@ interface SiteRequest {
 }
 
 interface SiteRemoveRequest {
-  ids: number[]
+  ids: string[]
 }

@@ -16,7 +16,7 @@ export function removeSite(data: SiteRemoveRequest): Promise<IResponse<SiteData 
   })
 }
 
-export function editSite(id: number, data: SiteRequest): Promise<IResponse<SiteData & CommonField>> {
+export function editSite(id: string, data: SiteRequest): Promise<IResponse<SiteData & CommonField>> {
   return request.put({
     url: `system/site/${id}`,
     data,
@@ -24,7 +24,7 @@ export function editSite(id: number, data: SiteRequest): Promise<IResponse<SiteD
   })
 }
 
-export function showSite(id: number): Promise<IResponse<SiteData & CommonField>> {
+export function showSite(id: string): Promise<IResponse<SiteData & CommonField>> {
   return request.get({
     url: `system/site/${id}`,
     token: true,

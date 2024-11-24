@@ -1,6 +1,6 @@
 type ImpListResponseDataType = {
-  fileId: number
-  id: number
+  FileId: string
+  id: string
   importStatus: number
   importType: number
 } & CommonField
@@ -8,13 +8,13 @@ type ImpListResponseDataType = {
 interface ImpRequestQueryParameterType {}
 
 type ImpLogResponseDataType = {
-  fileId: number
+  FileId: string
   fileVo: {
     fileContentType: string
     fileExtensionName: string
     fileName: string
     fileUrl: string
-    id: number
+    id: string
     isDelete: number
     originalFileName: string
     path: string
@@ -26,13 +26,13 @@ type ImpLogResponseDataType = {
     remark: string
     sha256: string
   } | null
-  id: number
+  id: string
   importLogList: {
-    fileId: number
-    id: number
+    FileId: string
+    id: string
     impContent: string
     impFailedReason: string
-    impId: number
+    impId: string
     impLogStatus: number
     isDelete: number
     recordCreateName: string

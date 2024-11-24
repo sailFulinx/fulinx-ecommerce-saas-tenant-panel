@@ -8,7 +8,7 @@ export function removeMessageApi(data: RemoveMessageParams): Promise<IResponse<M
   })
 }
 
-export function showMessageApi(id: number): Promise<IResponse<MessageData & CommonField>> {
+export function showMessageApi(id: string): Promise<IResponse<MessageData & CommonField>> {
   return request.get({
     url: `system/message/${id}`,
     token: true,

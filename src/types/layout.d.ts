@@ -11,12 +11,12 @@ interface CreateLayoutParams {
 
 interface CopyLayoutParams {
   /* Layout ID */
-  layoutId: number
+  layoutId: string
 }
 
 interface RemoveLayoutParams {
   /* Layout Ids */
-  ids: number[]
+  ids: string[]
 }
 
 interface UpdateLayoutParams {
@@ -59,14 +59,14 @@ interface LayoutData {
 }
 
 interface LayoutComponentData {
-  id: number
-  componentId: number
+  id: string
+  componentId: string
   componentName?: string
   sort: number
 }
 
 interface LayoutRowData {
-  id: number
+  id: string
   rowName: string
   columnsCount: number
   columns: LayoutComponentData[]
@@ -74,5 +74,5 @@ interface LayoutRowData {
 }
 
 interface LayoutComponentForm {
-  componentId: number | null
+  componentId: string | null
 }

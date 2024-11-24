@@ -1,5 +1,6 @@
 <script setup name="Category" lang="ts">
 import { paginationCategoryApi, removeCategoryApi } from '@/api/category'
+import { getCategoryTypeColor, getCategoryTypeLabel } from '@/data/category'
 import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
 import { ElMessage } from 'element-plus'
@@ -62,7 +63,7 @@ watch(
 
 const selection = ref<CategoryData & CommonField[]>()
 
-const deleteIds = ref<number[]>([])
+const deleteIds = ref<string[]>([])
 
 // 选中
 const handleSelectionChange = (e: CategoryData & CommonField[]) => {
@@ -119,23 +120,21 @@ const handleDelete = async (val: CategoryData & CommonField) => {
 <template>
   <div v-loading="loading.init" class="view-page">
     <div class="view-header">
-      <Sticky>
-        <div class="flex justify-between">
-          <div>
-            <span>{{ $t('router.category') }}</span>
-          </div>
-          <div>
-            <EBtn @click="handleCreate">
-              <Icon icon="ep:plus" class="mr-1" />
-              {{ $t('common.create') }}
-            </EBtn>
-            <EBtn type="danger" @click="handleMultiDelete">
-              <Icon icon="ep:delete" class="mr-1" />
-              {{ $t('common.remove') }}
-            </EBtn>
-          </div>
+      <div class="flex justify-between">
+        <div>
+          <span>{{ $t('router.category') }}</span>
         </div>
-      </Sticky>
+        <div>
+          <EBtn @click="handleCreate">
+            <Icon icon="ep:plus" class="mr-1" />
+            {{ $t('common.create') }}
+          </EBtn>
+          <EBtn type="danger" @click="handleMultiDelete">
+            <Icon icon="ep:delete" class="mr-1" />
+            {{ $t('common.remove') }}
+          </EBtn>
+        </div>
+      </div>
     </div>
 
     <div v-if="!loading.init" class="view-main">
@@ -152,7 +151,13 @@ const handleDelete = async (val: CategoryData & CommonField) => {
       >
         <ElTableColumn ref="tableRef" type="selection" stripe row-key="id" width="55" />
         <ElTableColumn prop="id" :label="`${$t('common.id')}`" width="120" />
-        <ElTableColumn prop="categoryName" :label="`${$t('category.categoryName')}`" />
+        <ElTableColumn prop="categoryName" :label="`${$t('category.categoryName')}`">
+          <template #default="scope">
+            {{ scope.row.categoryName }} <ElTag :type="getCategoryTypeColor(scope.row.categoryType)">
+              {{ getCategoryTypeLabel(scope.row.categoryType) }}
+            </ElTag>
+          </template>
+        </ElTableColumn>
         <ElTableColumn fixed="right" :label="`${$t('common.action')}`" width="280">
           <template #default="scope">
             <EBtn size="small" type="primary" @click="handleCreateChildCategory(scope.row)">

@@ -12,7 +12,7 @@ const dialogVisible = ref<boolean>(false)
 const dragging = ref<boolean>(false)
 
 interface TextItem {
-  id: number
+  id: string
   sort: number
   title: ''
   subTitle: ''
