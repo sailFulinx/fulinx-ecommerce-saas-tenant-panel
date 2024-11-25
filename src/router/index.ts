@@ -95,6 +95,76 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
     },
     children: [
       {
+        path: 'parameter',
+        component: () => import('@/views/Parameter/index.vue'),
+        name: 'ParameterList',
+        meta: {
+          title: $t('router.parameter'),
+          icon: 'ant-design:gold-outlined',
+        },
+      },
+      {
+        path: 'parameter/create',
+        component: () => import('@/views/Parameter/Create.vue'),
+        name: 'CreateParameter',
+        meta: {
+          title: $t('parameter.add'),
+          noCache: true,
+          hidden: true,
+          canTo: true,
+          activeMenu: '/product/parameter',
+          props: false,
+        },
+      },
+      {
+        path: 'parameter/show/:id',
+        component: () => import('@/views/Parameter/Show.vue'),
+        name: 'ShowParameter',
+        meta: {
+          title: $t('parameter.show'),
+          noCache: true,
+          hidden: true,
+          canTo: true,
+          activeMenu: '/product/parameter',
+          props: true,
+        },
+      },
+      {
+        path: 'parameterGroup',
+        component: () => import('@/views/ParameterGroup/index.vue'),
+        name: 'ParameterGroupList',
+        meta: {
+          title: $t('router.parameterGroup'),
+          icon: 'ant-design:gold-outlined',
+        },
+      },
+      {
+        path: 'parameterGroup/create',
+        component: () => import('@/views/ParameterGroup/Create.vue'),
+        name: 'CreateParameterGroup',
+        meta: {
+          title: $t('parameterGroup.add'),
+          noCache: true,
+          hidden: true,
+          canTo: true,
+          activeMenu: '/product/parameterGroup',
+          props: false,
+        },
+      },
+      {
+        path: 'parameterGroup/show/:id',
+        component: () => import('@/views/ParameterGroup/Show.vue'),
+        name: 'ShowParameterGroup',
+        meta: {
+          title: $t('parameterGroup.show'),
+          noCache: true,
+          hidden: true,
+          canTo: true,
+          activeMenu: '/product/parameterGroup',
+          props: true,
+        },
+      },
+      {
         path: 'brand',
         component: () => import('@/views/Brand/index.vue'),
         name: 'BrandList',

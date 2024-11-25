@@ -62,10 +62,10 @@ interface ParameterListParams {
   languageId: string
 
   /* Parameter Id */
-  parameterId?: string
+  parameterId?: string | null
 
   /* Parameter Name */
-  parameterName?: string
+  parameterName?: string | null
   /* 删除标识 */
   isDelete?: number
 }
