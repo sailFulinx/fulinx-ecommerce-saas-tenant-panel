@@ -1,0 +1,19 @@
+export default {
+  name: '参数',
+  show: '参数详情',
+  seo: '参数SEO',
+  slug: '自定义URL',
+  status: '状态',
+  add: '添加参数',
+  base: '基础信息',
+  parameterType: '参数类型',
+  parameterName: '参数名称',
+  parameterValue: '参数值',
+  parameterDetail: '参数详情',
+  placeholder: {
+    parameterType: '请选择参数类型',
+    parameterName: '请输入参数名称',
+    parameterDetail: '请输入参数详情',
+  },
+  warning: {},
+}

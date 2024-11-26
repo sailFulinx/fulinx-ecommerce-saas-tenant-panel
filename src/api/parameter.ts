@@ -297,7 +297,7 @@ export function createParameterValueApi(
   params: CreateParameterValueParams,
 ): Promise<IResponse<CreateParameterValueRes & CommonField>> {
   return request.post({
-    url: 'system/parameter/update/parameter/type',
+    url: 'system/parameter/value',
     data: params,
     token: true,
   })
@@ -310,8 +310,8 @@ export function createParameterValueApi(
  * @returns
  */
 export function removeParameterValueApi(params: RemoveParameterValueParams): Promise<IResponse<boolean>> {
-  return request.post({
-    url: 'system/parameter/update/parameter/type',
+  return request.delete({
+    url: 'system/parameter/value',
     data: params,
     token: true,
   })
@@ -398,7 +398,9 @@ export function parameterValuePaginationApi(
  * @param {string} params.languageId Language ID
  * @returns
  */
-export function showParameterValueApi(params: ShowParameterValueParams): Promise<IResponse<ParameterValueShow & CommonField>> {
+export function showParameterValueApi(
+  params: ShowParameterValueParams,
+): Promise<IResponse<ParameterValueShow & CommonField>> {
   return request.post({
     url: 'system/parameter/value/show',
     data: params,

@@ -492,6 +492,30 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
   //   ],
   // },
   {
+    path: '/test',
+    component: Layout,
+    redirect: '/test/list',
+    name: 'Test',
+    meta: {
+      title: 'test',
+      icon: 'ant-design:message-outlined',
+      noCache: true,
+      hidden: false,
+      canTo: false,
+    },
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/Test/index.vue'),
+        name: 'TestList',
+        meta: {
+          title: 'test',
+          icon: 'ant-design:message-outlined',
+        },
+      },
+    ],
+  },
+  {
     path: '/user',
     component: Layout,
     redirect: '/user/list',

@@ -298,14 +298,15 @@ export default {
     parameterType: '参数类型',
     parameterName: '参数名称',
     parameterValue: '参数值',
+    parameterValueContent: '参数值',
     parameterDetail: '参数详情',
     placeholder: {
       parameterType: '请选择参数类型',
       parameterName: '请输入参数名称',
       parameterDetail: '请输入参数详情',
+      parameterValueContent: '请输入参数值',
     },
-    warning: {
-    },
+    warning: {},
   },
   brand: {
     name: '品牌',
@@ -549,3 +550,59 @@ export default {
     },
   },
 }
+
+// import analytics from './modules/zh-CN/analytics'
+// import article from './modules/zh-CN/article'
+// import brand from './modules/zh-CN/brand'
+// import category from './modules/zh-CN/category'
+// import common from './modules/zh-CN/common'
+// import comps from './modules/zh-CN/comps'
+// import dashboard from './modules/zh-CN/dashboard'
+// import error from './modules/zh-CN/error'
+// import file from './modules/zh-CN/file'
+// import imp from './modules/zh-CN/imp'
+// import layout from './modules/zh-CN/layout'
+// import login from './modules/zh-CN/login'
+// import message from './modules/zh-CN/message'
+// import parameter from './modules/zh-CN/parameter'
+// import permission from './modules/zh-CN/permission'
+// import placeholder from './modules/zh-CN/placeholder'
+// import role from './modules/zh-CN/role'
+// import router from './modules/zh-CN/router'
+// import seo from './modules/zh-CN/seo'
+// import setting from './modules/zh-CN/setting'
+// import size from './modules/zh-CN/size'
+// import success from './modules/zh-CN/success'
+// import supplier from './modules/zh-CN/supplier'
+// import theme from './modules/zh-CN/theme'
+// import user from './modules/zh-CN/user'
+// import warning from './modules/zh-CN/warning'
+
+// export default {
+//   analytics,
+//   article,
+//   brand,
+//   category,
+//   common,
+//   comps,
+//   dashboard,
+//   error,
+//   file,
+//   imp,
+//   layout,
+//   login,
+//   message,
+//   parameter,
+//   permission,
+//   placeholder,
+//   role,
+//   router,
+//   seo,
+//   setting,
+//   size,
+//   success,
+//   supplier,
+//   theme,
+//   user,
+//   warning,
+// }

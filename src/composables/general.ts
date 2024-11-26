@@ -87,3 +87,15 @@ export function useVersion() {
 export function useFileRootUrl() {
   return import.meta.env.VITE_RESOURCE_URL
 }
+
+export const useValidForm = async (formRef: any) => {
+  const valid = await formRef.validate((valid: boolean) => {
+    if (!valid) {
+      return false
+    }
+  })
+  if (!valid) {
+    return false
+  }
+  return true
+}

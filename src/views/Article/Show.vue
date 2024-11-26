@@ -43,7 +43,7 @@ const loading = reactive({
 // 创建article请求参数
 const createFormData = (): ArticleShowData => {
   return {
-    id: 0,
+    id: '',
     articleType: 0,
     articleTypeLabel: '',
     categoryIds: [],
@@ -51,11 +51,11 @@ const createFormData = (): ArticleShowData => {
     isCustomLayout: true,
     layoutId: null,
     layoutListResultDo: {
-      id: 0,
+      id: '',
       layoutName: '',
-      layoutFileId: 0,
+      layoutFileId: '',
       fileVo: {
-        id: 0,
+        id: '',
         originalFileName: '',
         fileName: '',
         fileContentType: '',
@@ -83,9 +83,9 @@ const createFormData = (): ArticleShowData => {
     articleCategoryListResultDos: [],
     categoryNameList: [],
     articleDetailListResultDo: {
-      id: 0,
-      articleId: 0,
-      languageId: 0,
+      id: '',
+      articleId: '',
+      languageId: '',
       articleName: '',
       articleDescription: '',
       customs: '',
@@ -99,9 +99,9 @@ const createFormData = (): ArticleShowData => {
     },
     articleFileListResultDos: [],
     seoListResultDo: {
-      id: 0,
-      articleId: 0,
-      languageId: 0,
+      id: '',
+      articleId: '',
+      languageId: '',
       metaTitle: '',
       metaDescription: '',
       isDelete: 0,
@@ -113,7 +113,7 @@ const createFormData = (): ArticleShowData => {
       recordUpdateTime: '',
     },
     articleTagListResultDos: [],
-    slugId: 0,
+    slugId: '',
     slug: '',
     isDelete: 0,
     remark: '',

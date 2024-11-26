@@ -226,6 +226,10 @@ interface UpdateParameterTypeParams {
 }
 
 interface CreateParameterValueParams {
+  parameterValueDetailId: string
+  /* Parameter Id */
+  parameterId: string
+
   /* Language ID */
   languageId: string
 
@@ -234,7 +238,8 @@ interface CreateParameterValueParams {
 }
 
 interface CreateParameterValueRes {
-
+  /* Parameter ID */
+  parameterId: string
 }
 
 interface RemoveParameterValueParams {
@@ -282,6 +287,9 @@ interface UpdateParameterValueContentParams {
 }
 
 interface ParameterValueListParams {
+  /* Parameter Id */
+  parameterId: string
+
   /* Parameter Value ID */
   parameterValueId?: string
 
@@ -293,6 +301,11 @@ interface ParameterValueListParams {
 }
 
 interface ParameterValueListData {
+  /* Parameter Id */
+  parameterId: string
+
+  parameterValueDetailId: string
+
   /* Language ID */
   languageId: string
 
@@ -306,4 +319,23 @@ interface ShowParameterValueParams {
 
   /* Language ID */
   languageId: string
+}
+
+interface ParameterParameterValueListParams {
+  /* Language ID */
+  languageId: string
+
+  /* Parameter Id */
+  parameterId: string
+
+  /* 删除标识 */
+  isDelete?: number
+}
+
+interface ParameterValueListResultDo {
+  /* Language ID */
+  languageId: string
+
+  /* Parameter Value Content */
+  parameterValueContent: string
 }
