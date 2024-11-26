@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import { brandPaginationApi, removeBrandApi } from '@/api/brand'
+import { parameterGroupPaginationApi, removeParameterGroupApi } from '@/api/parameter'
 import avatar from '@/assets/imgs/avatar.jpg'
 import { usePreferenceStore } from '@/stores/preference'
 import { ElMessage } from 'element-plus'
 
-const sourceUrl = useFileRootUrl()
-
-const listResult = ref<TableResponse<BrandListData & CommonField>>({
+const listResult = ref<TableResponse<ParameterGroupListData & CommonField>>({
   list: [],
   total: 0,
 })
@@ -15,9 +13,9 @@ const loading = reactive({
   list: false,
   del: false,
 })
-const listQuery = reactive<BrandListParams & Pagination>({
+const listQuery = reactive<ParameterGroupListParams & Pagination>({
   languageId: usePreferenceStore().preference?.language.id,
-  brandName: '',
+  parameterGroupName: '',
   pageSize: 20,
   pageNumber: 1,
 })
@@ -25,10 +23,10 @@ const selectedList = ref<string[]>([])
 
 const getList = async () => {
   loading.list = true
-  if (listQuery.brandName === '') {
-    listQuery.brandName = null
+  if (listQuery.parameterGroupName === '') {
+    listQuery.parameterGroupName = null
   }
-  const { data } = await brandPaginationApi(listQuery).catch(err => {
+  const { data } = await parameterGroupPaginationApi(listQuery).catch(err => {
     loading.list = false
     throw err
   })
@@ -48,11 +46,6 @@ watch(
   { immediate: true },
 )
 
-const init = async () => {
-  loading.list = true
-  await getList()
-}
-
 const pagination = (val: PaginationComponentDataType) => {
   if (val) {
     listQuery.pageSize = val.limit
@@ -61,15 +54,15 @@ const pagination = (val: PaginationComponentDataType) => {
   getList()
 }
 
-const selectedBrandItem = (val: BrandListData[]) => {
+const selectedParameterGroupItem = (val: (ParameterGroupListData & CommonField)[]) => {
   selectedList.value = []
   val.forEach(item => {
     selectedList.value.push(item.id)
   })
 }
-const handleDelete = async (row: BrandListData & CommonField) => {
+const handleDelete = async (row: ParameterGroupListData & CommonField) => {
   loading.list = true
-  await removeBrandApi({ brandIds: [row.id] }).catch(err => {
+  await removeParameterGroupApi({ parameterGroupIds: [row.id] }).catch(err => {
     loading.list = false
     throw err
   })
@@ -91,7 +84,7 @@ const handleMultiDelete = async () => {
     loading.list = false
     return
   }
-  await removeBrandApi({ brandIds: selectedList.value }).catch(err => {
+  await removeParameterGroupApi({ parameterGroupIds: selectedList.value }).catch(err => {
     loading.list = false
     throw err
   })
@@ -104,11 +97,11 @@ const handleMultiDelete = async () => {
   })
 }
 const handleCreate = () => {
-  router.push({ name: 'CreateBrand' })
+  router.push({ name: 'CreateParameterGroup' })
 }
 
-const handleRedirectEdit = (val: BrandListData & CommonField) => {
-  router.push({ name: 'ShowBrand', params: { id: val.id } })
+const handleRedirectEdit = (val: ParameterGroupListData & CommonField) => {
+  router.push({ name: 'ShowParameterGroup', params: { id: val.id } })
 }
 // init()
 </script>
@@ -119,12 +112,12 @@ const handleRedirectEdit = (val: BrandListData & CommonField) => {
       <div class="flex justify-between items-center">
         <div class="flex flex-1 items-center">
           <div class="mr-5">
-            {{ $t('router.brand') }}
+            {{ $t('router.parameterGroup') }}
           </div>
           <ElInput
-            v-model="listQuery.brandName"
+            v-model="listQuery.parameterGroupName"
             clearable
-            :placeholder="$t('brand.placeholder.brandName')"
+            :placeholder="$t('parameterGroup.placeholder.parameterGroupName')"
             style="width: 200px"
             class="filter-item mr-5"
             @clear="getList"
@@ -155,24 +148,12 @@ const handleRedirectEdit = (val: BrandListData & CommonField) => {
         default-expand-all
         highlight-current-row
         border
-        @selection-change="selectedBrandItem"
+        @selection-change="selectedParameterGroupItem"
       >
         <ElTableColumn type="selection" width="55" />
-        <ElTableColumn :label="$t('brand.brandLogo')">
+        <ElTableColumn :label="$t('parameterGroup.parameterGroupName')">
           <template #default="scope">
-            <SImg v-if="scope.row.brandFileVo?.fileUrl" :src="sourceUrl + scope.row.brandFileVo?.fileUrl" :alt="scope.row.brandName" fit="cover" lazy width="120px" placeholder />
-            <div v-else>
-              <div class="flex flex-col items-left">
-                <div class="flex items-center">
-                  <Icon icon="ant-design:picture-outlined" :size="24" color="#c0c4cc" /><span class="text-center">No Logo</span>
-                </div>
-              </div>
-            </div>
-          </template>
-        </ElTableColumn>
-        <ElTableColumn :label="$t('brand.brandName')">
-          <template #default="scope">
-            <span>{{ scope.row.brandName }}</span>
+            <span>{{ scope.row.parameterGroupName }}</span>
           </template>
         </ElTableColumn>
         <ElTableColumn label="操作" header-align="center" width="220" align="center" class-name="pl-15 fixed-width">

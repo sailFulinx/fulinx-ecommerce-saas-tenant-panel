@@ -1,3 +1,6 @@
+import parameter from './modules/zh-CN/parameter'
+import placeholder from './modules/zh-CN/placeholder'
+
 export default {
   common: {
     action: '操作',
@@ -305,6 +308,23 @@ export default {
       parameterName: '请输入参数名称',
       parameterDetail: '请输入参数详情',
       parameterValueContent: '请输入参数值',
+      parameterIds: '请选择参数',
+    },
+    warning: {},
+  },
+  parameterGroup: {
+    name: '参数组',
+    show: '参数组详情',
+    seo: '参数组SEO',
+    slug: '自定义URL',
+    status: '状态',
+    add: '添加参数组',
+    base: '基础信息',
+    parameterGroupName: '参数组名称',
+    parameterName: '参数名称',
+    parameter: '参数',
+    placeholder: {
+      parameterGroupName: '请输入参数组名称',
     },
     warning: {},
   },

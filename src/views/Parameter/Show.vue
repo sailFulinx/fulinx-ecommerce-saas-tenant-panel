@@ -131,6 +131,21 @@ const handleDeleteParameterValue = async (item: ParameterValueListData & CommonF
     throw error
   })
   await getParameterValueList()
+  ElMessage.success($t('success.remove'))
+}
+
+const handleMultiDeleteParameterValue = async () => {
+  const deletedIds = selectedParameterValueList.value
+  loading.list = true
+  await removeParameterValueApi({
+    parameterValueIds: deletedIds,
+  }).catch(error => {
+    loading.list = false
+    throw error
+  })
+  await getParameterValueList()
+  selectedParameterValueList.value = []
+  ElMessage.success($t('success.remove'))
 }
 
 const handleChangeTab = async (pane: string) => {
@@ -324,7 +339,7 @@ const editParameterType = async () => {
                 </div>
               </div>
               <div class="w-full grid grid-cols-12 gap-8 p-4 border-b border-gray-200">
-                <div class="col-span-1 font-semibold text-gray-700">
+                <div class="col-span-1 font-semibold fs-[14px] text-gray-700">
                   {{ $t('parameter.parameterType') }}:
                 </div>
                 <div class="col-span-11 w-full flex items-center">
@@ -376,7 +391,7 @@ const editParameterType = async () => {
               <EBtn type="primary" @click="handleCreateParameterValue">
                 添加参数值
               </EBtn>
-              <EBtn type="danger">
+              <EBtn type="danger" @click="handleMultiDeleteParameterValue">
                 删除参数值
               </EBtn>
             </div>
@@ -423,7 +438,7 @@ const editParameterType = async () => {
           />
         </ElTabPane>
       </ElTabs>
-      <ElDialog ref="parameterValueDialogRef" v-model="parameterValueDialogVisible">
+      <ElDialog ref="parameterValueDialogRef" v-model="parameterValueDialogVisible" title="添加参数值">
         <ElForm ref="parameterValueFormRef" :model="parameterValueForm" :rules="parameterValueFormRules" label-width="120px">
           <ElFormItem :label="$t('parameter.parameterValueContent')" prop="parameterValueContent">
             <ElInput v-model="parameterValueForm.parameterValueContent" :placeholder="$t('parameter.placeholder.parameterValueContent')" />

@@ -180,7 +180,7 @@ interface ParameterGroupListParams {
   languageId: string
 
   /* Parameter Group Name */
-  parameterGroupName?: string
+  parameterGroupName?: string | null
 
   /* Status, 0 - Disabled , 1 - Enabled */
   status?: boolean
@@ -338,4 +338,30 @@ interface ParameterValueListResultDo {
 
   /* Parameter Value Content */
   parameterValueContent: string
+}
+
+interface ParameterGroupParameterRelationParams {
+  /* Parameter Group ID */
+  parameterGroupId: string
+
+  /* Language ID */
+  languageId: string
+
+  /* 删除标识 */
+  isDelete?: number
+}
+
+interface ParameterGroupParameterRelationData {
+  /* Parameter Group ID */
+  parameterGroupId: string
+
+  /* Parameter ID */
+  parameterId: string
+
+  /* Parameter Name */
+  parameterName: string
+}
+
+interface RemoveParameterGroupParameterRelationParams {
+  parameterGroupParameterIds: string[]
 }

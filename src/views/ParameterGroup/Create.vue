@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { createBrandApi } from '@/api/brand'
-import { layoutListApi } from '@/api/layout'
+import { createParameterGroupApi } from '@/api/parameter'
 import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
 import { useTagsViewStore } from '@/stores/tagsView'
@@ -8,13 +7,11 @@ import { ElCard, ElInput, ElMessage } from 'element-plus'
 
 const { t: $t } = useLocale()
 
-const uploadRef = ref()
-
 const rules = reactive({
-  brandType: [{ required: true, type: 'number', message: '内容类型必填', trigger: 'change' }],
+  parameterGroupType: [{ required: true, type: 'number', message: '内容类型必填', trigger: 'change' }],
   languageId: [{ required: true, type: 'number', message: '语言必须选择', trigger: 'change' }],
   status: [{ required: true, type: 'boolean', message: '状态必填', trigger: 'change' }],
-  brandName: [{ required: true, type: 'string', message: '内容名称必须填写', trigger: 'blur' }],
+  parameterGroupName: [{ required: true, type: 'string', message: '内容名称必须填写', trigger: 'blur' }],
 })
 
 const loading = reactive({
@@ -22,50 +19,18 @@ const loading = reactive({
   button: false,
 })
 
-const pageTitle = $t('brand.add')
+const pageTitle = $t('parameterGroup.add')
 
-const listLayoutPayload = reactive<LayoutListParams>({
-  layoutName: null,
-})
+const parameterGroupFormRef = ref()
 
-const listLayoutData = ref<TableResponse<LayoutData & CommonField>>({
-  list: [],
-  total: 0,
-})
-
-const getLayoutList = async () => {
-  loading.init = true
-  if (listLayoutPayload.layoutName === '') {
-    listLayoutPayload.layoutName = null
-  }
-  if (listLayoutPayload.layoutName && listLayoutPayload.layoutName?.length <= 1) {
-    loading.init = false
-    return
-  }
-  const { data } = await layoutListApi(listLayoutPayload).catch(error => {
-    loading.init = false
-    throw error
-  })
-  listLayoutData.value = data
-  loading.init = false
-}
-
-getLayoutList()
-
-const brandFormRef = ref()
-
-const editorRef = ref()
-
-const createBrandForm = (): CreateBrandParams => {
+const createParameterGroupForm = (): CreateParameterGroupParams => {
   return {
     languageId: '',
-    brandName: '',
-    brandDescription: '',
-    brandFileId: '',
+    parameterGroupName: '',
   }
 }
 
-const brandForm = reactive<CreateBrandParams>(createBrandForm())
+const parameterGroupForm = reactive<CreateParameterGroupParams>(createParameterGroupForm())
 
 const closeViewTag = () => {}
 
@@ -76,15 +41,12 @@ const deleteTagView = (refresh: boolean) => {
     tagsViewStore.delCachedView()
   }
   tagsViewStore.delVisitedView(router.currentRoute.value)
-  router.push({ name: 'BrandList' })
+  router.push({ name: 'ParameterGroupList' })
 }
 
 const save = async () => {
-  brandForm.languageId = usePreferenceStore().preference.language.id
-  brandForm.brandDescription = editorRef.value.getEditorContent()
-  const file = uploadRef.value.getFileData()
-  brandForm.brandFileId = file.fileData.id
-  const valid = await brandFormRef.value.validate((valid: boolean) => {
+  parameterGroupForm.languageId = usePreferenceStore().preference.language.id
+  const valid = await parameterGroupFormRef.value.validate((valid: boolean) => {
     if (!valid) {
       return false
     }
@@ -93,7 +55,7 @@ const save = async () => {
     return false
   }
 
-  await createBrandApi(brandForm).catch(err => {
+  await createParameterGroupApi(parameterGroupForm).catch(err => {
     throw err
   })
 
@@ -127,20 +89,14 @@ const save = async () => {
     </div>
     <div class="view-main theme-card">
       <ElCard shadow="never">
-        <ElForm ref="brandFormRef" :model="brandForm" :rules="rules" label-width="120px">
-          <ElFormItem :label="$t('brand.brandName')" prop="brandName">
+        <ElForm ref="parameterGroupFormRef" :model="parameterGroupForm" :rules="rules" label-width="120px">
+          <ElFormItem :label="$t('parameterGroup.parameterGroupName')" prop="parameterGroupName">
             <ElInput
-              v-model="brandForm.brandName"
+              v-model="parameterGroupForm.parameterGroupName"
               minlength="1"
               maxlength="120"
-              :placeholder="$t('brand.placeholder.brandName')"
+              :placeholder="$t('parameterGroup.placeholder.parameterGroupName')"
             />
-          </ElFormItem>
-          <ElFormItem :label="$t('brand.brandDescription')" prop="brandDescription">
-            <Editor ref="editorRef" v-model="brandForm.brandDescription" :height="300" />
-          </ElFormItem>
-          <ElFormItem :label="$t('brand.brandLogo')">
-            <UploadSingleImage ref="uploadRef" />
           </ElFormItem>
         </ElForm>
       </ElCard>

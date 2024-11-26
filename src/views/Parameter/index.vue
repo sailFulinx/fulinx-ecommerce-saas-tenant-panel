@@ -4,8 +4,6 @@ import avatar from '@/assets/imgs/avatar.jpg'
 import { usePreferenceStore } from '@/stores/preference'
 import { ElMessage } from 'element-plus'
 
-const sourceUrl = useFileRootUrl()
-
 const listResult = ref<TableResponse<ParameterListData & CommonField>>({
   list: [],
   total: 0,
@@ -47,11 +45,6 @@ watch(
   },
   { immediate: true },
 )
-
-const init = async () => {
-  loading.list = true
-  await getList()
-}
 
 const pagination = (val: PaginationComponentDataType) => {
   if (val) {

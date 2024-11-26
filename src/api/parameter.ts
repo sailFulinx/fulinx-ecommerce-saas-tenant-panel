@@ -108,9 +108,17 @@ export function removeParameterGroupApi(params: RemoveParameterGroupParams): Pro
  */
 export function createParameterGroupParameterRelationApi(
   params: CreateParameterGroupParameterRelationParams,
-): Promise<IResponse<ParameterGroupShow & CommonField>> {
+): Promise<IResponse<boolean>> {
   return request.post({
-    url: 'system/parameter/group',
+    url: 'system/parameter/group/add/parameter',
+    data: params,
+    token: true,
+  })
+}
+
+export function removeParameterGroupParameterRelationApi(params: RemoveParameterGroupParameterRelationParams): Promise<IResponse<boolean>> {
+  return request.delete({
+    url: 'system/parameter/group/remove/parameter',
     data: params,
     token: true,
   })
@@ -403,6 +411,44 @@ export function showParameterValueApi(
 ): Promise<IResponse<ParameterValueShow & CommonField>> {
   return request.post({
     url: 'system/parameter/value/show',
+    data: params,
+    token: true,
+  })
+}
+
+/**
+ * 参数组参数列表 - 不带分页
+ * @param {object} params 参数组参数列表请求参数
+ * @param {string} params.parameterGroupId Parameter Group ID
+ * @param {string} params.languageId Language ID
+ * @param {number} params.isDelete 删除标识
+ * @returns
+ */
+export function parameterGroupParameterRelationListApi(
+  params: ParameterGroupParameterRelationParams,
+): Promise<IResponse<TableResponse<ParameterGroupParameterRelationData & CommonField>>> {
+  return request.post({
+    url: 'system/parameter/group/parameter/list',
+    data: params,
+    token: true,
+  })
+}
+
+/**
+ * 参数组参数列表 - 带分页
+ * @param {object} params 参数组参数分页查询参数
+ * @param {number} params.pageNumber
+ * @param {number} params.pageSize
+ * @param {string} params.parameterGroupId Parameter Group ID
+ * @param {string} params.languageId Language ID
+ * @param {number} params.isDelete 删除标识
+ * @returns
+ */
+export function parameterGroupParameterRelationPaginationApi(
+  params: ParameterGroupParameterRelationParams & Pagination,
+): Promise<IResponse<TableResponse<ParameterGroupParameterRelationData & CommonField>>> {
+  return request.post({
+    url: 'system/parameter/group/parameter/pagination',
     data: params,
     token: true,
   })
