@@ -95,6 +95,41 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
     },
     children: [
       {
+        path: 'product',
+        component: () => import('@/views/Product/index.vue'),
+        name: 'ProductList',
+        meta: {
+          title: $t('router.product'),
+          icon: 'ant-design:gold-outlined',
+        },
+      },
+      {
+        path: 'product/create',
+        component: () => import('@/views/Product/Create.vue'),
+        name: 'CreateProduct',
+        meta: {
+          title: $t('product.add'),
+          noCache: true,
+          hidden: true,
+          canTo: true,
+          activeMenu: '/product/product',
+          props: false,
+        },
+      },
+      {
+        path: 'product/show/:id',
+        component: () => import('@/views/Product/Show.vue'),
+        name: 'ShowProduct',
+        meta: {
+          title: $t('product.show'),
+          noCache: true,
+          hidden: true,
+          canTo: true,
+          activeMenu: '/product/product',
+          props: true,
+        },
+      },
+      {
         path: 'parameter',
         component: () => import('@/views/Parameter/index.vue'),
         name: 'ParameterList',

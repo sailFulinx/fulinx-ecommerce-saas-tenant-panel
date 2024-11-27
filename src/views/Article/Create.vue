@@ -93,7 +93,7 @@ const currentCustomData = ref({
 const createArticleForm = (): CreateArticleParams => {
   return {
     articleType: null,
-    languageId: 0,
+    languageId: '',
     isCustomLayout: false,
     layoutId: null,
     categoryIds: [],

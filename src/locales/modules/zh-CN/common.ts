@@ -1,3 +1,5 @@
+import placeholder from './placeholder'
+
 export default {
   action: '操作',
   add: '添加',
@@ -85,4 +87,7 @@ export default {
   newPassword: '新密码',
   removeConfirm: '是否确认删除?',
   Preference: '偏好设置',
+  placeholder: {
+    language: '语言必须选择',
+  },
 }

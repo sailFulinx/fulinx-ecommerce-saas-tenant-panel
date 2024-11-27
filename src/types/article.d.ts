@@ -611,7 +611,7 @@ interface ListArticleTypeRes {
 }
 
 interface CustomDataType {
-  id: string
+  id: number
   customFieldName: string
   customType: string
   customTitle: string

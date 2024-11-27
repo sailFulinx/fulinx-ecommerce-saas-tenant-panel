@@ -15,6 +15,7 @@ import parameter from './modules/zh-CN/parameter'
 import parameterGroup from './modules/zh-CN/parameterGroup'
 import permission from './modules/zh-CN/permission'
 import placeholder from './modules/zh-CN/placeholder'
+import product from './modules/zh-CN/product'
 import role from './modules/zh-CN/role'
 import router from './modules/zh-CN/router'
 import seo from './modules/zh-CN/seo'
@@ -42,6 +43,7 @@ export default {
   message,
   parameter,
   parameterGroup,
+  product,
   permission,
   placeholder,
   role,
