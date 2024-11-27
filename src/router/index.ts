@@ -24,7 +24,7 @@ export const constantRouterMap: AppRouteRecordRaw[] = [
     children: [
       {
         path: '/redirect/:path(.*)',
-        name: 'Redirect',
+        name: 'RedirectPath',
         component: () => import('@/views/Redirect/Redirect.vue'),
         meta: {},
       },
@@ -467,30 +467,6 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
       },
     ],
   },
-  // {
-  //   path: '/message',
-  //   component: Layout,
-  //   redirect: '/message/list',
-  //   name: 'Message',
-  //   meta: {
-  //     title: $t('router.message'),
-  //     icon: 'ant-design:message-outlined',
-  //     noCache: true,
-  //     hidden: false,
-  //     canTo: false,
-  //   },
-  //   children: [
-  //     {
-  //       path: 'list',
-  //       component: () => import('@/views/Message/index.vue'),
-  //       name: 'MessageList',
-  //       meta: {
-  //         title: $t('router.message'),
-  //         icon: 'ant-design:message-outlined',
-  //       },
-  //     },
-  //   ],
-  // },
   {
     path: '/test',
     component: Layout,

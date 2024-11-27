@@ -3,8 +3,6 @@ import type { I18n, I18nOptions } from 'vue-i18n'
 
 import { localeMap } from '@/data/language'
 
-import defaultLocal from '@/locales/zh-CN'
-
 import { useAppStore } from '@/stores/app'
 import { createI18n } from 'vue-i18n'
 
@@ -23,11 +21,11 @@ export let i18n: ReturnType<typeof createI18n>
  *  create i18n options
  * @returns
  */
-export const createI18nOptions = (): I18nOptions => {
+export const createI18nOptions = async (): Promise<I18nOptions> => {
   const store = useAppStore()
   const locale = store.locale
-  console.log(defaultLocal)
-  const message = defaultLocal ?? {}
+  const defaultLocal = await import(`@/locales/${locale}.ts`)
+  const message = defaultLocal.default ?? {}
   setHtmlPageLang(locale)
   const res = {
     legacy: false,
@@ -45,8 +43,8 @@ export const createI18nOptions = (): I18nOptions => {
   return res
 }
 
-export const setupI18n = (app: App<Element>) => {
-  const options = createI18nOptions()
+export const setupI18n = async (app: App<Element>) => {
+  const options = await createI18nOptions()
   i18n = createI18n(options) as I18n
   app.use(i18n)
 }

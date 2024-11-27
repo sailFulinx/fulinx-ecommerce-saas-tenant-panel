@@ -9,11 +9,14 @@ export default {
   parameterType: '参数类型',
   parameterName: '参数名称',
   parameterValue: '参数值',
+  parameterValueContent: '参数值',
   parameterDetail: '参数详情',
   placeholder: {
     parameterType: '请选择参数类型',
     parameterName: '请输入参数名称',
     parameterDetail: '请输入参数详情',
+    parameterValueContent: '请输入参数值',
+    parameterIds: '请选择参数',
   },
   warning: {},
 }
