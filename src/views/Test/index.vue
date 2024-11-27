@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import lang from '@/locales/zh-CN'
 
-console.log(lang)
+// console.log(lang)
 </script>
 
 <template>

@@ -42,11 +42,11 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
           },
         }],
       }),
-      VueI18nPlugin({
-        runtimeOnly: true,
-        compositionOnly: true,
-        include: [resolve(__dirname, 'src/locales/**')],
-      }),
+      // VueI18nPlugin({
+      //   runtimeOnly: true,
+      //   compositionOnly: true,
+      //   include: [resolve(__dirname, 'src/locales/**')],
+      // }),
       DefineOptions(),
       vueDevTools(),
       AutoImport({

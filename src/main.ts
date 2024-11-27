@@ -28,7 +28,8 @@ app.use(createPinia())
 const setupAll = async () => {
   app.use(ElementPlus)
 
-  await setupI18n(app)
+  setupI18n(app)
+  // await setupI18n(app)
 
   app.use(router)
   app.mount('#app')
