@@ -16,6 +16,42 @@ interface CreateProductParams {
   /* Language ID */
   languageId: string
 
+  /* SKU */
+  sku: string
+
+  /* Product Type, 1: Simple 2: Configurable 3: Virtual */
+  productType: number
+
+  /* Product Stock Status Type, 1- In Stock, 2-Out Of Stock, 3-Pre Order, 4-Back Order */
+  productStockStatusType: number
+
+  /* Availability Date */
+  availabilityDate?: string
+
+  /* Is Setting Online Time */
+  isSettingOnlineTime: boolean
+
+  /* Online Time */
+  onlineTime?: string
+
+  /* Is Setting Offline Time */
+  isSettingOfflineTime?: boolean
+
+  /* Offline Time */
+  offlineTime?: string
+
+  /* Quantity */
+  quantity: number
+
+  /* Brand ID */
+  brandId?: string
+
+  /* Sort */
+  sort?: number
+
+  /* Status, 0 - Disabled , 1 - Enabled */
+  status?: boolean
+
   /* Product Name */
   productName: string
 
@@ -28,19 +64,52 @@ interface CreateProductParams {
   /* Product Description */
   productDescription?: string
 
-  /* Brand ID */
-  brandId?: string
-
   /* Supplier ID */
   supplierId?: string
 }
 
 interface CreateProductRes {
+  /* SKU */
+  sku: string
+
+  /* Product Type, 1: Simple 2: Configurable 3: Virtual */
+  productType: number
+
+  /* Is Required Shipping */
+  isRequiredShipping: boolean
+
+  /* Product Stock Status Type, 1- In Stock, 2-Out Of Stock, 3-Pre Order, 4-Back Order */
+  productStockStatusType: number
+
+  /* Availability Date */
+  availabilityDate: string
+
+  /* Is Setting Online Time */
+  isSettingOnlineTime: boolean
+
+  /* Online Time */
+  onlineTime: string
+
+  /* Is Setting Offline Time */
+  isSettingOfflineTime: boolean
+
+  /* Offline Time */
+  offlineTime: string
+
+  /* Quantity */
+  quantity: number
+
+  /* Brand ID */
+  brandId: string
+
   /* Is Custom Layout */
   isCustomLayout: boolean
 
   /* Layout ID */
   layoutId: string
+
+  /* Sort */
+  sort: number
 
   /* Status, 0 - Disabled , 1 - Enabled */
   status: boolean

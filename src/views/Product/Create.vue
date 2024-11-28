@@ -29,11 +29,22 @@ const uploadRef = ref()
 const createProductForm = (): CreateProductParams => {
   return {
     languageId: '',
+    sku: '',
+    productType: 0,
+    productStockStatusType: 0,
+    availabilityDate: '',
+    isSettingOnlineTime: true,
+    onlineTime: '',
+    isSettingOfflineTime: true,
+    offlineTime: '',
+    quantity: 0,
+    brandId: '',
+    sort: 0,
+    status: true,
     productName: '',
     productPrice: 0,
     productFileRequestDos: [],
     productDescription: '',
-    brandId: '',
     supplierId: '',
   }
 }
