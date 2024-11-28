@@ -87,6 +87,7 @@ export default {
   newPassword: '新密码',
   removeConfirm: '是否确认删除?',
   Preference: '偏好设置',
+  upload: '上传',
   placeholder: {
     language: '语言必须选择',
   },

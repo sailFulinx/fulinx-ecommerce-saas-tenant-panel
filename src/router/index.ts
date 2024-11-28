@@ -269,6 +269,15 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
           props: true,
         },
       },
+      {
+        path: 'file',
+        component: () => import('@/views/File/index.vue'),
+        name: 'FileList',
+        meta: {
+          title: $t('router.file'),
+          icon: 'ant-design:partition-outlined',
+        },
+      },
     ],
   },
   {

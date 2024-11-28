@@ -17,4 +17,5 @@ export default {
   userCreate: '新增用户',
   role: '角色管理',
   message: '留言管理',
+  file: '空间管理',
 }
