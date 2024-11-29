@@ -43,7 +43,7 @@ interface LayoutListParams {
 
 interface LayoutData {
   /* Layout ID */
-  id?: number
+  id?: string
 
   /* Layout Name */
   layoutName: string

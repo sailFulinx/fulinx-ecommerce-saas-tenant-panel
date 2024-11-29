@@ -79,6 +79,14 @@ const handleChangeSort = () => {
 }
 
 const getFileData = () => {
+  fileDataList.value = fileDataList.value.map((item, index) => {
+    return {
+      ...item,
+      isDefault: index === 0,
+      fileId: item.id,
+      sort: index + 1,
+    }
+  })
   return { fileDataList: JSON.parse(JSON.stringify(fileDataList.value)) }
 }
 

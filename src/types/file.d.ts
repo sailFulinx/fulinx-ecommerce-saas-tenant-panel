@@ -1,18 +1,21 @@
 interface FileData {
   id?: string
+  isDefault?: boolean
   uid?: number
   sort?: number
   /* Remote Type, 1-Local, 2-Aliyun, 3-Amazon */
-  fileRemoteType: number
+  fileRemoteType?: number
 
   /* Bucket */
-  bucket: string
+  bucket?: string
 
   /* Original Path */
   originalPath: string
 
   /* Original File Name */
   originalFileName: string
+
+  fileId?: string
 
   /* File Name */
   fileName: string
@@ -24,16 +27,16 @@ interface FileData {
   fileExtensionName: string
 
   /* File Width */
-  fileWidth: number
+  fileWidth?: number
 
   /* File Height */
-  fileHeight: number
+  fileHeight?: number
 
   /* Etag */
-  etag: string
+  etag?: string
 
   /* Bucket Key */
-  bucketKey: string
+  bucketKey?: string
 
   /* File Url */
   fileUrl: string

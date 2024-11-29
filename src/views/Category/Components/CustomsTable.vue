@@ -6,7 +6,7 @@ import { ElMessage } from 'element-plus'
 
 const props = defineProps({
   customList: Array as any,
-  categoryDetailId: Number,
+  categoryDetailId: String,
 })
 
 const { t: $t } = useLocale()

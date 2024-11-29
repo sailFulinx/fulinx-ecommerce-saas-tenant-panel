@@ -10,7 +10,7 @@ import ParentCatalog from './Components/ParentCatalog.vue'
 
 const { t: $t } = useLocale()
 
-const id = Number(useRoute().params.id as unknown)
+const id = useRoute().params.id as string
 
 const selectLanguage = ref<LanguageData>(usePreferenceStore().preference?.language)
 
@@ -28,23 +28,23 @@ const loading = reactive({
 // 创建category请求参数
 const createFormData = (): CategoryShowData => {
   return {
-    id: 0,
-    parentId: 0,
+    id: '',
+    parentId: '',
     parentIds: [],
     status: true,
     isCustomLayout: false,
-    layoutId: 0,
+    layoutId: '',
     layoutListResultDo: {
-      id: 0,
+      id: '',
       layoutName: '',
       layoutFileId: 0,
       fileVo: {
-        id: 0,
+        id: '',
         originalFileName: '',
         fileName: '',
         fileContentType: '',
         fileExtensionName: '',
-        path: '',
+        originalPath: '',
         fileUrl: '',
         sha256: '',
         isDelete: 0,
@@ -65,22 +65,22 @@ const createFormData = (): CategoryShowData => {
       recordUpdateTime: '',
     },
     categoryDetailListResultDo: {
-      id: 0,
-      categoryId: 0,
-      languageId: 0,
+      id: '',
+      categoryId: '',
+      languageId: '',
       languageCode: '',
       languageName: '',
       categoryName: '',
       parentCategoryNames: [],
       categoryDescription: '',
-      categoryFileId: 0,
+      categoryFileId: '',
       fileVo: {
-        id: 0,
+        id: '',
         originalFileName: '',
         fileName: '',
         fileContentType: '',
         fileExtensionName: '',
-        path: '',
+        originalPath: '',
         fileUrl: '',
         sha256: '',
       },
@@ -96,9 +96,9 @@ const createFormData = (): CategoryShowData => {
       recordUpdateTime: '',
     },
     seoListResultDo: {
-      id: 0,
-      categoryId: 0,
-      languageId: 0,
+      id: '',
+      categoryId: '',
+      languageId: '',
       languageCode: '',
       languageName: '',
       metaTitle: '',
@@ -112,7 +112,7 @@ const createFormData = (): CategoryShowData => {
       recordCreateTime: '',
       recordUpdateTime: '',
     },
-    slugId: 0,
+    slugId: '',
     slug: '',
     remark: '',
     isDelete: 0,
@@ -146,8 +146,8 @@ const getCategoryData = async () => {
 const resetFormData = async (val: CategoryShowData) => {
   await nextTick(() => {
     Object.assign(form, JSON.parse(JSON.stringify(val)))
-    if (form.parentIds && form.parentIds[0] !== 0) {
-      form.parentIds.unshift(0)
+    if (form.parentIds && form.parentIds[0] !== '') {
+      form.parentIds.unshift('0')
     }
     if (!form.categoryDetailListResultDo) {
       return
@@ -448,20 +448,20 @@ const getLayoutList = debounce(async () => {
 
 const isShowLayoutEdit = ref<boolean>(false)
 const handleEditCategoryLayout = () => {
-  form.layoutId = form.layoutId === 0 ? null : form.layoutId
+  form.layoutId = !form.layoutId ? null : form.layoutId
   isShowLayoutEdit.value = true
 }
 
 const handleSubmitCategoryLayout = async () => {
   loading.init = true
   if (!form.isCustomLayout) {
-    form.layoutId = 0
+    form.layoutId = null
   }
   const payload = {
     categoryId: id,
     languageId: usePreferenceStore().preference?.language.id,
     isCustomLayout: form.isCustomLayout,
-    layoutId: form.layoutId === null ? 0 : form.layoutId,
+    layoutId: form.layoutId === null ? '' : form.layoutId,
   }
   const { data } = await editCategoryLayoutApi(payload).catch(error => {
     throw error
@@ -531,7 +531,7 @@ const handleChangeTab = (name: string) => {
                   {{ $t('category.parentId') }}:
                 </div>
                 <div class="col-span-11">
-                  <span v-if="form.parentId === 0" class="mr-2">{{ $t('category.topCategory') }}</span>
+                  <span v-if="form.parentId === '0'" class="mr-2">{{ $t('category.topCategory') }}</span>
                   <span v-else class="mr-2">
                     {{ form.categoryDetailListResultDo.parentCategoryNames.join(' / ') }}
                   </span>

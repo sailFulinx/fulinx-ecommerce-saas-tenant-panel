@@ -201,13 +201,13 @@ interface CategoryShowData {
   isCustomLayout: boolean
 
   /* Layout Id */
-  layoutid: string | null
+  layoutId: string | null
 
   /* */
   layoutListResultDo: LayoutData & CommonField
 
   /* Parent Ids */
-  parentids: string[]
+  parentIds: string[]
 
   /* Status, 0: Disabled 1: Enabled */
   status: boolean

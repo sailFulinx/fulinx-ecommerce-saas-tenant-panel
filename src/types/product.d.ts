@@ -12,6 +12,29 @@ interface ProductFileRequestDo {
   sort?: number
 }
 
+interface ProductPriceCreateRequestDo {
+  /* Order Quantity */
+  orderQuantity: number
+
+  /* Price */
+  price: number
+
+  /* Is Setting Sale Price */
+  isSettingSalePrice?: boolean
+
+  /* Sale Price */
+  salePrice?: number
+
+  /* Sale Price Started At */
+  salePriceStartedAt?: string
+
+  /* Is Setting Sale Ended TIme, , 0 - No, 1 - Yes */
+  isSettingSaleEndedTime?: boolean
+
+  /* Sale Price Ended At */
+  salePriceEndedAt?: string
+}
+
 interface CreateProductParams {
   /* Language ID */
   languageId: string
@@ -27,6 +50,9 @@ interface CreateProductParams {
 
   /* Availability Date */
   availabilityDate?: string
+
+  /* Processing Days */
+  processingDays?: number
 
   /* Is Setting Online Time */
   isSettingOnlineTime: boolean
@@ -55,8 +81,11 @@ interface CreateProductParams {
   /* Product Name */
   productName: string
 
-  /* Product Price */
-  productPrice: number
+  /* Currency ID */
+  currencyId: string
+
+  /* Product Price Create Request Dos */
+  productPriceCreateRequestDos: ProductPriceCreateRequestDo[]
 
   /* Product File Request */
   productFileRequestDos?: ProductFileRequestDo[]
@@ -66,6 +95,8 @@ interface CreateProductParams {
 
   /* Supplier ID */
   supplierId?: string
+
+  mpn: string
 }
 
 interface CreateProductRes {
@@ -134,6 +165,41 @@ interface ProductListParams {
   isDelete?: number
 }
 
+interface ProductPriceListResultDo {
+  /* Product Price ID */
+  id: string
+
+  /* Product ID */
+  productId: string
+
+  /* Currency ID */
+  currencyId: string
+
+  /* */
+  currencyVo: CurrencyData & CommonField
+
+  /* Order Quantity */
+  orderQuantity: number
+
+  /* Price */
+  price: number
+
+  /* Is Setting Sale Price */
+  isSettingSalePrice: boolean
+
+  /* Sale Price */
+  salePrice: number
+
+  /* Sale Price Started At */
+  salePriceStartedAt: string
+
+  /* Is Setting Sale Ended TIme, , 0 - No, 1 - Yes */
+  isSettingSaleEndedTime: boolean
+
+  /* Sale Price Ended At */
+  salePriceEndedAt: string
+}
+
 interface ProductListData {
   /* Is Custom Layout */
   isCustomLayout: boolean
@@ -153,30 +219,13 @@ interface ProductListData {
   /* Product Main Image Url */
   productMainImageUrl: string
 
-  /* Price */
-  price: number
-
-  /* Is Setting Sale Price */
-  isSettingSalePrice: boolean
-
-  /* Sale Price */
-  salePrice: number
-
-  /* Sale Price Started At */
-  salePriceStartedAt: string
-
-  /* Is Setting Sale Ended TIme, , 0 - No, 1 - Yes */
-  isSettingSaleEndedTime: boolean
-
-  /* Sale Price Ended At */
-  salePriceEndedAt: string
+  productPriceListResultDos: (ProductPriceListResultDo & CommonField)[]
 
   /* Slug ID */
   slugId: string
 
   /* Slug */
   slug: string
-
 }
 
 interface ShowProductParams {

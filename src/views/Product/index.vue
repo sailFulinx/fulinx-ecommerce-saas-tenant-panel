@@ -2,12 +2,15 @@
 import { productPaginationApi, removeProductApi } from '@/api/product'
 import avatar from '@/assets/imgs/avatar.jpg'
 import { usePreferenceStore } from '@/stores/preference'
+import { formatTime } from '@/utils'
 import { ElMessage } from 'element-plus'
 
 const listResult = ref<TableResponse<ProductListData & CommonField>>({
   list: [],
   total: 0,
 })
+
+const sourceUrl = import.meta.env.VITE_RESOURCE_URL
 
 const loading = reactive({
   list: false,
@@ -151,9 +154,38 @@ const handleRedirectEdit = (val: ProductListData & CommonField) => {
         @selection-change="selectedProductItem"
       >
         <ElTableColumn type="selection" width="55" />
+        <ElTableColumn :label="$t('product.productImage')">
+          <template #default="scope">
+            <SImg
+              v-if="scope.row.productMainImageUrl"
+              :src="sourceUrl + scope.row.productMainImageUrl"
+              :alt="scope.row.productName"
+              fit="cover"
+              lazy
+              width="120px"
+              placeholder
+            />
+          </template>
+        </ElTableColumn>
         <ElTableColumn :label="$t('product.productName')">
           <template #default="scope">
             <span>{{ scope.row.productName }}</span>
+          </template>
+        </ElTableColumn>
+        <ElTableColumn :label="$t('product.productPrice')">
+          <template #default="scope">
+            <span>{{ scope.row.productPriceListResultDos[0].currencyVo.currencyCode }} {{ scope.row.productPriceListResultDos[0].currencyVo.symbolLeft }}{{ scope.row.productPriceListResultDos[0].price.toFixed(4) }}</span>
+          </template>
+        </ElTableColumn>
+        <ElTableColumn :label="$t('product.salePrice')">
+          <template #default="scope">
+            <span v-if="scope.row.productPriceListResultDos[0].salePrice">{{ scope.row.productPriceListResultDos[0].currencyVo.currencyCode }} {{ scope.row.productPriceListResultDos[0].currencyVo.symbolLeft }}{{ scope.row.productPriceListResultDos[0].salePrice.toFixed(4) }}</span>
+            <span v-else>无</span>
+          </template>
+        </ElTableColumn>
+        <ElTableColumn :label="$t('product.recordCreateTime')">
+          <template #default="scope">
+            <span>{{ formatTime(scope.row.recordCreateTime) }}</span>
           </template>
         </ElTableColumn>
         <ElTableColumn label="操作" header-align="center" width="220" align="center" class-name="pl-15 fixed-width">

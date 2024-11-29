@@ -162,7 +162,7 @@ interface SupplierListParams {
   supplierId?: string
 
   /* 品牌标题 */
-  supplierName?: string
+  supplierName?: string | null
 
   /* Status, 0: Disabled 1: Enabled */
   status?: boolean

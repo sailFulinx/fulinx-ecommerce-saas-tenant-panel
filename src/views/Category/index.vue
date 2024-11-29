@@ -86,7 +86,7 @@ const handleCreateChildCategory = (item: CategoryData) => {
 }
 
 const handleShow = (val: CategoryData & CommonField) => {
-  router.push({ name: 'ShowCategory', params: { id: Number(val.id) } })
+  router.push({ name: 'ShowCategory', params: { id: val.id } })
 }
 
 const handleMultiDelete = async () => {
@@ -150,7 +150,6 @@ const handleDelete = async (val: CategoryData & CommonField) => {
         @selection-change="handleSelectionChange"
       >
         <ElTableColumn ref="tableRef" type="selection" stripe row-key="id" width="55" />
-        <ElTableColumn prop="id" :label="`${$t('common.id')}`" width="120" />
         <ElTableColumn prop="categoryName" :label="`${$t('category.categoryName')}`">
           <template #default="scope">
             {{ scope.row.categoryName }} <ElTag :type="getCategoryTypeColor(scope.row.categoryType)">

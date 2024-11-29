@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { filePaginationApi, removeFileApi } from '@/api/file'
+import { formatTime } from '@/utils'
 import { ElEmpty, ElMessage } from 'element-plus'
 
 const sourceUrl = import.meta.env.VITE_RESOURCE_URL
@@ -15,7 +16,7 @@ const loading = reactive({
 })
 const listQuery = reactive<FileListParams & Pagination>({
   fileOriginalName: '',
-  pageSize: 20,
+  pageSize: 24,
   pageNumber: 1,
 })
 const selectedList = ref<string[]>([])
@@ -133,8 +134,32 @@ init()
     </div>
     <div class="view-main">
       <ElCard v-if="listResult.total > 0" shadow="hover" class="mb-5">
-        <div class="grid grid-cols-4 gap-4">
-          <SImg v-for="(item, index) in listResult.list" :key="index" :src="sourceUrl + item.fileUrl" :alt="item.originalFileName" fit="cover" lazy width="120px" placeholder />
+        <div class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-6 gap-4">
+          <div
+            v-for="(item, index) in listResult.list"
+            :key="index"
+            class="flex-col items-center justify-center border-1 border-gray-300 pa-2"
+          >
+            <div class="w-full">
+              <SImg
+                :src="sourceUrl + item.fileUrl"
+                :alt="item.originalFileName"
+                fit="cover" lazy
+                placeholder
+                @click="handleDelete(item)"
+              />
+            </div>
+            <div class="mt-2">
+              {{ item.originalFileName }}
+            </div>
+            <div class="mt-2 flex items-center justify-between">
+              <div>{{ formatTime(item.recordCreateTime as string) }}</div>
+              <EBtn type="danger" text size="small" @click="handleDelete(item)">
+                <Icon icon="ep:delete" class="mr-1" />
+                {{ $t('common.delete') }}
+              </EBtn>
+            </div>
+          </div>
         </div>
       </ElCard>
       <ElEmpty v-else description="暂无数据" />
@@ -146,14 +171,23 @@ init()
         @pagination="pagination"
       />
     </div>
-    <ElDrawer ref="uploadDialogRef" v-model="uploadDialogVisible">
+    <ElDrawer ref="uploadDialogRef" v-model="uploadDialogVisible" :destroy-on-close="true" :lock-scroll="true" :modal="true" size="40%" class="overflow-hidden">
       <template #header>
         <div class="flex items-center border-b border-gray-200 pb-5 px-0">
           <Icon icon="ep:upload" class="mr-1" />
           {{ $t('file.uploadImage') }}
         </div>
       </template>
-      <UploadMultiImageManual />
+      <UploadMultiImageManual class="overflow-hidden" @get-list="getList" />
     </ElDrawer>
   </div>
 </template>
+
+<style lang="css" scoped>
+:deep(.el-drawer__header){
+  margin-bottom: 0 !important;
+}
+:deep(.el-drawer__body) {
+  overflow:hidden !important;
+}
+</style>

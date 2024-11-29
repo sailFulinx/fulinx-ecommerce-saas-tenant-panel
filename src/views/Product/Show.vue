@@ -1,13 +1,6 @@
 <script setup name="ProductDetail" lang="ts">
 import {
-  createProductDetailApi,
-  createProductValueApi,
-  productValueListApi,
-  removeProductValueApi,
   showProductApi,
-  updateProductDetailProductNameApi,
-  updateProductTypeApi,
-  updateProductValueDetailProductValueContentApi,
 } from '@/api/product'
 import { getProductTypeLabel, productTypes } from '@/data/product'
 import { useLocale } from '@/hooks/useLocale'
