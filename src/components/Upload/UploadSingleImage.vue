@@ -16,12 +16,11 @@ const imageUrl = ref('')
 
 const fileData = ref<FileData>({
   id: '',
-  fileType: 1,
   originalFileName: '',
   fileName: '',
   fileContentType: '',
   fileExtensionName: '',
-  path: '',
+  originalPath: '',
   fileUrl: '',
   sha256: '',
 })
@@ -76,12 +75,11 @@ const handleUpload = async ({ file }: { file: File }) => {
 const handleDelete = () => {
   fileData.value = {
     id: '',
-    fileType: 1,
     originalFileName: '',
     fileName: '',
     fileContentType: '',
     fileExtensionName: '',
-    path: '',
+    originalPath: '',
     fileUrl: '',
     sha256: '',
   }

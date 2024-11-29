@@ -12,7 +12,6 @@ import {
   updateBrandSlugApi,
   updateBrandStatusApi,
 } from '@/api/brand'
-import { layoutListApi } from '@/api/layout'
 import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
 import { ElAlert, ElCard, ElInput, ElMessage, ElSwitch, ElTabPane } from 'element-plus'
@@ -49,12 +48,11 @@ const createFormData = (): (BrandShow & CommonField) => {
       brandFileId: '',
       brandFileVo: {
         id: '',
-        fileType: 0,
         originalFileName: '',
         fileName: '',
         fileContentType: '',
         fileExtensionName: '',
-        path: '',
+        originalPath: '',
         fileUrl: '',
         sha256: '',
         isDelete: 0,
@@ -313,7 +311,7 @@ const editBrandFile = async () => {
   const payload = {
     brandDetailId: form.brandDetailListResultDo.id,
     languageId: selectLanguage.value.id,
-    brandFileId: file.id,
+    brandFileId: file.fileData.id,
   }
   const { data } = await updateBrandDetailFileApi(payload).catch(error => {
     loading.init = false

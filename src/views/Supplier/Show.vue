@@ -5,14 +5,13 @@ import {
   createSupplierSeoApi,
   createSupplierSlugApi,
   showSupplierApi,
-  updateSupplierDetailSupplierNameApi,
   updateSupplierDetailDescriptionApi,
   updateSupplierDetailFileApi,
+  updateSupplierDetailSupplierNameApi,
   updateSupplierSeoApi,
   updateSupplierSlugApi,
   updateSupplierStatusApi,
 } from '@/api/supplier'
-import { layoutListApi } from '@/api/layout'
 import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
 import { ElAlert, ElCard, ElInput, ElMessage, ElSwitch, ElTabPane } from 'element-plus'
@@ -49,12 +48,11 @@ const createFormData = (): (SupplierShow & CommonField) => {
       supplierFileId: '',
       supplierFileVo: {
         id: '',
-        fileType: 0,
         originalFileName: '',
         fileName: '',
         fileContentType: '',
         fileExtensionName: '',
-        path: '',
+        originalPath: '',
         fileUrl: '',
         sha256: '',
         isDelete: 0,
@@ -313,7 +311,7 @@ const editSupplierFile = async () => {
   const payload = {
     supplierDetailId: form.supplierDetailListResultDo.id,
     languageId: selectLanguage.value.id,
-    supplierFileId: file.id,
+    supplierFileId: file.fileData.id,
   }
   const { data } = await updateSupplierDetailFileApi(payload).catch(error => {
     loading.init = false
@@ -638,65 +636,6 @@ const editSupplierMetaDescription = async (supplierSeoId: string) => {
             </div>
           </ElCard>
         </ElTabPane>
-        <!-- <ElTabPane :label="$t('supplier.layout')" name="layout">
-          <ElCard shadow="never" class="mb-5">
-            <div class="w-full mt-0 pt-0">
-              <div class="w-full grid grid-cols-12 gap-8 p-4">
-                <div class="col-span-1 font-semibold text-gray-700">
-                  {{ $t('supplier.layout') }}:
-                </div>
-                <div class="col-span-11">
-                  <div v-if="!isShowLayoutEdit">
-                    <div class="flex justify-start items-center">
-                      <span class="mr-2">{{ form.isCustomLayout ? $t('common.yes') : $t('common.no') }}</span>
-                      <span v-if="form.layoutListResultDo" class="mr-2">
-                        ，{{ $t('supplier.layoutName') }}：{{ form.layoutListResultDo.layoutName }}
-                      </span>
-                      <span>
-                        <EBtn type="primary" text @click="handleEditSupplierLayout">
-                          <Icon icon="ep:edit" :size="5" />
-                        </EBtn>
-                      </span>
-                    </div>
-                  </div>
-                  <div v-else>
-                    <div class="w-full flex items-center mb-5">
-                      <span class="mr-2">{{ $t('supplier.isCustomLayout') }}</span>
-                      <ElSwitch v-model="form.isCustomLayout" />
-                    </div>
-                    <div v-if="form.isCustomLayout" class="w-full flex items-center mb-5">
-                      <span class="mr-2 flex-none">{{ $t('supplier.layout') }}</span>
-                      <ElSelect
-                        v-model="form.layoutId"
-                        clearable
-                        filterable
-                        :placeholder="$t('supplier.placeholder.layout')"
-                      >
-                        <ElOption
-                          v-for="item in listLayoutData.list"
-                          :key="item.id"
-                          :label="item.layoutName"
-                          :value="item.id"
-                        />
-                      </ElSelect>
-                    </div>
-
-                    <div class="w-full flex">
-                      <EBtn type="primary" @click="isShowLayoutEdit = false">
-                        <Icon icon="ep:close" :size="3" class="mr-1" />
-                        {{ $t('common.cancel') }}
-                      </EBtn>
-                      <EBtn type="danger" @click="handleSubmitSupplierLayout">
-                        <Icon icon="ep:check" :size="3" class="mr-1" />
-                        {{ $t('common.submit') }}
-                      </EBtn>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </ElCard>
-        </ElTabPane> -->
         <ElTabPane :label="$t('supplier.slug')" name="slug">
           <ElCard shadow="never" class="mb-5">
             <div class="w-full mt-0 pt-0">

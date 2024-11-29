@@ -3,10 +3,10 @@
 const preferenceDialogRef = ref()
 
 // 打开偏好设置对话框
-const handleOpenPreference = async () => {
-  await nextTick()
-  preferenceDialogRef.value?.openDialog()
-}
+// const handleOpenPreference = async () => {
+//   await nextTick()
+//   preferenceDialogRef.value?.openDialog()
+// }
 </script>
 
 <template>
@@ -20,7 +20,7 @@ const handleOpenPreference = async () => {
       <div class="mr-2 fs-14px">
         <span><a href="https://doc.cms.fulinx.com" target="_blank">{{ $t('common.document') }}</a></span>
       </div>
-      <div class="mr-2 flex items-center fs-14px">
+      <!-- <div class="mr-2 flex items-center fs-14px">
         <EBtn type="primary" text @click="handleOpenPreference">
           <Icon
             icon="ep:setting"
@@ -29,7 +29,7 @@ const handleOpenPreference = async () => {
           />
           {{ $t('common.Preference') }}
         </EBtn>
-      </div>
+      </div> -->
       <UserInfo class="hover-trigger" />
     </div>
     <Preference ref="preferenceDialogRef" />

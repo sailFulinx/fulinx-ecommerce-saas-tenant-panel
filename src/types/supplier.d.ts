@@ -71,7 +71,6 @@ interface SupplierSeoListResultDo {
 }
 
 interface SupplierDetailListResultDo {
-
   /* Supplier ID */
   supplierId: string
 
@@ -80,6 +79,8 @@ interface SupplierDetailListResultDo {
 
   /* Supplier Name */
   supplierName: string
+
+  supplierDescription: string
 
   /* Supplier File ID */
   supplierFileId: string
