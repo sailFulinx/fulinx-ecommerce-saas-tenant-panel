@@ -64,6 +64,9 @@ interface ParameterListParams {
   /* Parameter Id */
   parameterId?: string | null
 
+  /* Parameter Group ID */
+  parameterGroupId?: string | null
+
   /* Parameter Name */
   parameterName?: string | null
   /* 删除标识 */
@@ -333,6 +336,12 @@ interface ParameterParameterValueListParams {
 }
 
 interface ParameterValueListResultDo {
+  /* Parameter ID */
+  parameterId: string
+
+  /* Parameter Value Detail ID */
+  parameterValueDetailId: string
+
   /* Language ID */
   languageId: string
 
@@ -355,11 +364,17 @@ interface ParameterGroupParameterRelationData {
   /* Parameter Group ID */
   parameterGroupId: string
 
+  /* Parameter Type, 1-Select, 2-Input, 3-Boolean */
+  parameterType: number
+
   /* Parameter ID */
   parameterId: string
 
   /* Parameter Name */
   parameterName: string
+
+  /* Parameter Value List Result Dos */
+  parameterValueListResultDos: (ParameterValueListResultDo & CommonField)[]
 }
 
 interface RemoveParameterGroupParameterRelationParams {

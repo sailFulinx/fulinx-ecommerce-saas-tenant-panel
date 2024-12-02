@@ -40,3 +40,18 @@ export function sitePagination(
     token: true,
   })
 }
+
+export function siteConfigMailSetting(data: SiteConfigMailSetting): Promise<IResponse<boolean>> {
+  return request.post({
+    url: 'system/site/config/mail/setting',
+    data,
+    token: true,
+  })
+}
+
+export function fetchSiteConfigMailSetting(id: string): Promise<IResponse<boolean>> {
+  return request.get({
+    url: `system/site/config/mail/view/${id}`,
+    token: true,
+  })
+}

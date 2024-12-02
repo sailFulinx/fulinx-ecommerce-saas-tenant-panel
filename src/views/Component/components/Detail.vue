@@ -17,7 +17,7 @@ const pageTitle = ref('')
 
 // 组件表单
 const form = reactive<CompData>({
-  id: 0,
+  id: '',
   componentName: '',
   componentContent: '',
 })
@@ -28,7 +28,7 @@ const loading = reactive({
 })
 
 // 当前页面ID
-const id = ref(0)
+const id = ref('')
 
 // 操作类型
 const actionType = ref('none')
@@ -274,7 +274,7 @@ const handleSubmit = async () => {
   }
   loading.save = true
   form.componentContent = JSON.stringify(rows.value)
-  if (actionType.value === 'add' || id.value === 0) {
+  if (actionType.value === 'add' || id.value === '') {
     await createComponent()
   } else {
     await editComponent()
@@ -305,7 +305,7 @@ function init(actionTypeData: string, compData?: CompData) {
       id: 0,
     })
   } else {
-    id.value = compData?.id ?? 0
+    id.value = compData?.id ?? ''
     if (compData?.componentContent) {
       rows.value = JSON.parse(compData.componentContent)
     }

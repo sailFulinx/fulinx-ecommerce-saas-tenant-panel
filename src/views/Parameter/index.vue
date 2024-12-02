@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { parameterPaginationApi, removeParameterApi } from '@/api/parameter'
-import avatar from '@/assets/imgs/avatar.jpg'
 import { usePreferenceStore } from '@/stores/preference'
 import { ElMessage } from 'element-plus'
 

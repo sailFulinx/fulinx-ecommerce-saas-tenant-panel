@@ -9,7 +9,7 @@ const selectLanguage = ref<LanguageData>(usePreferenceStore().preference?.langua
 
 const { t: $t } = useLocale()
 
-const id = Number(useRoute().params.id as unknown)
+const id = useRoute().params.id as string
 
 const dialogVisible = ref<boolean>(false)
 
@@ -26,10 +26,10 @@ const formRef = ref()
 
 interface ParentForm {
   parentId: string
-  parentids: string[]
+  parentIds: string[]
 }
 let form = reactive<ParentForm>({
-  parentId: 0,
+  parentId: '',
   parentIds: [],
 })
 
@@ -108,7 +108,7 @@ const cascaderDisabled = ref<boolean>(false)
 
 const resetForm = () =>
   reactive({
-    parentId: 0,
+    parentId: '',
     parentIds: [],
   })
 
@@ -123,7 +123,7 @@ const openDialog = async (val: CategoryData & CommonField) => {
 }
 
 const handleSave = async () => {
-  form.parentId = form.parentIds?.at(-1) as number
+  form.parentId = form.parentIds?.at(-1) as string
   const valid = await formRef.value.validate((valid: boolean) => {
     if (!valid) {
       return false

@@ -310,10 +310,10 @@ interface UpdateArticleCategoryParams {
   languageId: string
 
   /* Article Category ID Array */
-  categoryids: string[]
+  categoryIds: string[]
 
   /* Deleted Category ID Array */
-  deletedCategoryIds?: number[]
+  deletedCategoryIds?: string[]
 }
 
 // 更新文章自定义信息
@@ -376,7 +376,7 @@ interface UpdateArticleFileParams {
   articleFileVoList?: ArticleFileVo[]
 
   /* Article File Delete ID Array */
-  articleFileDeletedids: string[]
+  articleFileDeletedIds: string[]
 }
 
 // 更新文章标签
@@ -390,7 +390,7 @@ interface UpdateArticleTagParams {
 
 interface ShowArticleParams {
   /* Article Id */
-  articleId?: number
+  articleId?: string
 
   /* Language Id */
   languageId: string
@@ -532,7 +532,7 @@ interface ArticleShowData {
   articleTypeLabel: string
 
   /* Category Ids */
-  categoryids: string[]
+  categoryIds: string[]
 
   /* Status, 0 - Disabled , 1 - Enabled */
   status: boolean

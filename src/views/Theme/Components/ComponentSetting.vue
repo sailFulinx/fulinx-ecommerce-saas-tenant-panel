@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { editThemeConfig, showTheme } from '@/api/theme'
 import { themeSettings } from '@/data/theme'
-import { ElMessage, ElMessageBox, ElPopconfirm } from 'element-plus'
+import { ElMessage } from 'element-plus'
 
-const id = Number(useRoute().params.id)
+const id = useRoute().params.id as string
 
 const loading = reactive({
   init: false,
@@ -19,6 +19,7 @@ const getThemeData = async () => {
     loading.init = false
     throw err
   })
+  loading.init = false
   // 如果data.themeConfig不是array，直接返回
   if (!Array.isArray(JSON.parse(data.themeConfig))) {
     themeConfigList.value = themeSettings

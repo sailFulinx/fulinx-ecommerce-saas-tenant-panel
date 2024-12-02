@@ -93,11 +93,11 @@ const init = async () => {
 init()
 
 const handleRedirectToArticle = (id: string) => {
-  router.push({ name: 'ShowArticle', params: { id: Number(id) } })
+  router.push({ name: 'ShowArticle', params: { id } })
 }
 
 const handleRedirectToCategory = (id: string) => {
-  router.push({ name: 'ShowCategory', params: { id: Number(id) } })
+  router.push({ name: 'ShowCategory', params: { id } })
 }
 </script>
 

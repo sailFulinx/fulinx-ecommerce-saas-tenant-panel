@@ -3,7 +3,7 @@ import { fetchLanguageListApi } from '@/api/language'
 import { createSite, editSite, showSite } from '@/api/site'
 import { themeList } from '@/api/theme'
 import { siteStatuses } from '@/data/site'
-import { ElInput } from 'element-plus'
+import { ElInput, ElMessage } from 'element-plus'
 
 const props = defineProps({
   isEdit: {
@@ -12,15 +12,14 @@ const props = defineProps({
   },
 })
 
-const id = Number(useRoute().params.id)
+const id = useRoute().params.id as string
 
 const rules = reactive({
-  languageId: [{ required: true, type: 'number', message: '语言必须选择', trigger: 'blur' }],
-  siteName: [{ required: true, type: 'string', message: '网站名称必须填写', trigger: 'blur' }],
-  status: [{ required: true, type: 'number', message: '状态必填', trigger: 'blur' }],
-  domain: [{ required: true, type: 'string', message: '域名必须填写', trigger: 'blur' }],
-  metaTitle: [{ required: true, type: 'string', message: '元标题必须填写', trigger: 'blur' }],
-  logoFileId: [{ required: true, type: 'number', message: 'Logo必须选择', trigger: 'blur' }],
+  languageId: [{ required: true, message: '语言必须选择', trigger: 'blur' }],
+  siteName: [{ required: true, message: '网站名称必须填写', trigger: 'blur' }],
+  status: [{ required: true, message: '状态必填', trigger: 'blur' }],
+  domain: [{ required: true, message: '域名必须填写', trigger: 'blur' }],
+  metaTitle: [{ required: true, message: '元标题必须填写', trigger: 'blur' }],
 })
 
 const loading = reactive({
@@ -82,7 +81,7 @@ getLanguageList()
 const siteFormRef = ref()
 
 const siteForm = ref<SiteRequest>({
-  themeId: null,
+  themeId: '',
   languageId: null,
   domain: '',
   siteName: '',
@@ -91,44 +90,49 @@ const siteForm = ref<SiteRequest>({
   logoFileId: null,
   faviconFileId: null,
   logoFileVo: {
-    id: 0,
+    id: '',
     originalFileName: '',
     fileName: '',
-    path: '',
+    originalPath: '',
     fileUrl: '',
     fileExtensionName: '',
     fileContentType: '',
+    sha256: '',
   },
   faviconFileVo: {
-    id: 0,
+    id: '',
     originalFileName: '',
     fileName: '',
-    path: '',
+    originalPath: '',
     fileUrl: '',
     fileExtensionName: '',
     fileContentType: '',
+    sha256: '',
+
   },
   status: true,
 })
 
 const siteLogo = ref<FileData>({
-  id: 0,
+  id: '',
   originalFileName: '',
   fileName: '',
-  path: '',
+  originalPath: '',
   fileUrl: '',
   fileExtensionName: '',
   fileContentType: '',
+  sha256: '',
 })
 
 const siteFavicon = ref<FileData>({
-  id: 0,
+  id: '',
   originalFileName: '',
   fileName: '',
-  path: '',
+  originalPath: '',
   fileUrl: '',
   fileExtensionName: '',
   fileContentType: '',
+  sha256: '',
 })
 
 const uploadLogoRef = ref()
@@ -162,6 +166,10 @@ const init = async () => {
 
 const save = async () => {
   const logo = uploadLogoRef.value.getFileData()
+  if (!logo || !logo.fileData) {
+    ElMessage.error('请上传网站logo')
+    return
+  }
   siteForm.value.logoFileId = logo.fileData.id
   const favicon = uploadFaviconRef.value.getFileData()
   siteForm.value.faviconFileId = favicon.fileData.id
@@ -182,6 +190,7 @@ const save = async () => {
       throw err
     })
   }
+  return true
 }
 
 onMounted(() => {

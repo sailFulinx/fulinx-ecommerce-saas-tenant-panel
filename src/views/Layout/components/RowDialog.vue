@@ -66,6 +66,7 @@ const handleSubmit = async () => {
       // 当前行数大于已有行数，在数组后面插入所缺少的数据
       const length = rowForm.value.columnsCount - rowForm.value.columns.length
       const columns = Array.from({ length }, (_, index) => ({
+        // id: index + 1,
         componentName: '',
         componentId: 0,
         sort: index + 1,
@@ -74,6 +75,7 @@ const handleSubmit = async () => {
     }
   } else {
     const columns = Array.from({ length: rowForm.value.columnsCount }, (_, index) => ({
+      // id: index + 1,
       componentName: '',
       componentId: 0,
       sort: index + 1,

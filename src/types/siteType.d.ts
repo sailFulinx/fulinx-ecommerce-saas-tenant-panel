@@ -60,7 +60,7 @@ interface SiteData {
 }
 
 interface SiteRequest {
-  themeid: string | null
+  themeId: string | null
 
   /* Domain */
   domain: string
@@ -92,4 +92,27 @@ interface SiteRequest {
 
 interface SiteRemoveRequest {
   ids: string[]
+}
+
+interface SiteConfigMailSetting {
+  /* Site ID */
+  siteId: string
+
+  /* SMTP Host */
+  smtpHost: string
+
+  /* SMTP Port */
+  smtpPort: number
+
+  /* From Email */
+  fromEmail: string
+
+  /* Username */
+  username: string
+
+  /* Password */
+  password: string
+
+  /* Starttls Enable */
+  starttlsEnable: boolean
 }

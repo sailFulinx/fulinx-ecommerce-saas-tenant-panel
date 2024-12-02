@@ -4,15 +4,16 @@ import avatar from '@/assets/imgs/avatar.jpg'
 import { usePreferenceStore } from '@/stores/preference'
 import { ElMessage } from 'element-plus'
 
+const loading = reactive({
+  list: false,
+  del: false,
+})
+
 const listResult = ref<TableResponse<ParameterGroupListData & CommonField>>({
   list: [],
   total: 0,
 })
 
-const loading = reactive({
-  list: false,
-  del: false,
-})
 const listQuery = reactive<ParameterGroupListParams & Pagination>({
   languageId: usePreferenceStore().preference?.language.id,
   parameterGroupName: '',

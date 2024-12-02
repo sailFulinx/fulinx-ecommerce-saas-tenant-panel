@@ -12,7 +12,7 @@ const props = defineProps({
 })
 const loading = ref(false)
 let form = reactive<RoleDataType>({
-  id: 0,
+  id: '',
   roleName: '',
   permissionIds: [],
   deletedPermissionIds: [],
@@ -28,7 +28,7 @@ const treeProps = {
   children: 'children',
 }
 
-const setCheckedKeys = (val: number[]) => {
+const setCheckedKeys = (val: string[]) => {
   if (val.length > 0) {
     treeRef.value!.setCheckedKeys(val, false)
   }
@@ -97,12 +97,12 @@ const getChecked = () => {
   const checkedKeys = treeRef.value?.getCheckedKeys()
   if (checkedKeys && checkedKeys?.length > 0) {
     checkedKeys?.map(item => {
-      form.permissionIds?.push(Number(item))
+      form.permissionIds?.push(item)
     })
   }
 
   // 计算出被删除的节点KEY
-  const oldids: string[] = []
+  const oldIds: string[] = []
   if (form.rolePermissions && form.rolePermissions.length > 0) {
     form.rolePermissions?.map(item => {
       oldIds.push(item.permissionId)

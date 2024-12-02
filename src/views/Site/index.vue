@@ -17,12 +17,7 @@ const listQuery = reactive<SiteListParams & Pagination>({
   pageSize: 20,
   pageNumber: 1,
 })
-const selectedList = ref<number[]>([])
-
-const init = async () => {
-  loading.list = true
-  await getList()
-}
+const selectedList = ref<string[]>([])
 
 const getList = async () => {
   loading.list = true
@@ -43,6 +38,11 @@ const pagination = (val: PaginationComponentDataType) => {
     listQuery.pageNumber = val.page
   }
   getList()
+}
+
+const init = async () => {
+  loading.list = true
+  await getList()
 }
 
 const selectedSiteItem = val => {
@@ -92,7 +92,7 @@ const handleCreate = () => {
 }
 
 const handleRedirectEdit = val => {
-  router.push({ name: 'EditSite', params: { id: Number(val.id) } })
+  router.push({ name: 'EditSite', params: { id: val.id } })
 }
 init()
 </script>

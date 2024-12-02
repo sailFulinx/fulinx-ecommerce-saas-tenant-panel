@@ -39,7 +39,7 @@ interface UserRequestParams {
   status: number
   post: string
   gender: number | null
-  roleids: string[]
+  roleIds: string[]
 }
 
 interface UserListParams {

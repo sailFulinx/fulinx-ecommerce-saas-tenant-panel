@@ -18,8 +18,8 @@ interface RoleDataType {
   roleType?: number | null
   roleName: string
   rolePermissions?: RolePermissionType[]
-  permissionIds?: number[]
-  deletedPermissionIds?: number[]
+  permissionIds?: string[]
+  deletedPermissionIds?: string[]
 }
 
 interface DeleteRoleDataType {

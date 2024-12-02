@@ -7,7 +7,7 @@ import Detail from './components/Detail.vue'
 
 const { t: $t } = useLocale()
 const loading = ref(false)
-const selection = ref<number[]>([])
+const selection = ref<string[]>([])
 
 const listPayload = reactive<LayoutListParams & Pagination>({
   pageNumber: 1,
@@ -65,7 +65,7 @@ const handleAdd = () => {
 }
 
 const detail = ref<LayoutData>({
-  id: 1,
+  id: '',
   layoutName: '',
 })
 
@@ -117,7 +117,7 @@ const handleSelectionChange = () => {
   selection.value = []
   const checkedNodes = treeRef.value?.getCheckedNodes()
   checkedNodes?.map(item => {
-    selection.value.push(Number(item.id))
+    selection.value.push(item.id)
   })
 }
 
@@ -225,7 +225,7 @@ const screenHeight = window.innerHeight - 104
           </div>
           <div v-show="visible">
             <Detail
-              :id="Number(id)"
+              :id="id"
               ref="detailRef"
               :detail="detail"
               :action-type="actionType"

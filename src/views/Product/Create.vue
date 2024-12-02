@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { brandPaginationApi } from '@/api/brand'
+import { listCategoryApi } from '@/api/category'
+import { parameterGroupListApi, parameterGroupParameterRelationListApi } from '@/api/parameter'
 import { createProductApi } from '@/api/product'
 import { supplierPaginationApi } from '@/api/supplier'
-import { productStockStatusTypes, productTypes } from '@/data/product'
 import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
 import { useTagsViewStore } from '@/stores/tagsView'
-import { ElCard, ElInput, ElInputNumber, ElMessage, ElSwitch } from 'element-plus'
+import { ElCard, ElInput, ElInputNumber, ElMessage, ElOption, ElSwitch } from 'element-plus'
 
 const { t: $t } = useLocale()
 
@@ -14,44 +14,140 @@ const rules = reactive({
   languageId: [{ required: true, message: $t('common.placeholder.language'), trigger: 'change' }],
   productName: [{ required: true, message: $t('product.placeholder.productName'), trigger: 'blur' }],
   productType: [{ required: true, message: $t('product.placeholder.productType'), trigger: 'change' }],
-  productStockStatusType: [{ required: true, message: $t('product.placeholder.productStockStatusType'), trigger: 'change' }],
+  productStockStatusType: [
+    { required: true, message: $t('product.placeholder.productStockStatusType'), trigger: 'change' },
+  ],
   sku: [{ required: true, message: $t('product.placeholder.sku'), trigger: 'blur' }],
   productPrice: [{ required: true, message: $t('product.placeholder.productPrice'), trigger: 'blur' }],
-  quantity: [{ required: true, message: $t('product.placeholder.quantity'), trigger: 'blur' }],
+  inStockQuantity: [{ required: true, message: $t('product.placeholder.inStockQuantity'), trigger: 'blur' }],
+  processingQuantity: [{ required: false, message: $t('product.placeholder.processingQuantity'), trigger: 'blur' }],
+  processingDays: [{ required: false, message: $t('product.placeholder.processingDays'), trigger: 'blur' }],
+  productionCycle: [{ required: false, message: $t('product.placeholder.productionCycle'), trigger: 'blur' }],
 })
 
 const loading = reactive({
   init: false,
   button: false,
-  brand: false,
   supplier: false,
+  category: false,
+  parameterGroup: false,
+  parameter: false,
 })
 
-const listBrandQuery = reactive<BrandListParams & Pagination>({
-  languageId: usePreferenceStore().preference?.language.id,
-  brandName: '',
-  pageSize: 20,
-  pageNumber: 1,
-})
+/**
+ * 参数
+ */
 
-const listBrandResult = ref<TableResponse<BrandListData & CommonField>>({
+const selectedParameterGroup = ref('')
+
+const listParameterGroupResult = ref<TableResponse<ParameterGroupListData & CommonField>>({
   list: [],
   total: 0,
 })
 
-const getBrandList = async () => {
-  loading.brand = true
-  if (listBrandQuery.brandName === '') {
-    listBrandQuery.brandName = null
+const listParameterGroupQuery = reactive<ParameterGroupListParams>({
+  languageId: usePreferenceStore().preference?.language.id,
+  parameterGroupName: '',
+})
+
+const getParameterGroupList = async () => {
+  loading.parameterGroup = true
+  if (listParameterGroupQuery.parameterGroupName === '') {
+    listParameterGroupQuery.parameterGroupName = null
   }
-  const { data } = await brandPaginationApi(listBrandQuery).catch(err => {
-    loading.brand = false
+  const { data } = await parameterGroupListApi(listParameterGroupQuery).catch(err => {
+    loading.parameterGroup = false
     throw err
   })
-  listBrandResult.value = data
-  loading.brand = false
+  listParameterGroupResult.value = data
+  loading.parameterGroup = false
 }
 
+getParameterGroupList()
+
+const listParameterResult = ref<TableResponse<ParameterGroupParameterRelationData & CommonField>>({
+  list: [],
+  total: 0,
+})
+
+const listParameterQuery = reactive<ParameterGroupParameterRelationParams>({
+  languageId: usePreferenceStore().preference?.language.id,
+  parameterGroupId: '',
+})
+
+const getParameterList = async () => {
+  loading.parameter = true
+  const { data } = await parameterGroupParameterRelationListApi(listParameterQuery).catch(err => {
+    loading.parameter = false
+    throw err
+  })
+  listParameterResult.value = data
+  loading.parameterGroup = false
+}
+
+const handleParameterGroupChange = (val: string) => {
+  listParameterQuery.parameterGroupId = val
+  getParameterList()
+}
+
+interface ProductParameterRelationRequest {
+  id?: string
+  parameterGroupId: string
+  parameterId: string
+  parameterValueId?: string
+  parameterValueContent?: string
+}
+
+const productParameterForm = ref<ProductParameterRelationRequest[]>([])
+
+const inputParameterForm = ref<string[]>([])
+
+const formatInputParameterValue = (index: number, value: (ParameterGroupParameterRelationData & CommonField)) => {
+  const parameterValueContent = inputParameterForm.value[index]
+  // 如果已存在，只更新指定的字段
+  const parameterValue: ProductParameterRelationRequest = {
+    parameterGroupId: selectedParameterGroup.value,
+    parameterId: value.parameterId,
+    parameterValueContent,
+    parameterValueId: '',
+  }
+  productParameterForm.value[index] = parameterValue
+}
+
+/**
+ * 分类
+ */
+
+const categoryProps = {
+  label: 'categoryName',
+  multiple: true,
+}
+
+const listCategoryPayload = reactive<CategoryListParams>({
+  languageId: usePreferenceStore().preference?.language.id,
+  categoryName: '',
+  id: null,
+})
+
+const listCategoryData = ref<ListCategoryRes>({
+  list: [],
+  total: 0,
+})
+
+const getCategoryList = async () => {
+  loading.category = true
+  const { data } = await listCategoryApi(listCategoryPayload).catch(error => {
+    loading.category = true
+    throw error
+  })
+  listCategoryData.value = { ...data }
+  loading.category = false
+}
+getCategoryList()
+
+/**
+ * 供应商
+ */
 const listSupplierQuery = reactive<SupplierListParams & Pagination>({
   languageId: usePreferenceStore().preference?.language.id,
   supplierName: '',
@@ -76,8 +172,6 @@ const getSupplierList = async () => {
   listSupplierResult.value = data
   loading.supplier = false
 }
-
-getBrandList()
 getSupplierList()
 
 const pageTitle = $t('product.add')
@@ -92,35 +186,24 @@ const createProductForm = (): CreateProductParams => {
   return {
     languageId: usePreferenceStore().preference.language.id,
     sku: '',
-    productType: 1,
-    productStockStatusType: 1,
-    availabilityDate: '',
-    processingDays: 1,
+    mpn: '',
     isSettingOnlineTime: false,
     onlineTime: '',
     isSettingOfflineTime: false,
     offlineTime: '',
-    quantity: 1,
-    brandId: '',
-    sort: 0,
-    status: true,
-    productName: '',
-    currencyId: usePreferenceStore().preference.currency.id,
-    productPriceCreateRequestDos: [
-      {
-        orderQuantity: 1,
-        price: 1,
-        isSettingSalePrice: false,
-        salePrice: 1,
-        salePriceStartedAt: '',
-        isSettingSaleEndedTime: false,
-        salePriceEndedAt: '',
-      },
-    ],
-    productFileRequestDos: [],
-    productDescription: '',
+    inStockQuantity: 0,
+    processingQuantity: 0,
+    processingDays: 0,
+    productionCycle: 0,
     supplierId: '',
-    mpn: '',
+    productName: '',
+    currencyId: '',
+    parameterGroupId: '',
+    categoryIds: [],
+    productPriceCreateRequestDos: [],
+    productFileRequestDos: [],
+    productParameterRelationRequestDos: [],
+    productDescription: '',
   }
 }
 
@@ -155,6 +238,25 @@ const save = async () => {
   productForm.currencyId = usePreferenceStore().preference.currency.id
   const files = uploadRef.value.getFileData()
   productForm.productFileRequestDos = files.fileDataList
+  productParameterForm.value.map(item => {
+    if (item?.id) {
+      const result: ProductParameterRelationRequest = {
+        parameterGroupId: selectedParameterGroup.value,
+        parameterId: item.parameterId,
+        parameterValueId: item.id,
+        parameterValueContent: item.parameterValueContent,
+      }
+      productForm.productParameterRelationRequestDos.push(result)
+    } else {
+      const result: ProductParameterRelationRequest = {
+        parameterGroupId: selectedParameterGroup.value,
+        parameterId: item.parameterId,
+        parameterValueId: '',
+        parameterValueContent: item.parameterValueContent,
+      }
+      productForm.productParameterRelationRequestDos.push(result)
+    }
+  })
   const valid = await productFormRef.value.validate((valid: boolean) => {
     if (!valid) {
       return false
@@ -199,7 +301,8 @@ const save = async () => {
     <div class="view-main theme-card">
       <ElForm ref="productFormRef" :model="productForm" :rules="rules" label-width="140px">
         <div class="grid grid-cols-12 gap-4">
-          <div class="col-span-9">
+          <div class="col-span-8">
+            <!-- 基础 -->
             <ElCard shadow="never" class="mb-5">
               <template #header>
                 <div class="flex items-center justify-between">
@@ -224,83 +327,12 @@ const save = async () => {
                   :placeholder="$t('product.placeholder.sku')"
                 />
               </ElFormItem>
-              <ElFormItem :label="$t('product.productPrice')" required>
-                <EBtn type="primary" plain @click="handleAddPrice">
-                  <Icon icon="ep:plus" />
-                  {{ $t('product.addPrice') }}
-                </EBtn>
-                <div class="w-full mt-5">
-                  <ElTable :data="productForm.productPriceCreateRequestDos" style="width: 100%">
-                    <ElTableColumn prop="orderQuantity" :label="$t('product.orderQuantity')" width="180">
-                      <template #default="scope">
-                        <ElInputNumber
-                          v-model="scope.row.orderQuantity"
-                          :min="1"
-                          :max="120"
-                          :placeholder="$t('product.placeholder.orderQuantity')"
-                        />
-                      </template>
-                    </ElTableColumn>
-                    <ElTableColumn prop="price" :label="$t('product.price')" width="180">
-                      <template #default="scope">
-                        <ElInputNumber
-                          v-model="scope.row.price"
-                          :min="0.0001"
-                          :max="999999999.9999"
-                          :placeholder="$t('product.placeholder.productPrice')"
-                        />
-                      </template>
-                    </ElTableColumn>
-                    <ElTableColumn prop="isSettingSalePrice" :label="$t('product.isSettingSalePrice')" width="120">
-                      <template #default="scope">
-                        <ElSwitch v-model="scope.row.isSettingSalePrice" />
-                      </template>
-                    </ElTableColumn>
-                    <ElTableColumn prop="salePrice" :label="$t('product.salePrice')" width="180">
-                      <template #default="scope">
-                        <ElInputNumber
-                          v-model="scope.row.salePrice"
-                          :min="0.0001"
-                          :max="999999999.9999"
-                          :placeholder="$t('product.placeholder.salePrice')"
-                        />
-                      </template>
-                    </ElTableColumn>
-                    <ElTableColumn prop="salePriceStartedAt" :label="$t('product.salePriceStartedAt')" width="180">
-                      <template #default="scope">
-                        <ElDatePicker
-                          v-model="scope.row.salePriceStartedAt"
-                          type="datetime"
-                          :placeholder="$t('product.placeholder.salePriceStartedAt')"
-                          style="width:140px"
-                        />
-                      </template>
-                    </ElTableColumn>
-                    <ElTableColumn prop="isSettingSaleEndedTime" :label="$t('product.isSettingSaleEndedTime')" width="180">
-                      <template #default="scope">
-                        <ElSwitch v-model="scope.row.isSettingSaleEndedTime" />
-                      </template>
-                    </ElTableColumn>
-                    <ElTableColumn prop="salePriceEndedAt" :label="$t('product.salePriceEndedAt')">
-                      <template #default="scope">
-                        <ElDatePicker
-                          v-model="scope.row.salePriceEndedAt"
-                          type="datetime"
-                          :placeholder="$t('product.placeholder.salePriceEndedAt')"
-                          style="width:140px"
-                        />
-                      </template>
-                    </ElTableColumn>
-                  </ElTable>
-                </div>
-              </ElFormItem>
-              <ElFormItem :label="$t('product.quantity')" prop="quantity">
-                <ElInputNumber
-                  v-model="productForm.quantity"
-                  :min="1"
-                  :max="9999999999"
-                  class="w-[200px]"
-                  :placeholder="$t('product.placeholder.quantity')"
+              <ElFormItem :label="$t('product.mpn')" prop="mpn">
+                <ElInput
+                  v-model="productForm.mpn"
+                  minlength="1"
+                  maxlength="120"
+                  :placeholder="$t('product.placeholder.mpn')"
                 />
               </ElFormItem>
 
@@ -308,7 +340,8 @@ const save = async () => {
                 <Editor ref="editorRef" v-model="productForm.productDescription" :height="300" />
               </ElFormItem>
             </ElCard>
-            <ElCard shadow="never">
+            <!-- 图片 -->
+            <ElCard shadow="never" class="mb-5">
               <template #header>
                 <div class="flex items-center justify-between">
                   <div class="text-base font-bold">
@@ -318,8 +351,152 @@ const save = async () => {
               </template>
               <UploadMultiImage ref="uploadRef" />
             </ElCard>
+            <!-- 参数 -->
+            <ElCard shadow="never" class="mb-5">
+              <template #header>
+                <div class="flex items-center justify-between">
+                  <div class="text-base font-bold">
+                    {{ $t('product.parameterInfo') }}
+                  </div>
+                  <div>
+                    <ElSelect
+                      v-model="selectedParameterGroup"
+                      :placeholder="$t('product.placeholder.parameterGroup')"
+                      style="width: 200px"
+                      @change="handleParameterGroupChange"
+                    >
+                      <ElOption
+                        v-for="item in listParameterGroupResult.list"
+                        :key="item.id"
+                        :label="item.parameterGroupName"
+                        :value="item.id"
+                      />
+                    </ElSelect>
+                  </div>
+                </div>
+              </template>
+              <div v-if="listParameterResult && listParameterResult.list.length > 0">
+                <div v-for="(item, index) in listParameterResult.list" :key="item.id">
+                  <ElFormItem v-if="item.parameterType === 2" :label="item.parameterName">
+                    <ElInput
+                      v-model="inputParameterForm[index]"
+                      @input="formatInputParameterValue(index, item)"
+                    />
+                  </ElFormItem>
+                  <ElFormItem v-if="item.parameterType === 1" :label="item.parameterName">
+                    <ElSelect v-model="productParameterForm[index]" value-key="id">
+                      <ElOption
+                        v-for="vItem in item.parameterValueListResultDos"
+                        :key="vItem.id"
+                        :label="vItem.parameterValueContent"
+                        :value="vItem"
+                      />
+                    </ElSelect>
+                  </ElFormItem>
+                </div>
+              </div>
+            </ElCard>
           </div>
-          <div class="col-span-3">
+          <div class="col-span-4">
+            <!-- 产品分类 -->
+            <ElCard shadow="never" class="mb-5">
+              <template #header>
+                <div class="flex items-center justify-between">
+                  <div class="text-base font-bold">
+                    {{ $t('product.categoryInfo') }}
+                  </div>
+                </div>
+              </template>
+              <ElFormItem :label="$t('product.category')" prop="category">
+                <ElCascader v-model="productForm.categoryIds" :props="categoryProps" :options="listCategoryData.list" />
+              </ElFormItem>
+            </ElCard>
+            <!-- 价格信息 -->
+            <ElCard shadow="never" class="mb-5">
+              <template #header>
+                <div class="flex items-center justify-between">
+                  <div class="text-base font-bold">
+                    {{ $t('product.price') }}
+                  </div>
+                  <EBtn type="primary" plain @click="handleAddPrice">
+                    <Icon icon="ep:plus" />
+                    {{ $t('product.addPrice') }}
+                  </EBtn>
+                </div>
+              </template>
+              <div class="w-full mt-5">
+                <ElTable :data="productForm.productPriceCreateRequestDos" style="width: 100%">
+                  <ElTableColumn prop="orderQuantity" :label="$t('product.orderQuantity')" width="180">
+                    <template #default="scope">
+                      <ElInputNumber
+                        v-model="scope.row.orderQuantity"
+                        :min="1"
+                        :max="120"
+                        :placeholder="$t('product.placeholder.orderQuantity')"
+                      />
+                    </template>
+                  </ElTableColumn>
+                  <ElTableColumn prop="price" :label="$t('product.price')">
+                    <template #default="scope">
+                      <ElInputNumber
+                        v-model="scope.row.price"
+                        :min="0.0001"
+                        :max="999999999.9999"
+                        :placeholder="$t('product.placeholder.productPrice')"
+                      />
+                    </template>
+                  </ElTableColumn>
+                </ElTable>
+              </div>
+            </ElCard>
+            <!-- 库存信息 -->
+            <ElCard shadow="never" class="mb-5">
+              <template #header>
+                <div class="flex items-center justify-between">
+                  <div class="text-base font-bold">
+                    {{ $t('product.stockInfo') }}
+                  </div>
+                </div>
+              </template>
+              <ElFormItem :label="$t('product.inStockQuantity')" prop="inStockQuantity">
+                <ElInputNumber
+                  v-model="productForm.inStockQuantity"
+                  :min="1"
+                  :max="9999999999"
+                  class="w-[200px]"
+                  :placeholder="$t('product.placeholder.inStockQuantity')"
+                />
+              </ElFormItem>
+              <ElFormItem :label="$t('product.processingQuantity')" prop="processingQuantity">
+                <ElInputNumber
+                  v-model="productForm.processingQuantity"
+                  :min="0"
+                  :max="9999999999"
+                  class="w-[200px]"
+                  :placeholder="$t('product.placeholder.processingQuantity')"
+                />
+              </ElFormItem>
+              <ElFormItem :label="$t('product.processingDays')" prop="processingDays">
+                <ElInputNumber
+                  v-model="productForm.processingDays"
+                  :min="0"
+                  :max="9999999999"
+                  class="w-[200px]"
+                  :placeholder="$t('product.placeholder.processingDays')"
+                />
+              </ElFormItem>
+              <ElFormItem :label="$t('product.productionCycle')" prop="productionCycle">
+                <ElInputNumber
+                  v-model="productForm.productionCycle"
+                  :min="0"
+                  :max="9999999999"
+                  class="w-[200px]"
+                  :placeholder="$t('product.placeholder.productionCycle')"
+                />
+                <span class="ml-2">(周)</span>
+              </ElFormItem>
+            </ElCard>
+            <!-- 其他信息 -->
             <ElCard shadow="never">
               <template #header>
                 <div class="flex items-center justify-between">
@@ -328,43 +505,6 @@ const save = async () => {
                   </div>
                 </div>
               </template>
-
-              <ElFormItem :label="$t('product.mpn')" prop="mpn">
-                <ElInput
-                  v-model="productForm.mpn"
-                  minlength="1"
-                  maxlength="120"
-                  :placeholder="$t('product.placeholder.mpn')"
-                />
-              </ElFormItem>
-              <ElFormItem :label="$t('product.productType')" prop="productType">
-                <ElSelect v-model="productForm.productType" :placeholder="$t('product.placeholder.productType')">
-                  <ElOption v-for="item in productTypes" :key="item.id" :value="item.id" :label="item.label" />
-                </ElSelect>
-              </ElFormItem>
-
-              <ElFormItem :label="$t('product.productStockStatusType')" prop="productStockStatusType">
-                <ElSelect v-model="productForm.productStockStatusType" :placeholder="$t('product.placeholder.productStockStatusType')">
-                  <ElOption v-for="item in productStockStatusTypes" :key="item.id" :value="item.id" :label="item.label" />
-                </ElSelect>
-              </ElFormItem>
-
-              <ElFormItem v-if="productForm.productStockStatusType === 3 || productForm.productStockStatusType === 4" :label="$t('product.availabilityDate')">
-                <ElDatePicker
-                  v-model="productForm.availabilityDate"
-                  type="date"
-                  :placeholder="$t('product.placeholder.availabilityDate')"
-                />
-              </ElFormItem>
-
-              <ElFormItem :label="$t('product.processingDays')" prop="processingDays">
-                <ElInputNumber
-                  v-model="productForm.processingDays"
-                  :min="1"
-                  :max="120"
-                  :placeholder="$t('product.placeholder.processingDays')"
-                />
-              </ElFormItem>
 
               <ElFormItem :label="$t('product.isSettingOnlineTime')" prop="isSettingOnlineTime">
                 <ElSwitch v-model="productForm.isSettingOnlineTime" />
@@ -389,16 +529,14 @@ const save = async () => {
                   :placeholder="$t('product.placeholder.offlineTime')"
                 />
               </ElFormItem>
-
-              <ElFormItem :label="$t('product.brand')" prop="brandId">
-                <ElSelect v-model="productForm.brandId" :placeholder="$t('product.placeholder.brand')">
-                  <ElOption v-for="item in listBrandResult.list" :key="item.id" :value="item.id" :label="item.brandName" />
-                </ElSelect>
-              </ElFormItem>
-
               <ElFormItem :label="$t('product.supplier')" prop="supplierId">
                 <ElSelect v-model="productForm.supplierId" :placeholder="$t('product.placeholder.supplier')">
-                  <ElOption v-for="item in listSupplierResult.list" :key="item.id" :value="item.id" :label="item.supplierName" />
+                  <ElOption
+                    v-for="item in listSupplierResult.list"
+                    :key="item.id"
+                    :value="item.id"
+                    :label="item.supplierName"
+                  />
                 </ElSelect>
               </ElFormItem>
             </ElCard>

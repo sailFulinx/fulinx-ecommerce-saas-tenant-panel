@@ -10,7 +10,7 @@ import Detail from './components/Detail.vue'
 
 const { t: $t } = useLocale()
 const loading = ref(false)
-const selection = ref<number[]>([])
+const selection = ref<string[]>([])
 
 // 列表
 const listData = ref<TableResponse<RoleDataType & CommonField>>({
@@ -56,18 +56,18 @@ const visible = ref<boolean>(false)
 const detailRef = ref()
 
 // 被修改的ID
-const id = ref<number | null>(null)
+const id = ref<string>('')
 
 // 新增
 const handleAdd = () => {
-  id.value = null
+  id.value = ''
   actionType.value = 'add'
   visible.value = true
   detailRef.value.handleChangeActiveTab('base')
 }
 
 const detail = reactive<RoleDataType>({
-  id: 0,
+  id: '',
   roleType: 0,
   roleName: '',
 })
@@ -113,14 +113,14 @@ const handleSelectionChange = () => {
   selection.value = []
   const checkedNodes = treeRef.value?.getCheckedNodes()
   checkedNodes?.map(item => {
-    selection.value.push(Number(item.id))
+    selection.value.push(item.id)
   })
 }
 
 const statusInit = () => {
   visible.value = false
   actionType.value = 'none'
-  id.value = 0
+  id.value = ''
 }
 
 const handleChangeVisible = () => {
@@ -215,7 +215,7 @@ const screenHeight = window.innerHeight - 330
         </div>
         <div v-show="visible">
           <Detail
-            :id="Number(id)"
+            :id="id"
             ref="detailRef"
             :detail="detail"
             :action-type="actionType"

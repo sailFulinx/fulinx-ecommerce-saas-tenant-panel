@@ -8,8 +8,8 @@ import Password from './Password.vue'
 
 const props = defineProps({
   id: {
-    type: Number,
-    default: 0,
+    type: String,
+    default: '',
   },
   detail: {
     type: Object as () => UserDataType,
@@ -27,7 +27,7 @@ const pageTitle = ref('')
 const disabled = ref(false)
 
 const form = reactive<UserRequestParams>({
-  id: 0,
+  id: '',
   username: '',
   userType: 1,
   password: '',
@@ -44,13 +44,13 @@ const loading = reactive({
   button: false,
 })
 
-const id = ref(0)
+const id = ref('')
 const actionType = ref('none')
 
 watch(
   [() => props.id, () => props.detail, () => props.actionType],
   ([newPropId, newPropDetail, newPropActionType]) => {
-    if (newPropId || newPropId === 0) {
+    if (newPropId || newPropId === '') {
       id.value = newPropId
     }
     if (newPropDetail) {
@@ -59,8 +59,8 @@ watch(
     if (newPropActionType) {
       actionType.value = newPropActionType
       if (actionType.value === 'add') {
-        id.value = 0
-        form.id = 0
+        id.value = ''
+        form.id = ''
         form.username = ''
         form.password = ''
         form.roleIds = []
@@ -80,11 +80,11 @@ watch(
 
 function init() {
   loading.init = true
-  if (actionType.value === 'add' && id.value === 0) {
+  if (actionType.value === 'add' && id.value === '') {
     pageTitle.value = $t('common.create') + $t('user.name')
     disabled.value = true
   } else {
-    if (id.value !== 0) {
+    if (id.value !== '') {
       pageTitle.value = $t('common.edit') + $t('user.name')
     }
   }

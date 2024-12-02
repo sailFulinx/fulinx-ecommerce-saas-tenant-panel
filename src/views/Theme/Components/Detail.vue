@@ -17,10 +17,9 @@ const rules = reactive({
   themeName: [{ required: true, type: 'string', message: '网站名称必须填写', trigger: 'blur' }],
   domain: [{ required: true, type: 'string', message: '域名必须填写', trigger: 'blur' }],
   metaTitle: [{ required: true, type: 'string', message: '元标题必须填写', trigger: 'blur' }],
-  themeThumbFileId: [{ required: true, type: 'number', message: 'Logo必须选择', trigger: 'blur' }],
 })
 
-const id = Number(useRoute().params.id)
+const id = useRoute().params.id as string
 
 const loading = reactive({
   init: false,
@@ -36,24 +35,26 @@ const themeForm = ref<ThemeRequest>({
   themeVersion: '',
   themeThumbFileId: null,
   themeThumbFileVo: {
-    id: 0,
+    id: '',
     originalFileName: '',
     fileName: '',
-    path: '',
+    originalPath: '',
     fileUrl: '',
     fileExtensionName: '',
     fileContentType: '',
+    sha256: '',
   },
 })
 
 const themeThumb = ref<FileData>({
-  id: 0,
+  id: '',
   originalFileName: '',
   fileName: '',
-  path: '',
+  originalPath: '',
   fileUrl: '',
   fileExtensionName: '',
   fileContentType: '',
+  sha256: '',
 })
 
 const uploadThemeThumbRef = ref()
@@ -123,6 +124,10 @@ const deleteTagView = (refresh: boolean) => {
 
 const save = async () => {
   const themeThumb = uploadThemeThumbRef.value.getFileData()
+  if (!themeThumb || !themeThumb.fileData) {
+    ElMessage.error('请上传主题效果图')
+    return
+  }
   themeForm.value.themeThumbFileId = themeThumb.fileData.id
   const valid = await themeFormRef.value.validate((valid: boolean) => {
     if (!valid) {
@@ -207,7 +212,7 @@ onMounted(() => {
                   placeholder="主题版本，少于120个字符"
                 />
               </ElFormItem>
-              <ElFormItem label="主题效果图" prop="themeThumbFileId">
+              <ElFormItem label="主题效果图" required>
                 <UploadSingleImage
                   ref="uploadThemeThumbRef"
                   :image-data="themeThumb"

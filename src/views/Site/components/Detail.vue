@@ -5,14 +5,14 @@ import { ElMessage } from 'element-plus'
 
 import Base from './Modules/Base.vue'
 
+import Email from './Modules/Email.vue'
+
 const props = defineProps({
   isEdit: {
     type: Boolean,
     default: false,
   },
 })
-
-const id = Number(useRoute().params.id)
 
 const activeName = ref('base')
 
@@ -23,26 +23,16 @@ const loading = reactive({
 
 const pageTitle = computed(() => (props.isEdit ? '编辑网站' : '添加网站'))
 
-const init = async () => {
-  if (props.isEdit && id) {
-  }
-}
-
-const tagsViewStore = useTagsViewStore()
-
-const deleteTagView = (refresh: boolean) => {
-  if (refresh) {
-    tagsViewStore.delCachedView()
-  }
-  tagsViewStore.delVisitedView(router.currentRoute.value)
-  router.push({ name: 'SiteList' })
-}
-
 const baseRef = ref()
+
+const emailRef = ref()
 
 const save = async () => {
   if (activeName.value === 'base') {
     baseRef.value.save()
+  }
+  if (activeName.value === 'mail') {
+    emailRef.value.save()
   }
   ElMessage({
     message: '保存成功',
@@ -50,12 +40,6 @@ const save = async () => {
     duration: 2000,
   })
 }
-
-const closeViewTag = () => {}
-
-onMounted(() => {
-  init()
-})
 </script>
 
 <template>
@@ -66,7 +50,7 @@ onMounted(() => {
           <h4>{{ pageTitle }}</h4>
         </div>
         <div>
-          <EBtn size="small" :loading="loading.button" @click="closeViewTag()">
+          <EBtn size="small" :loading="loading.button">
             取消
           </EBtn>
           <EBtn size="small" type="primary" icon="el-icon-document-add" :loading="loading.button" @click="save">
@@ -79,6 +63,9 @@ onMounted(() => {
       <ElTabs v-model="activeName" class="demo-tabs">
         <ElTabPane label="基础设置" name="base">
           <Base ref="baseRef" :is-edit="props.isEdit" />
+        </ElTabPane>
+        <ElTabPane label="邮箱设置" name="mail">
+          <Email ref="emailRef" :is-edit="props.isEdit" />
         </ElTabPane>
       </ElTabs>
     </div>

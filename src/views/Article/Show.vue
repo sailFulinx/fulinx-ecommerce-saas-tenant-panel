@@ -27,7 +27,7 @@ import CustomsTable from './Components/CustomsTable.vue'
 
 const { t: $t } = useLocale()
 
-const id = Number(useRoute().params.id as unknown)
+const id = useRoute().params.id as string
 
 const selectLanguage = ref<LanguageData>(usePreferenceStore().preference?.language)
 
@@ -60,7 +60,7 @@ const createFormData = (): ArticleShowData => {
         fileName: '',
         fileContentType: '',
         fileExtensionName: '',
-        path: '',
+        originalPath: '',
         fileUrl: '',
         sha256: '',
         isDelete: 0,
@@ -222,20 +222,20 @@ const getLayoutList = debounce(async () => {
 
 const isShowLayoutEdit = ref<boolean>(false)
 const handleEditArticleLayout = () => {
-  form.layoutId = form.layoutId === 0 ? null : form.layoutId
+  form.layoutId = form.layoutId === '' ? null : form.layoutId
   isShowLayoutEdit.value = true
 }
 
 const handleSubmitArticleLayout = async () => {
   loading.init = true
   if (!form.isCustomLayout) {
-    form.layoutId = 0
+    form.layoutId = ''
   }
   const payload = {
     articleId: id,
     languageId: usePreferenceStore().preference?.language.id,
     isCustomLayout: form.isCustomLayout,
-    layoutId: form.layoutId === null ? 0 : form.layoutId,
+    layoutId: form.layoutId === null ? '' : form.layoutId,
   }
   const { data } = await updateArticleIsCustomLayoutApi(payload).catch(error => {
     throw error
@@ -297,8 +297,8 @@ const handleCancelEditArticleCategory = () => {
 const handleConfirmEditArticleCategory = async () => {
   loading.init = true
   categoryCascaderVisible.value = false
-  const categoryIds = [...new Set(selectedCategoryValue.value.flat() as number[])]
-  const deletedCategoryIds = [...new Set(deletedCategoryValue.value.flat() as number[])]
+  const categoryIds = [...new Set(selectedCategoryValue.value.flat() as string[])]
+  const deletedCategoryIds = [...new Set(deletedCategoryValue.value.flat() as string[])]
   const { data } = await updateArticleCategoryApi({
     articleId: id,
     languageId: selectLanguage.value.id,
@@ -522,7 +522,7 @@ const handleInputTagConfirm = debounce(async () => {
 const uploadRef = ref()
 const settingArticleFileVisible = ref<boolean>(false)
 const articleFileList = ref<(FileData & CommonField)[]>([])
-const deletedFileIds = ref<number[]>([])
+const deletedFileIds = ref<string[]>([])
 const handleClickUpdateArticleFile = async () => {
   if (form.articleFileListResultDos && form.articleFileListResultDos.length !== 0) {
     const articleFileListData: (FileData & CommonField)[] = []

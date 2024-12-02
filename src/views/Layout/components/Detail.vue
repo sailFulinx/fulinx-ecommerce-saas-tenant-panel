@@ -15,7 +15,7 @@ const pageTitle = ref('')
 
 // 组件表单
 const form = reactive<LayoutData>({
-  id: 0,
+  id: '',
   layoutName: '',
   layoutContent: '',
 })
@@ -26,12 +26,12 @@ const loading = reactive({
 })
 
 // 当前页面ID
-const id = ref(0)
+const id = ref('')
 
 // 已选的组件
 const selectedComponent = ref<LayoutComponentData>({
   id: 0,
-  componentId: 0,
+  componentId: '',
   sort: 0,
   componentName: '',
 })
@@ -128,7 +128,7 @@ const handleCancelComponentToLayout = () => {
   componentForm.componentId = null
   selectedComponent.value = {
     id: 0,
-    componentId: 0,
+    componentId: '',
     sort: 0,
     componentName: '',
   }
@@ -200,7 +200,7 @@ const handleSubmit = async () => {
   }
   loading.save = true
   form.layoutContent = JSON.stringify(layoutContentList.value)
-  if (actionType.value === 'add' || id.value === 0) {
+  if (actionType.value === 'add' || id.value === '') {
     await createLayout()
   } else {
     await editLayout()
@@ -231,7 +231,7 @@ async function init(actionTypeData: string, layoutData?: LayoutData) {
       id: 0,
     })
   } else {
-    id.value = layoutData?.id ?? 0
+    id.value = layoutData?.id ?? ''
     if (layoutData?.layoutContent) {
       layoutContentList.value = JSON.parse(layoutData.layoutContent)
       if (layoutContentList.value.length > 0) {

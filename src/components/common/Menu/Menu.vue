@@ -1,10 +1,10 @@
 <script lang="ts" setup>
+import type { RouteMeta } from 'vue-router'
 import { useLocale } from '@/hooks/useLocale'
 import { useAppStore } from '@/stores/app'
 import { usePermissionStore } from '@/stores/permission'
 import { isUrl } from '@/utils/is'
 import { pathResolve } from '@/utils/routerHelper'
-import type { RouteMeta } from 'vue-router'
 
 const { t: $t } = useLocale()
 

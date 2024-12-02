@@ -49,7 +49,7 @@ interface LayoutData {
   layoutName: string
 
   /* Layout File ID */
-  layoutFileId?: number
+  layoutFileId?: string
 
   /* */
   fileVo?: FileData & CommonField
@@ -59,14 +59,14 @@ interface LayoutData {
 }
 
 interface LayoutComponentData {
-  id: string
+  id: number
   componentId: string
   componentName?: string
   sort: number
 }
 
 interface LayoutRowData {
-  id: string
+  id: number
   rowName: string
   columnsCount: number
   columns: LayoutComponentData[]

@@ -38,7 +38,7 @@ const listQuery = reactive<ArticleListParams & Pagination>({
   pageSize: 20,
   pageNumber: 1,
 })
-const selectedList = ref<number[]>([])
+const selectedList = ref<string[]>([])
 
 const getList = async () => {
   loading.list = true
@@ -125,7 +125,7 @@ const handleCreate = () => {
 }
 
 const handleRedirectEdit = (val: ArticleListData & CommonField) => {
-  router.push({ name: 'ShowArticle', params: { id: Number(val.id) } })
+  router.push({ name: 'ShowArticle', params: { id: val.id } })
 }
 init()
 </script>

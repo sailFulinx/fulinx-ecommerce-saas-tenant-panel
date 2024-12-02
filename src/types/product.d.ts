@@ -35,6 +35,20 @@ interface ProductPriceCreateRequestDo {
   salePriceEndedAt?: string
 }
 
+interface ProductParameterRelationRequestDo {
+  /* Parameter Group ID */
+  parameterGroupId: string
+
+  /* Parameter ID */
+  parameterId: string
+
+  /* Parameter Value ID */
+  parameterValueId?: string
+
+  /* Parameter Value Content */
+  parameterValueContent?: string
+}
+
 interface CreateProductParams {
   /* Language ID */
   languageId: string
@@ -42,17 +56,8 @@ interface CreateProductParams {
   /* SKU */
   sku: string
 
-  /* Product Type, 1: Simple 2: Configurable 3: Virtual */
-  productType: number
-
-  /* Product Stock Status Type, 1- In Stock, 2-Out Of Stock, 3-Pre Order, 4-Back Order */
-  productStockStatusType: number
-
-  /* Availability Date */
-  availabilityDate?: string
-
-  /* Processing Days */
-  processingDays?: number
+  /* MPN */
+  mpn: string
 
   /* Is Setting Online Time */
   isSettingOnlineTime: boolean
@@ -66,17 +71,20 @@ interface CreateProductParams {
   /* Offline Time */
   offlineTime?: string
 
-  /* Quantity */
-  quantity: number
+  /* In Stock Quantity */
+  inStockQuantity?: number
 
-  /* Brand ID */
-  brandId?: string
+  /* Processing Quantity */
+  processingQuantity?: number
 
-  /* Sort */
-  sort?: number
+  /* Processing Days */
+  processingDays?: number
 
-  /* Status, 0 - Disabled , 1 - Enabled */
-  status?: boolean
+  /* Production Cycle */
+  productionCycle?: number
+
+  /* Supplier ID */
+  supplierId?: string
 
   /* Product Name */
   productName: string
@@ -84,24 +92,34 @@ interface CreateProductParams {
   /* Currency ID */
   currencyId: string
 
+  /* Parameter Group ID */
+  parameterGroupId?: string
+
+  /* Category ID Array */
+  categoryIds: string[]
+
   /* Product Price Create Request Dos */
   productPriceCreateRequestDos: ProductPriceCreateRequestDo[]
 
   /* Product File Request */
   productFileRequestDos?: ProductFileRequestDo[]
 
+  /* Product Parameter Relation Request Dos */
+  productParameterRelationRequestDos: ProductParameterRelationRequestDo[]
+
   /* Product Description */
   productDescription?: string
-
-  /* Supplier ID */
-  supplierId?: string
-
-  mpn: string
 }
 
 interface CreateProductRes {
+  /* Product ID */
+  id: string
+
   /* SKU */
   sku: string
+
+  /* MPN */
+  mpn: string
 
   /* Product Type, 1: Simple 2: Configurable 3: Virtual */
   productType: number
@@ -109,29 +127,35 @@ interface CreateProductRes {
   /* Is Required Shipping */
   isRequiredShipping: boolean
 
-  /* Product Stock Status Type, 1- In Stock, 2-Out Of Stock, 3-Pre Order, 4-Back Order */
-  productStockStatusType: number
-
-  /* Availability Date */
-  availabilityDate: string
-
   /* Is Setting Online Time */
   isSettingOnlineTime: boolean
 
   /* Online Time */
-  onlineTime: string
+  onlineTime: Record<string, unknown>
 
   /* Is Setting Offline Time */
   isSettingOfflineTime: boolean
 
   /* Offline Time */
-  offlineTime: string
+  offlineTime: Record<string, unknown>
 
-  /* Quantity */
-  quantity: number
+  /* In Stock Quantity */
+  inStockQuantity: number
+
+  /* Processing Quantity */
+  processingQuantity: number
+
+  /* Processing Days */
+  processingDays: number
+
+  /* Production Cycle */
+  productionCycle: number
 
   /* Brand ID */
   brandId: string
+
+  /* Supplier ID */
+  supplierId: string
 
   /* Is Custom Layout */
   isCustomLayout: boolean
@@ -236,9 +260,7 @@ interface ShowProductParams {
   languageId: string
 }
 
-interface ProductAttributeRelationListResultDo {
-
-}
+interface ProductAttributeRelationListResultDo {}
 
 interface ProductBrandRelationListResultDo {
   /* Product ID */
@@ -339,9 +361,7 @@ interface ProductOtherListResultDo {
   conditionType: number
 }
 
-interface ProductParameterRelationListResultDo {
-
-}
+interface ProductParameterRelationListResultDo {}
 
 interface ProductPriceListResultDo {
   /* Product ID */

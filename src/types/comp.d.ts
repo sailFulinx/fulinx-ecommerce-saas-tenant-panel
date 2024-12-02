@@ -37,7 +37,7 @@ interface RemoveCompParams {
 
 interface CompListParams {
   /* Component ID */
-  id?: string| null
+  id?: string | null
 
   /* Component Name */
   componentName?: string | null

@@ -16,7 +16,7 @@ const listQuery = reactive<ThemeListParams & Pagination>({
   pageSize: 20,
   pageNumber: 1,
 })
-const selectedList = ref<number[]>([])
+const selectedList = ref<string[]>([])
 
 const getList = async () => {
   loading.list = true
@@ -51,13 +51,13 @@ const pagination = (val: PaginationComponentDataType) => {
   getList()
 }
 
-const selectedThemeItem = val => {
+const selectedThemeItem = (val: (ThemeData & CommonField)[]) => {
   selectedList.value = []
   val.forEach(item => {
     selectedList.value.push(item.id)
   })
 }
-const handleDelete = async row => {
+const handleDelete = async (row: (ThemeData & CommonField)) => {
   loading.list = true
   await removeTheme({ ids: [row.id] }).catch(err => {
     loading.list = false
@@ -97,12 +97,12 @@ const handleCreate = () => {
   router.push({ name: 'CreateTheme' })
 }
 
-const handleRedirectEdit = val => {
-  router.push({ name: 'EditTheme', params: { id: Number(val.id) } })
+const handleRedirectEdit = (val : (ThemeData & CommonField)) => {
+  router.push({ name: 'EditTheme', params: { id: val.id } })
 }
 
-const handleSettingComponent = val => {
-  router.push({ name: 'EditThemeComponent', params: { id: Number(val.id) } })
+const handleSettingComponent = (val : (ThemeData & CommonField)) => {
+  router.push({ name: 'EditThemeComponent', params: { id: val.id } })
 }
 
 init()
