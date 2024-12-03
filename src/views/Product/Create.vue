@@ -119,8 +119,22 @@ const formatInputParameterValue = (index: number, value: (ParameterGroupParamete
  */
 
 const categoryProps = {
+  value: 'id',
   label: 'categoryName',
   multiple: true,
+}
+
+const categoryIds = ref<string[]>([])
+
+const handleChangeCategory = (val: string[]) => {
+  if (val && val.length > 0) {
+    val.forEach(item => {
+      const lastElement = item.at(-1) // 获取最后一个元素
+      if (lastElement !== undefined) { // 检查是否为undefined
+        categoryIds.value.push(lastElement)
+      }
+    })
+  }
 }
 
 const listCategoryPayload = reactive<CategoryListParams>({
@@ -234,6 +248,7 @@ const deleteTagView = (refresh: boolean) => {
 }
 
 const save = async () => {
+  productForm.productParameterRelationRequestDos = []
   productForm.languageId = usePreferenceStore().preference.language.id
   productForm.currencyId = usePreferenceStore().preference.currency.id
   const files = uploadRef.value.getFileData()
@@ -257,6 +272,9 @@ const save = async () => {
       productForm.productParameterRelationRequestDos.push(result)
     }
   })
+  if (categoryIds.value && categoryIds.value.length > 0) {
+    productForm.categoryIds = categoryIds.value
+  }
   const valid = await productFormRef.value.validate((valid: boolean) => {
     if (!valid) {
       return false
@@ -408,7 +426,7 @@ const save = async () => {
                 </div>
               </template>
               <ElFormItem :label="$t('product.category')" prop="category">
-                <ElCascader v-model="productForm.categoryIds" :props="categoryProps" :options="listCategoryData.list" />
+                <ElCascader v-model="productForm.categoryIds" :props="categoryProps" :options="listCategoryData.list" @change="handleChangeCategory" />
               </ElFormItem>
             </ElCard>
             <!-- 价格信息 -->

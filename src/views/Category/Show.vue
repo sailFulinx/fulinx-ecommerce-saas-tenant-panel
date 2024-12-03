@@ -1,5 +1,17 @@
 <script setup name="CategoryDetail" lang="ts">
-import { createCategoryNameApi, createCategorySeoApi, createCategorySlugApi, editCategoryDescriptionApi, editCategoryFileApi, editCategoryLayoutApi, editCategoryNameApi, editCategorySeoApi, editCategorySlugApi, editCategoryStatusApi, showCategoryApi } from '@/api/category'
+import {
+  createCategoryNameApi,
+  createCategorySeoApi,
+  createCategorySlugApi,
+  editCategoryDescriptionApi,
+  editCategoryFileApi,
+  editCategoryLayoutApi,
+  editCategoryNameApi,
+  editCategorySeoApi,
+  editCategorySlugApi,
+  editCategoryStatusApi,
+  showCategoryApi,
+} from '@/api/category'
 import { layoutListApi } from '@/api/layout'
 import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
@@ -37,7 +49,7 @@ const createFormData = (): CategoryShowData => {
     layoutListResultDo: {
       id: '',
       layoutName: '',
-      layoutFileId: 0,
+      layoutFileId: '',
       fileVo: {
         id: '',
         originalFileName: '',
@@ -187,7 +199,11 @@ watch(
 // 更新状态
 const editCategoryStatus = async () => {
   loading.init = true
-  const { data } = await editCategoryStatusApi({ categoryId: id, status: form.status, languageId: selectLanguage.value.id }).catch(error => {
+  const { data } = await editCategoryStatusApi({
+    categoryId: id,
+    status: form.status,
+    languageId: selectLanguage.value.id,
+  }).catch(error => {
     loading.init = false
     throw error
   })
@@ -212,10 +228,12 @@ const editCategoryName = async (categoryDetailId: string) => {
     return
   }
   loading.init = true
-  const { data } = await editCategoryNameApi({ categoryDetailId, categoryName: currentCategoryName.value }).catch(error => {
-    loading.init = false
-    throw error
-  })
+  const { data } = await editCategoryNameApi({ categoryDetailId, categoryName: currentCategoryName.value }).catch(
+    error => {
+      loading.init = false
+      throw error
+    },
+  )
   loading.init = false
   currentCategoryName.value = ''
   await resetFormData(data)
@@ -235,7 +253,10 @@ const handleClickUpdateCategoryFile = async ({ fileData }: { fileData: FileData 
     fileId = fileData.id
   }
   loading.init = true
-  const { data } = await editCategoryFileApi({ categoryDetailId: form.categoryDetailListResultDo.id, categoryFileId: fileId }).catch(error => {
+  const { data } = await editCategoryFileApi({
+    categoryDetailId: form.categoryDetailListResultDo.id,
+    categoryFileId: fileId,
+  }).catch(error => {
     loading.init = false
     throw error
   })
@@ -249,10 +270,12 @@ const editorRef = ref()
 const inputCategoryDescriptionVisible = ref<boolean>(false)
 const currentCategoryDescription = ref<string>('<p></p>')
 const handleClickUpdateCategoryDescription = async (categoryDescription: string) => {
-  currentCategoryDescription.value = categoryDescription
+  inputCategoryDescriptionVisible.value = true
+  if (!categoryDescription) {
+    return
+  }
   inputCategoryDescriptionVisible.value = true
   await nextTick(async () => {
-    console.log(editorRef.value)
     await editorRef.value?.setEditorContent(categoryDescription)
   })
 }
@@ -266,7 +289,10 @@ const editCategoryDescription = async (categoryDetailId: string) => {
   }
   currentCategoryDescription.value = editorRef.value?.getEditorContent()
   loading.init = true
-  const { data } = await editCategoryDescriptionApi({ categoryDetailId, categoryDescription: currentCategoryDescription.value }).catch(error => {
+  const { data } = await editCategoryDescriptionApi({
+    categoryDetailId,
+    categoryDescription: currentCategoryDescription.value,
+  }).catch(error => {
     loading.init = false
     throw error
   })
@@ -293,10 +319,12 @@ const editCategoryMetaTitle = async (categorySeoId: string) => {
     return
   }
   loading.init = true
-  const { data } = await editCategorySeoApi({ categorySeoId, metaTitle: currentCategoryMetaTitle.value }).catch(error => {
-    loading.init = false
-    throw error
-  })
+  const { data } = await editCategorySeoApi({ categorySeoId, metaTitle: currentCategoryMetaTitle.value }).catch(
+    error => {
+      loading.init = false
+      throw error
+    },
+  )
   loading.init = false
   currentCategoryMetaTitle.value = ''
   await resetFormData(data)
@@ -320,7 +348,11 @@ const editCategoryMetaDescription = async (categorySeoId: string) => {
     return
   }
   loading.init = true
-  const { data } = await editCategorySeoApi({ categorySeoId, metaTitle: form.seoListResultDo.metaTitle, metaDescription: currentCategoryMetaDescription.value }).catch(error => {
+  const { data } = await editCategorySeoApi({
+    categorySeoId,
+    metaTitle: form.seoListResultDo.metaTitle,
+    metaDescription: currentCategoryMetaDescription.value,
+  }).catch(error => {
     loading.init = false
     throw error
   })
@@ -345,7 +377,11 @@ const handleClickCreateCategorySlug = async () => {
     currentSlug.value = currentSlug.value.slice(0, -1)
   }
 
-  const { data } = await createCategorySlugApi({ categoryId: id, languageId: usePreferenceStore().preference?.language.id, slug: currentSlug.value }).catch(error => {
+  const { data } = await createCategorySlugApi({
+    categoryId: id,
+    languageId: usePreferenceStore().preference?.language.id,
+    slug: currentSlug.value,
+  }).catch(error => {
     loading.init = false
     throw error
   })
@@ -374,7 +410,11 @@ const editCategorySlug = async () => {
   if (currentSlug.value.endsWith('/')) {
     currentSlug.value = currentSlug.value.slice(0, -1)
   }
-  const { data } = await editCategorySlugApi({ slugId: form.slugId, languageId: usePreferenceStore().preference?.language.id, slug: currentSlug.value }).catch(error => {
+  const { data } = await editCategorySlugApi({
+    slugId: form.slugId,
+    languageId: usePreferenceStore().preference?.language.id,
+    slug: currentSlug.value,
+  }).catch(error => {
     loading.init = false
     throw error
   })
@@ -392,7 +432,11 @@ const createCategoryName = async () => {
     return
   }
   loading.init = true
-  const { data } = await createCategoryNameApi({ categoryId: id, languageId: usePreferenceStore().preference?.language.id, categoryName: currentCategoryName.value }).catch(error => {
+  const { data } = await createCategoryNameApi({
+    categoryId: id,
+    languageId: usePreferenceStore().preference?.language.id,
+    categoryName: currentCategoryName.value,
+  }).catch(error => {
     loading.init = false
     throw error
   })
@@ -409,7 +453,11 @@ const createCategorySeo = async () => {
     return
   }
   loading.init = true
-  const { data } = await createCategorySeoApi({ categoryId: id, languageId: usePreferenceStore().preference?.language.id, metaTitle: currentCategoryMetaTitle.value }).catch(error => {
+  const { data } = await createCategorySeoApi({
+    categoryId: id,
+    languageId: usePreferenceStore().preference?.language.id,
+    metaTitle: currentCategoryMetaTitle.value,
+  }).catch(error => {
     loading.init = false
     throw error
   })
@@ -508,11 +556,13 @@ const handleChangeTab = (name: string) => {
                   {{ $t('category.categoryName') }}:
                 </div>
                 <div class="col-span-11 w-full flex items-center">
-                  <span v-if="!inputCategoryNameVisible" class="mr-2">{{ form.categoryDetailListResultDo.categoryName }} </span>
+                  <span v-if="!inputCategoryNameVisible" class="mr-2">
+                    {{ form.categoryDetailListResultDo.categoryName }}
+                  </span>
                   <span v-else>
                     <ElInput
                       v-model="currentCategoryName"
-                      style="width:300px"
+                      style="width: 300px"
                       class="mr-2"
                       @blur="editCategoryName(form.categoryDetailListResultDo.id)"
                     />
@@ -520,7 +570,12 @@ const handleChangeTab = (name: string) => {
                       <Icon icon="ep:close" :size="5" class="mr-1" />
                     </EBtn>
                   </span>
-                  <EBtn v-if="!inputCategoryNameVisible" type="primary" text @click="handleClickUpdateCategoryName(form.categoryDetailListResultDo.categoryName)">
+                  <EBtn
+                    v-if="!inputCategoryNameVisible"
+                    type="primary"
+                    text
+                    @click="handleClickUpdateCategoryName(form.categoryDetailListResultDo.categoryName)"
+                  >
                     <Icon icon="ep:edit" :size="5" class="mr-1" />
                   </EBtn>
                 </div>
@@ -549,7 +604,13 @@ const handleChangeTab = (name: string) => {
                 </div>
                 <div class="col-span-11">
                   <div class="w-fullf flex">
-                    <UploadSingleImage ref="uploadSingleImageRef" :image-data="form.categoryDetailListResultDo.fileVo" class="mr-2" style="width: 200px" @get-data="handleClickUpdateCategoryFile" />
+                    <UploadSingleImage
+                      ref="uploadSingleImageRef"
+                      :image-data="form.categoryDetailListResultDo.fileVo"
+                      class="mr-2"
+                      style="width: 200px"
+                      @get-data="handleClickUpdateCategoryFile"
+                    />
                   </div>
                 </div>
               </div>
@@ -562,8 +623,16 @@ const handleChangeTab = (name: string) => {
                   <div v-if="!inputCategoryDescriptionVisible" class="mr-2">
                     <div class="grid grid-cols-12 gap-4">
                       <div class="col-span-1 flex items-center">
-                        <EBtn v-if="!inputCategoryNameVisible" type="primary" text @click="handleClickUpdateCategoryDescription(form.categoryDetailListResultDo.categoryDescription)">
-                          <Icon icon="ep:edit" :size="5" class="mr-1" />{{ $t('common.edit') }}
+                        <EBtn
+                          v-if="!inputCategoryNameVisible"
+                          type="primary"
+                          text
+                          @click="
+                            handleClickUpdateCategoryDescription(form.categoryDetailListResultDo.categoryDescription)
+                          "
+                        >
+                          <Icon icon="ep:edit" :size="5" class="mr-1" />
+                          {{ $t('common.edit') }}
                         </EBtn>
                       </div>
                       <div class="col-span-12 border border-gray-200 p-4">
@@ -590,7 +659,10 @@ const handleChangeTab = (name: string) => {
                   {{ $t('category.customs') }}:
                 </div>
                 <div class="col-span-11">
-                  <CustomsTable :custom-list="form.categoryDetailListResultDo.customList" :category-detail-id="form.categoryDetailListResultDo.id" />
+                  <CustomsTable
+                    :custom-list="form.categoryDetailListResultDo.customList"
+                    :category-detail-id="form.categoryDetailListResultDo.id"
+                  />
                 </div>
               </div>
             </div>
@@ -617,11 +689,11 @@ const handleChangeTab = (name: string) => {
                   {{ $t('category.metaTitle') }}:
                 </div>
                 <div class="col-span-11 w-full flex items-center">
-                  <span v-if="!inputCategoryMetaTitleVisible" class="mr-2">{{ form.seoListResultDo.metaTitle }} </span>
+                  <span v-if="!inputCategoryMetaTitleVisible" class="mr-2">{{ form.seoListResultDo.metaTitle }}</span>
                   <span v-else>
                     <ElInput
                       v-model="currentCategoryMetaTitle"
-                      style="width:300px"
+                      style="width: 300px"
                       class="mr-2"
                       @blur="editCategoryMetaTitle(form.seoListResultDo.id)"
                     />
@@ -629,7 +701,12 @@ const handleChangeTab = (name: string) => {
                       <Icon icon="ep:close" :size="5" class="mr-1" />
                     </EBtn>
                   </span>
-                  <EBtn v-if="!inputCategoryMetaTitleVisible" type="primary" text @click="handleClickUpdateCategoryMetaTitle(form.seoListResultDo.metaTitle)">
+                  <EBtn
+                    v-if="!inputCategoryMetaTitleVisible"
+                    type="primary"
+                    text
+                    @click="handleClickUpdateCategoryMetaTitle(form.seoListResultDo.metaTitle)"
+                  >
                     <Icon icon="ep:edit" :size="5" class="mr-1" />
                   </EBtn>
                 </div>
@@ -640,11 +717,13 @@ const handleChangeTab = (name: string) => {
                   {{ $t('category.metaDescription') }}:
                 </div>
                 <div class="col-span-11 w-full flex items-center">
-                  <span v-if="!inputCategoryMetaDescriptionVisible" class="mr-2">{{ form.seoListResultDo.metaDescription }} </span>
+                  <span v-if="!inputCategoryMetaDescriptionVisible" class="mr-2">
+                    {{ form.seoListResultDo.metaDescription }}
+                  </span>
                   <span v-else>
                     <ElInput
                       v-model="currentCategoryMetaDescription"
-                      style="width:300px"
+                      style="width: 300px"
                       class="mr-2"
                       @blur="editCategoryMetaDescription(form.seoListResultDo.id)"
                     />
@@ -652,7 +731,12 @@ const handleChangeTab = (name: string) => {
                       <Icon icon="ep:close" :size="5" class="mr-1" />
                     </EBtn>
                   </span>
-                  <EBtn v-if="!inputCategoryMetaDescriptionVisible" type="primary" text @click="handleClickUpdateCategoryMetaDescription(form.seoListResultDo.metaDescription)">
+                  <EBtn
+                    v-if="!inputCategoryMetaDescriptionVisible"
+                    type="primary"
+                    text
+                    @click="handleClickUpdateCategoryMetaDescription(form.seoListResultDo.metaDescription)"
+                  >
                     <Icon icon="ep:edit" :size="5" class="mr-1" />
                   </EBtn>
                 </div>
@@ -756,11 +840,7 @@ const handleChangeTab = (name: string) => {
                       {{ form.slug }}
                     </div>
                     <div v-else class="flex items-center justify-start">
-                      <ElInput
-                        v-model="currentSlug"
-                        :placeholder="$t('category.placeholder.slug')"
-                        class="mr-2"
-                      />
+                      <ElInput v-model="currentSlug" :placeholder="$t('category.placeholder.slug')" class="mr-2" />
                       <EBtn text @click="handleCancelUpdateCategorySlug">
                         <Icon icon="ep:close" :size="5" class="mr-1" />
                       </EBtn>
