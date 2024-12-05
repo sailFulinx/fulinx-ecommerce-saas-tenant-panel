@@ -2,6 +2,9 @@ interface ProductFileRequestDo {
   /* Product ID */
   productId?: string
 
+  /* Product File TYpe */
+  productFileType: number
+
   /* File ID */
   fileId?: string
 
@@ -102,7 +105,7 @@ interface CreateProductParams {
   productPriceCreateRequestDos: ProductPriceCreateRequestDo[]
 
   /* Product File Request */
-  productFileRequestDos?: ProductFileRequestDo[]
+  productImageRequestDos?: ProductFileRequestDo[]
 
   /* Product Parameter Relation Request Dos */
   productParameterRelationRequestDos: ProductParameterRelationRequestDo[]

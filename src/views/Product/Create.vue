@@ -194,7 +194,7 @@ const productFormRef = ref()
 
 const editorRef = ref()
 
-const uploadRef = ref()
+const imageUploadRef = ref()
 
 const createProductForm = (): CreateProductParams => {
   return {
@@ -215,7 +215,7 @@ const createProductForm = (): CreateProductParams => {
     parameterGroupId: '',
     categoryIds: [],
     productPriceCreateRequestDos: [],
-    productFileRequestDos: [],
+    productImageRequestDos: [],
     productParameterRelationRequestDos: [],
     productDescription: '',
   }
@@ -251,8 +251,12 @@ const save = async () => {
   productForm.productParameterRelationRequestDos = []
   productForm.languageId = usePreferenceStore().preference.language.id
   productForm.currencyId = usePreferenceStore().preference.currency.id
-  const files = uploadRef.value.getFileData()
-  productForm.productFileRequestDos = files.fileDataList
+  const images = imageUploadRef.value.getFileData()
+  productForm.productImageRequestDos = images.fileDataList
+  productForm.productImageRequestDos?.map(item => {
+    item.productFileType = 1
+    return item
+  })
   productParameterForm.value.map(item => {
     if (item?.id) {
       const result: ProductParameterRelationRequest = {
@@ -367,7 +371,7 @@ const save = async () => {
                   </div>
                 </div>
               </template>
-              <UploadMultiImage ref="uploadRef" />
+              <UploadMultiImage ref="imageUploadRef" />
             </ElCard>
             <!-- 参数 -->
             <ElCard shadow="never" class="mb-5">
