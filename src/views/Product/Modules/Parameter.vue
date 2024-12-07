@@ -104,7 +104,6 @@ watch(
         })
       }
     }
-    console.log(inputParameterForm.value)
   },
   { deep: true, immediate: true },
 )

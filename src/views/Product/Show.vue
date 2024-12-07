@@ -401,7 +401,9 @@ const editProductStatus = async () => {
         <ElTabPane :label="$t('product.parameter')" name="parameter">
           <Parameter :form="form" @reset-form-data="resetFormData" />
         </ElTabPane>
-        <ElTabPane :label="$t('product.image')" name="image" />
+        <ElTabPane :label="$t('product.image')" name="image">
+          <Image :form="form" @reset-form-data="resetFormData" />
+        </ElTabPane>
         <ElTabPane :label="$t('product.seo')" name="seo" />
         <ElTabPane :label="$t('product.slug')" name="slug" />
       </ElTabs>
