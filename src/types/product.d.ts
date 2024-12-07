@@ -383,6 +383,9 @@ interface ProductParameterRelationListResultDo {
   /* Parameter ID */
   parameterId: string
 
+  /* Parameter Type, 1-Select, 2-Input, 3-Boolean */
+  parameterType: number
+
   /* Parameter Name */
   parameterName: string
 
@@ -512,6 +515,9 @@ interface ShowProduct {
 
   /* Supplier ID */
   supplierId: string
+
+  /* Parameter Group ID */
+  parameterGroupId: string
 
   supplierShowResultDo: SupplierShow & CommonField
 
@@ -671,6 +677,11 @@ interface UpdateProductParameterParams {
     /* Parameter ID */
     parameterId: string
 
+    parameterName: string
+
+    /* Parameter Type */
+    parameterType: number
+
     /* Parameter Value ID */
     parameterValueId?: string
 
@@ -679,7 +690,7 @@ interface UpdateProductParameterParams {
   }[]
 
   /* Deleted Product Parameter Ids */
-  deletedProductParameterIds?: string[]
+  deletedProductParameterIds: string[]
 
   /* Parameter GroupId */
   parameterGroupId: string
@@ -710,20 +721,20 @@ interface UpdateProductPriceParams {
     isSettingSalePrice?: boolean
 
     /* Sale Price */
-    salePrice?: number
+    salePrice?: number | null
 
     /* Sale Price Started At */
-    salePriceStartedAt?: string
+    salePriceStartedAt?: string | null
 
     /* Is Setting Sale Ended TIme, , 0 - No, 1 - Yes */
     isSettingSaleEndedTime?: boolean
 
     /* Sale Price Ended At */
-    salePriceEndedAt?: string
+    salePriceEndedAt?: string | null
   }[]
 
   /* Deleted Price Ids */
-  deletedPriceIds?: string[]
+  deletedPriceIds: string[]
 
   /* Language ID */
   languageId: string
@@ -864,4 +875,12 @@ interface CreateProductSeoParams {
 
   /* Meta Description */
   metaDescription?: string
+}
+
+interface ProductParameterRelationRequest {
+  id?: string
+  parameterGroupId: string
+  parameterId: string
+  parameterValueId?: string
+  parameterValueContent?: string
 }

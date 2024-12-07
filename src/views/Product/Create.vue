@@ -90,21 +90,12 @@ const handleParameterGroupChange = (val: string) => {
   getParameterList()
 }
 
-interface ProductParameterRelationRequest {
-  id?: string
-  parameterGroupId: string
-  parameterId: string
-  parameterValueId?: string
-  parameterValueContent?: string
-}
-
 const productParameterForm = ref<ProductParameterRelationRequest[]>([])
 
 const inputParameterForm = ref<string[]>([])
 
 const formatInputParameterValue = (index: number, value: (ParameterGroupParameterRelationData & CommonField)) => {
   const parameterValueContent = inputParameterForm.value[index]
-  // 如果已存在，只更新指定的字段
   const parameterValue: ProductParameterRelationRequest = {
     parameterGroupId: selectedParameterGroup.value,
     parameterId: value.parameterId,
@@ -259,6 +250,7 @@ const save = async () => {
   productForm.productParameterRelationRequestDos = []
   productForm.languageId = usePreferenceStore().preference.language.id
   productForm.currencyId = usePreferenceStore().preference.currency.id
+  productForm.parameterGroupId = selectedParameterGroup.value
   const images = imageUploadRef.value.getFileData()
   productForm.productImageRequestDos = images.fileDataList
   productForm.productImageRequestDos?.map(item => {

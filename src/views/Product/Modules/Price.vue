@@ -2,7 +2,6 @@
 import { updateProductPriceApi } from '@/api/product'
 import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
-import { formatTime } from '@/utils'
 import { ElMessage, ElSwitch, ElTableColumn } from 'element-plus'
 
 const { form } = defineProps<{ form: ShowProduct & CommonField }>()
@@ -26,8 +25,9 @@ watch(
   val => {
     if (val) {
       formData.value = JSON.parse(JSON.stringify(form))
+      productPriceData.value.productPriceUpdateRequestDos = []
       if (formData.value.productPriceListResultDos && formData.value.productPriceListResultDos.length > 0) {
-        formData.value.productPriceListResultDos.forEach(item => {
+        formData.value.productPriceListResultDos.map(item => {
           const priceItemData = {
             productPriceId: item.id,
             orderQuantity: item.orderQuantity,
@@ -58,11 +58,20 @@ const handleAddPrice = () => {
     orderQuantity: 1,
     price: 1,
     isSettingSalePrice: false,
-    salePrice: 1,
-    salePriceStartedAt: '',
+    salePrice: null,
+    salePriceStartedAt: null,
     isSettingSaleEndedTime: false,
-    salePriceEndedAt: '',
+    salePriceEndedAt: null,
   })
+}
+
+const handleRemovePrice = (row: any) => {
+  productPriceData.value.productPriceUpdateRequestDos = productPriceData.value.productPriceUpdateRequestDos.filter(
+    item => item.productPriceId !== row.productPriceId,
+  )
+  if (row.productPriceId) {
+    productPriceData.value.deletedPriceIds.push(row.productPriceId)
+  }
 }
 
 const handleSave = async () => {
@@ -98,17 +107,17 @@ const handleSave = async () => {
     </template>
     <div class="w-full mt-5">
       <ElTable :data="productPriceData.productPriceUpdateRequestDos" style="width: 100%">
-        <ElTableColumn prop="orderQuantity" :label="$t('product.orderQuantity')" width="180">
+        <ElTableColumn prop="orderQuantity" :label="$t('product.orderQuantity')" width="200">
           <template #default="scope">
             <ElInputNumber
               v-model="scope.row.orderQuantity"
               :min="1"
-              :max="120"
+              :max="999999999"
               :placeholder="$t('product.placeholder.orderQuantity')"
             />
           </template>
         </ElTableColumn>
-        <ElTableColumn prop="price" :label="$t('product.unitPrice')">
+        <ElTableColumn prop="price" :label="$t('product.unitPrice')" width="200">
           <template #default="scope">
             <ElInputNumber
               v-model="scope.row.price"
@@ -118,7 +127,7 @@ const handleSave = async () => {
             />
           </template>
         </ElTableColumn>
-        <ElTableColumn prop="salePrice" :label="$t('product.salePrice')">
+        <ElTableColumn prop="salePrice" :label="$t('product.salePrice')" width="200">
           <template #default="scope">
             <ElInputNumber
               v-model="scope.row.salePrice"
@@ -128,7 +137,7 @@ const handleSave = async () => {
             />
           </template>
         </ElTableColumn>
-        <ElTableColumn prop="salePriceStartedAt" :label="$t('product.salePriceStartedAt')">
+        <!-- <ElTableColumn prop="salePriceStartedAt" :label="$t('product.salePriceStartedAt')">
           <template #default="scope">
             <ElDatePicker
               v-model="scope.row.salePriceStartedAt"
@@ -145,10 +154,10 @@ const handleSave = async () => {
               :placeholder="$t('product.placeholder.salePriceEndedAt')"
             />
           </template>
-        </ElTableColumn>
+        </ElTableColumn> -->
         <ElTableColumn :label="$t('common.operate')" align="right">
           <template #default="scope">
-            <EBtn type="danger" text @click="productPriceData.productPriceUpdateRequestDos.splice(scope.$index, 1)">
+            <EBtn type="danger" text @click="handleRemovePrice(scope.row)">
               <Icon icon="ep:delete" />
             </EBtn>
           </template>
