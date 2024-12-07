@@ -30,7 +30,9 @@ export function createProductApi(params: CreateProductParams): Promise<IResponse
  * @param {string} params.productDescription Product Description
  * @returns
  */
-export function createProductDetailApi(params: CreateProductDetailParams): Promise<IResponse<ShowProduct & CommonField>> {
+export function createProductDetailApi(
+  params: CreateProductDetailParams,
+): Promise<IResponse<ShowProduct & CommonField>> {
   return request.post({
     url: 'system/product/create/product/detail',
     data: params,
@@ -80,7 +82,9 @@ export function removeProductApi(params: RemoveProductParams): Promise<IResponse
  * @param {string} params.languageId Language ID
  * @returns
  */
-export function updateProductCategoryApi(params: UpdateProductCategoryParams): Promise<IResponse<ShowProduct & CommonField>> {
+export function updateProductCategoryApi(
+  params: UpdateProductCategoryParams,
+): Promise<IResponse<ShowProduct & CommonField>> {
   return request.post({
     url: 'system/product/update/category',
     data: params,
@@ -327,7 +331,9 @@ export function updateProductSkuApi(params: UpdateProductSkuParams): Promise<IRe
  * @param {string} params.languageId Language ID
  * @returns
  */
-export function updateProductStatusApi(params: UpdateProductStatusParams): Promise<IResponse<ShowProduct & CommonField>> {
+export function updateProductStatusApi(
+  params: UpdateProductStatusParams,
+): Promise<IResponse<ShowProduct & CommonField>> {
   return request.post({
     url: 'system/product/update/status',
     data: params,
@@ -343,7 +349,9 @@ export function updateProductStatusApi(params: UpdateProductStatusParams): Promi
  * @param {string} params.languageId Language ID
  * @returns
  */
-export function updateProductSupplierApi(params: UpdateProductSupplierParams): Promise<IResponse<ShowProduct & CommonField>> {
+export function updateProductSupplierApi(
+  params: UpdateProductSupplierParams,
+): Promise<IResponse<ShowProduct & CommonField>> {
   return request.post({
     url: 'system/product/update/supplier',
     data: params,
@@ -407,9 +415,11 @@ export function updateProductShortDescriptionApi(
  * @param {string} params.metaTitle Meta Title
  * @returns
  */
-export function updateProductMetaTitleApi(params: UpdateProductSupplierParams): Promise<IResponse<ShowProduct & CommonField>> {
+export function updateProductMetaTitleApi(
+  params: UpdateProductMetaTitleParams,
+): Promise<IResponse<ShowProduct & CommonField>> {
   return request.post({
-    url: 'system/product/update/supplier',
+    url: 'system/product/update/product/meta/title',
     data: params,
     token: true,
   })
@@ -423,10 +433,10 @@ export function updateProductMetaTitleApi(params: UpdateProductSupplierParams): 
  * @returns
  */
 export function updateProductMetaDescriptionApi(
-  params: UpdateProductSupplierParams,
+  params: UpdateProductMetaDescriptionParams,
 ): Promise<IResponse<ShowProduct & CommonField>> {
   return request.post({
-    url: 'system/product/update/supplier',
+    url: 'system/product/update/product/meta/description',
     data: params,
     token: true,
   })

@@ -45,6 +45,8 @@ export default {
   salePriceStartedAt: '促销开始时间',
   salePriceEndedAt: '促销结束时间',
   mpn: '制造商产品编号',
+  metaTitle: 'SEO标题',
+  metaDescription: 'SEO描述',
   placeholder: {
     productNameQuery: '请输入产品名称查询',
     productName: '请输入产品名称',
@@ -70,5 +72,7 @@ export default {
     salePriceEndedAt: '请输入促销结束时间',
     mpn: '请输入制造商产品编号',
     parameterGroup: '请选择参数组',
+    metaTitle: '请输入SEO标题',
+    metaDescription: '请输入SEO描述',
   },
 }

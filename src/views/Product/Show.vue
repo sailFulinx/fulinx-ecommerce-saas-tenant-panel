@@ -7,7 +7,7 @@ import Base from './Modules/Base.vue'
 import Image from './Modules/Image.vue'
 import Parameter from './Modules/Parameter.vue'
 import Price from './Modules/Price.vue'
-import Slug from './Modules/Slug.vue'
+import Seo from './Modules/Seo.vue'
 
 const { t: $t } = useLocale()
 
@@ -404,8 +404,9 @@ const editProductStatus = async () => {
         <ElTabPane :label="$t('product.image')" name="image">
           <Image :form="form" @reset-form-data="resetFormData" />
         </ElTabPane>
-        <ElTabPane :label="$t('product.seo')" name="seo" />
-        <ElTabPane :label="$t('product.slug')" name="slug" />
+        <ElTabPane :label="$t('product.seo')" name="seo">
+          <Seo :form="form" @reset-form-data="resetFormData" />
+        </ElTabPane>
       </ElTabs>
     </div>
   </div>
