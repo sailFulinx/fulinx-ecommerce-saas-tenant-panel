@@ -188,6 +188,14 @@ const getSupplierList = async () => {
 }
 getSupplierList()
 
+const remoteQuerySupplier = async (query: string) => {
+  if (query.length < 3) {
+    return
+  }
+  listSupplierQuery.supplierName = query
+  await getSupplierList()
+}
+
 const pageTitle = $t('product.add')
 
 const productFormRef = ref()
@@ -483,7 +491,7 @@ const save = async () => {
               <ElFormItem :label="$t('product.inStockQuantity')" prop="inStockQuantity">
                 <ElInputNumber
                   v-model="productForm.inStockQuantity"
-                  :min="1"
+                  :min="0"
                   :max="9999999999"
                   class="w-[200px]"
                   :placeholder="$t('product.placeholder.inStockQuantity')"
@@ -552,7 +560,12 @@ const save = async () => {
                 />
               </ElFormItem>
               <ElFormItem :label="$t('product.supplier')" prop="supplierId">
-                <ElSelect v-model="productForm.supplierId" :placeholder="$t('product.placeholder.supplier')">
+                <ElSelect
+                  v-model="productForm.supplierId"
+                  filterable
+                  clearable
+                  remote reserve-keyword :remote-method="remoteQuerySupplier" :placeholder="$t('product.placeholder.supplier')" style="width:200px"
+                >
                   <ElOption
                     v-for="item in listSupplierResult.list"
                     :key="item.id"

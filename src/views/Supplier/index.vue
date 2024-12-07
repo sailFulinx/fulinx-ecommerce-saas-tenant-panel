@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { supplierPaginationApi, removeSupplierApi } from '@/api/supplier'
+import { removeSupplierApi, supplierPaginationApi } from '@/api/supplier'
 import avatar from '@/assets/imgs/avatar.jpg'
 import { usePreferenceStore } from '@/stores/preference'
 import { ElMessage } from 'element-plus'
@@ -48,10 +48,10 @@ watch(
   { immediate: true },
 )
 
-const init = async () => {
-  loading.list = true
-  await getList()
-}
+// const init = async () => {
+//   loading.list = true
+//   await getList()
+// }
 
 const pagination = (val: PaginationComponentDataType) => {
   if (val) {

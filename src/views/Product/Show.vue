@@ -1,8 +1,12 @@
 <script setup name="ProductDetail" lang="ts">
-import { showProductApi } from '@/api/product'
+import { createProductDetailApi, showProductApi, updateProductNameApi, updateProductStatusApi } from '@/api/product'
 import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
 import { ElAlert, ElCard, ElForm, ElInput, ElMessage, ElSwitch, ElTabPane } from 'element-plus'
+import Base from './Modules/Base.vue'
+import Image from './Modules/Image.vue'
+import Price from './Modules/Price.vue'
+import Slug from './Modules/Slug.vue'
 
 const { t: $t } = useLocale()
 
@@ -18,21 +22,87 @@ const loading = reactive({
 })
 
 const handleChangeTab = async (pane: string) => {
-  if (pane === 'productValue') {
-    await getProductValueList()
-  }
+  console.log(pane)
 }
 
 // 创建product请求参数
-const createFormData = (): ProductShow & CommonField => {
+const createFormData = (): ShowProduct & CommonField => {
   return {
     id: '',
+    sku: '',
+    mpn: '',
     productType: 0,
-    productDetailListResultDo: {
+    isCustomLayout: true,
+    isRequiredShipping: true,
+    isSettingOnlineTime: true,
+    onlineTime: '',
+    isSettingOfflineTime: true,
+    offlineTime: '',
+    sort: '',
+    inStockQuantity: 0,
+    processingQuantity: 0,
+    processingDays: 0,
+    productionCycle: 0,
+    supplierId: '',
+    supplierShowResultDo: {
       id: '',
-      productId: '',
-      languageId: '',
-      productName: '',
+      status: true,
+      isCustomLayout: true,
+      layoutId: '',
+      supplierDetailListResultDo: {
+        id: '',
+        supplierId: '',
+        languageId: '',
+        supplierName: '',
+        supplierDescription: '',
+        supplierFileId: '',
+        supplierFileVo: {
+          id: '',
+          fileRemoteType: 0,
+          bucket: '',
+          originalPath: '',
+          originalFileName: '',
+          fileName: '',
+          fileContentType: '',
+          fileExtensionName: '',
+          fileWidth: 0,
+          fileHeight: 0,
+          etag: '',
+          bucketKey: '',
+          fileUrl: '',
+          sha256: '',
+          isDelete: 0,
+          remark: '',
+          recordVersion: 0,
+          recordCreateName: '',
+          recordUpdateName: '',
+          recordCreateTime: '',
+          recordUpdateTime: '',
+        },
+        isDelete: 0,
+        remark: '',
+        recordVersion: 0,
+        recordCreateName: '',
+        recordUpdateName: '',
+        recordCreateTime: '',
+        recordUpdateTime: '',
+      },
+      supplierSeoListResultDo: {
+        id: '',
+        supplierId: '',
+        languageId: '',
+        metaTitle: '',
+        metaDescription: '',
+        isDelete: 0,
+        remark: '',
+        recordVersion: 0,
+        recordCreateName: '',
+        recordUpdateName: '',
+        recordCreateTime: '',
+        recordUpdateTime: '',
+      },
+      slugId: '',
+      slug: '',
       isDelete: 0,
       remark: '',
       recordVersion: 0,
@@ -41,6 +111,169 @@ const createFormData = (): ProductShow & CommonField => {
       recordCreateTime: '',
       recordUpdateTime: '',
     },
+    layoutId: '',
+    status: true,
+    productCategoryRelationListResultDos: [
+      {
+        id: '',
+        productId: '',
+        categoryId: '',
+        isDelete: 0,
+        remark: '',
+        recordVersion: 0,
+        recordCreateName: '',
+        recordUpdateName: '',
+        recordCreateTime: '',
+        recordUpdateTime: '',
+      },
+    ],
+    productImages: [
+      {
+        id: '',
+        productId: '',
+        productFileType: 0,
+        fileId: '',
+        fileVo: {
+          id: '',
+          fileRemoteType: 0,
+          bucket: '',
+          originalPath: '',
+          originalFileName: '',
+          fileName: '',
+          fileContentType: '',
+          fileExtensionName: '',
+          fileWidth: 0,
+          fileHeight: 0,
+          etag: '',
+          bucketKey: '',
+          fileUrl: '',
+          sha256: '',
+          isDelete: 0,
+          remark: '',
+          recordVersion: 0,
+          recordCreateName: '',
+          recordUpdateName: '',
+          recordCreateTime: '',
+          recordUpdateTime: '',
+        },
+        isDefault: true,
+        sort: 0,
+        isDelete: 0,
+        remark: '',
+        recordVersion: 0,
+        recordCreateName: '',
+        recordUpdateName: '',
+        recordCreateTime: '',
+        recordUpdateTime: '',
+      },
+    ],
+    productMeasureListResultDo: {
+      id: '',
+      productId: '',
+      weightType: 0,
+      weight: 0,
+      lengthType: 0,
+      length: 0,
+      width: 0,
+      height: 0,
+      isDelete: 0,
+      remark: '',
+      recordVersion: 0,
+      recordCreateName: '',
+      recordUpdateName: '',
+      recordCreateTime: '',
+      recordUpdateTime: '',
+    },
+    productOtherListResultDo: {
+      id: '',
+      productId: '',
+      productSourceType: 0,
+      isAdult: true,
+      ageGroupType: 0,
+      genderType: 0,
+      conditionType: 0,
+      isDelete: 0,
+      remark: '',
+      recordVersion: 0,
+      recordCreateName: '',
+      recordUpdateName: '',
+      recordCreateTime: '',
+      recordUpdateTime: '',
+    },
+    productParameterRelationListResultDos: [
+      {
+        id: '',
+        productId: '',
+        parameterGroupId: '',
+        parameterGroupName: '',
+        parameterId: '',
+        parameterName: '',
+        parameterValueId: '',
+        parameterValueContent: '',
+        isDelete: 0,
+        remark: '',
+        recordVersion: 0,
+        recordCreateName: '',
+        recordUpdateName: '',
+        recordCreateTime: '',
+        recordUpdateTime: '',
+      },
+    ],
+    productPriceListResultDos: [
+      {
+        id: '',
+        productId: '',
+        currencyId: '',
+        currencyVo: {
+          id: '',
+          countryName: '',
+          currencyName: '',
+          currencyCode: '',
+          symbolLeft: '',
+          symbolRight: '',
+          decimalPlace: 0,
+          isHot: true,
+          sort: 0,
+          recordVersion: 0,
+          isDelete: 0,
+          remark: '',
+          recordCreateName: '',
+          recordUpdateName: '',
+          recordCreateTime: '',
+          recordUpdateTime: '',
+        },
+        orderQuantity: 0,
+        price: 0,
+        isSettingSalePrice: true,
+        salePrice: 0,
+        salePriceStartedAt: '',
+        isSettingSaleEndedTime: true,
+        salePriceEndedAt: '',
+        isDelete: 0,
+        remark: '',
+        recordVersion: 0,
+        recordCreateName: '',
+        recordUpdateName: '',
+        recordCreateTime: '',
+        recordUpdateTime: '',
+      },
+    ],
+    productSeoListResultDo: {
+      id: '',
+      productId: '',
+      languageId: '',
+      metaTitle: '',
+      metaDescription: '',
+      isDelete: 0,
+      remark: '',
+      recordVersion: 0,
+      recordCreateName: '',
+      recordUpdateName: '',
+      recordCreateTime: '',
+      recordUpdateTime: '',
+    },
+    slugId: '',
+    slug: '',
     isDelete: 0,
     remark: '',
     recordVersion: 0,
@@ -48,11 +281,41 @@ const createFormData = (): ProductShow & CommonField => {
     recordUpdateName: '',
     recordCreateTime: '',
     recordUpdateTime: '',
+    productDetailListResultDo: {
+      id: '',
+      productId: '',
+      languageId: '',
+      productName: '',
+      shortDescription: '',
+      productDescription: '',
+      isDelete: 0,
+      remark: '',
+      recordVersion: 0,
+      recordCreateName: '',
+      recordUpdateName: '',
+      recordCreateTime: '',
+      recordUpdateTime: '',
+    },
+    productTagListResultDos: [
+      {
+        id: '',
+        productId: '',
+        languageId: '',
+        tagName: '',
+        isDelete: 0,
+        remark: '',
+        recordVersion: 0,
+        recordCreateName: '',
+        recordUpdateName: '',
+        recordCreateTime: '',
+        recordUpdateTime: '',
+      },
+    ],
   }
 }
 
 // form初始化
-const form = reactive<ProductShow>(createFormData())
+const form = reactive<ShowProduct & CommonField>(createFormData())
 
 const showProductPayload = reactive<ShowProductParams>({
   productId: id,
@@ -70,7 +333,7 @@ const getProductData = async () => {
   return data
 }
 
-const resetFormData = async (val: ProductShow) => {
+const resetFormData = async (val: ShowProduct) => {
   await nextTick(() => {
     Object.assign(form, JSON.parse(JSON.stringify(val)))
   })
@@ -93,55 +356,20 @@ watch(
   { immediate: true },
 )
 
-// 更新名称
-const inputProductNameVisible = ref<boolean>(false)
-const currentProductName = ref<string>('')
-const handleClickUpdateProductName = (productName: string) => {
-  currentProductName.value = productName
-  inputProductNameVisible.value = true
-}
-const handleCancelUpdateProductName = () => {
-  inputProductNameVisible.value = false
-}
-const editProductName = async (productDetailId: string) => {
-  if (!currentProductName.value) {
-    ElMessage.warning($t('product.error.productName'))
-    return
-  }
+// 更新状态
+const editProductStatus = async () => {
   loading.init = true
-  const { data } = await updateProductDetailProductNameApi({
-    productName: currentProductName.value,
-    productDetailId,
-  }).catch(error => {
-    loading.init = false
-    throw error
-  })
-  loading.init = false
-  currentProductName.value = ''
-  await resetFormData(data)
-  inputProductNameVisible.value = false
-  ElMessage.success($t('success.edit'))
-}
-
-// 更新名称新增时
-const createProductName = async () => {
-  if (!currentProductName.value) {
-    ElMessage.warning($t('product.error.productName'))
-    return
-  }
-  loading.init = true
-  const { data } = await createProductDetailApi({
-    productName: currentProductName.value,
+  const { data } = await updateProductStatusApi({
     productId: id,
     languageId: selectLanguage.value.id,
+    status: form.status,
   }).catch(error => {
     loading.init = false
     throw error
   })
   loading.init = false
-  currentProductName.value = ''
   await resetFormData(data)
-  ElMessage.success($t('success.create'))
+  ElMessage.success($t('success.edit'))
 }
 </script>
 
@@ -152,60 +380,24 @@ const createProductName = async () => {
         <div>
           <span>{{ $t('product.show') }}</span>
         </div>
-        <div />
+        <div>
+          <span class="text-sm mr-2">{{ $t('product.status') }}：</span>
+          <ElSwitch v-model="form.status" @change="editProductStatus" />
+        </div>
       </div>
     </div>
 
     <div v-if="!loading.init" class="view-main theme-card">
       <ElTabs v-model="activeName" class="demo-tabs" @tab-change="handleChangeTab">
         <ElTabPane :label="$t('product.base')" name="base">
-          <ElCard v-if="form.productDetailListResultDo" shadow="never" class="mb-5">
-            <div class="w-full mt-0 pt-0">
-              <div class="w-full grid grid-cols-12 gap-8 p-4">
-                <div class="col-span-1 font-semibold fs-[14px] text-gray-700">
-                  {{ $t('product.productName') }} :
-                </div>
-                <div class="col-span-11 w-full flex items-center">
-                  <div v-if="!inputProductNameVisible" class="mr-2 flex">
-                    <div class="mr-1">
-                      {{ form.productDetailListResultDo.productName }}
-                    </div>
-                    <EBtn
-                      type="primary"
-                      text
-                      @click="handleClickUpdateProductName(form.productDetailListResultDo.productName)"
-                    >
-                      <Icon icon="ep:edit" :size="4" class="mr-1" />
-                    </EBtn>
-                  </div>
-                  <div v-else>
-                    <ElInput
-                      v-model="currentProductName"
-                      style="width: 300px"
-                      class="mr-2"
-                      @blur="editProductName(form.productDetailListResultDo.id)"
-                    />
-                    <EBtn text @click="handleCancelUpdateProductName">
-                      <Icon icon="ep:close" :size="5" class="mr-1" />
-                    </EBtn>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </ElCard>
-          <ElCard v-else>
-            <div class="flex justify-center items-center mb-5">
-              <ElAlert :title="$t('product.warning.noDetailData')" type="warning" show-icon />
-            </div>
-            <div class="flex justify-center items-center mb-5">
-              <ElInput v-model="currentProductName" :placeholder="$t('product.placeholder.productName')" />
-              <EBtn type="primary" class="ml-5" @click="createProductName">
-                <Icon icon="ant-design:save-outlined" :size="5" class="mr-1" />
-                {{ $t('common.save') }}
-              </EBtn>
-            </div>
-          </ElCard>
+          <Base :form="form" @reset-form-data="resetFormData" />
         </ElTabPane>
+        <ElTabPane :label="$t('product.price')" name="price" />
+        <ElTabPane :label="$t('product.parameter')" name="parameter" />
+        <ElTabPane :label="$t('product.image')" name="image" />
+        <ElTabPane :label="$t('product.seo')" name="seo" />
+
+        <ElTabPane :label="$t('product.slug')" name="slug" />
       </ElTabs>
     </div>
   </div>

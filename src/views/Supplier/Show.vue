@@ -468,7 +468,7 @@ const editSupplierMetaDescription = async (supplierSeoId: string) => {
                     <div class="flex items-center mb-5">
                       <div class="mr-2">
                         <EBtn
-                          v-if="!inputSupplierNameVisible"
+                          v-if="!inputSupplierDescriptionVisible"
                           type="primary"
                           plain
                           @click="

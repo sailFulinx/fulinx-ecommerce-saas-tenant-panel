@@ -1,12 +1,17 @@
 import placeholder from './placeholder'
 
 export default {
+  show: '产品详情',
   add: '添加产品',
   addPrice: '添加价格',
   name: '产品',
   base: '基础信息',
   priceInfo: '价格',
+  seo: 'SEO',
+  slug: '自定义URL',
+  parameter: '参数',
   stockInfo: '库存',
+  status: '状态',
   parameterInfo: '参数',
   categoryInfo: '产品分类',
   image: '产品图片',
@@ -21,7 +26,7 @@ export default {
   recordCreateTime: '创建时间',
   productType: '产品类型',
   productStockStatusType: '产品库存状态',
-  sku: 'sku',
+  sku: 'SKU',
   isSettingOnlineTime: '是否设置上架时间',
   isSettingOfflineTime: '是否设置下架时间',
   onlineTime: '上架时间',

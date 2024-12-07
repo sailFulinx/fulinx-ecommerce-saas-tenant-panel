@@ -285,8 +285,14 @@ interface ProductFileRelationListResultDo {
   /* Product ID */
   productId: string
 
+  /* Product File Type, 1-Image, 2-Video, 3-Pdf */
+  productFileType: number
+
   /* File ID */
   fileId: string
+
+  /* */
+  fileVo: FileData & CommonField
 
   /* Is Default, 0 - No, 1 - Yes */
   isDefault: boolean
@@ -364,7 +370,28 @@ interface ProductOtherListResultDo {
   conditionType: number
 }
 
-interface ProductParameterRelationListResultDo {}
+interface ProductParameterRelationListResultDo {
+  /* Product ID */
+  productId: string
+
+  /* Parameter Group ID */
+  parameterGroupId: string
+
+  /* Parameter Group Name */
+  parameterGroupName: string
+
+  /* Parameter ID */
+  parameterId: string
+
+  /* Parameter Name */
+  parameterName: string
+
+  /* Parameter Value ID */
+  parameterValueId: string
+
+  /* Parameter Value Content */
+  parameterValueContent: string
+}
 
 interface ProductPriceListResultDo {
   /* Product ID */
@@ -403,6 +430,23 @@ interface productSeoListResultDo {
   metaDescription: string
 }
 
+interface ProductDetailListResultDo {
+  /* Product ID */
+  productId: string
+
+  /* Language ID */
+  languageId: string
+
+  /* Product Name */
+  productName: string
+
+  /* Short Description */
+  shortDescription: string
+
+  /* Product Description */
+  productDescription: string
+}
+
 interface ProductSupplierRelationListResultDo {
   /* Product ID */
   productId: string
@@ -411,9 +455,65 @@ interface ProductSupplierRelationListResultDo {
   supplierId: string
 }
 
+interface ProductTagListResultDo {
+
+  /* Product ID */
+  productId: string
+
+  /* Language ID */
+  languageId: string
+
+  /* Tag Name */
+  tagName: string
+}
+
 interface ShowProduct {
+  /* SKU */
+  sku: string
+
+  /* MPN */
+  mpn: string
+
+  /* Product Type, 1: Simple 2: Configurable 3: Virtual */
+  productType: number
+
   /* Is Custom Layout */
   isCustomLayout: boolean
+
+  /* Is Required Shipping */
+  isRequiredShipping: boolean
+
+  /* Is Setting Online Time */
+  isSettingOnlineTime: boolean
+
+  /* Online Time */
+  onlineTime: string | null
+
+  /* Is Setting Offline Time */
+  isSettingOfflineTime: boolean
+
+  /* Offline Time */
+  offlineTime: string | null
+
+  /* Sort */
+  sort: string
+
+  /* In Stock Quantity */
+  inStockQuantity: number
+
+  /* Processing Quantity */
+  processingQuantity: number
+
+  /* Processing Days */
+  processingDays: number
+
+  /* Production Cycle */
+  productionCycle: number
+
+  /* Supplier ID */
+  supplierId: string
+
+  supplierShowResultDo: SupplierShow & CommonField
 
   /* Layout ID */
   layoutId: string
@@ -421,20 +521,11 @@ interface ShowProduct {
   /* Status, 0 - Disabled , 1 - Enabled */
   status: boolean
 
-  /* Product Attribute Relation List Result Dos */
-  productAttributeRelationListResultDos: (ProductAttributeRelationListResultDo & CommonField)[]
-
-  /* */
-  productBrandRelationListResultDo: ProductBrandRelationListResultDo & CommonField
-
   /* Product Category Relation List Result Dos */
   productCategoryRelationListResultDos: (ProductCategoryRelationListResultDo & CommonField)[]
 
   /* Product File Relation List Result Dos */
-  productFileRelationListResultDos: (ProductFileRelationListResultDo & CommonField)[]
-
-  /* */
-  productIdentifierListResultDo: ProductIdentifierListResultDo & CommonField
+  productImages: (ProductFileRelationListResultDo & CommonField)[]
 
   /* */
   productMeasureListResultDo: ProductMeasureListResultDo & CommonField
@@ -446,17 +537,328 @@ interface ShowProduct {
   productParameterRelationListResultDos: (ProductParameterRelationListResultDo & CommonField)[]
 
   /* */
-  productPriceListResultDo: ProductPriceListResultDo & CommonField
+  productPriceListResultDos: (ProductPriceListResultDo & CommonField)[]
 
   /* */
   productSeoListResultDo: productSeoListResultDo & CommonField
-
-  /* */
-  productSupplierRelationListResultDo: ProductSupplierRelationListResultDo & CommonField
 
   /* Slug ID */
   slugId: string
 
   /* Slug */
   slug: string
+
+  /* */
+  productDetailListResultDo: ProductDetailListResultDo & CommonField
+
+  /* */
+  productTagListResultDos: (ProductTagListResultDo & CommonField)[]
+}
+
+interface UpdateProductCategoryParams {
+  /* Product ID */
+  productId: string
+
+  /* Category Ids */
+  categoryIds: string[]
+
+  /* Deleted Category Ids */
+  deletedCategoryIds: string[]
+
+  /* Language ID */
+  languageId: string
+}
+
+interface UpdateProductImageParams {
+  /* Product ID */
+  productId: string
+
+  /* Product File Type */
+  productFileType: number
+
+  /* File Ids */
+  fileIds: string[]
+
+  /* Deleted File Ids */
+  deletedFileIds: string[]
+
+  /* Language ID */
+  languageId: string
+}
+
+interface UpdateProductInStockQuantityParams {
+  /* Product ID */
+  productId: string
+
+  /* In Stock Quantity */
+  inStockQuantity: number
+
+  /* Language ID */
+  languageId: string
+}
+
+interface UpdateProductIsSettingOfflineTimeParams {
+  /* Product ID */
+  productId: string
+
+  /* Is Setting Offline Time */
+  isSettingOfflineTime: boolean
+
+  /* Language ID */
+  languageId: string
+}
+
+interface UpdateProductIsSettingOnlineTimeParams {
+  /* Product ID */
+  productId: string
+
+  /* Is Setting Online Time */
+  isSettingOnlineTime: boolean
+
+  /* Language ID */
+  languageId: string
+}
+
+interface UpdateProductMpnParams {
+  /* Product ID */
+  productId: string
+
+  /* MPN */
+  mpn: string
+
+  /* Language ID */
+  languageId: string
+}
+
+interface UpdateProductOfflineTimeParams {
+  /* Product ID */
+  productId: string
+
+  /* Offline Time */
+  offlineTime: string | null
+
+  isSettingOfflineTime: boolean
+
+  /* Language ID */
+  languageId: string
+}
+
+interface UpdateProductOnlineTimeParams {
+  /* Product ID */
+  productId: string
+
+  /* Online Time */
+  onlineTime: string | null
+
+  isSettingOnlineTime: boolean
+
+  /* Language ID */
+  languageId: string
+}
+
+interface UpdateProductParameterParams {
+  /* Product ID */
+  productId: string
+
+  /* Product Parameter Relation Request Dos */
+  productParameterRelationRequestDos: {
+    /* Parameter Group ID */
+    parameterGroupId: string
+
+    /* Product Parameter Relation ID */
+    productParameterRelationId: string
+
+    /* Parameter ID */
+    parameterId: string
+
+    /* Parameter Value ID */
+    parameterValueId?: string
+
+    /* Parameter Value Content */
+    parameterValueContent?: string
+  }[]
+
+  /* Deleted Product Parameter Ids */
+  deletedProductParameterIds?: string[]
+
+  /* Parameter GroupId */
+  parameterGroupId: string
+
+  /* Language ID */
+  languageId: string
+}
+
+interface UpdateProductPriceParams {
+  /* Product ID */
+  productId: string
+
+  /* Product Price Update Request Dos */
+  productPriceUpdateRequestDos: {
+    /* Product Price Id */
+    productPriceId: string
+
+    /* Order Quantity */
+    orderQuantity: number
+
+    /* Price */
+    price: number
+
+    /* Is Setting Sale Price */
+    isSettingSalePrice?: boolean
+
+    /* Sale Price */
+    salePrice?: number
+
+    /* Sale Price Started At */
+    salePriceStartedAt?: string
+
+    /* Is Setting Sale Ended TIme, , 0 - No, 1 - Yes */
+    isSettingSaleEndedTime?: boolean
+
+    /* Sale Price Ended At */
+    salePriceEndedAt?: string
+  }[]
+
+  /* Deleted Price Ids */
+  deletedPriceIds?: string[]
+
+  /* Language ID */
+  languageId: string
+}
+
+interface UpdateProductProcessingDaysParams {
+  /* Product ID */
+  productId: string
+
+  /* Processing Days */
+  processingDays: number
+
+  /* Language ID */
+  languageId: string
+}
+
+interface UpdateProductProcessingQuantityParams {
+  /* Product ID */
+  productId: string
+
+  /* Processing Quantity */
+  processingQuantity: number
+
+  /* Language ID */
+  languageId: string
+}
+
+interface UpdateProductProductionCycleParams {
+  /* Product ID */
+  productId: string
+
+  /* ProductionCycle */
+  productionCycle: number
+
+  /* Language ID */
+  languageId: string
+}
+
+interface UpdateProductSkuParams {
+  /* Product ID */
+  productId: string
+
+  /* SKU */
+  sku: string
+
+  /* Language ID */
+  languageId: string
+}
+
+interface UpdateProductStatusParams {
+  /* Product ID */
+  productId: string
+
+  /* Status */
+  status: boolean
+
+  /* Language ID */
+  languageId: string
+}
+
+interface UpdateProductSupplierParams {
+  /* Product ID */
+  productId: string
+
+  /* Supplier ID */
+  supplierId: string
+
+  /* Language ID */
+  languageId: string
+}
+
+interface UpdateProductNameParams {
+  /* Product Detail ID */
+  productDetailId: string
+
+  /* Product Name */
+  productName: string
+}
+
+interface UpdateProductDescriptionParams {
+  /* Product Detail ID */
+  productDetailId: string
+
+  /* Product Description */
+  productDescription: string
+}
+
+interface UpdateProductShortDescriptionParams {
+  /* Product Detail ID */
+  productDetailId: string
+
+  /* Product Short Description */
+  productShortDescription: string
+}
+
+interface UpdateProductMetaTitleParams {
+  /* Product Seo ID */
+  productSeoId: string
+
+  /* Meta Title */
+  metaTitle: string
+}
+
+interface UpdateProductMetaDescriptionParams {
+  /* Product Seo ID */
+  productSeoId: string
+
+  /* Meta Description */
+  metaDescription: string
+}
+
+interface CreateProductDetailParams {
+  /* Product ID */
+  productId: string
+
+  /* Language ID */
+  languageId: string
+
+  /* Product Name */
+  productName: string
+
+  /* Product Short Description */
+  productShortDescription?: string
+
+  /* Product Description */
+  productDescription?: string
+}
+
+interface CreateProductSeoParams {
+  /* Product ID */
+  productId: string
+
+  /* Language ID */
+  languageId: string
+
+  /* Meta Title */
+  metaTitle: string
+
+  /* Meta Description */
+  metaDescription?: string
 }
