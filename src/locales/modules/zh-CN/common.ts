@@ -88,6 +88,7 @@ export default {
   removeConfirm: '是否确认删除?',
   Preference: '偏好设置',
   upload: '上传',
+  operate: '操作',
   placeholder: {
     language: '语言必须选择',
   },

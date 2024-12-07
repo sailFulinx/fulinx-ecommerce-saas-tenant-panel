@@ -392,11 +392,12 @@ const editProductStatus = async () => {
         <ElTabPane :label="$t('product.base')" name="base">
           <Base :form="form" @reset-form-data="resetFormData" />
         </ElTabPane>
-        <ElTabPane :label="$t('product.price')" name="price" />
+        <ElTabPane :label="$t('product.price')" name="price">
+          <Price :form="form" @reset-form-data="resetFormData" />
+        </ElTabPane>
         <ElTabPane :label="$t('product.parameter')" name="parameter" />
         <ElTabPane :label="$t('product.image')" name="image" />
         <ElTabPane :label="$t('product.seo')" name="seo" />
-
         <ElTabPane :label="$t('product.slug')" name="slug" />
       </ElTabs>
     </div>

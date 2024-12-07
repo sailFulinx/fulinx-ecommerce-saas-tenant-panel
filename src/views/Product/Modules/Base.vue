@@ -18,7 +18,6 @@ import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
 import { formatTime } from '@/utils'
 import { ElMessage, ElSwitch } from 'element-plus'
-import { fa } from 'element-plus/es/locale'
 
 const { form } = defineProps<{ form: ShowProduct & CommonField }>()
 

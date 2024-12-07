@@ -692,6 +692,9 @@ interface UpdateProductPriceParams {
   /* Product ID */
   productId: string
 
+  /* Currency ID */
+  currencyId: string
+
   /* Product Price Update Request Dos */
   productPriceUpdateRequestDos: {
     /* Product Price Id */
