@@ -47,6 +47,7 @@ export default {
   mpn: '制造商产品编号',
   metaTitle: 'SEO标题',
   metaDescription: 'SEO描述',
+  technology: '技术资料',
   placeholder: {
     productNameQuery: '请输入产品名称查询',
     productName: '请输入产品名称',

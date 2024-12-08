@@ -8,6 +8,7 @@ import Image from './Modules/Image.vue'
 import Parameter from './Modules/Parameter.vue'
 import Price from './Modules/Price.vue'
 import Seo from './Modules/Seo.vue'
+import Technology from './Modules/Technology.vue'
 
 const { t: $t } = useLocale()
 
@@ -130,6 +131,46 @@ const createFormData = (): ShowProduct & CommonField => {
       },
     ],
     productImages: [
+      {
+        id: '',
+        productId: '',
+        productFileType: 0,
+        fileId: '',
+        fileVo: {
+          id: '',
+          fileRemoteType: 0,
+          bucket: '',
+          originalPath: '',
+          originalFileName: '',
+          fileName: '',
+          fileContentType: '',
+          fileExtensionName: '',
+          fileWidth: 0,
+          fileHeight: 0,
+          etag: '',
+          bucketKey: '',
+          fileUrl: '',
+          sha256: '',
+          isDelete: 0,
+          remark: '',
+          recordVersion: 0,
+          recordCreateName: '',
+          recordUpdateName: '',
+          recordCreateTime: '',
+          recordUpdateTime: '',
+        },
+        isDefault: true,
+        sort: 0,
+        isDelete: 0,
+        remark: '',
+        recordVersion: 0,
+        recordCreateName: '',
+        recordUpdateName: '',
+        recordCreateTime: '',
+        recordUpdateTime: '',
+      },
+    ],
+    productTechnologyFiles: [
       {
         id: '',
         productId: '',
@@ -403,6 +444,9 @@ const editProductStatus = async () => {
         </ElTabPane>
         <ElTabPane :label="$t('product.image')" name="image">
           <Image :form="form" @reset-form-data="resetFormData" />
+        </ElTabPane>
+        <ElTabPane :label="$t('product.technology')" name="technology">
+          <Technology :form="form" @reset-form-data="resetFormData" />
         </ElTabPane>
         <ElTabPane :label="$t('product.seo')" name="seo">
           <Seo :form="form" @reset-form-data="resetFormData" />

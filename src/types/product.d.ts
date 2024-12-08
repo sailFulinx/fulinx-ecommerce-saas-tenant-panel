@@ -533,6 +533,8 @@ interface ShowProduct {
   /* Product File Relation List Result Dos */
   productImages: (ProductFileRelationListResultDo & CommonField)[]
 
+  productTechnologyFiles: (ProductFileRelationListResultDo & CommonField)[]
+
   /* */
   productMeasureListResultDo: ProductMeasureListResultDo & CommonField
 
