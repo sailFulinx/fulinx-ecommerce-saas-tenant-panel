@@ -27,12 +27,6 @@ const loading = reactive({
   list: false,
 })
 
-const listParameterValueQuery = reactive<ParameterParameterValueListParams & Pagination>({
-  languageId: usePreferenceStore().preference?.language.id,
-  parameterId: id,
-  pageSize: 20,
-  pageNumber: 1,
-})
 const selectedParameterValueList = ref<string[]>([])
 
 const selectedParameterValueItem = (val: (ParameterValueListData & CommonField)[]) => {
@@ -41,6 +35,13 @@ const selectedParameterValueItem = (val: (ParameterValueListData & CommonField)[
     selectedParameterValueList.value.push(item.id)
   })
 }
+
+const listParameterValueQuery = reactive<ParameterParameterValueListParams & Pagination>({
+  languageId: usePreferenceStore().preference?.language.id,
+  parameterId: id,
+  pageSize: 20,
+  pageNumber: 1,
+})
 
 const listParameterValueResult = ref<TableResponse<ParameterValueListData & CommonField>>({
   list: [],

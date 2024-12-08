@@ -23,7 +23,7 @@ const loading = reactive({
 })
 
 const handleChangeTab = async (pane: string) => {
-  console.log(pane)
+  activeName.value = pane
 }
 
 // 创建product请求参数

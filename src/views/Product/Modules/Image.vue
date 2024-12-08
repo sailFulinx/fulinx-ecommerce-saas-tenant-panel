@@ -82,7 +82,7 @@ const handleSave = async () => {
     <template #header>
       <div class="flex items-center justify-between">
         <div class="text-base font-bold">
-          {{ $t('product.price') }}
+          {{ $t('product.image') }}
         </div>
         <div class="flex items-center justify-end">
           <EBtn type="primary" plain @click="handleSave">

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { parameterGroupListApi, parameterGroupParameterRelationListApi } from '@/api/parameter'
+import { parameterGroupListApi, parameterGroupParameterRelationListApi, parameterValueListApi } from '@/api/parameter'
 import { updateProductParameterApi } from '@/api/product'
 import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
@@ -22,39 +22,43 @@ const id = useRoute().params.id as string
 
 const formData = ref<ShowProduct & CommonField>(form)
 
+const selectedParameterGroup = ref('')
+
+// 参数值
+const listParameterValueQuery = reactive<ParameterParameterValueListParams & Pagination>({
+  languageId: usePreferenceStore().preference?.language.id,
+  parameterId: id,
+  pageSize: 20,
+  pageNumber: 1,
+})
+
+const getParameterValueList = async () => {
+  loading.list = true
+  const { data } = await parameterValueListApi(listParameterValueQuery).catch(err => {
+    loading.list = false
+    throw err
+  })
+  loading.list = false
+  return data.total > 0 ? data.list : []
+}
+
+// 用于提交的数据
 const productParameterData = ref<UpdateProductParameterParams>({
   productId: id,
   productParameterRelationRequestDos: [],
-  deletedProductParameterIds: [],
+  deletedProductParameterRelationIds: [],
   languageId: usePreferenceStore().preference?.language.id,
   parameterGroupId: formData.value.parameterGroupId,
-})
-
-const selectedParameterGroup = ref('')
-
-const inputParameterForm = ref<string[]>([])
-
-const productParameterForm = ref<ProductParameterRelationRequest[]>([])
-
-const formatInputParameterValue = (index: number, value: ParameterGroupParameterRelationData & CommonField) => {
-  const parameterValueContent = inputParameterForm.value[index]
-  const parameterValue: ProductParameterRelationRequest = {
-    parameterGroupId: selectedParameterGroup.value,
-    parameterId: value.parameterId,
-    parameterValueContent,
-    parameterValueId: '',
-  }
-  productParameterForm.value[index] = parameterValue
-}
-
-const listParameterQuery = reactive<ParameterGroupParameterRelationParams>({
-  languageId: usePreferenceStore().preference?.language.id,
-  parameterGroupId: '',
 })
 
 const listParameterResult = ref<TableResponse<ParameterGroupParameterRelationData & CommonField>>({
   list: [],
   total: 0,
+})
+
+const listParameterQuery = reactive<ParameterGroupParameterRelationParams>({
+  languageId: usePreferenceStore().preference?.language.id,
+  parameterGroupId: '',
 })
 
 const getParameterList = async () => {
@@ -64,6 +68,23 @@ const getParameterList = async () => {
     throw err
   })
   listParameterResult.value = data
+  // 重新组合待提交的数据
+  if (data.total > 0) {
+    data.list.map(item => {
+      const productParameterDataTemp: ProductParameterRequestDo = {
+        parameterGroupId: selectedParameterGroup.value,
+        productParameterRelationId: '',
+        parameterId: item.parameterId,
+        parameterName: item.parameterName,
+        parameterType: item.parameterType,
+        parameterValueId: '',
+        parameterValueContent: '',
+        parameterValues: item.parameterValueListResultDos,
+      }
+      productParameterData.value.productParameterRelationRequestDos.push(productParameterDataTemp)
+    })
+  }
+
   loading.parameterGroup = false
 }
 
@@ -73,34 +94,29 @@ watch(
     if (val) {
       formData.value = JSON.parse(JSON.stringify(form))
       productParameterData.value.productParameterRelationRequestDos = []
-      inputParameterForm.value = []
-      productParameterForm.value = []
       selectedParameterGroup.value = formData.value.parameterGroupId
-      listParameterQuery.parameterGroupId = formData.value.parameterGroupId
-      if (listParameterQuery.parameterGroupId) {
-        await getParameterList()
-      }
       if (
         formData.value.productParameterRelationListResultDos
         && formData.value.productParameterRelationListResultDos.length > 0
       ) {
-        formData.value.productParameterRelationListResultDos.map(item => {
-          if (item.parameterType === 2) {
-            inputParameterForm.value.push(item.parameterValueContent)
+        formData.value.productParameterRelationListResultDos.map(async item => {
+          const parameterItemData: ProductParameterRequestDo = {
+            parameterGroupId: item.parameterGroupId,
+            productParameterRelationId: item.id,
+            parameterId: item.parameterId,
+            parameterName: item.parameterName,
+            parameterType: item.parameterType,
+            parameterValueId: item.parameterValueId,
+            parameterValueContent: item.parameterValueContent,
+            parameterValues: [],
           }
           if (item.parameterType === 1) {
-            productParameterForm.value.push(item)
+            // 查找参数值列表
+            listParameterValueQuery.parameterId = item.parameterId
+            const res = await getParameterValueList()
+            parameterItemData.parameterValues = res
           }
-          // const parameterItemData = {
-          //   parameterGroupId: item.parameterGroupId,
-          //   productParameterRelationId: item.id,
-          //   parameterId: item.parameterId,
-          //   parameterName: item.parameterName,
-          //   parameterType: item.parameterType,
-          //   parameterValueId: item.parameterValueId,
-          //   parameterValueContent: item.parameterValueContent,
-          // }
-          // productParameterData.value.productParameterRelationRequestDos.push(parameterItemData)
+          productParameterData.value.productParameterRelationRequestDos.push(parameterItemData)
         })
       }
     }
@@ -134,13 +150,23 @@ const getParameterGroupList = async () => {
 getParameterGroupList()
 
 const handleParameterGroupChange = async (val: string) => {
-  productParameterData.value.parameterGroupId = val
-  listParameterQuery.parameterGroupId = val
-  await getParameterList()
+  // 如果val的值不等于 formData.value.parameterGroupId，则重新获取参数列表，且把原来的数据全部清空
+  if (val !== formData.value.parameterGroupId) {
+    // 重新组合用于提交的数据，把原来的参数数据全部放到deletedProductParameterIds中
+    if (productParameterData.value.productParameterRelationRequestDos.length > 0) {
+      productParameterData.value.deletedProductParameterRelationIds
+        = productParameterData.value.productParameterRelationRequestDos.map(item => item.productParameterRelationId)
+    }
+    productParameterData.value.productParameterRelationRequestDos = []
+    productParameterData.value.parameterGroupId = val
+    listParameterQuery.parameterGroupId = val
+    await getParameterList()
+  }
 }
 
 const handleSave = async () => {
   loading.init = true
+  productParameterData.value.parameterGroupId = selectedParameterGroup.value
   const { data } = await updateProductParameterApi(productParameterData.value).catch(error => {
     loading.init = false
     throw error
@@ -182,18 +208,23 @@ const handleSave = async () => {
     </template>
     <div class="w-full mt-5">
       <ElForm label-width="100px">
-        <div v-if="listParameterResult && listParameterResult.list.length > 0">
-          <div v-for="(item, index) in listParameterResult.list" :key="item.id">
+        <div
+          v-if="
+            productParameterData.productParameterRelationRequestDos
+              && productParameterData.productParameterRelationRequestDos.length > 0
+          "
+        >
+          <div v-for="(item, index) in productParameterData.productParameterRelationRequestDos" :key="index">
             <ElFormItem v-if="item.parameterType === 2" :label="item.parameterName">
-              <ElInput v-model="inputParameterForm[index]" @input="formatInputParameterValue(index, item)" />
+              <ElInput v-model="item.parameterValueContent" />
             </ElFormItem>
             <ElFormItem v-if="item.parameterType === 1" :label="item.parameterName">
-              <ElSelect v-model="productParameterForm[index]" value-key="id">
+              <ElSelect v-model="item.parameterValueId" value-key="id">
                 <ElOption
-                  v-for="vItem in item.parameterValueListResultDos"
+                  v-for="vItem in item.parameterValues"
                   :key="vItem.id"
                   :label="vItem.parameterValueContent"
-                  :value="vItem"
+                  :value="vItem.id"
                 />
               </ElSelect>
             </ElFormItem>

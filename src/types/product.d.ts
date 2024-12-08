@@ -662,35 +662,39 @@ interface UpdateProductOnlineTimeParams {
   languageId: string
 }
 
+interface ProductParameterRequestDo {
+  /* Parameter Group ID */
+  parameterGroupId: string
+
+  /* Product Parameter Relation ID */
+  productParameterRelationId: string
+
+  /* Parameter ID */
+  parameterId: string
+
+  parameterName: string
+
+  /* Parameter Type */
+  parameterType: number
+
+  /* Parameter Value ID */
+  parameterValueId?: string
+
+  parameterValues: (ParameterValueListResultDo & CommonField)[]
+
+  /* Parameter Value Content */
+  parameterValueContent?: string
+}
+
 interface UpdateProductParameterParams {
   /* Product ID */
   productId: string
 
   /* Product Parameter Relation Request Dos */
-  productParameterRelationRequestDos: {
-    /* Parameter Group ID */
-    parameterGroupId: string
+  productParameterRelationRequestDos: ProductParameterRequestDo[]
 
-    /* Product Parameter Relation ID */
-    productParameterRelationId: string
-
-    /* Parameter ID */
-    parameterId: string
-
-    parameterName: string
-
-    /* Parameter Type */
-    parameterType: number
-
-    /* Parameter Value ID */
-    parameterValueId?: string
-
-    /* Parameter Value Content */
-    parameterValueContent?: string
-  }[]
-
-  /* Deleted Product Parameter Ids */
-  deletedProductParameterIds: string[]
+  /* Deleted Product Parameter Relation Ids */
+  deletedProductParameterRelationIds: string[]
 
   /* Parameter GroupId */
   parameterGroupId: string
