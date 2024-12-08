@@ -100,7 +100,7 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
         name: 'ProductList',
         meta: {
           title: $t('router.product'),
-          icon: 'ant-design:gold-outlined',
+          icon: 'ant-design:barcode-outlined',
         },
       },
       {
@@ -135,7 +135,7 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
         name: 'ParameterList',
         meta: {
           title: $t('router.parameter'),
-          icon: 'ant-design:gold-outlined',
+          icon: 'ant-design:funnel-plot-outlined',
         },
       },
       {
@@ -170,7 +170,7 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
         name: 'ParameterGroupList',
         meta: {
           title: $t('router.parameterGroup'),
-          icon: 'ant-design:gold-outlined',
+          icon: 'ant-design:gateway-outlined',
         },
       },
       {
@@ -240,7 +240,7 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
         name: 'SupplierList',
         meta: {
           title: $t('router.supplier'),
-          icon: 'ant-design:partition-outlined',
+          icon: 'ant-design:insert-row-below-outlined',
         },
       },
       {
@@ -275,7 +275,77 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
         name: 'FileList',
         meta: {
           title: $t('router.file'),
-          icon: 'ant-design:partition-outlined',
+          icon: 'ant-design:file-image-outlined',
+        },
+      },
+    ],
+  },
+  {
+    path: '/order',
+    component: Layout,
+    redirect: '/order/list',
+    name: 'Order',
+    meta: {
+      title: $t('router.order'),
+      icon: 'ant-design:account-book-outlined',
+    },
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/Order/index.vue'),
+        name: 'OrderList',
+        meta: {
+          title: $t('router.category'),
+          icon: 'ant-design:appstore-outlined',
+          noCache: true,
+        },
+      },
+      {
+        path: '/order/show/:id',
+        component: () => import('@/views/Order/Show.vue'),
+        name: 'ShowOrder',
+        meta: {
+          title: `${$t('order.show')}`,
+          noCache: true,
+          hidden: true,
+          canTo: true,
+          activeMenu: '/order',
+          props: true,
+        },
+      },
+    ],
+  },
+  {
+    path: '/customer',
+    component: Layout,
+    redirect: '/customer/list',
+    name: 'Customer',
+    meta: {
+      title: $t('router.customer'),
+      icon: 'ant-design:user-switch-outlined',
+    },
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/Customer/index.vue'),
+        name: 'CustomerList',
+        meta: {
+          title: $t('router.customer'),
+          icon: 'ant-design:appstore-outlined',
+          noCache: true,
+        },
+      },
+      {
+        path: '/customer/show/:id',
+        component: () => import('@/views/Customer/Show.vue'),
+        name: 'ShowCustomer',
+        meta: {
+          title: `${$t('customer.show')}`,
+          noCache: true,
+          hidden: true,
+          canTo: true,
+          activeMenu: '/category',
+          props: true,
         },
       },
     ],
@@ -481,71 +551,57 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
       },
     ],
   },
+  // {
+  //   path: '/test',
+  //   component: Layout,
+  //   redirect: '/test/list',
+  //   name: 'Test',
+  //   meta: {
+  //     title: 'test',
+  //     icon: 'ant-design:message-outlined',
+  //     noCache: true,
+  //     hidden: false,
+  //     canTo: false,
+  //   },
+  //   children: [
+  //     {
+  //       path: 'list',
+  //       component: () => import('@/views/Test/index.vue'),
+  //       name: 'TestList',
+  //       meta: {
+  //         title: 'test',
+  //         icon: 'ant-design:message-outlined',
+  //       },
+  //     },
+  //   ],
+  // },
   {
-    path: '/test',
+    path: '/system',
     component: Layout,
-    redirect: '/test/list',
-    name: 'Test',
+    redirect: '/system/user/list',
+    name: 'System',
     meta: {
-      title: 'test',
-      icon: 'ant-design:message-outlined',
+      title: '系统设置',
+      icon: 'ant-design:setting-outlined',
       noCache: true,
       hidden: false,
       canTo: false,
     },
     children: [
       {
-        path: 'list',
-        component: () => import('@/views/Test/index.vue'),
-        name: 'TestList',
-        meta: {
-          title: 'test',
-          icon: 'ant-design:message-outlined',
-        },
-      },
-    ],
-  },
-  {
-    path: '/user',
-    component: Layout,
-    redirect: '/user/list',
-    name: 'User',
-    meta: {
-      title: $t('router.user'),
-      icon: 'ant-design:user-outlined',
-      noCache: true,
-      hidden: false,
-      canTo: false,
-    },
-    children: [
-      {
-        path: 'list',
+        path: '/user/list',
         component: () => import('@/views/User/index.vue'),
-        name: 'UserList',
+        name: 'SystemUser',
         meta: {
           title: $t('router.user'),
           icon: 'ant-design:user-outlined',
         },
       },
-    ],
-  },
-  {
-    path: '/role',
-    component: Layout,
-    redirect: '/role/list',
-    name: 'Role',
-    meta: {
-      title: $t('router.role'),
-      icon: 'ant-design:safety-certificate-outlined',
-      noCache: true,
-      hidden: false,
-      canTo: false,
-    },
-    children: [
       {
-        path: 'list',
+        path: '/role/list',
         component: () => import('@/views/Role/index.vue'),
-        name: 'RoleList',
+        redirect: '/role/list',
+        name: 'Role',
         meta: {
           title: $t('router.role'),
           icon: 'ant-design:safety-certificate-outlined',

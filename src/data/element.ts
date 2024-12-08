@@ -149,4 +149,34 @@ export const elements: ElementData[] = [
     elementName: '文字卡片',
     aliasName: '文字卡片',
   },
+  {
+    elementId: 16,
+    elementComponentCode: 'NewProducts',
+    elementComponentConfig: {
+      content: {},
+      status: true,
+    },
+    elementName: '最新商品',
+    aliasName: '最新商品',
+  },
+  {
+    elementId: 17,
+    elementComponentCode: 'SaleProducts',
+    elementComponentConfig: {
+      content: {},
+      status: true,
+    },
+    elementName: '促销商品',
+    aliasName: '促销商品',
+  },
+  {
+    elementId: 18,
+    elementComponentCode: 'Supplier',
+    elementComponentConfig: {
+      content: {},
+      status: true,
+    },
+    elementName: '供应商',
+    aliasName: '供应商',
+  },
 ]

@@ -18,12 +18,12 @@ const formRef = ref()
 const createForm = (): FormData => ({
   content: {
     video: {
-      id: 0,
+      id: '',
       originalFileName: '',
       fileName: '',
       fileContentType: '',
       fileExtensionName: '',
-      path: '',
+      originalPath: '',
       fileUrl: '',
       sha256: '',
     },

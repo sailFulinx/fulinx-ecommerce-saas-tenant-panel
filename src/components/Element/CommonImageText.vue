@@ -27,12 +27,12 @@ const createForm = (): FormData => {
   return {
     content: {
       image: {
-        id: 0,
+        id: '',
         originalFileName: '',
         fileName: '',
         fileContentType: '',
         fileExtensionName: '',
-        path: '',
+        originalPath: '',
         fileUrl: '',
         sha256: '',
       },

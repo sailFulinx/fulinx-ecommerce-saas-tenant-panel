@@ -18,4 +18,6 @@ export default {
   role: '角色管理',
   message: '留言管理',
   file: '空间管理',
+  order: '订单管理',
+  customer: '客户管理',
 }

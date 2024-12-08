@@ -13,7 +13,7 @@ const moduleLinkRef = ref()
 const dragging = ref<boolean>(false)
 
 interface ButtonItem {
-  id: string
+  id: number
   sort: number
   buttonText: ''
   buttonLink: LinkData

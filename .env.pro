@@ -20,7 +20,7 @@ VITE_SOURCEMAP=false
 VITE_OUT_DIR=dist-pro
 
 # 标题
-VITE_APP_TITLE=FulinxCms
+VITE_APP_TITLE=FulinxEcommerce
 
 # API URL
 VITE_API_URL=https://api.hcd-group.com/api/
