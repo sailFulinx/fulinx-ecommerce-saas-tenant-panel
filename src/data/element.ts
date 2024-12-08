@@ -171,7 +171,7 @@ export const elements: ElementData[] = [
   },
   {
     elementId: 18,
-    elementComponentCode: 'Supplier',
+    elementComponentCode: 'Suppliers',
     elementComponentConfig: {
       content: {},
       status: true,
