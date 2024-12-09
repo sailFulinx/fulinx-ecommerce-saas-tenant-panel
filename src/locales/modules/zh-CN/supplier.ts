@@ -6,6 +6,7 @@ export default {
   status: '状态',
   add: '添加供应商',
   base: '基础信息',
+  supplierCode: '识别码',
   supplierName: '供应商名称',
   supplierLogo: '供应商Logo',
   supplierSlug: '自定义URL',
@@ -15,6 +16,7 @@ export default {
   metaTitle: '元标题',
   metaDescription: '元描述',
   placeholder: {
+    supplierCode: '识请输入识别码',
     supplierName: '请输入供应商名称',
     slug: '请输入自定义URL',
     supplierDescription: '请输入供应商描述',

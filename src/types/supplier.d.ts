@@ -2,6 +2,9 @@ interface CreateSupplierParams {
   /* Language ID */
   languageId: string
 
+  /* Supplier Code */
+  supplierCode: string
+
   /* Supplier Name */
   supplierName: string
 
@@ -10,6 +13,17 @@ interface CreateSupplierParams {
 
   /* Supplier File ID */
   supplierFileId?: string
+}
+
+interface UpdateSupplierCodeParams {
+  /* Supplier ID */
+  supplierId: string
+
+  /* Supplier Code */
+  supplierCode: string
+
+  /* Language ID */
+  languageId: string
 }
 
 interface CreateSupplierSlugParams {
@@ -90,6 +104,7 @@ interface SupplierDetailListResultDo {
 }
 
 interface SupplierShow {
+  supplierCode: string
   /* Status, 0 - Disabled , 1 - Enabled */
   status: boolean
 

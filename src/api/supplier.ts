@@ -87,6 +87,16 @@ export function updateSupplierDetailApi(params: UpdateSupplierDetailParams): Pro
   })
 }
 
+export function updateSupplierCodeApi(
+  params: UpdateSupplierCodeParams,
+): Promise<IResponse<SupplierShow & CommonField>> {
+  return request.post({
+    url: 'system/supplier/update/code',
+    data: params,
+    token: true,
+  })
+}
+
 /**
  * 更新品牌描述详情
  * @param {object} params 更新品牌描述详情请求参数

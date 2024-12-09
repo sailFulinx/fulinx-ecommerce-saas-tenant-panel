@@ -5,6 +5,7 @@ import {
   createSupplierSeoApi,
   createSupplierSlugApi,
   showSupplierApi,
+  updateSupplierCodeApi,
   updateSupplierDetailDescriptionApi,
   updateSupplierDetailFileApi,
   updateSupplierDetailSupplierNameApi,
@@ -12,10 +13,10 @@ import {
   updateSupplierSlugApi,
   updateSupplierStatusApi,
 } from '@/api/supplier'
+import { supplierCodes } from '@/data/supplier'
 import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
 import { ElAlert, ElCard, ElInput, ElMessage, ElSwitch, ElTabPane } from 'element-plus'
-import { debounce } from 'lodash-es'
 
 const { t: $t } = useLocale()
 
@@ -33,9 +34,10 @@ const loading = reactive({
 })
 
 // 创建supplier请求参数
-const createFormData = (): (SupplierShow & CommonField) => {
+const createFormData = (): SupplierShow & CommonField => {
   return {
     id: '',
+    supplierCode: '',
     status: true,
     isCustomLayout: true,
     layoutId: '',
@@ -155,6 +157,33 @@ const editSupplierStatus = async () => {
   ElMessage.success($t('success.edit'))
 }
 
+const inputSupplierCodeVisible = ref<boolean>(false)
+const handleClickUpdateSupplierCode = () => {
+  inputSupplierCodeVisible.value = true
+}
+const handleCancelUpdateSupplierCode = () => {
+  inputSupplierCodeVisible.value = false
+}
+const editSupplierCode = async () => {
+  if (!form.supplierCode) {
+    ElMessage.warning($t('supplier.placeholder.supplierCode'))
+    return
+  }
+  loading.init = true
+  const { data } = await updateSupplierCodeApi({
+    supplierCode: form.supplierCode,
+    supplierId: id,
+    languageId: selectLanguage.value.id,
+  }).catch(error => {
+    loading.init = false
+    throw error
+  })
+  loading.init = false
+  await resetFormData(data)
+  inputSupplierCodeVisible.value = false
+  ElMessage.success($t('success.edit'))
+}
+
 // 更新名称
 const inputSupplierNameVisible = ref<boolean>(false)
 const currentSupplierName = ref<string>('')
@@ -167,16 +196,17 @@ const handleCancelUpdateSupplierName = () => {
 }
 const editSupplierName = async (supplierDetailId: string) => {
   if (!currentSupplierName.value) {
-    ElMessage.warning($t('supplier.error.supplierName'))
+    ElMessage.warning($t('supplier.placeholder.supplierName'))
     return
   }
   loading.init = true
-  const { data } = await updateSupplierDetailSupplierNameApi({ supplierName: currentSupplierName.value, supplierDetailId }).catch(
-    error => {
-      loading.init = false
-      throw error
-    },
-  )
+  const { data } = await updateSupplierDetailSupplierNameApi({
+    supplierName: currentSupplierName.value,
+    supplierDetailId,
+  }).catch(error => {
+    loading.init = false
+    throw error
+  })
   loading.init = false
   currentSupplierName.value = ''
   await resetFormData(data)
@@ -191,12 +221,14 @@ const createSupplierName = async () => {
     return
   }
   loading.init = true
-  const { data } = await createSupplierDetailApi({ supplierName: currentSupplierName.value, supplierId: id, languageId: selectLanguage.value.id }).catch(
-    error => {
-      loading.init = false
-      throw error
-    },
-  )
+  const { data } = await createSupplierDetailApi({
+    supplierName: currentSupplierName.value,
+    supplierId: id,
+    languageId: selectLanguage.value.id,
+  }).catch(error => {
+    loading.init = false
+    throw error
+  })
   loading.init = false
   currentSupplierName.value = ''
   await resetFormData(data)
@@ -255,7 +287,11 @@ const handleClickCreateSupplierSlug = async () => {
     currentSlug.value = currentSlug.value.slice(0, -1)
   }
 
-  const { data } = await createSupplierSlugApi({ supplierId: id, languageId: usePreferenceStore().preference?.language.id, slug: currentSlug.value }).catch(error => {
+  const { data } = await createSupplierSlugApi({
+    supplierId: id,
+    languageId: usePreferenceStore().preference?.language.id,
+    slug: currentSlug.value,
+  }).catch(error => {
     loading.init = false
     throw error
   })
@@ -284,7 +320,11 @@ const editSupplierSlug = async () => {
   if (currentSlug.value.endsWith('/')) {
     currentSlug.value = currentSlug.value.slice(0, -1)
   }
-  const { data } = await updateSupplierSlugApi({ slugId: form.slugId, languageId: usePreferenceStore().preference?.language.id, slug: currentSlug.value }).catch(error => {
+  const { data } = await updateSupplierSlugApi({
+    slugId: form.slugId,
+    languageId: usePreferenceStore().preference?.language.id,
+    slug: currentSlug.value,
+  }).catch(error => {
     loading.init = false
     throw error
   })
@@ -360,12 +400,14 @@ const createSupplierMetaTitle = async () => {
     return
   }
   loading.init = true
-  const { data } = await createSupplierSeoApi({ supplierId: id, languageId: selectLanguage.value.id, metaTitle: currentSupplierMetaTitle.value }).catch(
-    error => {
-      loading.init = false
-      throw error
-    },
-  )
+  const { data } = await createSupplierSeoApi({
+    supplierId: id,
+    languageId: selectLanguage.value.id,
+    metaTitle: currentSupplierMetaTitle.value,
+  }).catch(error => {
+    loading.init = false
+    throw error
+  })
   loading.init = false
   currentSupplierMetaTitle.value = ''
   await resetFormData(data)
@@ -429,6 +471,45 @@ const editSupplierMetaDescription = async (supplierSeoId: string) => {
           <ElCard v-if="form.supplierDetailListResultDo" shadow="never" class="mb-5">
             <div class="w-full mt-0 pt-0">
               <!-- 文章名称 -->
+
+              <div class="w-full grid grid-cols-12 gap-8 p-4 border-b border-gray-200">
+                <div class="col-span-1 font-semibold text-gray-700">
+                  {{ $t('supplier.supplierCode') }}:
+                </div>
+                <div class="col-span-11 w-full flex items-center">
+                  <span v-if="!inputSupplierCodeVisible" class="mr-2">
+                    {{ form.supplierCode }}
+                  </span>
+                  <span v-else>
+                    <ElSelect v-model="form.supplierCode" filterable clearable style="width: 300px" class="mr-2">
+                      <ElOption
+                        v-for="item in supplierCodes"
+                        :key="item"
+                        :label="item"
+                        :value="item"
+                      />
+                    </ElSelect>
+                    <EBtn text class="mr-2" @click="handleCancelUpdateSupplierCode">
+                      <Icon icon="ep:close" :size="5" class="mr-1" />
+                    </EBtn>
+                    <EBtn
+                      type="primary"
+                      text
+                      @click="editSupplierCode"
+                    >
+                      <Icon icon="ep:check" :size="5" class="mr-1" />
+                    </EBtn>
+                  </span>
+                  <EBtn
+                    v-if="!inputSupplierCodeVisible"
+                    type="primary"
+                    text
+                    @click="handleClickUpdateSupplierCode"
+                  >
+                    <Icon icon="ep:edit" :size="5" class="mr-1" />
+                  </EBtn>
+                </div>
+              </div>
               <div class="w-full grid grid-cols-12 gap-8 p-4 border-b border-gray-200">
                 <div class="col-span-1 font-semibold text-gray-700">
                   {{ $t('supplier.supplierName') }}:
@@ -518,12 +599,7 @@ const editSupplierMetaDescription = async (supplierSeoId: string) => {
                 </div>
                 <div class="col-span-11">
                   <div v-if="!settingSupplierFileVisible">
-                    <EBtn
-                      type="primary"
-                      text
-                      class="mb-5"
-                      @click="handleClickUpdateSupplierFile"
-                    >
+                    <EBtn type="primary" text class="mb-5" @click="handleClickUpdateSupplierFile">
                       <Icon icon="ep:edit" :size="5" class="mr-1" />
                     </EBtn>
                     <div class="grid grid-cols-6 gap-4">
@@ -661,11 +737,7 @@ const editSupplierMetaDescription = async (supplierSeoId: string) => {
                       {{ form.slug }}
                     </div>
                     <div v-else class="flex items-center justify-start">
-                      <ElInput
-                        v-model="currentSlug"
-                        :placeholder="$t('supplier.placeholder.slug')"
-                        class="mr-2"
-                      />
+                      <ElInput v-model="currentSlug" :placeholder="$t('supplier.placeholder.slug')" class="mr-2" />
                       <EBtn text @click="handleCancelUpdateSupplierSlug">
                         <Icon icon="ep:close" :size="5" class="mr-1" />
                       </EBtn>

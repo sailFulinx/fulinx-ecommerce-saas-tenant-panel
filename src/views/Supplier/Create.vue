@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { createSupplierApi } from '@/api/supplier'
 import { layoutListApi } from '@/api/layout'
+import { createSupplierApi } from '@/api/supplier'
+import { supplierCodes } from '@/data/supplier'
 import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
 import { useTagsViewStore } from '@/stores/tagsView'
@@ -14,6 +15,7 @@ const rules = reactive({
   supplierType: [{ required: true, type: 'number', message: '内容类型必填', trigger: 'change' }],
   languageId: [{ required: true, type: 'number', message: '语言必须选择', trigger: 'change' }],
   status: [{ required: true, type: 'boolean', message: '状态必填', trigger: 'change' }],
+  supplierCode: [{ required: true, type: 'string', message: '识别码必须填写', trigger: 'blur' }],
   supplierName: [{ required: true, type: 'string', message: '内容名称必须填写', trigger: 'blur' }],
 })
 
@@ -59,6 +61,7 @@ const editorRef = ref()
 const createSupplierForm = (): CreateSupplierParams => {
   return {
     languageId: '',
+    supplierCode: '',
     supplierName: '',
     supplierDescription: '',
     supplierFileId: '',
@@ -128,6 +131,16 @@ const save = async () => {
     <div class="view-main theme-card">
       <ElCard shadow="never">
         <ElForm ref="supplierFormRef" :model="supplierForm" :rules="rules" label-width="120px">
+          <ElFormItem :label="$t('supplier.supplierCode')" prop="supplierCode">
+            <ElSelect v-model="supplierForm.supplierCode" filterable clearable style="width: 300px" class="mr-2">
+              <ElOption
+                v-for="item in supplierCodes"
+                :key="item"
+                :label="item"
+                :value="item"
+              />
+            </ElSelect>
+          </ElFormItem>
           <ElFormItem :label="$t('supplier.supplierName')" prop="supplierName">
             <ElInput
               v-model="supplierForm.supplierName"
