@@ -601,7 +601,7 @@ interface ArticleTypeListParams {
 interface ArticleTypeData {
   code: string
   id: string
-  articleTypeName: string
+  message: string
 }
 
 // 文章类型列表返回数据

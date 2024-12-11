@@ -349,6 +349,21 @@ const save = async () => {
                   :placeholder="$t('product.placeholder.sku')"
                 />
               </ElFormItem>
+              <ElFormItem :label="$t('product.supplier')" prop="supplierId">
+                <ElSelect
+                  v-model="productForm.supplierId"
+                  filterable
+                  clearable
+                  remote reserve-keyword :remote-method="remoteQuerySupplier" :placeholder="$t('product.placeholder.supplier')" style="width:200px"
+                >
+                  <ElOption
+                    v-for="item in listSupplierResult.list"
+                    :key="item.id"
+                    :value="item.id"
+                    :label="item.supplierName"
+                  />
+                </ElSelect>
+              </ElFormItem>
               <ElFormItem :label="$t('product.mpn')" prop="mpn">
                 <ElInput
                   v-model="productForm.mpn"
@@ -453,7 +468,7 @@ const save = async () => {
                       <ElInputNumber
                         v-model="scope.row.orderQuantity"
                         :min="1"
-                        :max="120"
+                        :max="999999999"
                         :placeholder="$t('product.placeholder.orderQuantity')"
                       />
                     </template>
@@ -550,21 +565,6 @@ const save = async () => {
                   type="datetime"
                   :placeholder="$t('product.placeholder.offlineTime')"
                 />
-              </ElFormItem>
-              <ElFormItem :label="$t('product.supplier')" prop="supplierId">
-                <ElSelect
-                  v-model="productForm.supplierId"
-                  filterable
-                  clearable
-                  remote reserve-keyword :remote-method="remoteQuerySupplier" :placeholder="$t('product.placeholder.supplier')" style="width:200px"
-                >
-                  <ElOption
-                    v-for="item in listSupplierResult.list"
-                    :key="item.id"
-                    :value="item.id"
-                    :label="item.supplierName"
-                  />
-                </ElSelect>
               </ElFormItem>
             </ElCard>
           </div>

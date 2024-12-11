@@ -143,7 +143,7 @@ init()
               v-for="item in articleTypes.list"
               :key="item.id"
               :value="item.id"
-              :label="item.articleTypeName"
+              :label="item.message"
             />
           </ElSelect>
           <ElInput
