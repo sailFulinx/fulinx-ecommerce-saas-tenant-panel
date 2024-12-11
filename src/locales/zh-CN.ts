@@ -4,6 +4,7 @@ import brand from './modules/zh-CN/brand'
 import category from './modules/zh-CN/category'
 import common from './modules/zh-CN/common'
 import comps from './modules/zh-CN/comps'
+import customer from './modules/zh-CN/customer'
 import dashboard from './modules/zh-CN/dashboard'
 import error from './modules/zh-CN/error'
 import file from './modules/zh-CN/file'
@@ -11,6 +12,7 @@ import imp from './modules/zh-CN/imp'
 import layout from './modules/zh-CN/layout'
 import login from './modules/zh-CN/login'
 import message from './modules/zh-CN/message'
+import order from './modules/zh-CN/order'
 import parameter from './modules/zh-CN/parameter'
 import parameterGroup from './modules/zh-CN/parameterGroup'
 import permission from './modules/zh-CN/permission'
@@ -56,4 +58,6 @@ export default {
   theme,
   user,
   warning,
+  customer,
+  order,
 }

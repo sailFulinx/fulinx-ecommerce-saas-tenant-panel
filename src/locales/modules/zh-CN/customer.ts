@@ -1,0 +1,21 @@
+export default {
+  email: '邮箱',
+  show: '顾客详情',
+  base: '基础信息',
+  status: '状态',
+  profile: '顾客资料',
+  nickName: '昵称',
+  realName: '真实姓名',
+  birthday: '生日',
+  telephone: '手机号码',
+  companyName: '公司名称',
+  companyAddress: '公司地址',
+  companyPhoneNumber: '公司电话',
+  bankName: '开户银行名称',
+  bankNumber: '银行帐号',
+  taxNumber: '税号',
+  addresses: '顾客地址',
+  placeholder: {
+    email: '请输入邮箱',
+  },
+}

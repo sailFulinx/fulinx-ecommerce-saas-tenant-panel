@@ -1,28 +1,8 @@
 <script setup lang="ts">
-import { articlePaginationApi, fetchArticleTypeListApi, removeArticleApi } from '@/api/article'
-import { usePreferenceStore } from '@/stores/preference'
-import { convertStatus } from '@/utils/article'
-import { ElMessage } from 'element-plus'
+import { orderPaginationApi } from '@/api/order'
+import { formatTime } from '@/utils'
 
-const articleTypePayload = reactive<ArticleTypeListParams>({
-  articleTypeCode: null,
-})
-
-const articleTypes = ref<ListArticleTypeRes>({
-  list: [],
-  total: 0,
-})
-
-const getArticleTypeList = async () => {
-  const { data } = await fetchArticleTypeListApi(articleTypePayload).catch(error => {
-    throw error
-  })
-  articleTypes.value = { ...data }
-}
-
-getArticleTypeList()
-
-const listResult = ref<TableResponse<ArticleListData & CommonField>>({
+const listResult = ref<TableResponse<OrderData & CommonField>>({
   list: [],
   total: 0,
 })
@@ -31,10 +11,8 @@ const loading = reactive({
   list: false,
   del: false,
 })
-const listQuery = reactive<ArticleListParams & Pagination>({
-  languageId: usePreferenceStore().preference?.language.id,
-  articleName: '',
-  articleType: null,
+const listQuery = reactive<OrderListParams & Pagination>({
+  orderId: null,
   pageSize: 20,
   pageNumber: 1,
 })
@@ -42,28 +20,16 @@ const selectedList = ref<string[]>([])
 
 const getList = async () => {
   loading.list = true
-  if (listQuery.articleName === '') {
-    listQuery.articleName = null
+  if (listQuery.orderId === '') {
+    listQuery.orderId = null
   }
-  const { data } = await articlePaginationApi(listQuery).catch(err => {
+  const { data } = await orderPaginationApi(listQuery).catch(err => {
     loading.list = false
     throw err
   })
   listResult.value = data
   loading.list = false
 }
-
-// watch preference language
-watch(
-  () => usePreferenceStore().preference?.language,
-  val => {
-    if (val) {
-      listQuery.languageId = val.id
-      getList()
-    }
-  },
-  { immediate: true },
-)
 
 const init = async () => {
   loading.list = true
@@ -78,54 +44,15 @@ const pagination = (val: PaginationComponentDataType) => {
   getList()
 }
 
-const selectedArticleItem = (val: ArticleListData[]) => {
+const selectedOrderItem = (val: (OrderData & CommonField)[]) => {
   selectedList.value = []
   val.forEach(item => {
     selectedList.value.push(item.id)
   })
 }
-const handleDelete = async (row: ArticleListData & CommonField) => {
-  loading.list = true
-  await removeArticleApi({ ids: [row.id] }).catch(err => {
-    loading.list = false
-    throw err
-  })
-  getList()
-  ElMessage({
-    message: '删除成功',
-    type: 'success',
-    duration: 2000,
-  })
-}
-const handleMultiDelete = async () => {
-  loading.list = true
-  if (selectedList.value.length === 0) {
-    ElMessage({
-      message: '您没有选择哦',
-      type: 'error',
-      duration: 2000,
-    })
-    loading.list = false
-    return
-  }
-  await removeArticleApi({ ids: selectedList.value }).catch(err => {
-    loading.list = false
-    throw err
-  })
-  loading.list = false
-  getList()
-  ElMessage({
-    message: '删除成功',
-    type: 'success',
-    duration: 2000,
-  })
-}
-const handleCreate = () => {
-  router.push({ name: 'CreateArticle' })
-}
 
-const handleRedirectEdit = (val: ArticleListData & CommonField) => {
-  router.push({ name: 'ShowArticle', params: { id: val.id } })
+const handleRedirectEdit = (val: OrderData & CommonField) => {
+  router.push({ name: 'ShowOrder', params: { id: val.id } })
 }
 init()
 </script>
@@ -136,20 +63,12 @@ init()
       <div class="flex justify-between items-center">
         <div class="flex flex-1 items-center">
           <div class="mr-5">
-            {{ $t('router.article') }}
+            {{ $t('router.order') }}
           </div>
-          <ElSelect v-model="listQuery.articleType" :placeholder="$t('article.placeholder.articleType')" clearable filterable class="mr-5 w-50" @change="getList">
-            <ElOption
-              v-for="item in articleTypes.list"
-              :key="item.id"
-              :value="item.id"
-              :label="item.articleTypeName"
-            />
-          </ElSelect>
           <ElInput
-            v-model="listQuery.articleName"
+            v-model="listQuery.orderId"
             clearable
-            :placeholder="$t('article.placeholder.articleName')"
+            :placeholder="$t('order.placeholder.orderId')"
             style="width: 200px"
             class="filter-item mr-5"
             @clear="getList"
@@ -159,16 +78,7 @@ init()
             {{ $t('common.search') }}
           </EBtn>
         </div>
-        <div>
-          <EBtn type="danger" @click="handleMultiDelete">
-            <Icon icon="ep:delete" class="mr-1" />
-            {{ $t('common.remove') }}
-          </EBtn>
-          <EBtn type="primary" @click="handleCreate">
-            <Icon icon="ep:plus" class="mr-1" />
-            {{ $t('common.add') }}
-          </EBtn>
-        </div>
+        <div />
       </div>
     </div>
     <div class="view-main">
@@ -180,22 +90,37 @@ init()
         default-expand-all
         highlight-current-row
         border
-        @selection-change="selectedArticleItem"
+        @selection-change="selectedOrderItem"
       >
         <ElTableColumn type="selection" width="55" />
-        <ElTableColumn :label="$t('article.articleType')" width="120">
+        <ElTableColumn :label="$t('order.orderId')">
           <template #default="scope">
-            <span>{{ scope.row.articleTypeLabel }}</span>
+            <span>{{ scope.row.id }}</span>
           </template>
         </ElTableColumn>
-        <ElTableColumn :label="$t('article.articleName')">
+        <ElTableColumn :label="$t('order.email')">
           <template #default="scope">
-            <span>{{ scope.row.articleName }}</span>
+            <span>{{ scope.row.customerEmail }}</span>
           </template>
         </ElTableColumn>
-        <ElTableColumn :label="$t('common.status')" width="120">
+        <ElTableColumn :label="$t('order.orderTotalAmount')">
           <template #default="scope">
-            <span>{{ convertStatus(scope.row.status) }}</span>
+            <span>{{ scope.row.orderTotalAmount.toFixed(2) }}</span>
+          </template>
+        </ElTableColumn>
+        <ElTableColumn :label="$t('order.status')">
+          <template #default="scope">
+            <span>{{ scope.row.orderStatusText }}</span>
+          </template>
+        </ElTableColumn>
+        <ElTableColumn :label="$t('order.approvalStatus')">
+          <template #default="scope">
+            <span>{{ scope.row.approvalStatusText }}</span>
+          </template>
+        </ElTableColumn>
+        <ElTableColumn :label="$t('common.recordCreateTime')" >
+          <template #default="scope">
+            <span>{{ formatTime(scope.row.recordCreateTime) }}</span>
           </template>
         </ElTableColumn>
         <ElTableColumn label="操作" header-align="center" width="220" align="center" class-name="pl-15 fixed-width">
@@ -204,12 +129,6 @@ init()
               <EBtn size="small" @click="handleRedirectEdit(scope.row)">
                 <Icon icon="ep:edit" class="mr-1" />
                 {{ $t('common.view') }}
-              </EBtn>
-            </span>
-            <span>
-              <EBtn size="small" type="danger" :loading="loading.del" @click="handleDelete(scope.row)">
-                <Icon icon="ep:delete" class="mr-1" />
-                {{ $t('common.remove') }}
               </EBtn>
             </span>
           </template>

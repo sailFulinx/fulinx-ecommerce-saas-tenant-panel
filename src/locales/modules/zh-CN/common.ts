@@ -89,6 +89,8 @@ export default {
   Preference: '偏好设置',
   upload: '上传',
   operate: '操作',
+  enabled: '启用',
+  disabled: '禁用',
   placeholder: {
     language: '语言必须选择',
   },
