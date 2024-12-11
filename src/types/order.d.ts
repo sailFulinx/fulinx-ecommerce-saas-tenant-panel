@@ -188,6 +188,8 @@ interface OrderData {
   /* Currency Code */
   currencyCode: string
 
+  currencyVo: CurrencyData & CommonField
+
   /* Customer Email */
   customerEmail: string
 

@@ -82,10 +82,10 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
     ],
   },
   {
-    path: '/product',
+    path: '/catalog',
     component: Layout,
-    redirect: '/product/list',
-    name: 'Product',
+    redirect: '/catalog/product/list',
+    name: 'Catalog',
     meta: {
       title: $t('router.product'),
       icon: 'ant-design:barcode-outlined',
@@ -95,7 +95,7 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
     },
     children: [
       {
-        path: 'product',
+        path: 'product/list',
         component: () => import('@/views/Product/index.vue'),
         name: 'ProductList',
         meta: {

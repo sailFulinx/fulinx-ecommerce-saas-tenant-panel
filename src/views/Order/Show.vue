@@ -11,16 +11,19 @@ import {
   ElMessage,
   ElSwitch,
   ElTable,
-  ElTabPane
+  ElTabPane,
+  ElTabs,
 } from 'element-plus'
 
 const { t: $t } = useLocale()
 
 const id = useRoute().params.id as string
 
+const sourceUrl = import.meta.env.VITE_RESOURCE_URL
+
 const loading = reactive({
   init: false,
-  categories: false
+  categories: false,
 })
 
 // 创建order请求参数
@@ -32,6 +35,24 @@ const createFormData = (): OrderData & CommonField => {
     cartIds: '',
     currencyId: '',
     currencyCode: '',
+    currencyVo: {
+      id: '',
+      countryName: '',
+      currencyName: '',
+      currencyCode: '',
+      symbolLeft: '',
+      symbolRight: '',
+      decimalPlace: 0,
+      isHot: true,
+      sort: 0,
+      recordVersion: 0,
+      isDelete: 0,
+      remark: '',
+      recordCreateName: '',
+      recordUpdateName: '',
+      recordCreateTime: '',
+      recordUpdateTime: '',
+    },
     customerEmail: '',
     shippingMethodCode: '',
     paymentMethodCode: '',
@@ -56,8 +77,8 @@ const createFormData = (): OrderData & CommonField => {
         recordCreateName: '',
         recordUpdateName: '',
         recordCreateTime: '',
-        recordUpdateTime: ''
-      }
+        recordUpdateTime: '',
+      },
     ],
     orderProductListResultDos: [
       {
@@ -104,8 +125,8 @@ const createFormData = (): OrderData & CommonField => {
         recordCreateName: '',
         recordUpdateName: '',
         recordCreateTime: '',
-        recordUpdateTime: ''
-      }
+        recordUpdateTime: '',
+      },
     ],
     orderAddressListResultDos: [
       {
@@ -133,8 +154,8 @@ const createFormData = (): OrderData & CommonField => {
         recordCreateName: '',
         recordUpdateName: '',
         recordCreateTime: '',
-        recordUpdateTime: ''
-      }
+        recordUpdateTime: '',
+      },
     ],
     isDelete: 0,
     remark: '',
@@ -143,12 +164,27 @@ const createFormData = (): OrderData & CommonField => {
     recordUpdateName: '',
     recordCreateTime: '',
     recordUpdateTime: '',
-    products: []
+    products: [],
   }
 }
 
 // form初始化
 const form = reactive<OrderData & CommonField>(createFormData())
+
+const orderProducts = ref<(OrderProductListResultDo & CommonField)[]>([])
+
+const parseOrderProductData = (item: OrderProductListResultDo & CommonField) => ({
+  ...item,
+  productCategory: JSON.parse(item.productCategory || '{}'),
+  productDetail: JSON.parse(item.productDetail || '{}'),
+  productMeasure: JSON.parse(item.productMeasure || '{}'),
+  productFile: JSON.parse(item.productFile || '{}'),
+  productOther: JSON.parse(item.productOther || '{}'),
+  productPrice: JSON.parse(item.productPrice || '{}'),
+  productSeo: JSON.parse(item.productSeo || '{}'),
+  productParameter: JSON.parse(item.productParameter || '{}'),
+  productTag: JSON.parse(item.productTag || '{}'),
+})
 
 // 获取文章数据
 const getOrderData = async () => {
@@ -157,6 +193,7 @@ const getOrderData = async () => {
     loading.init = false
     throw error
   })
+  orderProducts.value = data.orderProductListResultDos.map(parseOrderProductData)
   loading.init = false
   return data
 }
@@ -173,6 +210,12 @@ const initFormData = async () => {
 }
 
 initFormData()
+
+const activeName = ref<string>('orderStatusManager')
+
+const handleChangeTab = (name: string) => {
+
+}
 </script>
 
 <template>
@@ -205,7 +248,7 @@ initFormData()
     </div>
 
     <div v-if="!loading.init" class="view-main theme-card bg-gray-50">
-      <div class="w-full grid grid-cols-2 gap-5">
+      <div class="w-full grid grid-cols-2 gap-5 mb-5">
         <ElCard shadow="never">
           <template #header>
             <div class="flex justify-between items-center">
@@ -219,7 +262,7 @@ initFormData()
               {{ form.id }}
             </ElDescriptionsItem>
             <ElDescriptionsItem :label="$t('order.orderTotalAmount')">
-              {{ form.orderTotalAmount.toFixed(2) }}
+              {{ form.currencyVo.symbolLeft }}{{ form.orderTotalAmount.toFixed(2) }}
             </ElDescriptionsItem>
             <ElDescriptionsItem :label="$t('order.status')">
               {{ form.orderStatusText }}
@@ -252,6 +295,95 @@ initFormData()
               </div>
             </div>
           </template>
+          <ElDescriptions :column="1" border>
+            <ElDescriptionsItem :label="$t('order.email')">
+              {{ form.customerEmail }}
+            </ElDescriptionsItem>
+            <ElDescriptionsItem :label="$t('order.shippingFullName')">
+              {{ form.orderAddressListResultDos[0].fullName }}
+            </ElDescriptionsItem>
+            <ElDescriptionsItem :label="$t('order.shippingTelephone')">
+              {{ form.orderAddressListResultDos[0].telephone }}
+            </ElDescriptionsItem>
+            <ElDescriptionsItem :label="$t('order.shippingAddress')">
+              {{ form.orderAddressListResultDos[0].administrativeProvinceShortName
+              }}{{ form.orderAddressListResultDos[0].administrativeCityShortName
+              }}{{ form.orderAddressListResultDos[0].address1 }}{{ form.orderAddressListResultDos[0].address2
+              }}{{ form.orderAddressListResultDos[0].postcode }}
+            </ElDescriptionsItem>
+          </ElDescriptions>
+        </ElCard>
+      </div>
+      <div class="w-full grid grid-cols-1 gap-5 mb-5">
+        <ElCard shadow="never">
+          <template #header>
+            <div class="flex justify-between items-center">
+              <div class="text-sm font-bold">
+                {{ $t('order.products') }}
+              </div>
+            </div>
+          </template>
+          <ElTable :border="true" :data="orderProducts" style="width: 100%">
+            <ElTableColumn prop="productFile" label="图像" width="180">
+              <template #default="scope">
+                <a
+                  class="cursor-pointer"
+                  @click="
+                    () => {
+                      $router.push(`/catalog/product/show/${scope.row.productId}`)
+                    }
+                  "
+                >
+                  <img
+                    :src="`${sourceUrl}${scope.row.productFile[0]?.fileVo?.fileUrl}`"
+                    :alt="scope.row.productName?.productName"
+                  >
+                </a>
+              </template>
+            </ElTableColumn>
+            <ElTableColumn prop="sku" label="sku">
+              <template #default="scope">
+                <a
+                  class="cursor-pointer"
+                  @click="
+                    () => {
+                      $router.push(`/catalog/product/show/${scope.row.productId}`)
+                    }
+                  "
+                >
+                  <span class="text-blue-600 underline">{{ scope.row.sku }}</span>
+                </a>
+              </template>
+            </ElTableColumn>
+            <ElTableColumn prop="mpn" label="制造商编号">
+              <template #default="scope">
+                <span class="text-gray-600">{{ scope.row.mpn }}</span>
+              </template>
+            </ElTableColumn>
+            <ElTableColumn prop="price" label="单价（含13%增值税）">
+              <template #default="scope">
+                {{ scope.row.orderPrice.toFixed(2) }}
+              </template>
+            </ElTableColumn>
+            <ElTableColumn label="数量" width="280" align="center">
+              <template #default="scope">
+                {{ scope.row.orderQuantity }}
+              </template>
+            </ElTableColumn>
+            <ElTableColumn prop="total" label="小计（含13%增值税）">
+              <template #default="scope">
+                <div>{{ scope.row.subtotalAmount.toFixed(2) }}</div>
+              </template>
+            </ElTableColumn>
+          </ElTable>
+        </ElCard>
+      </div>
+      <div class="w-full grid grid-cols-1 gap-5">
+        <ElCard shadow="never">
+          <ElTabs v-model="activeName" class="demo-tabs" @tab-change="handleChangeTab">
+            <ElTabPane :label="$t('order.orderStatusManager')" name="orderStatusManager" />
+            <ElTabPane :label="$t('order.orderShippingHistory')" name="orderShippingHistory" />
+          </ElTabs>
         </ElCard>
       </div>
     </div>
