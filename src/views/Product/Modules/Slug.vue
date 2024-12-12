@@ -1,3 +1,6 @@
+<template>
+  <div />
+</template>
 <!-- <script setup lang="ts">
 import { updateProductSlugApi } from '@/api/product'
 import { useLocale } from '@/hooks/useLocale'
