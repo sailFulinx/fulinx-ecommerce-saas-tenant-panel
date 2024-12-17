@@ -1,3 +1,5 @@
+import coupon from './coupon'
+
 export default {
   login: '登录',
   system: '系统设置',
@@ -20,4 +22,5 @@ export default {
   file: '空间管理',
   order: '订单管理',
   customer: '客户管理',
+  coupon: '优惠券管理',
 }

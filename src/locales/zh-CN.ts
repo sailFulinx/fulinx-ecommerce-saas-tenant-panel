@@ -4,6 +4,7 @@ import brand from './modules/zh-CN/brand'
 import category from './modules/zh-CN/category'
 import common from './modules/zh-CN/common'
 import comps from './modules/zh-CN/comps'
+import coupon from './modules/zh-CN/coupon'
 import customer from './modules/zh-CN/customer'
 import dashboard from './modules/zh-CN/dashboard'
 import error from './modules/zh-CN/error'
@@ -60,4 +61,5 @@ export default {
   warning,
   customer,
   order,
+  coupon,
 }

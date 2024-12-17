@@ -436,6 +436,56 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
     ],
   },
   {
+    path: '/marketing',
+    component: Layout,
+    redirect: '/marketing/coupon/list',
+    name: 'Marketing',
+    meta: {
+      title: '营销管理',
+      icon: 'ant-design:rocket-outlined',
+      noCache: true,
+      hidden: false,
+      canTo: false,
+    },
+    children: [
+      {
+        path: 'coupon/list',
+        component: () => import('@/views/Marketing/Coupon/List.vue'),
+        name: 'CouponList',
+        meta: {
+          title: '优惠券列表',
+          icon: 'ant-design:rocket-outlined',
+        },
+      },
+      {
+        path: 'coupon/create',
+        component: () => import('@/views/Marketing/Coupon/Create.vue'),
+        name: 'CreateCoupon',
+        meta: {
+          title: '优惠券新增',
+          noCache: true,
+          hidden: true,
+          canTo: true,
+          activeMenu: '/marketing/coupon/list',
+          props: false,
+        },
+      },
+      {
+        path: 'coupon/edit/:id',
+        component: () => import('@/views/Site/Edit.vue'),
+        name: 'EditCoupon',
+        meta: {
+          title: '优惠券修改',
+          noCache: true,
+          hidden: true,
+          canTo: true,
+          activeMenu: '/site',
+          props: true,
+        },
+      },
+    ],
+  },
+  {
     path: '/site',
     component: Layout,
     redirect: '/site/list',
