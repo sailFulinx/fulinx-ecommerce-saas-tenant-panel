@@ -29,6 +29,11 @@ interface CreateCouponParams {
   couponDescription?: string
 }
 
+interface IssueCouponParams {
+  /* Coupon Id */
+  couponId: string
+}
+
 interface RemoveCouponParams {
   ids: string[]
 }
@@ -121,7 +126,7 @@ interface CouponListParams {
   couponId?: string
 
   /* Coupon Name */
-  couponName?: string
+  couponName?: string | null
 
   /* Coupon Type, 1-percentage, 2-fixed, 3-free shipping */
   couponType?: number
@@ -137,17 +142,82 @@ interface CouponListData {
   /* Coupon Type, 1-percentage, 2-fixed, 3-free shipping */
   couponType: number
 
-  /* Coupon Rules */
-  couponRules: string
+  /* Coupon Type Text */
+  couponTypeText: string
+
+  /* Coupon Value */
+  couponValue: number
+
+  /* Coupon Rule Value, must be greater than coupon value */
+  couponRuleValue: number
+
+  /* Coupon Rule Type, 1-New User, 2-Customer retention */
+  couponRuleType: number
+
+  /* Coupon Rule Type Text */
+  couponRuleTypeText: string
+
+  /* Customer Retention Cycle */
+  customerRetentionCycle: number
 
   /* Issue Count */
   issueCount: number
 
   /* Started Time */
-  startedTime: Record<string, unknown>
+  startedTime: string
 
   /* Ended Time */
-  endedTime: Record<string, unknown>
+  endedTime: string
+
+  /* Issued Status, 0- UnIssued, 1-Issued */
+  issuedStatus: boolean
+
+  /* Coupon Description */
+  couponDescription: string
+
+  /* Status，0-disabled, 1- enabled */
+  status: boolean
+}
+
+interface CouponShowData {
+  /* Coupon Name */
+  couponName: string
+
+  /* Coupon Type, 1-percentage, 2-fixed, 3-free shipping */
+  couponType: number
+
+  /* Coupon Type Text */
+  couponTypeText: string
+
+  /* Coupon Value */
+  couponValue: number
+
+  /* Coupon Rule Value, must be greater than coupon value */
+  couponRuleValue: number
+
+  /* Coupon Rule Type, 1-New User, 2-Customer retention */
+  couponRuleType: number
+
+  /* Coupon Rule Type Text */
+  couponRuleTypeText: string
+
+  /* Customer Retention Cycle */
+  customerRetentionCycle: number
+
+  /* Issue Count */
+  issueCount: number
+
+  /* Started Time */
+  startedTime: string
+
+  /* Ended Time */
+  endedTime: string
+
+  /* Issued Status, 0- UnIssued, 1-Issued */
+  issuedStatus: boolean
+
+  /* Coupon Description */
+  couponDescription: string
 
   /* Status，0-disabled, 1- enabled */
   status: boolean
@@ -156,4 +226,46 @@ interface CouponListData {
 interface CouponRule {
   couponRuleType: number
   customerInactiveDays: number
+}
+
+interface CouponIssueListParams {
+  /* Coupon Issue ID */
+  couponIssueId?: string
+
+  /* Coupon ID */
+  couponId?: string
+
+  /* Customer ID */
+  customerId?: string
+
+  /* Coupon Code */
+  couponCode?: string
+
+  /* 删除标识 */
+  isDelete?: number
+}
+
+interface CouponIssueListData {
+  /* Coupon ID */
+  couponId: string
+
+  /* Customer ID */
+  customerId: string
+
+  /* Coupon Code */
+  couponCode: string
+
+  /* Is Used, 0-no, 1:yes */
+  isUsed: boolean
+
+  /* Status，1-normal，2-expired */
+  status: number
+}
+
+interface IssueCouponToCustomerParams {
+  /* Coupon ID */
+  couponId: string
+
+  /* Customer Email */
+  customerEmail: string
 }

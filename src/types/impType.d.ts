@@ -1,5 +1,5 @@
 type ImpListResponseDataType = {
-  FileId: string
+  fileId: string
   id: string
   importStatus: number
   importType: number
@@ -8,7 +8,7 @@ type ImpListResponseDataType = {
 interface ImpRequestQueryParameterType {}
 
 type ImpLogResponseDataType = {
-  FileId: string
+  fileId: string
   fileVo: {
     fileContentType: string
     fileExtensionName: string

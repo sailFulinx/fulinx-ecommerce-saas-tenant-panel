@@ -23,4 +23,5 @@ export default {
   order: '订单管理',
   customer: '客户管理',
   coupon: '优惠券管理',
+  imp: '导入管理',
 }

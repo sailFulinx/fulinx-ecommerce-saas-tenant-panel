@@ -1,25 +1,26 @@
 <script setup lang="ts">
-import { couponPaginationApi } from '@/api/coupon'
-
-const listResult = ref<TableResponse<CouponListData & CommonField>>({
-  list: [],
-  total: 0,
-})
+import { couponPaginationApi, removeCouponApi } from '@/api/coupon'
+import { ElMessage } from 'element-plus'
 
 const loading = reactive({
   list: false,
   del: false,
 })
 const listQuery = reactive<CouponListParams & Pagination>({
-  email: null,
+  couponName: null,
   pageSize: 20,
   pageNumber: 1,
 })
 
+const listResult = ref<TableResponse<CouponListData & CommonField>>({
+  list: [],
+  total: 0,
+})
+
 const getList = async () => {
   loading.list = true
-  if (listQuery.email === '') {
-    listQuery.email = null
+  if (listQuery.couponName === '') {
+    listQuery.couponName = null
   }
   const { data } = await couponPaginationApi(listQuery).catch(err => {
     loading.list = false
@@ -53,7 +54,7 @@ const handleCreate = () => {
 
 const selectedList = ref<string[]>([])
 
-const selectedCouponItem = (val: CouponListData[]) => {
+const selectedCouponItem = (val: (CouponListData & CommonField)[]) => {
   selectedList.value = []
   val.forEach(item => {
     selectedList.value.push(item.id)
@@ -107,7 +108,7 @@ const handleMultiDelete = async () => {
             {{ $t('router.coupon') }}
           </div>
           <ElInput
-            v-model="listQuery.email"
+            v-model="listQuery.couponName"
             clearable
             :placeholder="$t('coupon.placeholder.couponName')"
             style="width: 200px"

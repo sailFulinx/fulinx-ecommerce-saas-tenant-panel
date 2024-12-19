@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { productPaginationApi, removeProductApi } from '@/api/product'
-import avatar from '@/assets/imgs/avatar.jpg'
 import { usePreferenceStore } from '@/stores/preference'
 import { formatTime } from '@/utils'
 import { ElMessage } from 'element-plus'
@@ -106,6 +105,13 @@ const handleCreate = () => {
 const handleRedirectEdit = (val: ProductListData & CommonField) => {
   router.push({ name: 'ShowProduct', params: { id: val.id } })
 }
+
+const impDialogRef = ref()
+
+// 导入
+const handleImport = () => {
+  impDialogRef.value.handleOpen()
+}
 // init()
 </script>
 
@@ -131,6 +137,7 @@ const handleRedirectEdit = (val: ProductListData & CommonField) => {
           </EBtn>
         </div>
         <div>
+          <EBtn type="default" @click="handleImport">{{ $t('imp.name') }}</EBtn>
           <EBtn type="danger" @click="handleMultiDelete">
             <Icon icon="ep:delete" class="mr-1" />
             {{ $t('common.remove') }}
@@ -213,5 +220,6 @@ const handleRedirectEdit = (val: ProductListData & CommonField) => {
         @pagination="pagination"
       />
     </div>
+    <ImpDialog ref="impDialogRef" import-type="product" />
   </div>
 </template>

@@ -8,6 +8,22 @@ export function createCouponApi(data: CreateCouponParams): Promise<IResponse<Cou
   })
 }
 
+export function issueCouponApi(data: IssueCouponParams): Promise<IResponse<boolean>> {
+  return request.post({
+    url: 'system/coupon/issue',
+    data,
+    token: true,
+  })
+}
+
+export function issueCouponToCustomerApi(data: IssueCouponToCustomerParams): Promise<IResponse<boolean>> {
+  return request.post({
+    url: 'system/coupon/issue/to/customer',
+    data,
+    token: true,
+  })
+}
+
 export function removeCouponApi(data: RemoveCouponParams): Promise<IResponse<boolean>> {
   return request.delete({
     url: 'system/coupon',
@@ -118,6 +134,26 @@ export function couponPaginationApi(
 ): Promise<IResponse<TableResponse<CouponListData & CommonField>>> {
   return request.post({
     url: 'system/coupon/pagination',
+    data: params,
+    token: true,
+  })
+}
+
+export function couponIssueListApi(
+  params: CouponIssueListParams,
+): Promise<IResponse<TableResponse<CouponIssueListData & CommonField>>> {
+  return request.post({
+    url: 'system/coupon/issue/list',
+    data: params,
+    token: true,
+  })
+}
+
+export function couponIssuePaginationApi(
+  params: CouponIssueListParams & Pagination,
+): Promise<IResponse<TableResponse<CouponIssueListData & CommonField>>> {
+  return request.post({
+    url: 'system/coupon/issue/pagination',
     data: params,
     token: true,
   })
