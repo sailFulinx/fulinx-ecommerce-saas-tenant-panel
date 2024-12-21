@@ -19,9 +19,9 @@
   },
   "scripts": {
     "dev": "vite --mode dev",
-    "local": "vite --mode development",
+    "local": "vite --mode development-local",
     "build:pro": "vite build --mode pro",
-    "build:dev": "npm run ts:check && vite build --mode dev",
+    "build:dev": "npm run ts:check && vite build --mode development",
     "build:test": "vite build --mode test",
     "preview": "vite preview",
     "clean": "npx rimraf node_modules",

@@ -6,21 +6,17 @@ export const useUserStore = defineStore('user', () => {
   // 用户详情
   const userDetail = ref<UserDetailResponseType | null>({
     operatorName: '',
-    userId: 0,
+    userId: '',
     userRoleIds: [],
     userType: 0,
-    userProfileId: 0,
+    userProfileId: '',
     username: '',
     firstName: '',
     lastName: '',
     gender: 0,
     telephone: '',
     post: '',
-    authorities: [
-      {
-        authority: '',
-      },
-    ],
+    authorities: [],
   })
 
   // 登录
@@ -49,21 +45,17 @@ export const useUserStore = defineStore('user', () => {
   const resetUser = () => {
     userDetail.value = {
       operatorName: '',
-      userId: 0,
+      userId: '',
       userRoleIds: [],
       userType: 0,
-      userProfileId: 0,
+      userProfileId: '',
       username: '',
       firstName: '',
       lastName: '',
       gender: 0,
       telephone: '',
       post: '',
-      authorities: [
-        {
-          authority: '',
-        },
-      ],
+      authorities: [],
     }
   }
 

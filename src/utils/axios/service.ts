@@ -93,7 +93,7 @@ service.interceptors.response.use(
     }
     // console.log(error) // for debug
     const resData = error?.response?.data as IResponse
-    const res = resData.errorMessage ? resData.errorMessage : { message: '失去响应，请检查网络' }
+    const res = resData?.errorMessage ? resData.errorMessage : { message: '失去响应，请检查网络' }
     ElMessage.error(res)
     return Promise.reject(error)
   },

@@ -83,7 +83,7 @@ interface UserDetailResponseType {
   userType: number
 
   /* */
-  userProFileId: string
+  userProfileId: string
 
   /* */
   username: string

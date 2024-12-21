@@ -1,6 +1,5 @@
 import type { ConfigEnv, UserConfig } from 'vite'
 import { resolve } from 'node:path'
-import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 import Vue from '@vitejs/plugin-vue'
 import UnoCSS from 'unocss/vite'
 import AutoImport from 'unplugin-auto-import/vite'
@@ -20,7 +19,6 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
   const isBuild = command === 'build'
   if (!isBuild) {
     env = loadEnv((process.argv[3] === '--mode' ? process.argv[4] : process.argv[3]), root)
-  } else {
     env = loadEnv(mode, root)
   }
   return {
@@ -79,12 +77,11 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
       },
     },
     server: {
-      port: 4001,
+      port: 8001,
       proxy: {
-        // 选项写法
         '/api': {
-          target: 'http://127.0.0.1:8000',
-          changeOrigin: true,
+          target: 'http://127.0.0.1:17010', // 后端服务地址
+          changeOrigin: true, // 是否改变来源
           rewrite: path => path.replace(/^\/api/, ''),
         },
       },
