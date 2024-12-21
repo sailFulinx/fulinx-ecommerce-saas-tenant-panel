@@ -639,7 +639,7 @@ const createProductName = async () => {
         <div class="col-span-11 w-full flex items-center">
           <div v-if="!editProductSupplierVisible" class="mr-2 flex">
             <div class="mr-1">
-              {{ formData.supplierShowResultDo.supplierDetailListResultDo.supplierName }}
+              {{ formData.supplierShowResultDo?.supplierDetailListResultDo?.supplierName }}
             </div>
             <EBtn type="primary" text @click="handleClickUpdateProductSupplier">
               <Icon icon="ep:edit" :size="4" class="mr-1" />
