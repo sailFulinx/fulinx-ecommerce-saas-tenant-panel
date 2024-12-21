@@ -137,7 +137,9 @@ const handleImport = () => {
           </EBtn>
         </div>
         <div>
-          <EBtn type="default" @click="handleImport">{{ $t('imp.name') }}</EBtn>
+          <EBtn type="default" @click="handleImport">
+            {{ $t('imp.name') }}
+          </EBtn>
           <EBtn type="danger" @click="handleMultiDelete">
             <Icon icon="ep:delete" class="mr-1" />
             {{ $t('common.remove') }}
@@ -181,12 +183,28 @@ const handleImport = () => {
         </ElTableColumn>
         <ElTableColumn :label="$t('product.productPrice')">
           <template #default="scope">
-            <span>{{ scope.row.productPriceListResultDos[0].currencyVo.currencyCode }} {{ scope.row.productPriceListResultDos[0].currencyVo.symbolLeft }}{{ scope.row.productPriceListResultDos[0].price.toFixed(4) }}</span>
+            <span v-if="scope.row.productPriceListResultDos && scope.row.productPriceListResultDos.length > 0">
+              {{ scope.row.productPriceListResultDos[0].currencyVo.currencyCode }}
+              {{ scope.row.productPriceListResultDos[0]?.currencyVo?.symbolLeft || ''
+              }}{{
+                scope.row.productPriceListResultDos[0]?.price
+                  ? scope.row.productPriceListResultDos[0]?.price?.toFixed(2)
+                  : '-'
+              }}
+            </span>
           </template>
         </ElTableColumn>
         <ElTableColumn :label="$t('product.salePrice')">
           <template #default="scope">
-            <span v-if="scope.row.productPriceListResultDos[0].salePrice">{{ scope.row.productPriceListResultDos[0].currencyVo.currencyCode }} {{ scope.row.productPriceListResultDos[0].currencyVo.symbolLeft }}{{ scope.row.productPriceListResultDos[0].salePrice.toFixed(4) }}</span>
+            <span v-if="scope.row.productPriceListResultDos && scope.row.productPriceListResultDos.length > 0">
+              {{ scope.row.productPriceListResultDos[0].currencyVo.currencyCode }}
+              {{ scope.row.productPriceListResultDos[0]?.currencyVo?.symbolLeft || ''
+              }}{{
+                scope.row.productPriceListResultDos[0]?.salePrice
+                  ? scope.row.productPriceListResultDos[0]?.salePrice?.toFixed(2)
+                  : '-'
+              }}
+            </span>
             <span v-else>无</span>
           </template>
         </ElTableColumn>

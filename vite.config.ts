@@ -77,7 +77,7 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
       },
     },
     server: {
-      port: 8001,
+      port: 4001,
       proxy: {
         '/api': {
           target: 'http://127.0.0.1:17010', // 后端服务地址
