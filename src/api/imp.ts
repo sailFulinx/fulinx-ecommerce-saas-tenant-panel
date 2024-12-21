@@ -8,7 +8,7 @@ export function createImportApi(data: any): Promise<IResponse> {
   })
 }
 
-export function fetchImpDetailApi(id: number): Promise<IResponse<ImpLogResponseDataType>> {
+export function fetchImpDetailApi(id: string): Promise<IResponse<ImpLogResponseDataType>> {
   return request.get({
     url: `system/custom/imps/${id}`,
     token: true,

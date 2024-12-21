@@ -10,7 +10,7 @@ const loading = reactive({
   imp: false,
 })
 
-const id = Number(useRoute().params.id as unknown)
+const id = useRoute().params.id as string
 
 const tableRef = ref()
 
@@ -53,7 +53,7 @@ getImp()
     <div class="view-main">
       <ElTable ref="tableRef" v-loading="loading.imp" stripe :data="impData.importLogList" style="width: 100%">
         <ElTableColumn prop="id" :label="$t('common.id')" width="120" />
-        <ElTableColumn prop="status" :label="$t('import.impContent')">
+        <ElTableColumn prop="status" :label="$t('imp.impContent')">
           <template #default="scope">
             {{ scope.row.impContent }}
           </template>
@@ -63,7 +63,7 @@ getImp()
             {{ convertImpLogStatus(scope.row.impLogStatus) }}
           </template>
         </ElTableColumn>
-        <ElTableColumn prop="impFailedReason" :label="$t('import.impFailedReason')" />
+        <ElTableColumn prop="impFailedReason" :label="$t('imp.impFailedReason')" />
         <ElTableColumn prop="recordCreateTime" :label="$t('common.recordCreateTime')">
           <template #default="scope">
             {{ formatTime(scope.row.recordCreateTime) }}

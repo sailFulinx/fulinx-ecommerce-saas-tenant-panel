@@ -663,6 +663,7 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
         name: 'Imp',
         meta: {
           title: $t('router.imp'),
+          icon: 'ant-design:upload-outlined',
         },
         children: [
           {
@@ -674,7 +675,7 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
               noCache: true,
               hidden: true,
               canTo: true,
-              activeMenu: '/base/imp',
+              activeMenu: '/system/imp',
               props: true,
             },
           },

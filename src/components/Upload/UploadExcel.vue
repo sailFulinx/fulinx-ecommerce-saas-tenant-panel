@@ -50,7 +50,7 @@ const handleUpload = async ({ file }) => {
     loading.value = false
     throw err
   })
-  ElMessage.success($t('import.uploadSuccess'))
+  ElMessage.success($t('imp.uploadSuccess'))
   loading.value = false
 }
 </script>

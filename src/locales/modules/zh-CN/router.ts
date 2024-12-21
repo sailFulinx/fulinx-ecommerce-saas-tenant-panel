@@ -24,4 +24,5 @@ export default {
   customer: '客户管理',
   coupon: '优惠券管理',
   imp: '导入管理',
+  impLog: '导入日志',
 }

@@ -84,7 +84,7 @@ const paginationList = (val: PaginationComponentDataType) => {
         <ElTableColumn :label="$t('common.action')" align="right" fixed="right" width="220">
           <template #default="scope">
             <ElButton size="small" type="default" @click="handleView(scope.row)">
-              {{ $t('common.view') }}{{ $t('import.impLog') }}
+              {{ $t('common.view') }}{{ $t('imp.impLog') }}
             </ElButton>
           </template>
         </ElTableColumn>
