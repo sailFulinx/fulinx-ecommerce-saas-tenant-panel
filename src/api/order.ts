@@ -1,5 +1,21 @@
 import request from '@/utils/axios'
 
+export function approvalOrderApi(data: OrderApprovalParams): Promise<IResponse<boolean>> {
+  return request.post({
+    url: 'system/order/approval',
+    data,
+    token: true,
+  })
+}
+
+export function updateOrderStatusApi(data: OrderStatusUpdateParams): Promise<IResponse<boolean>> {
+  return request.post({
+    url: 'system/order/status',
+    data,
+    token: true,
+  })
+}
+
 export function showOrderApi(id: string): Promise<IResponse<OrderData & CommonField>> {
   return request.get({
     url: `system/order/show/${id}`,

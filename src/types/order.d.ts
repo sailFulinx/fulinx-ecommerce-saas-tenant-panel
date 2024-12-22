@@ -1,3 +1,24 @@
+interface OrderApprovalParams {
+  /* Order ID */
+  orderId: string
+
+  /* Approval Status, 0-notYetApproved, 1-approved, 2-rejected */
+  approvalStatus: number
+
+  /* Reject Reason */
+  rejectReason: string
+}
+
+interface OrderStatusUpdateParams {
+  /* Order ID */
+  orderId: string
+
+  /* Order Status */
+  orderStatus: number | null
+
+  /* Order Comment */
+  orderComment: string
+}
 interface OrderHistoryListResultDo {
   /* Order ID */
   orderId: string
@@ -173,6 +194,70 @@ interface OrderProductListResultDo {
 }
 
 interface OrderData {
+  /* Site ID */
+  siteId: string
+
+  /* Customer ID */
+  customerId: string
+
+  /* Cart Ids */
+  cartIds: string
+
+  /* Currency ID */
+  currencyId: string
+
+  /* Currency Code */
+  currencyCode: string
+
+  currencyVo: CurrencyData & CommonField
+
+  /* Customer Email */
+  customerEmail: string
+
+  /* Shipping Method Code */
+  shippingMethodCode: string
+
+  /* Payment Method Code */
+  paymentMethodCode: string
+
+  /* Order Total Quantity */
+  orderTotalQuantity: number
+
+  /* Order Total Amount */
+  orderTotalAmount: number
+
+  /* Order Status */
+  orderStatus: number
+
+  orderStatusText: string
+
+  /* IP Address */
+  ipAddress: string
+
+  /* User Agent */
+  userAgent: string
+
+  /* Approval Status, 0-notYetApproved, 1-approved, 2-rejected */
+  approvalStatus: number
+
+  approvalStatusText: string
+
+  /* Reject Reason */
+  rejectReason: string
+
+  /* Order Product List Result Dos */
+  orderProductListResultDos: (OrderProductListResultDo & CommonField)[]
+
+  /* Order Address List Result Dos */
+  orderAddressListResultDos: (OrderAddressListResultDo & CommonField)[]
+
+  /* Order Status History List Result Dos */
+  orderHistoryListResultDos: (OrderHistoryListResultDo & CommonField)[]
+
+  products: any[]
+}
+
+interface OrderShowData {
   /* Site ID */
   siteId: string
 

@@ -237,8 +237,6 @@ const save = async () => {
       })
     })
   }
-  console.log(files)
-  console.log(articleForm)
   const valid = await articleFormRef.value.validate((valid: boolean) => {
     if (!valid) {
       return false

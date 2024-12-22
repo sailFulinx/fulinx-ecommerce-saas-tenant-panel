@@ -1,5 +1,6 @@
 <script setup name="OrderDetail" lang="ts">
-import { showOrderApi } from '@/api/order'
+import { approvalOrderApi, showOrderApi, updateOrderStatusApi } from '@/api/order'
+import { getOrderStatusLabel, orderStatuses } from '@/data/order'
 import { useLocale } from '@/hooks/useLocale'
 import { formatTime } from '@/utils'
 import {
@@ -7,6 +8,7 @@ import {
   ElCard,
   ElDescriptions,
   ElDivider,
+  ElForm,
   ElInput,
   ElMessage,
   ElSwitch,
@@ -14,6 +16,7 @@ import {
   ElTabPane,
   ElTabs,
 } from 'element-plus'
+import ApprovalDialog from './Modules/ApprovalDialog.vue'
 
 const { t: $t } = useLocale()
 
@@ -213,8 +216,53 @@ initFormData()
 
 const activeName = ref<string>('orderStatusManager')
 
-const handleChangeTab = (name: string) => {
+const handleChangeTab = (_name: string) => {}
 
+// 审核订单
+const approvalDialogRef = ref()
+const handleApproval = async () => {
+  approvalDialogRef.value.open(id)
+}
+
+// 更改订单状态
+const updateOrderStatusFormRef = ref()
+const updateOrderStatusForm = reactive({
+  orderStatus: null,
+  orderComment: '',
+})
+const updateOrderStatusRules = reactive({
+  orderStatus: [
+    {
+      required: true,
+      message: '请选择订单状态',
+      trigger: 'change',
+    },
+  ],
+})
+const handleUpdateOrderStatus = async () => {
+  const valid = await updateOrderStatusFormRef.value.validate((valid: boolean) => {
+    if (!valid) {
+      return false
+    }
+  })
+  if (!valid) {
+    return false
+  }
+  loading.init = true
+  await updateOrderStatusApi({
+    orderId: id,
+    orderStatus: updateOrderStatusForm.orderStatus,
+    orderComment: updateOrderStatusForm.orderComment,
+  }).catch(error => {
+    loading.init = false
+    throw error
+  })
+  ElMessage.success({
+    message: '修改状态成功',
+    type: 'success',
+  })
+  initFormData()
+  loading.init = false
 }
 </script>
 
@@ -227,7 +275,7 @@ const handleChangeTab = (name: string) => {
         </div>
         <div>
           <div class="flex items-center">
-            <div class="mr-2">
+            <!-- <div class="mr-2">
               <EBtn text type="primary">
                 {{ $t('order.editOrder') }}
               </EBtn>
@@ -236,7 +284,7 @@ const handleChangeTab = (name: string) => {
               <EBtn text type="primary">
                 {{ $t('order.printOrder') }}
               </EBtn>
-            </div>
+            </div> -->
             <div class="mr-2">
               <EBtn text type="primary">
                 {{ $t('order.shippingOrder') }}
@@ -268,7 +316,16 @@ const handleChangeTab = (name: string) => {
               {{ form.orderStatusText }}
             </ElDescriptionsItem>
             <ElDescriptionsItem :label="$t('order.approvalStatus')">
-              {{ form.approvalStatusText }}
+              <div class="flex items-center">
+                <div class="mr-2">
+                  {{ form.approvalStatusText }}
+                </div>
+                <div>
+                  <EBtn size="small" type="danger" @click="handleApproval">
+                    审核
+                  </EBtn>
+                </div>
+              </div>
             </ElDescriptionsItem>
             <ElDescriptionsItem :label="$t('order.paymentMethod')">
               {{ form.paymentMethodCode }}
@@ -381,11 +438,58 @@ const handleChangeTab = (name: string) => {
       <div class="w-full grid grid-cols-1 gap-5">
         <ElCard shadow="never">
           <ElTabs v-model="activeName" class="demo-tabs" @tab-change="handleChangeTab">
-            <ElTabPane :label="$t('order.orderStatusManager')" name="orderStatusManager" />
+            <ElTabPane :label="$t('order.orderStatusManager')" name="orderStatusManager">
+              <ElTable :border="true" :data="form.orderHistoryListResultDos" style="width: 100%" class="mb-5">
+                <ElTableColumn prop="orderStatus" label="订单状态">
+                  <template #default="scope">
+                    {{ getOrderStatusLabel(scope.row.orderStatus) }}
+                  </template>
+                </ElTableColumn>
+                <ElTableColumn prop="orderComment" label="留言">
+                  <template #default="scope">
+                    <div v-html="scope.row.orderComment" />
+                  </template>
+                </ElTableColumn>
+                <ElTableColumn prop="orderComment" label="记录创建时间">
+                  <template #default="scope">
+                    {{ formatTime(scope.row.recordCreateTime) }}
+                  </template>
+                </ElTableColumn>
+                <ElTableColumn prop="orderComment" label="创建者">
+                  <template #default="scope">
+                    {{ scope.row.recordCreateName }}
+                  </template>
+                </ElTableColumn>
+              </ElTable>
+              <div>
+                <ElForm
+                  ref="updateOrderStatusFormRef"
+                  :model="updateOrderStatusForm"
+                  :rules="updateOrderStatusRules"
+                  label-width="100px"
+                >
+                  <ElFormItem label="订单状态" prop="orderStatus" required>
+                    <ElSelect v-model="updateOrderStatusForm.orderStatus" placeholder="请选择订单状态">
+                      <ElOption v-for="item in orderStatuses" :key="item.id" :label="item.label" :value="item.id" />
+                    </ElSelect>
+                  </ElFormItem>
+                  <ElFormItem label="留言" prop="orderComment">
+                    <ElInput v-model="updateOrderStatusForm.orderComment" type="textarea" />
+                  </ElFormItem>
+                </ElForm>
+                <div class="flex justify-end">
+                  <ElButton type="primary" @click="handleUpdateOrderStatus">
+                    更新订单状态
+                  </ElButton>
+                </div>
+              </div>
+            </ElTabPane>
             <ElTabPane :label="$t('order.orderShippingHistory')" name="orderShippingHistory" />
           </ElTabs>
         </ElCard>
       </div>
     </div>
+    <!-- 审核订单dialog -->
+    <ApprovalDialog ref="approvalDialogRef" @get-order="initFormData" />
   </div>
 </template>
