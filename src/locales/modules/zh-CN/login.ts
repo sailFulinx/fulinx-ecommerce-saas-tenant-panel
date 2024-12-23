@@ -1,6 +1,6 @@
 export default {
-  welcome: '欢迎使用FulinxCms系统',
-  message: 'FulinxCms',
+  welcome: '欢迎使用FulinxEcommerce系统',
+  message: 'FulinxEcommerce',
   username: '用户名',
   password: '密码',
   register: '注册',

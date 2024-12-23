@@ -80,7 +80,7 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
       port: 4001,
       proxy: {
         '/api': {
-          target: 'http://127.0.0.1:17010', // 后端服务地址
+          target: env.VITE_API_URL, // 后端服务地址
           changeOrigin: true, // 是否改变来源
           rewrite: path => path.replace(/^\/api/, ''),
         },
