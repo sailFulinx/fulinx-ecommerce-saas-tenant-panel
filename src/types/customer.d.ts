@@ -175,3 +175,238 @@ interface CustomerShowData {
   /* Customer Address List Result Dos */
   customerAddressListResultDos: (CustomerAddressListResultDo & CommonField)[]
 }
+
+interface CustomerInvoiceListParams {
+  email?: string | null
+  /* Customer Invoice ID */
+  customerInvoiceId?: string
+
+  /* Customer ID */
+  customerId?: string
+
+  /* Invoice Number */
+  invoiceNumber?: string
+
+  /* Status, 0: unreviewed, 1-reviewed, 2-review rejected, 3-Issued */
+  status?: number
+
+  /* 删除标识 */
+  isDelete?: number
+}
+
+interface CustomerInvoiceListData {
+  /* Customer ID */
+  customerId: string
+
+  /* */
+  email: string
+
+  /* Invoice Type, 1-Normal, 2-Special */
+  invoiceType: number
+
+  /* Invoice Number */
+  invoiceNumber: string
+
+  /* Invoice Amount */
+  invoiceAmount: number
+
+  /* Company */
+  companyName: string
+
+  /* Company Address Province ID */
+  companyAddressProvinceId: string
+
+  /* Company Address Province Full Name */
+  companyAddressProvinceFullName: string
+
+  /* Company Address Province Short Name */
+  companyAddressProvinceShortName: string
+
+  /* Company Address City ID */
+  companyAddressCityId: string
+
+  /* Company Address City Full Name */
+  companyAddressCityFullName: string
+
+  /* Company Address City Short Name */
+  companyAddressCityShortName: string
+
+  /* Company Address District ID */
+  companyAddressDistrictId: string
+
+  /* Company Address District Full Name */
+  companyAddressDistrictFullName: string
+
+  /* Company Address District Short Name */
+  companyAddressDistrictShortName: string
+
+  /* Post */
+  companyAddress: string
+
+  /* Company Phone Number */
+  companyPhoneNumber: string
+
+  /* Bank Name */
+  bankName: string
+
+  /* Bank Number */
+  bankNumber: string
+
+  /* Tax Number */
+  taxNumber: string
+
+  /* Status, 0: unreviewed, 1-reviewed, 2-review rejected, 3-Issued */
+  status: number
+
+  /* Status, 0: unreviewed, 1-reviewed, 2-review rejected, 3-Issued */
+  statusText: string
+
+  /* Invoice File ID */
+  invoiceFileId: string
+
+  /* */
+  invoiceFileVo: FileData & CommonField
+
+  /* Rejected Reason */
+  rejectedReason: string
+
+  /* Review Operator Name */
+  reviewOperatorName: string
+}
+
+interface CustomerInvoiceShowData {
+  /* Customer ID */
+  customerId: string
+
+  email: string
+
+  /* Invoice Type, 1-Normal, 2-Special */
+  invoiceType: number
+
+  /* Invoice Number */
+  invoiceNumber: string
+
+  /* Invoice Amount */
+  invoiceAmount: number
+
+  /* Company */
+  companyName: string
+
+  /* Company Address Province ID */
+  companyAddressProvinceId: string
+
+  /* Company Address Province Full Name */
+  companyAddressProvinceFullName: string
+
+  /* Company Address Province Short Name */
+  companyAddressProvinceShortName: string
+
+  /* Company Address City ID */
+  companyAddressCityId: string
+
+  /* Company Address City Full Name */
+  companyAddressCityFullName: string
+
+  /* Company Address City Short Name */
+  companyAddressCityShortName: string
+
+  /* Company Address District ID */
+  companyAddressDistrictId: string
+
+  /* Company Address District Full Name */
+  companyAddressDistrictFullName: string
+
+  /* Company Address District Short Name */
+  companyAddressDistrictShortName: string
+
+  /* Post */
+  companyAddress: string
+
+  /* Company Phone Number */
+  companyPhoneNumber: string
+
+  /* Bank Name */
+  bankName: string
+
+  /* Bank Number */
+  bankNumber: string
+
+  /* Tax Number */
+  taxNumber: string
+
+  /* Status, 0: unreviewed, 1-reviewed, 2-review rejected, 3-Issued */
+  status: number
+
+  /* Status, 0: unreviewed, 1-reviewed, 2-review rejected, 3-Issued */
+  statusText: string
+
+  /* Invoice File ID */
+  invoiceFileId: string
+
+  /* */
+  invoiceFileVo: FileData & CommonField
+
+  /* Rejected Reason */
+  rejectedReason: string
+
+  /* Review Operator Name */
+  reviewOperatorName: string
+
+  /* Customer Invoice Order Relation List Result Dos */
+  customerInvoiceOrderRelationListResultDos: {
+    /* Customer Invoice Order Relation ID */
+    id: string
+
+    /* Customer Invoice ID */
+    customerInvoiceId: string
+
+    /* Order ID */
+    orderId: string
+
+    /* Order Total Amount */
+    orderTotalAmount: number
+
+    /* Soft Delete Flag */
+    isDelete: number
+
+    /* Remark */
+    remark: string
+
+    /* Record Version */
+    recordVersion: number
+
+    /* Record Create Name */
+    recordCreateName: string
+
+    /* Record Update Name */
+    recordUpdateName: string
+
+    /* Record Create Time */
+    recordCreateTime: string
+
+    /* Record Update Time */
+    recordUpdateTime: string
+  }[]
+}
+
+interface ApprovalCustomerInvoiceParams {
+  /* Customer Invoice ID */
+  customerInvoiceId: string
+
+  /* Status, 0: unreviewed, 1-reviewed, 2-review rejected, 3-Issued */
+  status: number
+
+  /* Rejected Reason */
+  rejectedReason?: string
+}
+
+interface ApprovalCustomerInvoiceUploadParams {
+  /* Customer Invoice ID */
+  customerInvoiceId: string
+
+  /* Invoice Number */
+  invoiceNumber: string
+
+  /* Invoice File ID */
+  invoiceFileId: string
+}

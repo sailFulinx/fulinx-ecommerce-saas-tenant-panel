@@ -10,6 +10,7 @@ import dashboard from './modules/zh-CN/dashboard'
 import error from './modules/zh-CN/error'
 import file from './modules/zh-CN/file'
 import imp from './modules/zh-CN/imp'
+import invoice from './modules/zh-CN/invoice'
 import layout from './modules/zh-CN/layout'
 import login from './modules/zh-CN/login'
 import message from './modules/zh-CN/message'
@@ -62,4 +63,5 @@ export default {
   customer,
   order,
   coupon,
+  invoice,
 }

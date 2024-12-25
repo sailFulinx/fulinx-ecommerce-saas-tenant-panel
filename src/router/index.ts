@@ -348,6 +348,29 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
           props: true,
         },
       },
+      {
+        path: 'invoice/list',
+        component: () => import('@/views/Customer/Invoice/index.vue'),
+        name: 'CustomerInvoiceList',
+        meta: {
+          title: $t('router.invoice'),
+          icon: 'ant-design:appstore-outlined',
+          noCache: true,
+        },
+      },
+      {
+        path: 'invoice/show/:id',
+        component: () => import('@/views/Customer/Invoice/Show.vue'),
+        name: 'ShowCustomerInvoice',
+        meta: {
+          title: `${$t('invoice.show')}`,
+          noCache: true,
+          hidden: true,
+          canTo: true,
+          activeMenu: '/customer/invoice/list',
+          props: true,
+        },
+      },
     ],
   },
   {

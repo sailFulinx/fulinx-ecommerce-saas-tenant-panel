@@ -1,30 +1,29 @@
 <script setup lang="ts">
-import { customerPaginationApi } from '@/api/customer'
+import { customerInvoicePaginationApi } from '@/api/customer'
+import { getCustomerInvoiceTypeLabel } from '@/data/customerInvoice'
+
+const listResult = ref<TableResponse<CustomerInvoiceListData & CommonField>>({
+  list: [],
+  total: 0,
+})
 
 const loading = reactive({
   list: false,
   del: false,
 })
-
-const selectedList = ref<string[]>([])
-
-const listQuery = reactive<CustomerListParams & Pagination>({
-  email: null,
+const listQuery = reactive<CustomerInvoiceListParams & Pagination>({
   pageSize: 20,
   pageNumber: 1,
+  email: '',
 })
-
-const listResult = ref<TableResponse<CustomerListData & CommonField>>({
-  list: [],
-  total: 0,
-})
+const selectedList = ref<string[]>([])
 
 const getList = async () => {
   loading.list = true
   if (listQuery.email === '') {
     listQuery.email = null
   }
-  const { data } = await customerPaginationApi(listQuery).catch(err => {
+  const { data } = await customerInvoicePaginationApi(listQuery).catch(err => {
     loading.list = false
     throw err
   })
@@ -45,15 +44,15 @@ const pagination = (val: PaginationComponentDataType) => {
   getList()
 }
 
-const selectedCustomerItem = (val: (CustomerListData & CommonField)[]) => {
+const selectedCustomerInvoiceItem = (val: (CustomerInvoiceListData & CommonField)[]) => {
   selectedList.value = []
   val.forEach(item => {
     selectedList.value.push(item.id)
   })
 }
 
-const handleRedirectEdit = (val: CustomerListData & CommonField) => {
-  router.push({ name: 'ShowCustomer', params: { id: val.id } })
+const handleRedirectEdit = (val: CustomerInvoiceListData & CommonField) => {
+  router.push({ name: 'ShowCustomerInvoice', params: { id: val.id } })
 }
 init()
 </script>
@@ -64,12 +63,12 @@ init()
       <div class="flex justify-between items-center">
         <div class="flex flex-1 items-center">
           <div class="mr-5">
-            {{ $t('router.customer') }}
+            {{ $t('router.invoice') }}
           </div>
           <ElInput
             v-model="listQuery.email"
             clearable
-            :placeholder="$t('customer.placeholder.email')"
+            :placeholder="$t('invoice.placeholder.email')"
             style="width: 200px"
             class="filter-item mr-5"
             @clear="getList"
@@ -91,17 +90,27 @@ init()
         default-expand-all
         highlight-current-row
         border
-        @selection-change="selectedCustomerItem"
+        @selection-change="selectedCustomerInvoiceItem"
       >
         <ElTableColumn type="selection" width="55" />
-        <ElTableColumn :label="$t('customer.email')">
+        <ElTableColumn :label="$t('invoice.email')">
           <template #default="scope">
             <span>{{ scope.row.email }}</span>
           </template>
         </ElTableColumn>
+        <ElTableColumn :label="$t('invoice.invoiceType')">
+          <template #default="scope">
+            <span>{{ getCustomerInvoiceTypeLabel(scope.row.invoiceType) }}</span>
+          </template>
+        </ElTableColumn>
+        <ElTableColumn :label="$t('invoice.invoiceAmount')">
+          <template #default="scope">
+            <span>{{ scope.row.invoiceAmount.toFixed(2) }}</span>
+          </template>
+        </ElTableColumn>
         <ElTableColumn :label="$t('common.status')" width="120">
           <template #default="scope">
-            <span>{{ scope.row.status ? $t('common.enabled') : $t('common.disabled') }}</span>
+            <span>{{ scope.row.statusText }}</span>
           </template>
         </ElTableColumn>
         <ElTableColumn label="操作" header-align="center" width="220" align="center" class-name="pl-15 fixed-width">
