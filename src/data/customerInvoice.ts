@@ -26,6 +26,10 @@ export const customerInvoiceApprovalStatuses = [
     id: 3,
     label: '已开具',
   },
+  {
+    id: 4,
+    label: '已作废',
+  },
 ]
 
 // 根据id获取label

@@ -232,14 +232,10 @@ const handleUploadInvoice = () => {
                   发票下载
                 </div>
               </template>
-              <a
-                v-if="form?.invoiceFileVo?.fileUrl"
-                :href="`${sourceUrl + form?.invoiceFileVo?.fileUrl}`"
-                target="_blank"
-              >
+              <a :href="`${sourceUrl + form?.invoiceFileVo?.fileUrl}`" target="_blank" class="mr-2">
                 <span class="text-blue-600 underline">{{ form?.invoiceFileVo?.originalFileName }}</span>
               </a>
-              <EBtn v-else size="small" type="primary" @click="handleUploadInvoice">
+              <EBtn size="small" type="primary" @click="handleUploadInvoice">
                 上传
               </EBtn>
             </ElDescriptionsItem>
