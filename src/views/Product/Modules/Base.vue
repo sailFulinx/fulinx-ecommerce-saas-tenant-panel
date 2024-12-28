@@ -227,20 +227,20 @@ const editProductProcessingQuantity = async () => {
 
 // 在途库存
 
-const editProductProcessingDaysVisible = ref<boolean>(false)
+// const editProductProcessingDaysVisible = ref<boolean>(false)
 
-const editProductProcessingDays = async () => {
-  loading.init = true
-  const { data } = await updateProductProcessingDaysApi({
-    processingDays: formData.value.processingQuantity,
-    productId: id,
-    languageId: selectLanguage.value.id,
-  })
-  loading.init = false
-  emit('resetFormData', data)
-  ElMessage.success($t('success.edit'))
-  editProductProcessingQuantityVisible.value = false
-}
+// const editProductProcessingDays = async () => {
+//   loading.init = true
+//   const { data } = await updateProductProcessingDaysApi({
+//     processingDays: formData.value.processingQuantity,
+//     productId: id,
+//     languageId: selectLanguage.value.id,
+//   })
+//   loading.init = false
+//   emit('resetFormData', data)
+//   ElMessage.success($t('success.edit'))
+//   editProductProcessingQuantityVisible.value = false
+// }
 
 // 生产周期
 
@@ -484,7 +484,7 @@ const createProductName = async () => {
           <div v-if="!editProductIsSettingOfflineTimeVisible" class="mr-2 flex">
             <div class="mr-1">
               <span class="mr-2">{{ formData.isSettingOfflineTime ? $t('common.yes') : $t('common.no') }},</span>
-              <span v-if="formData.onlineTime">{{ formatTime(formData.onlineTime) }}</span>
+              <span v-if="formData.offlineTime">{{ formatTime(formData.offlineTime) }}</span>
             </div>
             <EBtn type="primary" text @click="handleClickUpdateProductIsSettingOfflineTime">
               <Icon icon="ep:edit" :size="4" class="mr-1" />
@@ -494,7 +494,7 @@ const createProductName = async () => {
             <ElSwitch v-model="formData.isSettingOfflineTime" class="mr-5" />
             <ElDatePicker
               v-if="formData.isSettingOfflineTime"
-              v-model="formData.onlineTime"
+              v-model="formData.offlineTime"
               type="datetime"
               :placeholder="$t('product.placeholder.onlineTime')"
             />
@@ -570,7 +570,7 @@ const createProductName = async () => {
         </div>
       </div>
       <!-- 在途发货天数 -->
-      <div class="w-full grid grid-cols-12 gap-8 p-4">
+      <!-- <div class="w-full grid grid-cols-12 gap-8 p-4">
         <div class="col-span-1 font-semibold fs-[14px] text-gray-700">
           {{ $t('product.processingDays') }} :
         </div>
@@ -599,7 +599,7 @@ const createProductName = async () => {
             </EBtn>
           </div>
         </div>
-      </div>
+      </div> -->
       <!-- 生产周期 -->
       <div class="w-full grid grid-cols-12 gap-8 p-4">
         <div class="col-span-1 font-semibold fs-[14px] text-gray-700">
@@ -620,7 +620,7 @@ const createProductName = async () => {
               :min="0"
               :max="9999999999"
               class="w-[200px] mr-3"
-              :placeholder="$t('product.placeholder.processingDays')"
+              :placeholder="$t('product.placeholder.productionCycle')"
             />
             <EBtn text @click="() => (editProductProductionCycleVisible = false)">
               <Icon icon="ep:close" :size="5" class="mr-2" />

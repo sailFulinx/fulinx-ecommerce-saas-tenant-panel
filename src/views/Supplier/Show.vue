@@ -54,7 +54,7 @@ const createFormData = (): SupplierShow & CommonField => {
         fileName: '',
         fileContentType: '',
         fileExtensionName: '',
-        originalPath: '',
+        uploadPath: '',
         fileUrl: '',
         sha256: '',
         isDelete: 0,

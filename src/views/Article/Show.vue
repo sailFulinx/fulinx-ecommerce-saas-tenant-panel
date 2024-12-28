@@ -60,7 +60,7 @@ const createFormData = (): ArticleShowData => {
         fileName: '',
         fileContentType: '',
         fileExtensionName: '',
-        originalPath: '',
+        uploadPath: '',
         fileUrl: '',
         sha256: '',
         isDelete: 0,

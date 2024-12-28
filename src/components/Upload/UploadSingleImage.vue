@@ -20,7 +20,7 @@ const fileData = ref<FileData>({
   fileName: '',
   fileContentType: '',
   fileExtensionName: '',
-  originalPath: '',
+  uploadPath: '',
   fileUrl: '',
   sha256: '',
 })
@@ -79,7 +79,7 @@ const handleDelete = () => {
     fileName: '',
     fileContentType: '',
     fileExtensionName: '',
-    originalPath: '',
+    uploadPath: '',
     fileUrl: '',
     sha256: '',
   }

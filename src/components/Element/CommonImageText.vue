@@ -32,7 +32,7 @@ const createForm = (): FormData => {
         fileName: '',
         fileContentType: '',
         fileExtensionName: '',
-        originalPath: '',
+        uploadPath: '',
         fileUrl: '',
         sha256: '',
       },

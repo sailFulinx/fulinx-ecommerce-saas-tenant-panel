@@ -51,7 +51,7 @@ const createFormData = (): CustomerInvoiceShowData & CommonField => {
       id: '',
       fileRemoteType: 0,
       bucket: '',
-      originalPath: '',
+      uploadPath: '',
       originalFileName: '',
       fileName: '',
       fileContentType: '',

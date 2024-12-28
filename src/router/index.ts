@@ -624,30 +624,6 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
       },
     ],
   },
-  // {
-  //   path: '/test',
-  //   component: Layout,
-  //   redirect: '/test/list',
-  //   name: 'Test',
-  //   meta: {
-  //     title: 'test',
-  //     icon: 'ant-design:message-outlined',
-  //     noCache: true,
-  //     hidden: false,
-  //     canTo: false,
-  //   },
-  //   children: [
-  //     {
-  //       path: 'list',
-  //       component: () => import('@/views/Test/index.vue'),
-  //       name: 'TestList',
-  //       meta: {
-  //         title: 'test',
-  //         icon: 'ant-design:message-outlined',
-  //       },
-  //     },
-  //   ],
-  // },
   {
     path: '/system',
     component: Layout,
@@ -662,7 +638,7 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
     },
     children: [
       {
-        path: '/user/list',
+        path: 'user/list',
         component: () => import('@/views/User/index.vue'),
         name: 'SystemUser',
         meta: {
@@ -671,9 +647,8 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
         },
       },
       {
-        path: '/role/list',
+        path: 'role/list',
         component: () => import('@/views/Role/index.vue'),
-        redirect: '/role/list',
         name: 'Role',
         meta: {
           title: $t('router.role'),

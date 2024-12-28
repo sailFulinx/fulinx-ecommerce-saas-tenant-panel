@@ -10,7 +10,7 @@ interface FileData {
   bucket?: string
 
   /* Original Path */
-  originalPath: string
+  uploadPath: string
 
   /* Original File Name */
   originalFileName: string

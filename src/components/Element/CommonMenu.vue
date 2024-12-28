@@ -39,7 +39,7 @@ const createMenuData = (index: number = 0): MenuData => ({
     fileName: '',
     fileContentType: '',
     fileExtensionName: '',
-    originalPath: '',
+    uploadPath: '',
     fileUrl: '',
     sha256: '',
   },

@@ -52,7 +52,7 @@ const createFormData = (): (BrandShow & CommonField) => {
         fileName: '',
         fileContentType: '',
         fileExtensionName: '',
-        originalPath: '',
+        uploadPath: '',
         fileUrl: '',
         sha256: '',
         isDelete: 0,
