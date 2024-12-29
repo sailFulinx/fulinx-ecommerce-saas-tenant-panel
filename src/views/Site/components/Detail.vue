@@ -5,6 +5,8 @@ import { ElMessage } from 'element-plus'
 
 import Base from './Modules/Base.vue'
 
+import Checkout from './Modules/Checkout.vue'
+
 import Email from './Modules/Email.vue'
 
 const props = defineProps({
@@ -27,12 +29,17 @@ const baseRef = ref()
 
 const emailRef = ref()
 
+const checkoutRef = ref()
+
 const save = async () => {
   if (activeName.value === 'base') {
     baseRef.value.save()
   }
   if (activeName.value === 'mail') {
     emailRef.value.save()
+  }
+  if (activeName.value === 'checkout') {
+    checkoutRef.value.save()
   }
   ElMessage({
     message: '保存成功',
@@ -66,6 +73,9 @@ const save = async () => {
         </ElTabPane>
         <ElTabPane label="邮箱设置" name="mail">
           <Email ref="emailRef" :is-edit="props.isEdit" />
+        </ElTabPane>
+        <ElTabPane label="结算设置" name="checkout">
+          <Checkout ref="checkoutRef" :is-edit="props.isEdit" />
         </ElTabPane>
       </ElTabs>
     </div>

@@ -116,3 +116,15 @@ interface SiteConfigMailSetting {
   /* Starttls Enable */
   starttlsEnable: boolean
 }
+
+interface SiteConfigCheckoutSetting {
+  /* Site ID */
+  siteId: string
+
+  /* Free Shipping Amount */
+  freeShippingAmount: number
+
+  defaultShippingAmount: number
+
+  supportEmailAddress: string
+}

@@ -49,9 +49,24 @@ export function siteConfigMailSetting(data: SiteConfigMailSetting): Promise<IRes
   })
 }
 
+export function siteConfigCheckoutSetting(data: SiteConfigCheckoutSetting): Promise<IResponse<boolean>> {
+  return request.post({
+    url: 'system/site/config/checkout/setting',
+    data,
+    token: true,
+  })
+}
+
 export function fetchSiteConfigMailSetting(id: string): Promise<IResponse<boolean>> {
   return request.get({
     url: `system/site/config/mail/view/${id}`,
+    token: true,
+  })
+}
+
+export function fetchSiteConfigCheckoutSetting(id: string): Promise<IResponse<boolean>> {
+  return request.get({
+    url: `system/site/config/checkout/view/${id}`,
     token: true,
   })
 }
