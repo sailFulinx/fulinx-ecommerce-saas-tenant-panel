@@ -656,6 +656,43 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
         },
       },
       {
+        path: 'shipping/company',
+        component: () => import('@/views/Shipping/index.vue'),
+        name: 'ShippingCompanyList',
+        meta: {
+          title: $t('router.shippingCompany'),
+          icon: 'ant-design:truck-outlined',
+        },
+        children: [
+          {
+            path: 'create',
+            component: () => import('@/views/Shipping/Create.vue'),
+            name: 'CreateShippingCompany',
+            meta: {
+              title: $t('router.createShippingCompany'),
+              noCache: true,
+              hidden: true,
+              canTo: true,
+              activeMenu: '/shipping/company',
+              props: true,
+            },
+          },
+          {
+            path: 'show/:id',
+            component: () => import('@/views/Shipping/Show.vue'),
+            name: 'ShowShippingCompany',
+            meta: {
+              title: $t('shipping.show'),
+              noCache: true,
+              hidden: true,
+              canTo: true,
+              activeMenu: '/shipping/company',
+              props: true,
+            },
+          },
+        ],
+      },
+      {
         path: 'imp',
         component: () => import('@/views/Imp/index.vue'),
         name: 'Imp',

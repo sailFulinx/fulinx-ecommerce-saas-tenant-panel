@@ -1,4 +1,5 @@
 import coupon from './coupon'
+import shipping from './shipping'
 
 export default {
   login: '登录',
@@ -26,4 +27,8 @@ export default {
   coupon: '优惠券管理',
   imp: '导入管理',
   impLog: '导入日志',
+  shippingCompany: '快递公司管理',
+  createShippingCompany: '新增快递公司',
+  shippingCompanyTemplate: '快递公司模板管理',
+  createShippingCompanyTemplate: '新增快递公司模板',
 }

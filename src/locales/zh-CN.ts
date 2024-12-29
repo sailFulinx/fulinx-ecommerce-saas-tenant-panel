@@ -24,6 +24,7 @@ import role from './modules/zh-CN/role'
 import router from './modules/zh-CN/router'
 import seo from './modules/zh-CN/seo'
 import setting from './modules/zh-CN/setting'
+import shipping from './modules/zh-CN/shipping'
 import size from './modules/zh-CN/size'
 import success from './modules/zh-CN/success'
 import supplier from './modules/zh-CN/supplier'
@@ -64,4 +65,5 @@ export default {
   order,
   coupon,
   invoice,
+  shipping,
 }
