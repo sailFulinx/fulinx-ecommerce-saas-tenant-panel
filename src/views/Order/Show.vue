@@ -8,6 +8,7 @@ import {
   ElCard,
   ElDescriptions,
   ElDivider,
+  ElEmpty,
   ElForm,
   ElInput,
   ElMessage,
@@ -17,6 +18,7 @@ import {
   ElTabs,
 } from 'element-plus'
 import ApprovalDialog from './Modules/ApprovalDialog.vue'
+import ShipmentDialog from './Modules/ShipmentDialog.vue'
 
 const { t: $t } = useLocale()
 
@@ -30,7 +32,7 @@ const loading = reactive({
 })
 
 // 创建order请求参数
-const createFormData = (): OrderData & CommonField => {
+const createFormData = (): OrderShowData & CommonField => {
   return {
     id: '',
     siteId: '',
@@ -68,6 +70,7 @@ const createFormData = (): OrderData & CommonField => {
     approvalStatus: 0,
     approvalStatusText: '',
     rejectReason: '',
+    invoiceStatus: 0,
     orderHistoryListResultDos: [
       {
         id: '',
@@ -90,6 +93,8 @@ const createFormData = (): OrderData & CommonField => {
         customerId: '',
         orderPrice: 0,
         orderQuantity: 0,
+        shippedQuantity: 0,
+        remainQuantity: 0,
         subtotalAmount: 0,
         productId: '',
         sku: '',
@@ -160,6 +165,45 @@ const createFormData = (): OrderData & CommonField => {
         recordUpdateTime: '',
       },
     ],
+    orderAmountListResultDo: {
+      id: '',
+      orderId: '',
+      amountDetail: '',
+      isDelete: 0,
+      remark: '',
+      recordVersion: 0,
+      recordCreateName: '',
+      recordUpdateName: '',
+      recordCreateTime: '',
+      recordUpdateTime: '',
+    },
+    orderShipmentListResultDos: [
+      {
+        id: '',
+        orderId: '',
+        orderProductId: '',
+        shipmentQuantity: 0,
+        shippingCompanyId: '',
+        shippingCompanyName: '',
+        trackingNumber: '',
+        shipmentComment: '',
+        isDelete: 0,
+        remark: '',
+        recordVersion: 0,
+        recordCreateName: '',
+        recordUpdateName: '',
+        recordCreateTime: '',
+        recordUpdateTime: '',
+      },
+    ],
+    orderRemainShipmentProductListResultDos: [
+      {
+        orderId: '',
+        orderProductId: '',
+        sku: '',
+        remainShipmentQuantity: 0,
+      },
+    ],
     isDelete: 0,
     remark: '',
     recordVersion: 0,
@@ -172,7 +216,7 @@ const createFormData = (): OrderData & CommonField => {
 }
 
 // form初始化
-const form = reactive<OrderData & CommonField>(createFormData())
+const form = reactive<OrderShowData & CommonField>(createFormData())
 
 const orderProducts = ref<(OrderProductListResultDo & CommonField)[]>([])
 
@@ -201,7 +245,7 @@ const getOrderData = async () => {
   return data
 }
 
-const resetFormData = async (val: OrderData) => {
+const resetFormData = async (val: OrderShowData) => {
   await nextTick(() => {
     Object.assign(form, JSON.parse(JSON.stringify(val)))
   })
@@ -264,6 +308,12 @@ const handleUpdateOrderStatus = async () => {
   initFormData()
   loading.init = false
 }
+
+const shipmentDialogRef = ref()
+
+const handleShipment = async (orderProduct: OrderProductListResultDo & CommonField) => {
+  shipmentDialogRef.value.open(id, form.orderRemainShipmentProductListResultDos, orderProduct)
+}
 </script>
 
 <template>
@@ -285,11 +335,12 @@ const handleUpdateOrderStatus = async () => {
                 {{ $t('order.printOrder') }}
               </EBtn>
             </div> -->
-            <div class="mr-2">
-              <EBtn text type="primary">
+            <!-- <div class="mr-2">
+              <EBtn plain type="primary" @click="handleShipment">
+                <Icon name="ant-design:truck-outlined" :size="6" class="mr-1" />
                 {{ $t('order.shippingOrder') }}
               </EBtn>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -357,16 +408,16 @@ const handleUpdateOrderStatus = async () => {
               {{ form.customerEmail }}
             </ElDescriptionsItem>
             <ElDescriptionsItem :label="$t('order.shippingFullName')">
-              {{ form.orderAddressListResultDos[0].fullName }}
+              {{ form.orderAddressListResultDos[0]?.fullName }}
             </ElDescriptionsItem>
             <ElDescriptionsItem :label="$t('order.shippingTelephone')">
-              {{ form.orderAddressListResultDos[0].telephone }}
+              {{ form.orderAddressListResultDos[0]?.telephone }}
             </ElDescriptionsItem>
             <ElDescriptionsItem :label="$t('order.shippingAddress')">
-              {{ form.orderAddressListResultDos[0].administrativeProvinceShortName
-              }}{{ form.orderAddressListResultDos[0].administrativeCityShortName
-              }}{{ form.orderAddressListResultDos[0].address1 }}{{ form.orderAddressListResultDos[0].address2
-              }}{{ form.orderAddressListResultDos[0].postcode }}
+              {{ form.orderAddressListResultDos[0]?.administrativeProvinceShortName
+              }}{{ form.orderAddressListResultDos[0]?.administrativeCityShortName
+              }}{{ form.orderAddressListResultDos[0]?.address1 }}{{ form.orderAddressListResultDos[0]?.address2
+              }}{{ form.orderAddressListResultDos[0]?.postcode }}
             </ElDescriptionsItem>
           </ElDescriptions>
         </ElCard>
@@ -422,14 +473,32 @@ const handleUpdateOrderStatus = async () => {
                 {{ scope.row.orderPrice.toFixed(2) }}
               </template>
             </ElTableColumn>
-            <ElTableColumn label="数量" width="280" align="center">
+            <ElTableColumn label="订购数量" width="280" align="center">
               <template #default="scope">
                 {{ scope.row.orderQuantity }}
+              </template>
+            </ElTableColumn>
+            <ElTableColumn label="已发运数量" width="280" align="center">
+              <template #default="scope">
+                {{ scope.row.shippedQuantity }}
+              </template>
+            </ElTableColumn>
+            <ElTableColumn label="剩余发运数量" width="280" align="center">
+              <template #default="scope">
+                {{ scope.row.remainQuantity }}
               </template>
             </ElTableColumn>
             <ElTableColumn prop="total" label="小计（含13%增值税）">
               <template #default="scope">
                 <div>{{ scope.row.subtotalAmount.toFixed(2) }}</div>
+              </template>
+            </ElTableColumn>
+            <ElTableColumn prop="total" label="操作">
+              <template #default="scope">
+                <EBtn plain type="primary" @click="handleShipment(scope.row)">
+                  <Icon name="ant-design:truck-outlined" :size="6" class="mr-1" />
+                  {{ $t('order.shippingOrder') }}
+                </EBtn>
               </template>
             </ElTableColumn>
           </ElTable>
@@ -484,12 +553,57 @@ const handleUpdateOrderStatus = async () => {
                 </div>
               </div>
             </ElTabPane>
-            <ElTabPane :label="$t('order.orderShippingHistory')" name="orderShippingHistory" />
+            <ElTabPane :label="$t('order.orderShippingHistory')" name="orderShippingHistory">
+              <ElTable
+                v-if="form.orderShipmentListResultDos && form.orderShipmentListResultDos.length > 0"
+                :border="true"
+                :data="form.orderShipmentListResultDos"
+                style="width: 100%"
+              >
+                <ElTableColumn prop="sku" label="sku" width="180">
+                  <template #default="scope">
+                    <a
+                      class="cursor-pointer"
+                      @click="
+                        () => {
+                          $router.push(`/catalog/product/show/${scope.row.productId}`)
+                        }
+                      "
+                    >
+                      <span class="text-blue-600 underline">{{ scope.row.sku }}</span>
+                    </a>
+                  </template>
+                </ElTableColumn>
+                <ElTableColumn prop="shipmentQuantity" label="发运数量" width="180">
+                  <template #default="scope">
+                    <span>{{ scope.row.shipmentQuantity }}</span>
+                  </template>
+                </ElTableColumn>
+                <ElTableColumn prop="shippingCompanyName" label="快递公司" width="180">
+                  <template #default="scope">
+                    <span>{{ scope.row.shippingCompanyName }}</span>
+                  </template>
+                </ElTableColumn>
+                <ElTableColumn prop="trackingNumber" label="快递单号" width="180">
+                  <template #default="scope">
+                    <span>{{ scope.row.trackingNumber }}</span>
+                  </template>
+                </ElTableColumn>
+                <ElTableColumn prop="recordCreateTime" label="发运时间" width="180">
+                  <template #default="scope">
+                    <span>{{ formatTime(scope.row.recordCreateTime) }}</span>
+                  </template>
+                </ElTableColumn>
+              </ElTable>
+              <ElEmpty v-else description="暂无发运记录" />
+            </ElTabPane>
           </ElTabs>
         </ElCard>
       </div>
     </div>
     <!-- 审核订单dialog -->
     <ApprovalDialog ref="approvalDialogRef" @get-order="initFormData" />
+    <!-- 发货dialog -->
+    <ShipmentDialog ref="shipmentDialogRef" @get-order="initFormData" />
   </div>
 </template>

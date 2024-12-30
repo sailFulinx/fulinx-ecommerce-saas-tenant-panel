@@ -16,7 +16,7 @@ export function updateOrderStatusApi(data: OrderStatusUpdateParams): Promise<IRe
   })
 }
 
-export function showOrderApi(id: string): Promise<IResponse<OrderData & CommonField>> {
+export function showOrderApi(id: string): Promise<IResponse<OrderShowData & CommonField>> {
   return request.get({
     url: `system/order/show/${id}`,
     token: true,
@@ -36,6 +36,16 @@ export function orderPaginationApi(
 ): Promise<IResponse<TableResponse<OrderData & CommonField>>> {
   return request.post({
     url: 'system/order/pagination',
+    data: params,
+    token: true,
+  })
+}
+
+export function createOrderShipmentApi(
+  params: OrderShipmentParams,
+): Promise<IResponse<TableResponse<OrderData & CommonField>>> {
+  return request.post({
+    url: 'system/order/shipment',
     data: params,
     token: true,
   })

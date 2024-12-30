@@ -2,14 +2,14 @@
 import { removeShippingCompanyApi, shippingCompanyPaginationApi } from '@/api/shipping'
 import { ElMessage } from 'element-plus'
 
-const listResult = ref<TableResponse<ShippingCompanyListData & CommonField>>({
-  list: [],
-  total: 0,
-})
-
 const loading = reactive({
   list: false,
   del: false,
+})
+
+const listResult = ref<TableResponse<ShippingCompanyListData & CommonField>>({
+  list: [],
+  total: 0,
 })
 const listQuery = reactive<ShippingCompanyListParams & Pagination>({
   shippingCompanyName: '',

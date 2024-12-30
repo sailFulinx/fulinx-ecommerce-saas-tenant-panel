@@ -96,6 +96,10 @@ interface OrderProductListResultDo {
   /* Order Quantity */
   orderQuantity: number
 
+  shippedQuantity: number
+
+  remainQuantity: number
+
   /* Subtotal Amount */
   subtotalAmount: number
 
@@ -193,6 +197,56 @@ interface OrderProductListResultDo {
   productTag: string
 }
 
+interface OrderShipmentListResultDo {
+  /* Order ID */
+  orderId: string
+
+  /* Order Product ID */
+  orderProductId: string
+
+  /* Shipment Quantity */
+  shipmentQuantity: number
+
+  /* Shipping Company ID */
+  shippingCompanyId: string
+
+  /* Shipping Company Name */
+  shippingCompanyName: string
+
+  /* Tracking Number */
+  trackingNumber: string
+
+  /* Shipment Comment */
+  shipmentComment: string
+}
+
+interface OrderShipmentProductListResultDo {
+  /* Order ID */
+  orderId: string
+
+  /* Order Product ID */
+  orderProductId: string
+
+  orderProductListResultDo: OrderProductListResultDo & CommonField
+
+  /* Shipment Quantity */
+  shipmentQuantity: number
+
+  remainShipmentQuantity: number
+
+  /* Shipping Company ID */
+  shippingCompanyId: string
+
+  /* Shipping Company Name */
+  shippingCompanyName: string
+
+  /* Tracking Number */
+  trackingNumber: string
+
+  /* Shipment Comment */
+  shipmentComment: string
+}
+
 interface OrderData {
   /* Site ID */
   siteId: string
@@ -254,7 +308,31 @@ interface OrderData {
   /* Order Status History List Result Dos */
   orderHistoryListResultDos: (OrderHistoryListResultDo & CommonField)[]
 
+  orderShipmentListResultDos: (OrderShipmentListResultDo & CommonField)[]
+
   products: any[]
+}
+
+interface OrderAmountListResultDo {
+  /*Order ID */
+  orderId: string
+
+  /*Amount Detail */
+  amountDetail: string
+}
+
+interface OrderRemainShipmentProductListResultDo {
+  /*Order ID */
+  orderId: string
+
+  /*Order Product ID */
+  orderProductId: string
+
+  /*SKU */
+  sku: string
+
+  /*Remain Shipment Quantity */
+  remainShipmentQuantity: number
 }
 
 interface OrderShowData {
@@ -309,14 +387,26 @@ interface OrderShowData {
   /* Reject Reason */
   rejectReason: string
 
+  /*Invoice Status, 0-not opened, 1-processing, 2-opened */
+  invoiceStatus: number
+
+  /* Order Status History List Result Dos */
+  orderHistoryListResultDos: (OrderHistoryListResultDo & CommonField)[]
+
   /* Order Product List Result Dos */
   orderProductListResultDos: (OrderProductListResultDo & CommonField)[]
 
   /* Order Address List Result Dos */
   orderAddressListResultDos: (OrderAddressListResultDo & CommonField)[]
 
-  /* Order Status History List Result Dos */
-  orderHistoryListResultDos: (OrderHistoryListResultDo & CommonField)[]
+  /* */
+  orderAmountListResultDo: OrderAmountListResultDo & CommonField
+
+  /*Order Shipment List Result Dos */
+  orderShipmentListResultDos: (OrderShipmentListResultDo & CommonField)[]
+
+  /*Order Remain Shipment Product List Result Dos */
+  orderRemainShipmentProductListResultDos: OrderRemainShipmentProductListResultDo[]
 
   products: any[]
 }
@@ -339,4 +429,24 @@ interface OrderListParams {
 
   /* Soft Delete Flag */
   isDelete?: number
+}
+
+interface OrderShipmentParams {
+  /* Order ID */
+  orderId: string
+
+  /* Order Product ID */
+  orderProductId: string
+
+  /* Shipment Quantity */
+  shipmentQuantity: number
+
+  /* Shipping Company ID */
+  shippingCompanyId: string
+
+  /* Tracking Number */
+  trackingNumber: string
+
+  /* Shipment Comment */
+  shipmentComment?: string
 }
