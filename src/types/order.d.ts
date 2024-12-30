@@ -314,24 +314,24 @@ interface OrderData {
 }
 
 interface OrderAmountListResultDo {
-  /*Order ID */
+  /* Order ID */
   orderId: string
 
-  /*Amount Detail */
+  /* Amount Detail */
   amountDetail: string
 }
 
 interface OrderRemainShipmentProductListResultDo {
-  /*Order ID */
+  /* Order ID */
   orderId: string
 
-  /*Order Product ID */
+  /* Order Product ID */
   orderProductId: string
 
-  /*SKU */
+  /* SKU */
   sku: string
 
-  /*Remain Shipment Quantity */
+  /* Remain Shipment Quantity */
   remainShipmentQuantity: number
 }
 
@@ -387,7 +387,7 @@ interface OrderShowData {
   /* Reject Reason */
   rejectReason: string
 
-  /*Invoice Status, 0-not opened, 1-processing, 2-opened */
+  /* Invoice Status, 0-not opened, 1-processing, 2-opened */
   invoiceStatus: number
 
   /* Order Status History List Result Dos */
@@ -402,10 +402,10 @@ interface OrderShowData {
   /* */
   orderAmountListResultDo: OrderAmountListResultDo & CommonField
 
-  /*Order Shipment List Result Dos */
+  /* Order Shipment List Result Dos */
   orderShipmentListResultDos: (OrderShipmentListResultDo & CommonField)[]
 
-  /*Order Remain Shipment Product List Result Dos */
+  /* Order Remain Shipment Product List Result Dos */
   orderRemainShipmentProductListResultDos: OrderRemainShipmentProductListResultDo[]
 
   products: any[]
