@@ -480,12 +480,12 @@ const handleShipment = async (orderProduct: OrderProductListResultDo & CommonFie
             </ElTableColumn>
             <ElTableColumn label="已发运数量" width="280" align="center">
               <template #default="scope">
-                {{ scope.row.shippedQuantity }}
+                {{ scope.row.shippedQuantity || 0 }}
               </template>
             </ElTableColumn>
             <ElTableColumn label="剩余发运数量" width="280" align="center">
               <template #default="scope">
-                {{ scope.row.remainQuantity }}
+                {{ scope.row.remainQuantity || scope.row.orderQuantity }}
               </template>
             </ElTableColumn>
             <ElTableColumn prop="total" label="小计（含13%增值税）">
