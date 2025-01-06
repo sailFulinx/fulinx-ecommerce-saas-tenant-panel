@@ -15,6 +15,16 @@ export function uploadFileApi(data: any, config?: any): Promise<IResponse> {
   })
 }
 
+export function uploadFileZipApi(data: any, config?: any): Promise<IResponse> {
+  return request.post({
+    url: 'system/file/zip',
+    token: true,
+    data,
+    headersType: 'multipart/form-data',
+    ...config,
+  })
+}
+
 /**
  * 文件列表- 带分页
  * @param {object} params 文件分页查询参数
