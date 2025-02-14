@@ -170,7 +170,7 @@ defineExpose({
       <ElButton @click="dialogVisible = false">
         取 消
       </ElButton>
-      <ElButton type="primary" @click="submit">
+      <ElButton v-if="currentShipmentProduct?.remainShipmentQuantity > 0" type="primary" @click="submit">
         确 定
       </ElButton>
     </template>

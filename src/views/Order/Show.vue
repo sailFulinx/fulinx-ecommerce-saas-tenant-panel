@@ -493,7 +493,7 @@ const handleShipment = async (orderProduct: OrderProductListResultDo & CommonFie
                 <div>{{ scope.row.subtotalAmount.toFixed(2) }}</div>
               </template>
             </ElTableColumn>
-            <ElTableColumn prop="total" label="操作">
+            <ElTableColumn prop="total" label="操作" width="120">
               <template #default="scope">
                 <EBtn plain type="primary" @click="handleShipment(scope.row)">
                   <Icon name="ant-design:truck-outlined" :size="6" class="mr-1" />

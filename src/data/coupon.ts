@@ -7,19 +7,19 @@ export const couponTypes = [
     id: 2,
     label: '固定折扣',
   },
-  {
-    id: 2,
-    label: '运费券',
-  },
 ]
 
 export const couponRuleTypes = [
   {
     id: 1,
-    label: '新用户',
+    label: '新用户首单',
   },
   {
     id: 2,
-    label: '留存用户周期',
+    label: '用户留存',
+  },
+  {
+    id: 3,
+    label: '常规',
   },
 ]

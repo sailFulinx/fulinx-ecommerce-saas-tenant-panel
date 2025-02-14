@@ -152,7 +152,7 @@ const issueCouponToCustomer = async () => {
     loading.issue = false
     throw error
   })
-  ElMessage.success('发放成功')
+  ElMessage.success('发行成功')
   await getCouponIssueList()
   dialogVisible.value = false
 }
@@ -176,7 +176,7 @@ const handleRedirectToCustomer = (customerId: string) => {
               <div class="flex items-center">
                 <div class="mr-2">
                   <EBtn size="small" type="danger" :loading="loading.issue" @click="issueCoupon">
-                    发放优惠券
+                    发行优惠券
                   </EBtn>
                 </div>
                 <div>
@@ -305,7 +305,7 @@ const handleRedirectToCustomer = (customerId: string) => {
                     >
                       {{ scope.row.customerId }}
                     </ElTag>
-                    <span v-else>暂未发放</span>
+                    <span v-else>暂未领取</span>
                   </template>
                 </ElTableColumn>
                 <ElTableColumn :label="$t('coupon.isUsed')" width="120">
