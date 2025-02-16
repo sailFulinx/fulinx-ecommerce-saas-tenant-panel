@@ -19,6 +19,9 @@ const rules = reactive({
   freeShippingAmount: [{ required: true, message: '满多少免运费必须填写', trigger: 'blur' }],
   defaultShippingAmount: [{ required: true, message: '默认运费金额必须填写', trigger: 'blur' }],
   supportEmailAddress: [{ required: true, message: '客户支持邮箱必须填写', trigger: 'blur' }],
+  companyName: [{ required: true, message: '公司名称必须填写', trigger: 'blur' }],
+  bankName: [{ required: true, message: '银行名称必须填写', trigger: 'blur' }],
+  bankNumber: [{ required: true, message: '银行账号必须填写', trigger: 'blur' }],
 })
 
 const loading = reactive({
@@ -34,6 +37,9 @@ const siteConfigCheckoutForm = ref<SiteConfigCheckoutSetting>({
   freeShippingAmount: 0,
   defaultShippingAmount: 0,
   supportEmailAddress: '',
+  companyName: '',
+  bankName: '',
+  bankNumber: '',
 })
 
 const getSiteConfigCheckoutData = async () => {
@@ -104,6 +110,33 @@ defineExpose({
           minlength="1"
           maxlength="120"
           placeholder="请输入客户支持邮箱"
+        />
+      </ElFormItem>
+      <ElFormItem label="公司抬头" prop="companyName">
+        <ElInput
+          v-model="siteConfigCheckoutForm.companyName"
+          class="input-line"
+          minlength="1"
+          maxlength="120"
+          placeholder="请输入公司抬头"
+        />
+      </ElFormItem>
+      <ElFormItem label="开户行" prop="bankName">
+        <ElInput
+          v-model="siteConfigCheckoutForm.bankName"
+          class="input-line"
+          minlength="1"
+          maxlength="120"
+          placeholder="请输入银行名称"
+        />
+      </ElFormItem>
+      <ElFormItem label="银行帐号" prop="bankNumber">
+        <ElInput
+          v-model="siteConfigCheckoutForm.bankNumber"
+          class="input-line"
+          minlength="1"
+          maxlength="120"
+          placeholder="请输入银行帐号"
         />
       </ElFormItem>
     </ElCard>

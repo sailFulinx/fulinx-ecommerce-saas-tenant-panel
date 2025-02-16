@@ -154,7 +154,7 @@ init()
         </ElTableColumn>
         <ElTableColumn label="效果图">
           <template #default="scope">
-            <ElImage :src="scope.row.themeThumbFileVo.fileUrl" style="width: 100px; height: auto" />
+            <ElImage :src="scope.row.themeThumbFileVo?.fileUrl" style="width: 100px; height: auto" />
           </template>
         </ElTableColumn>
         <ElTableColumn label="操作" header-align="center" width="220" align="center" class-name="pl-15 fixed-width">

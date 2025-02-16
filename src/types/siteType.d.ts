@@ -127,4 +127,10 @@ interface SiteConfigCheckoutSetting {
   defaultShippingAmount: number
 
   supportEmailAddress: string
+
+  companyName: string
+
+  bankName: string
+
+  bankNumber: string
 }

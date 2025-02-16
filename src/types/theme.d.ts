@@ -120,6 +120,13 @@ interface ComponentData {
 }
 
 interface ReadContentData {
+  readContentLabel: string
+  readContentValue: string | null
+  readContentType: string
+}
+
+interface MultiReadContentData {
+  readContentLabel: string
   readContentValue: number | null
   readContentType: string
 }
@@ -128,6 +135,8 @@ interface ThemeSettingGlobal {
   defaultHeaderComponentId: string | null
   defaultFooterComponentId: string | null
   homePageLayoutId: string | null
+  supplierPageLayoutId: string | null
+  helpPageLayoutId: string | null
 }
 
 interface ThemeSettingDataType {

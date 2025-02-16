@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { articleListApi } from '@/api/article'
+import { articleListApi, showArticleApi } from '@/api/article'
 import { listCategoryApi } from '@/api/category'
 import { readContentTypes } from '@/data/theme'
 import { usePreferenceStore } from '@/stores/preference'
 import { hasContentElements } from '@/utils'
 
 const readContentType = ref<string>('')
-const readContentValue = ref<number | null>(null)
+const readContentValue = ref<string | null>(null)
 const readContentData = reactive<ReadContentData>({
+  readContentLabel: '',
   readContentType: '',
   readContentValue: null,
 })
@@ -80,18 +81,27 @@ async function changeReadContentType() {
   prevReadContentType = readContentType.value
   readContentData.readContentValue = null
   readContentData.readContentType = readContentType.value
+  readContentData.readContentLabel = ''
 }
-function changeReadContentValue(v: any) {
+async function changeReadContentValue(v: any) {
   let readContentValue = null
   if (readContentType.value === 'category') {
     const nodeRes = categoriesRef.value.getCheckedNodes()
     const data = nodeRes[0]?.data || {}
     readContentValue = data.id
+    readContentData.readContentLabel = data.categoryName
   } else {
     readContentValue = v || null
   }
   readContentData.readContentValue = readContentValue
   readContentData.readContentType = readContentType.value
+  const { data } = await showArticleApi({
+    articleId: readContentValue,
+    languageId: usePreferenceStore().preference?.language.id,
+  }).catch(err => {
+    throw err
+  })
+  readContentData.readContentLabel = data.articleDetailListResultDo.articleName
 }
 
 const setReadContentData = async (readContentDataVal: ReadContentData) => {

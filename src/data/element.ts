@@ -179,4 +179,14 @@ export const elements: ElementData[] = [
     elementName: '供应商',
     aliasName: '供应商',
   },
+  {
+    elementId: 19,
+    elementComponentCode: 'CommonMultiReadContent',
+    elementComponentConfig: {
+      content: {},
+      status: true,
+    },
+    elementName: '多态内容读取',
+    aliasName: '多态内容读取',
+  },
 ]
