@@ -1,4 +1,5 @@
 <script setup name="CommonText" lang="ts">
+import { hasContentElements } from '@/utils'
 import { ElMessage } from 'element-plus'
 
 const props = defineProps({
@@ -22,23 +23,27 @@ interface FormData {
   status: boolean
 }
 
-const form = reactive<FormData>({
-  content: {
-    contents: [],
-    image: {
-      id: '',
-      originalFileName: '',
-      fileName: '',
-      fileContentType: '',
-      fileExtensionName: '',
-      uploadPath: '',
-      fileUrl: '',
-      sha256: '',
+const createForm = (): FormData => {
+  return {
+    content: {
+      contents: [],
+      image: {
+        id: '',
+        originalFileName: '',
+        fileName: '',
+        fileContentType: '',
+        fileExtensionName: '',
+        uploadPath: '',
+        fileUrl: '',
+        sha256: '',
+      },
+      title: '',
     },
-    title: '',
-  },
-  status: true,
-})
+    status: true,
+  }
+}
+
+const form = ref<FormData>(createForm())
 
 watch(
   () => props.componentData,
@@ -62,9 +67,13 @@ const handleSubmitContent = async () => {
     ElMessage.error('请添加内容')
     return
   }
-  form.content.contents.push(content)
+  form.value.content.contents.push(content)
   dialogVisible.value = false
   ElMessage.success('添加成功')
+}
+
+const handleRemoveContent = (index: number) => {
+  form.value.content.contents.splice(index, 1)
 }
 
 async function getFormData() {
@@ -73,17 +82,21 @@ async function getFormData() {
     ElMessage.error('请上传图片')
     return false
   }
-  if (!form.content.title) {
+  if (!form.value.content.title) {
     ElMessage.error('请输入标题')
     return false
   }
+  form.value.content.image = fileRes.fileData
   return form
 }
 
 async function setFormData(formData: FormData) {
-  await nextTick()
-  await moduleReadContentRef.value.setReadContentData(formData.content.contents)
-  form.status = formData.status
+  if (hasContentElements(formData.content)) {
+    await nextTick()
+    form.value = { ...formData }
+  } else {
+    form.value = createForm()
+  }
 }
 
 defineExpose({
@@ -105,9 +118,9 @@ defineExpose({
         <ElButton @click="handleAddContent">
           添加内容
         </ElButton>
-        <div v-for="(item, index) in form.content.contents" :key="index" class="w-full mb-4">
+        <ElTag v-for="(item, index) in form.content.contents" :key="index" closable class="ml-4" @close="handleRemoveContent(index)">
           {{ item.readContentLabel }}
-        </div>
+        </ElTag>
       </ElFormItem>
       <ElFormItem label="状态" required>
         <ElSwitch v-model="form.status" />
