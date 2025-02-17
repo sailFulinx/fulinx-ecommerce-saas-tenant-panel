@@ -131,6 +131,7 @@ const handleChangeCategory = (val: string[]) => {
 const listCategoryPayload = reactive<CategoryListParams>({
   languageId: usePreferenceStore().preference?.language.id,
   categoryName: '',
+  categoryType: 1,
   id: null,
 })
 

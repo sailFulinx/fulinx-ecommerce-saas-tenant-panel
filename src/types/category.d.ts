@@ -76,6 +76,8 @@ interface CategoryListParams {
   /* Category Name */
   categoryName?: string | null
 
+  categoryType?: number
+
   /* Status, 0: Disabled 1: Enabled */
   status?: boolean
 

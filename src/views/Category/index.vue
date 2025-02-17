@@ -19,7 +19,7 @@ const selectLanguage = ref<LanguageData>(usePreferenceStore().preference?.langua
 
 const listPayload = reactive<CategoryListParams & Pagination>({
   languageId: selectLanguage.value.id,
-  categoryName: '',
+  categoryName: null,
   id: null,
   pageNumber: 1,
   pageSize: 20,

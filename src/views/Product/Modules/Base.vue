@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { listCategoryApi } from '@/api/category'
 import {
   createProductDetailApi,
+  updateProductCategoryApi,
   updateProductDescriptionApi,
   updateProductInStockQuantityApi,
   updateProductMpnApi,
@@ -17,7 +19,7 @@ import { supplierPaginationApi } from '@/api/supplier'
 import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
 import { formatTime } from '@/utils'
-import { ElMessage, ElSwitch } from 'element-plus'
+import { ElButton, ElMessage, ElSwitch, ElTag } from 'element-plus'
 
 const { form } = defineProps<{ form: ShowProduct & CommonField }>()
 
@@ -45,6 +47,7 @@ const loading = reactive({
   init: false,
   list: false,
   supplier: false,
+  category: false,
 })
 
 // 更新名称
@@ -128,6 +131,103 @@ const editProductMpn = async () => {
   emit('resetFormData', data)
   inputProductMpnVisible.value = false
   ElMessage.success($t('success.edit'))
+}
+
+// 产品分类
+/**
+ * 分类
+ */
+
+const editProductCategoryVisible = ref<boolean>(false)
+
+const categoryProps = {
+  value: 'id',
+  label: 'categoryName',
+  multiple: true,
+}
+
+const categoryIds = ref<string[]>([])
+
+// const handleChangeCategory = (val: string[]) => {
+//   // if (val && val.length > 0) {
+//   //   val.forEach(item => {
+//   //     const lastElement = item.at(-1) // 获取最后一个元素
+//   //     if (lastElement !== undefined) {
+//   //       // 如果不在categoryIds.value中，则添加进去
+//   //       if (!categoryIds.value.includes(lastElement)) {
+//   //         categoryIds.value.push(lastElement)
+//   //       }
+//   //     }
+//   //   })
+//   // }
+// }
+
+const listCategoryPayload = reactive<CategoryListParams>({
+  languageId: usePreferenceStore().preference?.language.id,
+  categoryName: '',
+  categoryType: 1,
+  id: null,
+})
+
+const listCategoryData = ref<ListCategoryRes>({
+  list: [],
+  total: 0,
+})
+
+const getCategoryList = async () => {
+  loading.category = true
+  const { data } = await listCategoryApi(listCategoryPayload).catch(error => {
+    loading.category = true
+    throw error
+  })
+  listCategoryData.value = { ...data }
+  loading.category = false
+}
+getCategoryList()
+const handleClickUpdateProductCategory = () => {
+  editProductCategoryVisible.value = true
+  if (form.productCategoryRelationListResultDos.length > 0) {
+    form.productCategoryRelationListResultDos.forEach(item => {
+      categoryIds.value.push(item.categoryId)
+    })
+  }
+}
+
+const handleUpdateProductCategory = async () => {
+  const newCategoryIds = categoryIds.value
+    .map(item => {
+      if (Array.isArray(item) && item.length > 0) {
+        return [item[item.length - 1]] // 确保是二维结构
+      }
+    })
+    .filter(Boolean) // 去掉 undefined 项
+
+  // 提取一维数组形式的 previous 和 new CategoryIds，便于比对
+  const previousCategoryIds = form.productCategoryRelationListResultDos.map(item => item.categoryId)
+  const currentCategoryIds = newCategoryIds.flat() // 将二维数组转换为一维数组
+
+  // 找出被删除的 ID
+  const deletedCategoryIds = previousCategoryIds.filter(item => !currentCategoryIds.includes(item)).map(item => [item]) // 保持二维结构
+
+  // 保留新的选择并去重
+  const updatedCategoryIds = [
+    ...categoryIds.value.filter(item => Array.isArray(item) && currentCategoryIds.includes(item.flat()[0])), // 保留现有的选中项
+    ...newCategoryIds.filter(item => Array.isArray(item) && item.length > 0 && !previousCategoryIds.includes(item[0])), // 添加新的选中项
+  ]
+
+  loading.init = true
+  const { data } = await updateProductCategoryApi({
+    categoryIds: updatedCategoryIds.flat(),
+    productId: id,
+    languageId: selectLanguage.value.id,
+    deletedCategoryIds: deletedCategoryIds.flat(),
+  }).catch(error => {
+    loading.init = false
+    throw error
+  })
+  loading.init = false
+  emit('resetFormData', data)
+  editProductCategoryVisible.value = false
 }
 
 // 是否设置上线时间
@@ -439,6 +539,34 @@ const createProductName = async () => {
             <ElInput v-model="formData.mpn" style="width: 300px" class="mr-2" @blur="editProductMpn" />
             <EBtn text @click="handleCancelUpdateProductMpn">
               <Icon icon="ep:close" :size="5" class="mr-1" />
+            </EBtn>
+          </div>
+        </div>
+      </div>
+      <!-- 产品分类 -->
+      <div class="w-full grid grid-cols-12 gap-8 p-4">
+        <div class="col-span-1 font-semibold fs-[14px] text-gray-700">
+          {{ $t('product.category') }} :
+        </div>
+        <div class="col-span-11 w-full flex items-center">
+          <div class="mr-2 flex">
+            <div v-if="!editProductCategoryVisible" class="mr-1">
+              <ElTag v-for="item in formData.productCategoryRelationListResultDos" :key="item.id" class="mr-2">
+                {{ item.categoryName }}
+              </ElTag>
+            </div>
+            <div v-else>
+              <ElCascader v-model="categoryIds" :props="categoryProps" :options="listCategoryData.list" class="mr-2" />
+              <ElButton size="small" type="default" @click="editProductCategoryVisible = false">
+                {{ $t('common.cancel') }}
+              </ElButton>
+              <ElButton size="small" type="primary" @click="handleUpdateProductCategory">
+                {{ $t('common.submit') }}
+              </ElButton>
+            </div>
+
+            <EBtn v-if="!editProductCategoryVisible" type="primary" text @click="handleClickUpdateProductCategory">
+              <Icon icon="ep:edit" :size="4" class="mr-1" />
             </EBtn>
           </div>
         </div>

@@ -279,6 +279,8 @@ interface ProductCategoryRelationListResultDo {
 
   /* Category ID */
   categoryId: string
+
+  categoryName: string
 }
 
 interface ProductFileRelationListResultDo {

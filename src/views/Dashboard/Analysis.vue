@@ -103,7 +103,7 @@ const handleRedirectToCategory = (id: string) => {
 
 <template>
   <div class="view-page">
-    <div class="w-full pa-4">
+    <div class="w-full pa-4 view-main">
       <div class="grid grid-cols-5 gap-5">
         <div class="col-span-1">
           <ElCard shadow="never">
