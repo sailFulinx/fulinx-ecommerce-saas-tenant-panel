@@ -69,14 +69,14 @@ defineExpose({
       <div class="text-red-800 mb-5">
         5、必须先把图片上传到服务器中，再上传excel,
         图片上传到服务器中后，会返回服务器中的图片路径，在excel中填写图片路径
-        <p v-if="filePath" class="mt-5 font-bold">
-          图片路径：{{ filePath }}
+        <p class="mt-5 font-bold">
+          图片路径：{{ filePath || '' }}
         </p>
       </div>
     </div>
     <div class="flex justify-between items-center">
       <UploadZip class="mr-4" @get-file-path="getFilePath" />
-      <UploadExcel v-if="filePath" class="mr-4" :import-type-value="importTypeValue" />
+      <UploadExcel class="mr-4" :import-type-value="importTypeValue" />
     </div>
   </ElDrawer>
 </template>
