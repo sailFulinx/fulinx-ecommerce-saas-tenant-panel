@@ -327,37 +327,37 @@ const editProductProcessingQuantity = async () => {
 
 // 在途库存
 
-// const editProductProcessingDaysVisible = ref<boolean>(false)
+const editProductProcessingDaysVisible = ref<boolean>(false)
 
-// const editProductProcessingDays = async () => {
-//   loading.init = true
-//   const { data } = await updateProductProcessingDaysApi({
-//     processingDays: formData.value.processingQuantity,
-//     productId: id,
-//     languageId: selectLanguage.value.id,
-//   })
-//   loading.init = false
-//   emit('resetFormData', data)
-//   ElMessage.success($t('success.edit'))
-//   editProductProcessingQuantityVisible.value = false
-// }
-
-// 生产周期
-
-const editProductProductionCycleVisible = ref<boolean>(false)
-
-const editProductProductionCycle = async () => {
+const editProductProcessingDays = async () => {
   loading.init = true
-  const { data } = await updateProductProductionCycleApi({
-    productionCycle: formData.value.productionCycle,
+  const { data } = await updateProductProcessingDaysApi({
+    processingDays: formData.value.processingQuantity,
     productId: id,
     languageId: selectLanguage.value.id,
   })
   loading.init = false
   emit('resetFormData', data)
   ElMessage.success($t('success.edit'))
-  editProductProductionCycleVisible.value = false
+  editProductProcessingQuantityVisible.value = false
 }
+
+// 生产周期
+
+// const editProductProductionCycleVisible = ref<boolean>(false)
+
+// const editProductProductionCycle = async () => {
+//   loading.init = true
+//   const { data } = await updateProductProductionCycleApi({
+//     productionCycle: formData.value.productionCycle,
+//     productId: id,
+//     languageId: selectLanguage.value.id,
+//   })
+//   loading.init = false
+//   emit('resetFormData', data)
+//   ElMessage.success($t('success.edit'))
+//   editProductProductionCycleVisible.value = false
+// }
 
 /**
  * 供应商
@@ -698,7 +698,7 @@ const createProductName = async () => {
         </div>
       </div>
       <!-- 在途发货天数 -->
-      <!-- <div class="w-full grid grid-cols-12 gap-8 p-4">
+      <div class="w-full grid grid-cols-12 gap-8 p-4">
         <div class="col-span-1 font-semibold fs-[14px] text-gray-700">
           {{ $t('product.processingDays') }} :
         </div>
@@ -727,9 +727,9 @@ const createProductName = async () => {
             </EBtn>
           </div>
         </div>
-      </div> -->
+      </div>
       <!-- 生产周期 -->
-      <div class="w-full grid grid-cols-12 gap-8 p-4">
+      <!-- <div class="w-full grid grid-cols-12 gap-8 p-4">
         <div class="col-span-1 font-semibold fs-[14px] text-gray-700">
           {{ $t('product.productionCycle') }} :
         </div>
@@ -758,7 +758,7 @@ const createProductName = async () => {
             </EBtn>
           </div>
         </div>
-      </div>
+      </div> -->
       <!-- 供应商 -->
       <div class="w-full grid grid-cols-12 gap-8 p-4">
         <div class="col-span-1 font-semibold fs-[14px] text-gray-700">
