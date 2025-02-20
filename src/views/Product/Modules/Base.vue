@@ -186,6 +186,9 @@ const getCategoryList = async () => {
 getCategoryList()
 const handleClickUpdateProductCategory = () => {
   editProductCategoryVisible.value = true
+  if (form.productCategoryRelationListResultDos == null) {
+    return
+  }
   if (form.productCategoryRelationListResultDos.length > 0) {
     form.productCategoryRelationListResultDos.forEach(item => {
       categoryIds.value.push(item.categoryId)
@@ -194,6 +197,28 @@ const handleClickUpdateProductCategory = () => {
 }
 
 const handleUpdateProductCategory = async () => {
+  // 提取一维数组形式的 previous 和 new CategoryIds，便于比对
+  let previousCategoryIds: string[] = []
+  if (form.productCategoryRelationListResultDos != null && form.productCategoryRelationListResultDos.length > 0) {
+    previousCategoryIds = form.productCategoryRelationListResultDos.map(item => item.categoryId)
+  }
+  if (categoryIds.value.length === 0) {
+    loading.init = true
+    const { data } = await updateProductCategoryApi({
+      categoryIds: [],
+      productId: id,
+      languageId: selectLanguage.value.id,
+      deletedCategoryIds: previousCategoryIds.flat(),
+    }).catch(error => {
+      loading.init = false
+      throw error
+    })
+    loading.init = false
+    emit('resetFormData', data)
+    editProductCategoryVisible.value = false
+    ElMessage.success($t('success.edit'))
+    return
+  }
   const newCategoryIds = categoryIds.value
     .map(item => {
       if (Array.isArray(item) && item.length > 0) {
@@ -202,8 +227,6 @@ const handleUpdateProductCategory = async () => {
     })
     .filter(Boolean) // 去掉 undefined 项
 
-  // 提取一维数组形式的 previous 和 new CategoryIds，便于比对
-  const previousCategoryIds = form.productCategoryRelationListResultDos.map(item => item.categoryId)
   const currentCategoryIds = newCategoryIds.flat() // 将二维数组转换为一维数组
 
   // 找出被删除的 ID
@@ -228,6 +251,7 @@ const handleUpdateProductCategory = async () => {
   loading.init = false
   emit('resetFormData', data)
   editProductCategoryVisible.value = false
+  ElMessage.success($t('success.edit'))
 }
 
 // 是否设置上线时间
@@ -703,7 +727,7 @@ const createProductName = async () => {
           {{ $t('product.processingDays') }} :
         </div>
         <div class="col-span-11 w-full flex items-center">
-          <div v-if="!editProductProcessingQuantityVisible" class="mr-2 flex">
+          <div v-if="!editProductProcessingDaysVisible" class="mr-2 flex">
             <div class="mr-1">
               {{ formData.processingDays }}
             </div>
