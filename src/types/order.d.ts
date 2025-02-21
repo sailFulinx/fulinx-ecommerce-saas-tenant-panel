@@ -321,6 +321,13 @@ interface OrderAmountListResultDo {
   amountDetail: string
 }
 
+interface OrderAmountItem {
+  orderAmountItemType: number
+  orderAmountItemAmount: number
+  orderAmountItemDescription: string
+  orderAmountItemRelationRelationValue: string
+}
+
 interface OrderRemainShipmentProductListResultDo {
   /* Order ID */
   orderId: string

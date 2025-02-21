@@ -17,7 +17,9 @@ import {
   ElTabPane,
   ElTabs,
 } from 'element-plus'
+
 import ApprovalDialog from './Modules/ApprovalDialog.vue'
+import PdfDialog from './Modules/PdfDialog.vue'
 import ShipmentDialog from './Modules/ShipmentDialog.vue'
 
 const { t: $t } = useLocale()
@@ -314,6 +316,11 @@ const shipmentDialogRef = ref()
 const handleShipment = async (orderProduct: OrderProductListResultDo & CommonField) => {
   shipmentDialogRef.value.open(id, form.orderRemainShipmentProductListResultDos, orderProduct)
 }
+
+const pdfDialogRef = ref()
+const exportPdf = async () => {
+  pdfDialogRef.value.open(form, orderProducts.value)
+}
 </script>
 
 <template>
@@ -341,6 +348,9 @@ const handleShipment = async (orderProduct: OrderProductListResultDo & CommonFie
                 {{ $t('order.shippingOrder') }}
               </EBtn>
             </div> -->
+            <EBtn plain type="primary" @click="exportPdf">
+              PDF导出
+            </EBtn>
           </div>
         </div>
       </div>
@@ -416,8 +426,7 @@ const handleShipment = async (orderProduct: OrderProductListResultDo & CommonFie
             <ElDescriptionsItem :label="$t('order.shippingAddress')">
               {{ form.orderAddressListResultDos[0]?.administrativeProvinceShortName
               }}{{ form.orderAddressListResultDos[0]?.administrativeCityShortName
-              }}{{ form.orderAddressListResultDos[0]?.address1 }}{{ form.orderAddressListResultDos[0]?.address2
-              }}{{ form.orderAddressListResultDos[0]?.postcode }}
+              }}{{ form.orderAddressListResultDos[0]?.address1 }}{{ form.orderAddressListResultDos[0]?.address2 }}
             </ElDescriptionsItem>
           </ElDescriptions>
         </ElCard>
@@ -443,6 +452,7 @@ const handleShipment = async (orderProduct: OrderProductListResultDo & CommonFie
                   "
                 >
                   <img
+                    v-if="scope.row.productFile && scope.row.productFile.length > 0"
                     :src="`${sourceUrl}${scope.row.productFile[0]?.fileVo?.fileUrl}`"
                     :alt="scope.row.productName?.productName"
                   >
@@ -605,5 +615,7 @@ const handleShipment = async (orderProduct: OrderProductListResultDo & CommonFie
     <ApprovalDialog ref="approvalDialogRef" @get-order="initFormData" />
     <!-- 发货dialog -->
     <ShipmentDialog ref="shipmentDialogRef" @get-order="initFormData" />
+    <!-- 导出Pdf dialog -->
+    <PdfDialog ref="pdfDialogRef" />
   </div>
 </template>
