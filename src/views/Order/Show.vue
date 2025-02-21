@@ -222,6 +222,8 @@ const form = reactive<OrderShowData & CommonField>(createFormData())
 
 const orderProducts = ref<(OrderProductListResultDo & CommonField)[]>([])
 
+const orderAmountList = ref<OrderAmountItem[]>([])
+
 const parseOrderProductData = (item: OrderProductListResultDo & CommonField) => ({
   ...item,
   productCategory: JSON.parse(item.productCategory || '{}'),
@@ -243,6 +245,7 @@ const getOrderData = async () => {
     throw error
   })
   orderProducts.value = data.orderProductListResultDos.map(parseOrderProductData)
+  orderAmountList.value = JSON.parse(data.orderAmountListResultDo?.amountDetail)
   loading.init = false
   return data
 }
@@ -512,6 +515,20 @@ const exportPdf = async () => {
               </template>
             </ElTableColumn>
           </ElTable>
+          <div class="mt-4">
+            <p v-for="(item, index) in orderAmountList" :key="index" class="flex justify-end font-semibold mb-4">
+              {{ item.orderAmountItemDescription }}：
+              <span class="font-normal">
+                {{ item.orderAmountItemAmount.toFixed(2) }}
+              </span>
+            </p>
+            <p class="flex justify-end font-semibold mb-4">
+              合计：
+              <span class="font-normal">
+                {{ form.orderTotalAmount.toFixed(2) }}
+              </span>
+            </p>
+          </div>
         </ElCard>
       </div>
       <div class="w-full grid grid-cols-1 gap-5">
