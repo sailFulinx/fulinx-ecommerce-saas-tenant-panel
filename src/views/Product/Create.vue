@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { listCategoryApi } from '@/api/category'
-import { parameterGroupListApi, parameterGroupParameterRelationListApi } from '@/api/parameter'
+import { parameterGroupListApi, parameterListApi } from '@/api/parameter'
 import { createProductApi } from '@/api/product'
 import { supplierPaginationApi } from '@/api/supplier'
 import { useLocale } from '@/hooks/useLocale'
@@ -38,67 +38,94 @@ const loading = reactive({
  * 参数
  */
 
-const selectedParameterGroup = ref('')
+const selectedParameter = ref<(ParameterListData & CommonField) | null>()
 
-const listParameterGroupResult = ref<TableResponse<ParameterGroupListData & CommonField>>({
-  list: [],
-  total: 0,
-})
+const selectedParameterList = ref<(ParameterListData & CommonField)[]>([])
 
-const listParameterGroupQuery = reactive<ParameterGroupListParams>({
-  languageId: usePreferenceStore().preference?.language.id,
-  parameterGroupName: '',
-})
-
-const getParameterGroupList = async () => {
-  loading.parameterGroup = true
-  if (listParameterGroupQuery.parameterGroupName === '') {
-    listParameterGroupQuery.parameterGroupName = null
+const addParameter = () => {
+  if (!selectedParameter.value || selectedParameter.value === null) {
+    ElMessage({
+      type: 'warning',
+      message: '请选择参数',
+    })
+    return
   }
-  const { data } = await parameterGroupListApi(listParameterGroupQuery).catch(err => {
-    loading.parameterGroup = false
-    throw err
-  })
-  listParameterGroupResult.value = data
-  loading.parameterGroup = false
+  // 如果已经存在,不重复添加
+  if (selectedParameterList.value.find(item => item.id === selectedParameter.value?.id)) {
+    ElMessage({
+      type: 'warning',
+      message: '已存在该参数',
+    })
+    return
+  }
+  selectedParameterList.value.push(selectedParameter.value)
 }
 
-getParameterGroupList()
+const removeParameter = (index: number) => {
+  selectedParameterList.value.splice(index, 1)
+}
 
-const listParameterResult = ref<TableResponse<ParameterGroupParameterRelationData & CommonField>>({
+// const selectedParameterGroup = ref('')
+
+// const listParameterGroupResult = ref<TableResponse<ParameterGroupListData & CommonField>>({
+//   list: [],
+//   total: 0,
+// })
+
+// const listParameterGroupQuery = reactive<ParameterGroupListParams>({
+//   languageId: usePreferenceStore().preference?.language.id,
+//   parameterGroupName: '',
+// })
+
+// const getParameterGroupList = async () => {
+//   loading.parameterGroup = true
+//   if (listParameterGroupQuery.parameterGroupName === '') {
+//     listParameterGroupQuery.parameterGroupName = null
+//   }
+//   const { data } = await parameterGroupListApi(listParameterGroupQuery).catch(err => {
+//     loading.parameterGroup = false
+//     throw err
+//   })
+//   listParameterGroupResult.value = data
+//   loading.parameterGroup = false
+// }
+
+// getParameterGroupList()
+
+const listParameterResult = ref<TableResponse<ParameterListData & CommonField>>({
   list: [],
   total: 0,
 })
 
-const listParameterQuery = reactive<ParameterGroupParameterRelationParams>({
+const listParameterQuery = reactive<ParameterListParams>({
   languageId: usePreferenceStore().preference?.language.id,
-  parameterGroupId: '',
 })
 
 const getParameterList = async () => {
   loading.parameter = true
-  const { data } = await parameterGroupParameterRelationListApi(listParameterQuery).catch(err => {
+  const { data } = await parameterListApi(listParameterQuery).catch(err => {
     loading.parameter = false
     throw err
   })
   listParameterResult.value = data
-  loading.parameterGroup = false
+  loading.parameter = false
 }
 
-const handleParameterGroupChange = (val: string) => {
-  listParameterQuery.parameterGroupId = val
-  getParameterList()
-}
+// const handleParameterGroupChange = (val: string) => {
+//   listParameterQuery.parameterGroupId = val
+//   getParameterList()
+// }
+getParameterList()
 
 const productParameterForm = ref<ProductParameterRelationRequest[]>([])
 
 const inputParameterForm = ref<string[]>([])
 
-const formatInputParameterValue = (index: number, value: (ParameterGroupParameterRelationData & CommonField)) => {
+const formatInputParameterValue = (index: number, value: ParameterListData & CommonField) => {
   const parameterValueContent = inputParameterForm.value[index]
   const parameterValue: ProductParameterRelationRequest = {
-    parameterGroupId: selectedParameterGroup.value,
-    parameterId: value.parameterId,
+    // parameterGroupId: selectedParameterGroup.value,
+    parameterId: value.id,
     parameterValueContent,
     parameterValueId: '',
   }
@@ -121,7 +148,8 @@ const handleChangeCategory = (val: string[]) => {
   if (val && val.length > 0) {
     val.forEach(item => {
       const lastElement = item.at(-1) // 获取最后一个元素
-      if (lastElement !== undefined) { // 检查是否为undefined
+      if (lastElement !== undefined) {
+        // 检查是否为undefined
         categoryIds.value.push(lastElement)
       }
     })
@@ -251,7 +279,7 @@ const save = async () => {
   productForm.productParameterRelationRequestDos = []
   productForm.languageId = usePreferenceStore().preference.language.id
   productForm.currencyId = usePreferenceStore().preference.currency.id
-  productForm.parameterGroupId = selectedParameterGroup.value
+  // productForm.parameterGroupId = selectedParameterGroup.value
   const images = imageUploadRef.value.getFileData()
   productForm.productImageRequestDos = images.fileDataList
   productForm.productImageRequestDos?.map(item => {
@@ -261,7 +289,7 @@ const save = async () => {
   productParameterForm.value.map(item => {
     if (item?.id) {
       const result: ProductParameterRelationRequest = {
-        parameterGroupId: selectedParameterGroup.value,
+        // parameterGroupId: selectedParameterGroup.value,
         parameterId: item.parameterId,
         parameterValueId: item.id,
         parameterValueContent: item.parameterValueContent,
@@ -269,7 +297,7 @@ const save = async () => {
       productForm.productParameterRelationRequestDos.push(result)
     } else {
       const result: ProductParameterRelationRequest = {
-        parameterGroupId: selectedParameterGroup.value,
+        // parameterGroupId: selectedParameterGroup.value,
         parameterId: item.parameterId,
         parameterValueId: '',
         parameterValueContent: item.parameterValueContent,
@@ -355,7 +383,11 @@ const save = async () => {
                   v-model="productForm.supplierId"
                   filterable
                   clearable
-                  remote reserve-keyword :remote-method="remoteQuerySupplier" :placeholder="$t('product.placeholder.supplier')" style="width:200px"
+                  remote
+                  reserve-keyword
+                  :remote-method="remoteQuerySupplier"
+                  :placeholder="$t('product.placeholder.supplier')"
+                  style="width: 200px"
                 >
                   <ElOption
                     v-for="item in listSupplierResult.list"
@@ -398,31 +430,61 @@ const save = async () => {
                   </div>
                   <div>
                     <ElSelect
-                      v-model="selectedParameterGroup"
-                      :placeholder="$t('product.placeholder.parameterGroup')"
+                      v-model="selectedParameter"
+                      value-key="id"
+                      filterable
+                      clearable
+                      placeholder="请选择参数"
                       style="width: 200px"
-                      @change="handleParameterGroupChange"
+                      class="mr-3"
                     >
                       <ElOption
-                        v-for="item in listParameterGroupResult.list"
+                        v-for="item in listParameterResult.list"
                         :key="item.id"
-                        :label="item.parameterGroupName"
-                        :value="item.id"
+                        :label="item.parameterName"
+                        :value="item"
                       />
                     </ElSelect>
+
+                    <EBtn size="small" type="primary" @click="addParameter">
+                      <Icon icon="ant-design:plus-outlined" class="mr-1" />
+                      {{ $t('common.add') }}
+                    </EBtn>
                   </div>
                 </div>
               </template>
-              <div v-if="listParameterResult && listParameterResult.list.length > 0">
-                <div v-for="(item, index) in listParameterResult.list" :key="item.id">
-                  <ElFormItem v-if="item.parameterType === 2" :label="item.parameterName">
+              <div v-if="selectedParameterList && selectedParameterList.length > 0">
+                <div v-for="(item, index) in selectedParameterList" :key="item.id">
+                  <ElFormItem
+                    v-if="item.parameterType === 2"
+                    label-width="auto"
+                    :label="item.parameterName"
+                    class="flex justify-between"
+                  >
                     <ElInput
                       v-model="inputParameterForm[index]"
+                      style="width: 200px; margin-right: 10px"
+                      placeholder="请输入参数值"
                       @input="formatInputParameterValue(index, item)"
                     />
+                    <EBtn plain type="danger" @click="removeParameter(index)">
+                      <Icon icon="ant-design:delete-outlined" />
+                    </EBtn>
                   </ElFormItem>
-                  <ElFormItem v-if="item.parameterType === 1" :label="item.parameterName">
-                    <ElSelect v-model="productParameterForm[index]" value-key="id">
+                  <ElFormItem
+                    v-if="item.parameterType === 1"
+                    label-width="auto"
+                    :label="item.parameterName"
+                    class="flex justify-between"
+                  >
+                    <ElSelect
+                      v-model="productParameterForm[index]"
+                      value-key="id"
+                      style="width: 200px; margin-right: 10px"
+                      filterable
+                      clearable
+                      placeholder="请选择参数值"
+                    >
                       <ElOption
                         v-for="vItem in item.parameterValueListResultDos"
                         :key="vItem.id"
@@ -430,6 +492,9 @@ const save = async () => {
                         :value="vItem"
                       />
                     </ElSelect>
+                    <EBtn plain type="danger" @click="removeParameter(index)">
+                      <Icon icon="ant-design:delete-outlined" />
+                    </EBtn>
                   </ElFormItem>
                 </div>
               </div>
@@ -446,7 +511,12 @@ const save = async () => {
                 </div>
               </template>
               <ElFormItem :label="$t('product.category')" prop="category">
-                <ElCascader v-model="productForm.categoryIds" :props="categoryProps" :options="listCategoryData.list" @change="handleChangeCategory" />
+                <ElCascader
+                  v-model="productForm.categoryIds"
+                  :props="categoryProps"
+                  :options="listCategoryData.list"
+                  @change="handleChangeCategory"
+                />
               </ElFormItem>
             </ElCard>
             <!-- 价格信息 -->

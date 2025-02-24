@@ -46,7 +46,6 @@ interface ParameterShow {
   parameterType: number
   /* */
   parameterDetailListResultDo: ParameterDetailListResultDo & CommonField
-
 }
 
 interface UpdateParameterDetailParameterNameParams {
@@ -85,6 +84,9 @@ interface ParameterListData {
 
   /* Parameter Name */
   parameterName: string
+
+  /* Parameter Value List Result Dos */
+  parameterValueListResultDos: (ParameterValueListResultDo & CommonField)[]
 }
 
 interface ShowParameterParams {
@@ -125,7 +127,6 @@ interface CreateParameterGroupParameterRelationParams {
 }
 
 interface ParameterGroupDetailListResultDo {
-
   /* Parameter Group ID */
   parameterGroupId: string
 
@@ -137,7 +138,6 @@ interface ParameterGroupDetailListResultDo {
 }
 
 interface ParameterGroupParameterRelationListResultDo {
-
   /* Parameter Group ID */
   parameterGroupId: string
 
@@ -190,7 +190,6 @@ interface ParameterGroupListParams {
 }
 
 interface ParameterGroupListData {
-
   /* Parameter Group Name */
   parameterGroupName: string
 
@@ -262,7 +261,6 @@ interface CreateParameterValueDetailParams {
 }
 
 interface ParameterValueDetailListResultDo {
-
   /* Parameter Value ID */
   parameterValueId: string
 
@@ -271,8 +269,7 @@ interface ParameterValueDetailListResultDo {
 
   /* Attribute Value Name */
   parameterValueContent: string
-
-};
+}
 
 interface ParameterValueShow {
   parameterValueDetailListResultDo: ParameterValueDetailListResultDo & CommonField
@@ -351,7 +348,7 @@ interface ParameterValueListResultDo {
 
 interface ParameterGroupParameterRelationParams {
   /* Parameter Group ID */
-  parameterGroupId: string
+  parameterGroupId?: string
 
   /* Language ID */
   languageId: string

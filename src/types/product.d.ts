@@ -40,7 +40,7 @@ interface ProductPriceCreateRequestDo {
 
 interface ProductParameterRelationRequestDo {
   /* Parameter Group ID */
-  parameterGroupId: string
+  parameterGroupId?: string
 
   /* Parameter ID */
   parameterId: string
@@ -668,10 +668,10 @@ interface UpdateProductOnlineTimeParams {
 
 interface ProductParameterRequestDo {
   /* Parameter Group ID */
-  parameterGroupId: string
+  parameterGroupId?: string
 
   /* Product Parameter Relation ID */
-  productParameterRelationId: string
+  productParameterRelationId?: string
 
   /* Parameter ID */
   parameterId: string
@@ -701,7 +701,7 @@ interface UpdateProductParameterParams {
   deletedProductParameterRelationIds: string[]
 
   /* Parameter GroupId */
-  parameterGroupId: string
+  parameterGroupId?: string
 
   /* Language ID */
   languageId: string
@@ -887,7 +887,7 @@ interface CreateProductSeoParams {
 
 interface ProductParameterRelationRequest {
   id?: string
-  parameterGroupId: string
+  parameterGroupId?: string
   parameterId: string
   parameterValueId?: string
   parameterValueContent?: string
