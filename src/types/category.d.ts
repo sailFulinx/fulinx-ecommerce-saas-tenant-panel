@@ -296,6 +296,11 @@ interface CategoryUpdateLayoutParams {
   layoutId: string
 }
 
+interface CategoryUpdateLayoutSort {
+  categoryId: string
+  sort: number
+}
+
 interface CategoryUpdateCategoryTypeParams {
   /* Category Id */
   categoryId: string

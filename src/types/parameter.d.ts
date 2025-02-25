@@ -87,6 +87,8 @@ interface ParameterListData {
 
   /* Parameter Value List Result Dos */
   parameterValueListResultDos: (ParameterValueListResultDo & CommonField)[]
+
+  sort?: number
 }
 
 interface ShowParameterParams {

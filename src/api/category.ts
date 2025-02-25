@@ -16,7 +16,10 @@ export function removeCategoryApi(data: RemoveCategoryParams): Promise<IResponse
   })
 }
 
-export function editCategoryApi(id: string, data: CategoryRequestParams): Promise<IResponse<CategoryData & CommonField>> {
+export function editCategoryApi(
+  id: string,
+  data: CategoryRequestParams,
+): Promise<IResponse<CategoryData & CommonField>> {
   return request.put({
     url: `system/category/${id}`,
     data,
@@ -34,6 +37,16 @@ export function editCategoryLayoutApi(
   })
 }
 
+export function editCategorySortApi(
+  data: CategoryUpdateLayoutSort,
+): Promise<IResponse<CategoryShowData & CommonField>> {
+  return request.post({
+    url: 'system/category/update/sort',
+    data,
+    token: true,
+  })
+}
+
 export function editCategoryTypeApi(
   data: CategoryUpdateCategoryTypeParams,
 ): Promise<IResponse<CategoryShowData & CommonField>> {
@@ -44,7 +57,9 @@ export function editCategoryTypeApi(
   })
 }
 
-export function editCategoryStatusApi(data: CategoryUpdateStatusParams): Promise<IResponse<CategoryShowData & CommonField>> {
+export function editCategoryStatusApi(
+  data: CategoryUpdateStatusParams,
+): Promise<IResponse<CategoryShowData & CommonField>> {
   return request.post({
     url: 'system/category/update/status',
     data,
@@ -52,7 +67,9 @@ export function editCategoryStatusApi(data: CategoryUpdateStatusParams): Promise
   })
 }
 
-export function editCategoryParentApi(data: CategoryUpdateParentParams): Promise<IResponse<CategoryShowData & CommonField>> {
+export function editCategoryParentApi(
+  data: CategoryUpdateParentParams,
+): Promise<IResponse<CategoryShowData & CommonField>> {
   return request.post({
     url: 'system/category/update/parent',
     data,
@@ -60,7 +77,9 @@ export function editCategoryParentApi(data: CategoryUpdateParentParams): Promise
   })
 }
 
-export function createCategoryNameApi(data: CategoryCreateCategoryNameParams): Promise<IResponse<CategoryShowData & CommonField>> {
+export function createCategoryNameApi(
+  data: CategoryCreateCategoryNameParams,
+): Promise<IResponse<CategoryShowData & CommonField>> {
   return request.post({
     url: 'system/category/create/categoryName',
     data,
@@ -68,7 +87,9 @@ export function createCategoryNameApi(data: CategoryCreateCategoryNameParams): P
   })
 }
 
-export function createCategorySeoApi(data: CategoryCreateCategorySeoParams): Promise<IResponse<CategoryShowData & CommonField>> {
+export function createCategorySeoApi(
+  data: CategoryCreateCategorySeoParams,
+): Promise<IResponse<CategoryShowData & CommonField>> {
   return request.post({
     url: 'system/category/create/categorySeo',
     data,
@@ -86,7 +107,9 @@ export function createCategorySlugApi(
   })
 }
 
-export function editCategoryNameApi(data: CategoryUpdateCategoryNameParams): Promise<IResponse<CategoryShowData & CommonField>> {
+export function editCategoryNameApi(
+  data: CategoryUpdateCategoryNameParams,
+): Promise<IResponse<CategoryShowData & CommonField>> {
   return request.post({
     url: 'system/category/update/categoryName',
     data,
@@ -94,7 +117,9 @@ export function editCategoryNameApi(data: CategoryUpdateCategoryNameParams): Pro
   })
 }
 
-export function editCategoryDescriptionApi(data: CategoryUpdateCategoryDescriptionParams): Promise<IResponse<CategoryShowData & CommonField>> {
+export function editCategoryDescriptionApi(
+  data: CategoryUpdateCategoryDescriptionParams,
+): Promise<IResponse<CategoryShowData & CommonField>> {
   return request.post({
     url: 'system/category/update/categoryDescription',
     data,
@@ -102,7 +127,9 @@ export function editCategoryDescriptionApi(data: CategoryUpdateCategoryDescripti
   })
 }
 
-export function editCategoryFileApi(data: CategoryUpdateCategoryFileParams): Promise<IResponse<CategoryShowData & CommonField>> {
+export function editCategoryFileApi(
+  data: CategoryUpdateCategoryFileParams,
+): Promise<IResponse<CategoryShowData & CommonField>> {
   return request.post({
     url: 'system/category/update/categoryFile',
     data,
@@ -110,7 +137,9 @@ export function editCategoryFileApi(data: CategoryUpdateCategoryFileParams): Pro
   })
 }
 
-export function editCategoryCustomApi(data: CategoryUpdateCategoryCustomParams): Promise<IResponse<CategoryShowData & CommonField>> {
+export function editCategoryCustomApi(
+  data: CategoryUpdateCategoryCustomParams,
+): Promise<IResponse<CategoryShowData & CommonField>> {
   return request.post({
     url: 'system/category/update/categoryCustom',
     data,
@@ -118,7 +147,9 @@ export function editCategoryCustomApi(data: CategoryUpdateCategoryCustomParams):
   })
 }
 
-export function editCategorySeoApi(data: CategoryUpdateCategorySeoParams): Promise<IResponse<CategoryShowData & CommonField>> {
+export function editCategorySeoApi(
+  data: CategoryUpdateCategorySeoParams,
+): Promise<IResponse<CategoryShowData & CommonField>> {
   return request.post({
     url: 'system/category/update/categorySeo',
     data,

@@ -72,16 +72,17 @@ const parameterValueFormRef = ref()
 
 const parameterValueDialogVisible = ref(false)
 
-const handleCreateParameterValue = () => {
-  parameterValueDialogVisible.value = true
-}
-
 const parameterValueForm = reactive<CreateParameterValueParams>({
   parameterId: id,
   parameterValueDetailId: '',
   parameterValueContent: '',
   languageId: selectLanguage.value.id,
 })
+
+const handleCreateParameterValue = () => {
+  parameterValueDialogVisible.value = true
+  parameterValueForm.parameterValueContent = ''
+}
 
 const parameterValueFormRules = {
   parameterValueContent: [
@@ -348,22 +349,18 @@ const editParameterType = async () => {
                     <div class="mr-1">
                       {{ getParameterTypeLabel(form.parameterType) }}
                     </div>
-                    <EBtn
-                      type="primary"
-                      text
-                      @click="editParameterTypeVisible = true"
-                    >
+                    <EBtn type="primary" text @click="editParameterTypeVisible = true">
                       <Icon icon="ep:edit" :size="4" class="mr-1" />
                     </EBtn>
                   </div>
                   <div v-else>
-                    <ElSelect v-model="form.parameterType" :placeholder="$t('parameter.placeholder.parameterType')" style="width:120px" @change="editParameterType">
-                      <ElOption
-                        v-for="item in parameterTypes"
-                        :key="item.id"
-                        :label="item.label"
-                        :value="item.id"
-                      />
+                    <ElSelect
+                      v-model="form.parameterType"
+                      :placeholder="$t('parameter.placeholder.parameterType')"
+                      style="width: 120px"
+                      @change="editParameterType"
+                    >
+                      <ElOption v-for="item in parameterTypes" :key="item.id" :label="item.label" :value="item.id" />
                     </ElSelect>
                   </div>
                 </div>
@@ -383,11 +380,13 @@ const editParameterType = async () => {
             </div>
           </ElCard>
         </ElTabPane>
-        <ElTabPane v-if="form.parameterType === 1 || form.parameterType === 3" :label="$t('parameter.parameterValue')" name="parameterValue">
+        <ElTabPane
+          v-if="form.parameterType === 1 || form.parameterType === 3"
+          :label="$t('parameter.parameterValue')"
+          name="parameterValue"
+        >
           <div class="flex justify-between items-center mb-5">
-            <div>
-              参数值列表
-            </div>
+            <div>参数值列表</div>
             <div>
               <EBtn type="primary" @click="handleCreateParameterValue">
                 添加参数值
@@ -440,9 +439,17 @@ const editParameterType = async () => {
         </ElTabPane>
       </ElTabs>
       <ElDialog ref="parameterValueDialogRef" v-model="parameterValueDialogVisible" title="添加参数值">
-        <ElForm ref="parameterValueFormRef" :model="parameterValueForm" :rules="parameterValueFormRules" label-width="120px">
+        <ElForm
+          ref="parameterValueFormRef"
+          :model="parameterValueForm"
+          :rules="parameterValueFormRules"
+          label-width="120px"
+        >
           <ElFormItem :label="$t('parameter.parameterValueContent')" prop="parameterValueContent">
-            <ElInput v-model="parameterValueForm.parameterValueContent" :placeholder="$t('parameter.placeholder.parameterValueContent')" />
+            <ElInput
+              v-model="parameterValueForm.parameterValueContent"
+              :placeholder="$t('parameter.placeholder.parameterValueContent')"
+            />
           </ElFormItem>
         </ElForm>
         <template #footer>

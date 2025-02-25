@@ -73,7 +73,7 @@ const handleProgress = (event: { percent: number }, uploadFile: UploadFile) => {
 }
 
 const handleChangeSort = () => {
-  fileDataList.value.forEach((item, index) => {
+  fileDataList.value.map((item, index) => {
     item.sort = index + 1
   })
 }

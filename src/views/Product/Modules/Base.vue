@@ -497,11 +497,11 @@ const createProductName = async () => {
 <template>
   <ElCard v-if="form.productDetailListResultDo" shadow="never" class="mb-5">
     <div class="w-full mt-0 pt-0">
-      <div class="w-full grid grid-cols-12 gap-8 p-4">
-        <div class="col-span-1 font-semibold fs-[14px] text-gray-700">
+      <div class="w-full flex items-center justify-start p-4">
+        <div class="font-semibold fs-[14px] text-gray-700 mr-5">
           {{ $t('product.productName') }} :
         </div>
-        <div class="col-span-11 w-full flex items-center">
+        <div class="flex items-center">
           <div v-if="!inputProductNameVisible" class="mr-2 flex">
             <div class="mr-1">
               {{ formData.productDetailListResultDo.productName }}
@@ -524,11 +524,11 @@ const createProductName = async () => {
         </div>
       </div>
       <!-- SKU -->
-      <div class="w-full grid grid-cols-12 gap-8 p-4">
-        <div class="col-span-1 font-semibold fs-[14px] text-gray-700">
+      <div class="w-full flex items-center justify-start p-4">
+        <div class="font-semibold fs-[14px] text-gray-700 mr-5">
           {{ $t('product.sku') }} :
         </div>
-        <div class="col-span-11 w-full flex items-center">
+        <div class="flex items-center">
           <div v-if="!inputProductSkuVisible" class="mr-2 flex">
             <div class="mr-1">
               {{ formData.sku }}
@@ -546,11 +546,11 @@ const createProductName = async () => {
         </div>
       </div>
       <!-- Mpn -->
-      <div class="w-full grid grid-cols-12 gap-8 p-4">
-        <div class="col-span-1 font-semibold fs-[14px] text-gray-700">
+      <div class="w-full flex items-center justify-start p-4">
+        <div class="font-semibold fs-[14px] text-gray-700 mr-5">
           {{ $t('product.mpn') }} :
         </div>
-        <div class="col-span-11 w-full flex items-center">
+        <div class="flex items-center">
           <div v-if="!inputProductMpnVisible" class="mr-2 flex">
             <div class="mr-1">
               {{ formData.mpn }}
@@ -568,11 +568,11 @@ const createProductName = async () => {
         </div>
       </div>
       <!-- 产品分类 -->
-      <div class="w-full grid grid-cols-12 gap-8 p-4">
-        <div class="col-span-1 font-semibold fs-[14px] text-gray-700">
+      <div class="w-full flex items-center justify-start p-4">
+        <div class="font-semibold fs-[14px] text-gray-700 mr-5">
           {{ $t('product.category') }} :
         </div>
-        <div class="col-span-11 w-full flex items-center">
+        <div class="flex items-center">
           <div class="mr-2 flex">
             <div v-if="!editProductCategoryVisible" class="mr-1">
               <ElTag v-for="item in formData.productCategoryRelationListResultDos" :key="item.id" class="mr-2">
@@ -596,11 +596,11 @@ const createProductName = async () => {
         </div>
       </div>
       <!-- 上线时间 -->
-      <div class="w-full grid grid-cols-12 gap-8 p-4">
-        <div class="col-span-1 font-semibold fs-[14px] text-gray-700">
+      <div class="w-full flex items-center justify-start p-4">
+        <div class="font-semibold fs-[14px] text-gray-700 mr-5">
           {{ $t('product.isSettingOnlineTime') }} :
         </div>
-        <div class="col-span-11 w-full flex items-center">
+        <div class="flex items-center">
           <div v-if="!editProductIsSettingOnlineTimeVisible" class="mr-2 flex">
             <div class="mr-1">
               <span class="mr-2">{{ formData.isSettingOnlineTime ? $t('common.yes') : $t('common.no') }},</span>
@@ -628,11 +628,11 @@ const createProductName = async () => {
         </div>
       </div>
       <!-- 下线时间 -->
-      <div class="w-full grid grid-cols-12 gap-8 p-4">
-        <div class="col-span-1 font-semibold fs-[14px] text-gray-700">
+      <div class="w-full flex items-center justify-start p-4">
+        <div class="font-semibold fs-[14px] text-gray-700 mr-5">
           {{ $t('product.isSettingOfflineTime') }} :
         </div>
-        <div class="col-span-11 w-full flex items-center">
+        <div class="flex items-center">
           <div v-if="!editProductIsSettingOfflineTimeVisible" class="mr-2 flex">
             <div class="mr-1">
               <span class="mr-2">{{ formData.isSettingOfflineTime ? $t('common.yes') : $t('common.no') }},</span>
@@ -660,11 +660,11 @@ const createProductName = async () => {
         </div>
       </div>
       <!-- 库存 -->
-      <div class="w-full grid grid-cols-12 gap-8 p-4">
-        <div class="col-span-1 font-semibold fs-[14px] text-gray-700">
+      <div class="w-full flex items-center justify-start p-4">
+        <div class="font-semibold fs-[14px] text-gray-700 mr-5">
           {{ $t('product.inStockQuantity') }} :
         </div>
-        <div class="col-span-11 w-full flex items-center">
+        <div class="flex items-center">
           <div v-if="!editProductInStockQuantityVisible" class="mr-2 flex">
             <div class="mr-1">
               {{ formData.inStockQuantity }}
@@ -691,11 +691,11 @@ const createProductName = async () => {
         </div>
       </div>
       <!-- 在途库存 -->
-      <div class="w-full grid grid-cols-12 gap-8 p-4">
-        <div class="col-span-1 font-semibold fs-[14px] text-gray-700">
+      <div class="w-full flex items-center justify-start p-4">
+        <div class="font-semibold fs-[14px] text-gray-700 mr-5">
           {{ $t('product.processingQuantity') }} :
         </div>
-        <div class="col-span-11 w-full flex items-center">
+        <div class="flex items-center">
           <div v-if="!editProductProcessingQuantityVisible" class="mr-2 flex">
             <div class="mr-1">
               {{ formData.processingQuantity }}
@@ -722,11 +722,11 @@ const createProductName = async () => {
         </div>
       </div>
       <!-- 在途发货天数 -->
-      <div class="w-full grid grid-cols-12 gap-8 p-4">
-        <div class="col-span-1 font-semibold fs-[14px] text-gray-700">
+      <div class="w-full flex items-center justify-start p-4">
+        <div class="font-semibold fs-[14px] text-gray-700 mr-5">
           {{ $t('product.processingDays') }} :
         </div>
-        <div class="col-span-11 w-full flex items-center">
+        <div class="flex items-center">
           <div v-if="!editProductProcessingDaysVisible" class="mr-2 flex">
             <div class="mr-1">
               {{ formData.processingDays }}
@@ -753,11 +753,11 @@ const createProductName = async () => {
         </div>
       </div>
       <!-- 生产周期 -->
-      <!-- <div class="w-full grid grid-cols-12 gap-8 p-4">
-        <div class="col-span-1 font-semibold fs-[14px] text-gray-700">
+      <!-- <div class="w-full flex items-center justify-start  p-4">
+        <div class="font-semibold fs-[14px] text-gray-700 mr-5">
           {{ $t('product.productionCycle') }} :
         </div>
-        <div class="col-span-11 w-full flex items-center">
+        <div class="flex items-center">
           <div v-if="!editProductProductionCycleVisible" class="mr-2 flex">
             <div class="mr-1">
               {{ formData.productionCycle }}(周)
@@ -784,11 +784,11 @@ const createProductName = async () => {
         </div>
       </div> -->
       <!-- 供应商 -->
-      <div class="w-full grid grid-cols-12 gap-8 p-4">
-        <div class="col-span-1 font-semibold fs-[14px] text-gray-700">
+      <div class="w-full flex items-center justify-start p-4">
+        <div class="font-semibold fs-[14px] text-gray-700 mr-5">
           {{ $t('product.supplier') }} :
         </div>
-        <div class="col-span-11 w-full flex items-center">
+        <div class="flex items-center">
           <div v-if="!editProductSupplierVisible" class="mr-2 flex">
             <div class="mr-1">
               {{ formData.supplierShowResultDo?.supplierDetailListResultDo?.supplierName }}
@@ -825,11 +825,11 @@ const createProductName = async () => {
         </div>
       </div>
       <!-- 描述 -->
-      <div class="w-full grid grid-cols-12 gap-8 p-4 border-b border-gray-200">
-        <div class="col-span-1 font-semibold text-gray-700">
+      <div class="w-full flex items-center justify-start p-4 border-b border-gray-200">
+        <div class="font-semibold text-gray-700 mr-5">
           {{ $t('product.productDescription') }}:
         </div>
-        <div class="col-span-11">
+        <div class="flex ">
           <div v-if="!inputProductDescriptionVisible" class="mr-2">
             <div class="flex items-center mb-5">
               <div class="mr-2">
@@ -846,8 +846,8 @@ const createProductName = async () => {
                 </EBtn>
               </div>
             </div>
-            <div class="grid grid-cols-12 gap-4">
-              <div class="col-span-12 border border-gray-200 p-4">
+            <div v-if="formData.productDetailListResultDo.productDescription !== ''" class="grid grid-cols-12 gap-4">
+              <div class="col-span-12 p-4" :class="formData.productDetailListResultDo.productDescription !== '' ? 'border border-gray-200' : ''">
                 <!-- 根据 isExpanded 的状态切换 max-height -->
                 <div
                   :class="{ 'max-h-[200px]': !isExpanded, 'overflow-hidden': !isExpanded }"

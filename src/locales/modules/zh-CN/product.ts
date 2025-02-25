@@ -50,6 +50,8 @@ export default {
   technology: '技术资料',
   placeholder: {
     productNameQuery: '请输入产品名称查询',
+    skuQuery: '请输入sku查询',
+    mpnQuery: '请输入制造商产品编号查询',
     productName: '请输入产品名称',
     productPrice: '请输入产品价格',
     productDescription: '请输入产品描述',

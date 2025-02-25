@@ -18,6 +18,8 @@ const loading = reactive({
 const listQuery = reactive<ProductListParams & Pagination>({
   languageId: usePreferenceStore().preference?.language.id,
   productName: '',
+  sku: '',
+  mpn: '',
   pageSize: 20,
   pageNumber: 1,
 })
@@ -27,6 +29,12 @@ const getList = async () => {
   loading.list = true
   if (listQuery.productName === '') {
     listQuery.productName = null
+  }
+  if (listQuery.sku === '') {
+    listQuery.sku = null
+  }
+  if (listQuery.mpn === '') {
+    listQuery.mpn = null
   }
   const { data } = await productPaginationApi(listQuery).catch(err => {
     loading.list = false
@@ -127,6 +135,22 @@ const handleImport = () => {
             v-model="listQuery.productName"
             clearable
             :placeholder="$t('product.placeholder.productNameQuery')"
+            style="width: 200px"
+            class="filter-item mr-5"
+            @clear="getList"
+          />
+          <ElInput
+            v-model="listQuery.sku"
+            clearable
+            :placeholder="$t('product.placeholder.skuQuery')"
+            style="width: 200px"
+            class="filter-item mr-5"
+            @clear="getList"
+          />
+          <ElInput
+            v-model="listQuery.mpn"
+            clearable
+            :placeholder="$t('product.placeholder.mpnQuery')"
             style="width: 200px"
             class="filter-item mr-5"
             @clear="getList"

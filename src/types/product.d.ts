@@ -50,6 +50,8 @@ interface ProductParameterRelationRequestDo {
 
   /* Parameter Value Content */
   parameterValueContent?: string
+
+  sort: number
 }
 
 interface CreateProductParams {
@@ -187,6 +189,10 @@ interface ProductListParams {
 
   /* Product Name */
   productName?: string | null
+
+  sku?: string | null
+
+  mpn?: string | null
 
   /* 删除标识 */
   isDelete?: number
@@ -396,6 +402,9 @@ interface ProductParameterRelationListResultDo {
 
   /* Parameter Value Content */
   parameterValueContent: string
+
+  /* Sort */
+  sort: number
 }
 
 interface ProductPriceListResultDo {
@@ -688,6 +697,8 @@ interface ProductParameterRequestDo {
 
   /* Parameter Value Content */
   parameterValueContent?: string
+
+  sort: number
 }
 
 interface UpdateProductParameterParams {
@@ -705,6 +716,8 @@ interface UpdateProductParameterParams {
 
   /* Language ID */
   languageId: string
+
+  sort: number
 }
 
 interface UpdateProductPriceParams {
@@ -891,4 +904,5 @@ interface ProductParameterRelationRequest {
   parameterId: string
   parameterValueId?: string
   parameterValueContent?: string
+  sort: number
 }

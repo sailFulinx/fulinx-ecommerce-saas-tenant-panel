@@ -7,6 +7,7 @@ import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
 import { useTagsViewStore } from '@/stores/tagsView'
 import { ElCard, ElInput, ElInputNumber, ElMessage, ElOption, ElSwitch } from 'element-plus'
+import { VueDraggable } from 'vue-draggable-plus'
 
 const { t: $t } = useLocale()
 
@@ -38,6 +39,8 @@ const loading = reactive({
  * 参数
  */
 
+const parameterDragging = ref(false)
+
 const selectedParameter = ref<(ParameterListData & CommonField) | null>()
 
 const selectedParameterList = ref<(ParameterListData & CommonField)[]>([])
@@ -63,6 +66,12 @@ const addParameter = () => {
 
 const removeParameter = (index: number) => {
   selectedParameterList.value.splice(index, 1)
+}
+
+const handleChangeSort = () => {
+  selectedParameterList.value.forEach((item, index) => {
+    item.sort = index + 1
+  })
 }
 
 // const selectedParameterGroup = ref('')
@@ -128,6 +137,7 @@ const formatInputParameterValue = (index: number, value: ParameterListData & Com
     parameterId: value.id,
     parameterValueContent,
     parameterValueId: '',
+    sort: index + 1,
   }
   productParameterForm.value[index] = parameterValue
 }
@@ -286,13 +296,14 @@ const save = async () => {
     item.productFileType = 1
     return item
   })
-  productParameterForm.value.map(item => {
+  productParameterForm.value.map((item, index) => {
     if (item?.id) {
       const result: ProductParameterRelationRequest = {
         // parameterGroupId: selectedParameterGroup.value,
         parameterId: item.parameterId,
         parameterValueId: item.id,
         parameterValueContent: item.parameterValueContent,
+        sort: index + 1,
       }
       productForm.productParameterRelationRequestDos.push(result)
     } else {
@@ -301,6 +312,7 @@ const save = async () => {
         parameterId: item.parameterId,
         parameterValueId: '',
         parameterValueContent: item.parameterValueContent,
+        sort: index + 1,
       }
       productForm.productParameterRelationRequestDos.push(result)
     }
@@ -454,49 +466,56 @@ const save = async () => {
                 </div>
               </template>
               <div v-if="selectedParameterList && selectedParameterList.length > 0">
-                <div v-for="(item, index) in selectedParameterList" :key="item.id">
-                  <ElFormItem
-                    v-if="item.parameterType === 2"
-                    label-width="auto"
-                    :label="item.parameterName"
-                    class="flex justify-between"
-                  >
-                    <ElInput
-                      v-model="inputParameterForm[index]"
-                      style="width: 200px; margin-right: 10px"
-                      placeholder="请输入参数值"
-                      @input="formatInputParameterValue(index, item)"
-                    />
-                    <EBtn plain type="danger" @click="removeParameter(index)">
-                      <Icon icon="ant-design:delete-outlined" />
-                    </EBtn>
-                  </ElFormItem>
-                  <ElFormItem
-                    v-if="item.parameterType === 1"
-                    label-width="auto"
-                    :label="item.parameterName"
-                    class="flex justify-between"
-                  >
-                    <ElSelect
-                      v-model="productParameterForm[index]"
-                      value-key="id"
-                      style="width: 200px; margin-right: 10px"
-                      filterable
-                      clearable
-                      placeholder="请选择参数值"
+                <VueDraggable
+                  v-model="selectedParameterList"
+                  item-key="id"
+                  @start="parameterDragging = true"
+                  @end="handleChangeSort"
+                >
+                  <div v-for="(item, index) in selectedParameterList" :key="item.id">
+                    <ElFormItem
+                      v-if="item.parameterType === 2"
+                      label-width="auto"
+                      :label="item.parameterName"
+                      class="flex justify-between"
                     >
-                      <ElOption
-                        v-for="vItem in item.parameterValueListResultDos"
-                        :key="vItem.id"
-                        :label="vItem.parameterValueContent"
-                        :value="vItem"
+                      <ElInput
+                        v-model="inputParameterForm[index]"
+                        style="width: 200px; margin-right: 10px"
+                        placeholder="请输入参数值"
+                        @input="formatInputParameterValue(index, item)"
                       />
-                    </ElSelect>
-                    <EBtn plain type="danger" @click="removeParameter(index)">
-                      <Icon icon="ant-design:delete-outlined" />
-                    </EBtn>
-                  </ElFormItem>
-                </div>
+                      <EBtn plain type="danger" @click="removeParameter(index)">
+                        <Icon icon="ant-design:delete-outlined" />
+                      </EBtn>
+                    </ElFormItem>
+                    <ElFormItem
+                      v-if="item.parameterType === 1"
+                      label-width="auto"
+                      :label="item.parameterName"
+                      class="flex justify-between"
+                    >
+                      <ElSelect
+                        v-model="productParameterForm[index]"
+                        value-key="id"
+                        style="width: 200px; margin-right: 10px"
+                        filterable
+                        clearable
+                        placeholder="请选择参数值"
+                      >
+                        <ElOption
+                          v-for="vItem in item.parameterValueListResultDos"
+                          :key="vItem.id"
+                          :label="vItem.parameterValueContent"
+                          :value="vItem"
+                        />
+                      </ElSelect>
+                      <EBtn plain type="danger" @click="removeParameter(index)">
+                        <Icon icon="ant-design:delete-outlined" />
+                      </EBtn>
+                    </ElFormItem>
+                  </div>
+                </VueDraggable>
               </div>
             </ElCard>
           </div>

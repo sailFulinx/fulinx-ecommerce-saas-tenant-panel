@@ -1,9 +1,9 @@
 <script setup name="Category" lang="ts">
-import { paginationCategoryApi, removeCategoryApi } from '@/api/category'
+import { editCategorySortApi, paginationCategoryApi, removeCategoryApi } from '@/api/category'
 import { getCategoryTypeColor, getCategoryTypeLabel } from '@/data/category'
 import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElSelect } from 'element-plus'
 import CreateCategoryDialog from './Components/CreateCategoryDialog.vue'
 
 const { t: $t } = useLocale()
@@ -20,9 +20,10 @@ const selectLanguage = ref<LanguageData>(usePreferenceStore().preference?.langua
 const listPayload = reactive<CategoryListParams & Pagination>({
   languageId: selectLanguage.value.id,
   categoryName: null,
+  categoryType: 1,
   id: null,
   pageNumber: 1,
-  pageSize: 20,
+  pageSize: 1000,
 })
 
 const listData = ref<ListCategoryRes>({
@@ -33,13 +34,12 @@ const listData = ref<ListCategoryRes>({
 const getList = async () => {
   loading.init = true
   const { data } = await paginationCategoryApi(listPayload).catch(error => {
-    loading.init = true
+    loading.init = false
     throw error
   })
   listData.value = { ...data }
   loading.init = false
 }
-getList()
 
 const paginationList = (val: PaginationComponentData) => {
   if (val) {
@@ -89,6 +89,31 @@ const handleShow = (val: CategoryData & CommonField) => {
   router.push({ name: 'ShowCategory', params: { id: val.id } })
 }
 
+const editSortVisible = ref(false)
+const categorySort = ref(1)
+const activeCategoryId = ref('')
+const handleSaveCategorySort = async (id: string) => {
+  loading.init = true
+  await editCategorySortApi({
+    categoryId: id,
+    sort: categorySort.value,
+  }).catch(error => {
+    loading.init = false
+    editSortVisible.value = false
+    throw error
+  })
+  categorySort.value = 1
+  editSortVisible.value = false
+  loading.init = false
+  await getList()
+}
+
+const handleEditCategorySort = (id: string, sort: number) => {
+  categorySort.value = sort
+  editSortVisible.value = true
+  activeCategoryId.value = id
+}
+
 const handleMultiDelete = async () => {
   if (deleteIds.value.length === 0) {
     ElMessage({
@@ -121,8 +146,18 @@ const handleDelete = async (val: CategoryData & CommonField) => {
   <div v-loading="loading.init" class="view-page">
     <div class="view-header">
       <div class="flex justify-between">
-        <div>
-          <span>{{ $t('router.category') }}</span>
+        <div class="flex items-center">
+          <span class="mr-5">{{ $t('router.category') }}</span>
+          <div>
+            <ElSelect v-model="listPayload.categoryType" placeholder="请选择" @change="getList" style="width: 200px">
+              <ElOption :value="1" label="产品分类">
+                产品分类
+              </ElOption>
+              <ElOption :value="2" label="文章分类">
+                文章分类
+              </ElOption>
+            </ElSelect>
+          </div>
         </div>
         <div>
           <EBtn @click="handleCreate">
@@ -152,9 +187,33 @@ const handleDelete = async (val: CategoryData & CommonField) => {
         <ElTableColumn ref="tableRef" type="selection" stripe row-key="id" width="55" />
         <ElTableColumn prop="categoryName" :label="`${$t('category.categoryName')}`">
           <template #default="scope">
-            {{ scope.row.categoryName }} <ElTag :type="getCategoryTypeColor(scope.row.categoryType)">
+            {{ scope.row.categoryName }}
+            <ElTag :type="getCategoryTypeColor(scope.row.categoryType)">
               {{ getCategoryTypeLabel(scope.row.categoryType) }}
             </ElTag>
+          </template>
+        </ElTableColumn>
+        <ElTableColumn prop="sort" label="排序">
+          <template #default="scope">
+            <div v-if="editSortVisible && activeCategoryId === scope.row.id">
+              <div class="flex items-center">
+                <ElInput v-model="categorySort" style="width: 100px" class="mr-2" />
+                <EBtn type="default" @click="editSortVisible = false">
+                  <Icon icon="ep:close" />
+                </EBtn>
+                <EBtn type="success" @click="handleSaveCategorySort(scope.row.id)">
+                  <Icon icon="ep:check" />
+                </EBtn>
+              </div>
+            </div>
+            <div v-else>
+              <div class="flex items-center">
+                {{ scope.row.sort }}
+                <EBtn text @click="handleEditCategorySort(scope.row.id, scope.row.sort)">
+                  <Icon icon="ep:edit" />
+                </EBtn>
+              </div>
+            </div>
           </template>
         </ElTableColumn>
         <ElTableColumn fixed="right" :label="`${$t('common.action')}`" width="280">
