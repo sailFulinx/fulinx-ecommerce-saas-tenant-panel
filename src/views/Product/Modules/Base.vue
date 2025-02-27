@@ -356,14 +356,14 @@ const editProductProcessingDaysVisible = ref<boolean>(false)
 const editProductProcessingDays = async () => {
   loading.init = true
   const { data } = await updateProductProcessingDaysApi({
-    processingDays: formData.value.processingQuantity,
+    processingDays: formData.value.processingDays,
     productId: id,
     languageId: selectLanguage.value.id,
   })
   loading.init = false
   emit('resetFormData', data)
   ElMessage.success($t('success.edit'))
-  editProductProcessingQuantityVisible.value = false
+  editProductProcessingDaysVisible.value = false
 }
 
 // 生产周期
