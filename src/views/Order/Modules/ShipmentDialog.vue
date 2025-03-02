@@ -123,7 +123,7 @@ const submit = async () => {
     throw error
   })
   emit('getOrder')
-  ElMessage.success('审批成功')
+  ElMessage.success('发货成功')
   dialogVisible.value = false
   loading.init = false
 }

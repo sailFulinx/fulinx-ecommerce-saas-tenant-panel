@@ -83,6 +83,7 @@ const addParameter = () => {
     sort: productParameterData.value.productParameterRelationRequestDos.length + 1,
   }
   productParameterData.value.productParameterRelationRequestDos.push(parameterData)
+  selectedParameter.value = null
 }
 
 const removeParameter = (index: number) => {

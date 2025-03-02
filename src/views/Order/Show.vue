@@ -317,6 +317,10 @@ const handleUpdateOrderStatus = async () => {
 const shipmentDialogRef = ref()
 
 const handleShipment = async (orderProduct: OrderProductListResultDo & CommonField) => {
+  if (orderProduct.remainQuantity === 0) {
+    ElMessage.warning('该商品已全部发货')
+    return
+  }
   shipmentDialogRef.value.open(id, form.orderRemainShipmentProductListResultDos, orderProduct)
 }
 
@@ -498,7 +502,7 @@ const exportPdf = async () => {
             </ElTableColumn>
             <ElTableColumn label="剩余发运数量" width="280" align="center">
               <template #default="scope">
-                {{ scope.row.remainQuantity || scope.row.orderQuantity }}
+                {{ scope.row.remainQuantity === null ? scope.row.orderQuantity : scope.row.remainQuantity }}
               </template>
             </ElTableColumn>
             <ElTableColumn prop="total" label="小计（含13%增值税）">
