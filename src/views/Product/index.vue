@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { productPaginationApi, removeProductApi } from '@/api/product'
+import { productExportListApi, productPaginationApi, removeProductApi } from '@/api/product'
 import { usePreferenceStore } from '@/stores/preference'
 import { formatTime } from '@/utils'
+import { downloadProduct } from '@/utils/download'
 import { ElMessage } from 'element-plus'
 
 const listResult = ref<TableResponse<ProductListData & CommonField>>({
@@ -120,6 +121,15 @@ const impDialogRef = ref()
 const handleImport = () => {
   impDialogRef.value.handleOpen()
 }
+
+const handleExport = async () => {
+  const { data } = await productExportListApi({
+    languageId: usePreferenceStore().preference?.language.id,
+  }).catch(err => {
+    throw err
+  })
+  await downloadProduct(data.list)
+}
 // init()
 </script>
 
@@ -161,6 +171,9 @@ const handleImport = () => {
           </EBtn>
         </div>
         <div>
+          <EBtn type="default" @click="handleExport">
+            导出
+          </EBtn>
           <EBtn type="default" @click="handleImport">
             {{ $t('imp.name') }}
           </EBtn>

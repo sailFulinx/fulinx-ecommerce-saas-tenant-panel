@@ -461,6 +461,16 @@ export function productListApi(
   })
 }
 
+export function productExportListApi(
+  params: ProductListParams,
+): Promise<IResponse<TableResponse<ProductExportListData & CommonField>>> {
+  return request.post({
+    url: 'system/product/export',
+    data: params,
+    token: true,
+  })
+}
+
 /**
  * 产品列表 - 带分页
  * @param {object} params 产品分页查询产品

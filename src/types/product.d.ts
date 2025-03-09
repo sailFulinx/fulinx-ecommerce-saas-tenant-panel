@@ -261,6 +261,170 @@ interface ProductListData {
   slug: string
 }
 
+interface ProductExportListData {
+  /* Product ID */
+  id: string
+
+  /* SKU */
+  sku: string
+
+  /* imagePath */
+  imagePath: string
+
+  /* MPN */
+  mpn: string
+
+  /* Product Name */
+  productName: string
+
+  /* Product Description */
+  productDescription: string
+
+  /* Product Price List Result Dos */
+  productPriceListResultDos: {
+    /* Product Price ID */
+    id: string
+
+    /* Product ID */
+    productId: string
+
+    /* Currency ID */
+    currencyId: string
+
+    /* */
+    currencyVo: {
+      /* Currency ID */
+      id: string
+
+      /* Country Name */
+      countryName: string
+
+      /* Currency Code */
+      currencyName: string
+
+      /* Currency Code */
+      currencyCode: string
+
+      /* Symbol Left */
+      symbolLeft: string
+
+      /* Symbol Right */
+      symbolRight: string
+
+      /* Decimal Place */
+      decimalPlace: number
+
+      /* Is Hot */
+      isHot: boolean
+
+      /* Sort */
+      sort: number
+
+      /* Record Version */
+      recordVersion: number
+
+      /* Soft Delete Flag */
+      isDelete: number
+
+      /* Remark */
+      remark: string
+
+      /* Record Create Name */
+      recordCreateName: string
+
+      /* Record Update Name */
+      recordUpdateName: string
+
+      /* Record Create Time */
+      recordCreateTime: Record<string, unknown>
+
+      /* Record Update Time */
+      recordUpdateTime: Record<string, unknown>
+    }
+
+    /* Order Quantity */
+    orderQuantity: number
+
+    /* Price */
+    price: number
+
+    /* Is Setting Sale Price */
+    isSettingSalePrice: boolean
+
+    /* Sale Price */
+    salePrice: number
+
+    /* Sale Price Started At */
+    salePriceStartedAt: Record<string, unknown>
+
+    /* Is Setting Sale Ended TIme, , 0 - No, 1 - Yes */
+    isSettingSaleEndedTime: boolean
+
+    /* Sale Price Ended At */
+    salePriceEndedAt: Record<string, unknown>
+
+    /* Soft Delete Flag */
+    isDelete: number
+
+    /* Remark */
+    remark: string
+
+    /* Record Version */
+    recordVersion: number
+
+    /* Record Create Name */
+    recordCreateName: string
+
+    /* Record Update Name */
+    recordUpdateName: string
+
+    /* Record Create Time */
+    recordCreateTime: Record<string, unknown>
+
+    /* Record Update Time */
+    recordUpdateTime: Record<string, unknown>
+  }[]
+
+  /* In Stock Quantity */
+  inStockQuantity: number
+
+  /* Processing Quantity */
+  processingQuantity: number
+
+  /* Processing Days */
+  processingDays: number
+
+  /* Supplier ID */
+  supplierId: string
+
+  /* Supplier Name */
+  supplierName: string
+
+  /* Category Name */
+  categoryName: string
+
+  /* Soft Delete Flag */
+  isDelete: number
+
+  /* Remark */
+  remark: string
+
+  /* Record Version */
+  recordVersion: number
+
+  /* Record Create Name */
+  recordCreateName: string
+
+  /* Record Update Name */
+  recordUpdateName: string
+
+  /* Record Create Time */
+  recordCreateTime: Record<string, unknown>
+
+  /* Record Update Time */
+  recordUpdateTime: Record<string, unknown>
+}
+
 interface ShowProductParams {
   /* Product Id */
   productId: string
@@ -470,7 +634,6 @@ interface ProductSupplierRelationListResultDo {
 }
 
 interface ProductTagListResultDo {
-
   /* Product ID */
   productId: string
 
