@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { parameterPaginationApi, removeParameterApi } from '@/api/parameter'
+import { parameterListApi, removeParameterApi, updateParameterSortApi } from '@/api/parameter'
 import { usePreferenceStore } from '@/stores/preference'
 import { ElMessage } from 'element-plus'
+import { VueDraggable } from 'vue-draggable-plus'
+
+const parameterDragging = ref(false)
 
 const listResult = ref<TableResponse<ParameterListData & CommonField>>({
   list: [],
@@ -12,11 +15,9 @@ const loading = reactive({
   list: false,
   del: false,
 })
-const listQuery = reactive<ParameterListParams & Pagination>({
+const listQuery = reactive<ParameterListParams>({
   languageId: usePreferenceStore().preference?.language.id,
   parameterName: '',
-  pageSize: 20,
-  pageNumber: 1,
 })
 const selectedList = ref<string[]>([])
 
@@ -25,7 +26,7 @@ const getList = async () => {
   if (listQuery.parameterName === '') {
     listQuery.parameterName = null
   }
-  const { data } = await parameterPaginationApi(listQuery).catch(err => {
+  const { data } = await parameterListApi(listQuery).catch(err => {
     loading.list = false
     throw err
   })
@@ -44,14 +45,6 @@ watch(
   },
   { immediate: true },
 )
-
-const pagination = (val: PaginationComponentDataType) => {
-  if (val) {
-    listQuery.pageSize = val.limit
-    listQuery.pageNumber = val.page
-  }
-  getList()
-}
 
 const selectedParameterItem = (val: ParameterListData[]) => {
   selectedList.value = []
@@ -102,6 +95,22 @@ const handleCreate = () => {
 const handleRedirectEdit = (val: ParameterListData & CommonField) => {
   router.push({ name: 'ShowParameter', params: { id: val.id } })
 }
+const handleChangeSort = async () => {
+  const payload: ParameterSortParams[] = []
+  listResult.value.list.map((item, index) => {
+    item.sort = index + 1
+    payload.push({
+      parameterId: item.id,
+      sort: item.sort,
+    })
+  })
+  loading.list = true
+  await updateParameterSortApi({ parameters: payload }).catch(err => {
+    loading.list = false
+    throw err
+  })
+  loading.list = false
+}
 // init()
 </script>
 
@@ -139,46 +148,50 @@ const handleRedirectEdit = (val: ParameterListData & CommonField) => {
       </div>
     </div>
     <div class="view-main">
-      <ElTable
-        v-loading="loading.list"
-        :data="listResult.list"
-        row-key="id"
-        tooltip-effect="dark"
-        default-expand-all
-        highlight-current-row
-        border
-        @selection-change="selectedParameterItem"
+      <VueDraggable
+        v-model="listResult.list"
+        target="tbody"
+        item-key="id"
+        @start="parameterDragging = true"
+        @end="handleChangeSort"
       >
-        <ElTableColumn type="selection" width="55" />
-        <ElTableColumn :label="$t('parameter.parameterName')">
-          <template #default="scope">
-            <span>{{ scope.row.parameterName }}</span>
-          </template>
-        </ElTableColumn>
-        <ElTableColumn label="操作" header-align="center" width="220" align="center" class-name="pl-15 fixed-width">
-          <template #default="scope">
-            <span class="mr-5">
-              <EBtn size="small" @click="handleRedirectEdit(scope.row)">
-                <Icon icon="ep:edit" class="mr-1" />
-                {{ $t('common.view') }}
-              </EBtn>
-            </span>
-            <span>
-              <EBtn size="small" type="danger" :loading="loading.del" @click="handleDelete(scope.row)">
-                <Icon icon="ep:delete" class="mr-1" />
-                {{ $t('common.remove') }}
-              </EBtn>
-            </span>
-          </template>
-        </ElTableColumn>
-      </ElTable>
-      <Pagination
-        v-show="listResult.total > 0"
-        v-model:page="listQuery.pageNumber"
-        v-model:limit="listQuery.pageSize"
-        :total="listResult.total"
-        @pagination="pagination"
-      />
+        <ElTable
+          v-loading="loading.list"
+          :data="listResult.list"
+          row-key="id"
+          tooltip-effect="dark"
+          default-expand-all
+          highlight-current-row
+          border
+          @selection-change="selectedParameterItem"
+        >
+          <ElTableColumn type="selection" width="55" />
+          <ElTableColumn :label="$t('parameter.parameterName')">
+            <template #default="scope">
+              <div class="flex items-center justify-start">
+                <span class="mr-4"><Icon icon="ant-design:holder-outlined" /></span>
+                <span>{{ scope.row.parameterName }}</span>
+              </div>
+            </template>
+          </ElTableColumn>
+          <ElTableColumn label="操作" header-align="center" width="220" align="center" class-name="pl-15 fixed-width">
+            <template #default="scope">
+              <span class="mr-5">
+                <EBtn size="small" @click="handleRedirectEdit(scope.row)">
+                  <Icon icon="ep:edit" class="mr-1" />
+                  {{ $t('common.view') }}
+                </EBtn>
+              </span>
+              <span>
+                <EBtn size="small" type="danger" :loading="loading.del" @click="handleDelete(scope.row)">
+                  <Icon icon="ep:delete" class="mr-1" />
+                  {{ $t('common.remove') }}
+                </EBtn>
+              </span>
+            </template>
+          </ElTableColumn>
+        </ElTable>
+      </VueDraggable>
     </div>
   </div>
 </template>

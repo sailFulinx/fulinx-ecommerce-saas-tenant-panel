@@ -229,6 +229,18 @@ interface UpdateParameterTypeParams {
   languageId: string
 }
 
+interface ParameterSortParams {
+  /* Parameter Id */
+  parameterId: string
+
+  /* Sort */
+  sort: number
+}
+
+interface UpdateParameterSortParams {
+  parameters: ParameterSortParams[]
+}
+
 interface CreateParameterValueParams {
   parameterValueDetailId: string
   /* Parameter Id */

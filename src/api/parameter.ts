@@ -294,6 +294,16 @@ export function updateParameterTypeApi(
   })
 }
 
+export function updateParameterSortApi(
+  params: UpdateParameterSortParams,
+): Promise<IResponse<boolean>> {
+  return request.post({
+    url: 'system/parameter/update/parameter/sort',
+    data: params,
+    token: true,
+  })
+}
+
 /**
  * 新增参数值
  * @param {object} params 新增参数值请求参数
