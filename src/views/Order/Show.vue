@@ -19,6 +19,7 @@ import {
 } from 'element-plus'
 
 import ApprovalDialog from './Modules/ApprovalDialog.vue'
+import PaymentVoucherDialog from './Modules/PaymentVoucherDialog.vue'
 import PdfDialog from './Modules/PdfDialog.vue'
 import ShipmentDialog from './Modules/ShipmentDialog.vue'
 
@@ -328,6 +329,11 @@ const pdfDialogRef = ref()
 const exportPdf = async () => {
   pdfDialogRef.value.open(form, orderProducts.value)
 }
+
+const paymentVoucherDialogRef = ref()
+const handleViewPaymentVoucher = async () => {
+  paymentVoucherDialogRef.value.open(form.paymentVoucherFileVo)
+}
 </script>
 
 <template>
@@ -381,7 +387,14 @@ const exportPdf = async () => {
               {{ form.currencyVo.symbolLeft }}{{ form.orderTotalAmount.toFixed(2) }}
             </ElDescriptionsItem>
             <ElDescriptionsItem :label="$t('order.status')">
-              {{ form.orderStatusText }}
+              <div class="flex items-center">
+                <span class="mr-2">{{ form.orderStatusText }}</span>
+                <div v-if="form.paymentMethodCode === 'bankPay' && form.paymentVoucherFileId">
+                  <EBtn type="primary" plain @click="handleViewPaymentVoucher">
+                    查看付款凭证
+                  </EBtn>
+                </div>
+              </div>
             </ElDescriptionsItem>
             <ElDescriptionsItem :label="$t('order.approvalStatus')">
               <div class="flex items-center">
@@ -638,5 +651,7 @@ const exportPdf = async () => {
     <ShipmentDialog ref="shipmentDialogRef" @get-order="initFormData" />
     <!-- 导出Pdf dialog -->
     <PdfDialog ref="pdfDialogRef" />
+    <!-- 付款凭证dialog -->
+    <PaymentVoucherDialog ref="paymentVoucherDialogRef" />
   </div>
 </template>

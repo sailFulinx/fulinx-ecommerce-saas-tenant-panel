@@ -397,6 +397,10 @@ interface OrderShowData {
   /* Invoice Status, 0-not opened, 1-processing, 2-opened */
   invoiceStatus: number
 
+  paymentVoucherFileId: string
+
+  paymentVoucherFileVo: FileData & CommonField
+
   /* Order Status History List Result Dos */
   orderHistoryListResultDos: (OrderHistoryListResultDo & CommonField)[]
 

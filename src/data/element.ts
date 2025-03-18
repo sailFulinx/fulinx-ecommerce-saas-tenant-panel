@@ -189,4 +189,14 @@ export const elements: ElementData[] = [
     elementName: '多态内容读取',
     aliasName: '多态内容读取',
   },
+  {
+    elementId: 18,
+    elementComponentCode: 'HotProducts',
+    elementComponentConfig: {
+      content: {},
+      status: true,
+    },
+    elementName: '热销商品',
+    aliasName: '热销商品',
+  },
 ]
