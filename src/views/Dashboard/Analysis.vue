@@ -272,13 +272,13 @@ const handleRedirectToCategory = (id: string) => {
                 </template>
                 <div>
                   <div class="w-full mb-5">
-                    API版本： V1.0.0
+                    API版本： V1.0.1
                   </div>
                   <div class="w-full mb-5">
-                    后台管理界面版本： V1.0.0
+                    后台管理界面版本： V1.0.1
                   </div>
                   <div class="w-full mb-5">
-                    网站版本： V1.0.0
+                    网站版本： V1.0.1
                   </div>
                 </div>
               </ElCard>
