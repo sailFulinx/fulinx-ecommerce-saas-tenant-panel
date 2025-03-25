@@ -13,8 +13,9 @@ const handleSuccess: UploadProps['onSuccess'] = (response, uploadFile) => {
 }
 
 const beforeUpload: UploadProps['beforeUpload'] = rawFile => {
+  console.log(rawFile)
   // 判断是否为zip文件
-  if (!rawFile.name.endsWith('.zip') || rawFile.type !== 'application/zip') {
+  if (!rawFile.name.endsWith('.zip') || (rawFile.type !== 'application/zip' && rawFile.type !== 'application/x-zip-compressed')) {
     ElMessage.error('上传的不是zip文件!')
     return false
   } else if (rawFile.size / 1024 / 1024 > 5000) {
