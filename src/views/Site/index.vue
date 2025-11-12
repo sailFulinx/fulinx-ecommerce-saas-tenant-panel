@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import { ElMessage } from 'element-plus'
 import { removeSite, sitePagination } from '@/api/site'
 import { convertStatus } from '@/utils/site'
-import { ElMessage } from 'element-plus'
+
+const router = useRouter()
 
 const listResult = ref<TableResponse<SiteData & CommonField>>({
   list: [],
@@ -45,13 +47,13 @@ const init = async () => {
   await getList()
 }
 
-const selectedSiteItem = val => {
+const selectedSiteItem = (val: (SiteData & CommonField)[]) => {
   selectedList.value = []
   val.forEach(item => {
     selectedList.value.push(item.id)
   })
 }
-const handleDelete = async row => {
+const handleDelete = async (row: SiteData & CommonField) => {
   loading.list = true
   await removeSite({ ids: [row.id] }).catch(err => {
     loading.list = false
@@ -91,7 +93,7 @@ const handleCreate = () => {
   router.push({ name: 'CreateSite' })
 }
 
-const handleRedirectEdit = val => {
+const handleRedirectEdit = (val: SiteData & CommonField) => {
   router.push({ name: 'EditSite', params: { id: val.id } })
 }
 init()

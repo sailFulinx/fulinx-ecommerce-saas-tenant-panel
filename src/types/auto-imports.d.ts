@@ -91,6 +91,8 @@ declare global {
   const createProductDetailApi: typeof import('../api/product').createProductDetailApi
   const createProductSeoApi: typeof import('../api/product').createProductSeoApi
   const createReactiveFn: typeof import('@vueuse/core').createReactiveFn
+  const createRef: typeof import('@vueuse/core').createRef
+  const createReusableTemplate: typeof import('@vueuse/core').createReusableTemplate
   const createRoleApi: typeof import('../api/role').createRoleApi
   const createSharedComposable: typeof import('@vueuse/core').createSharedComposable
   const createShippingCompanyApi: typeof import('../api/shipping').createShippingCompanyApi
@@ -100,6 +102,7 @@ declare global {
   const createSupplierDetailApi: typeof import('../api/supplier').createSupplierDetailApi
   const createSupplierSeoApi: typeof import('../api/supplier').createSupplierSeoApi
   const createSupplierSlugApi: typeof import('../api/supplier').createSupplierSlugApi
+  const createTemplatePromise: typeof import('@vueuse/core').createTemplatePromise
   const createTheme: typeof import('../api/theme').createTheme
   const createUnrefFn: typeof import('@vueuse/core').createUnrefFn
   const createUserApi: typeof import('../api/user').createUserApi
@@ -153,6 +156,7 @@ declare global {
   const h: typeof import('vue').h
   const ignorableWatch: typeof import('@vueuse/core').ignorableWatch
   const inject: typeof import('vue').inject
+  const injectLocal: typeof import('@vueuse/core').injectLocal
   const isDefined: typeof import('@vueuse/core').isDefined
   const isProxy: typeof import('vue').isProxy
   const isReactive: typeof import('vue').isReactive
@@ -183,6 +187,7 @@ declare global {
   const onBeforeUpdate: typeof import('vue').onBeforeUpdate
   const onClickOutside: typeof import('@vueuse/core').onClickOutside
   const onDeactivated: typeof import('vue').onDeactivated
+  const onElementRemoval: typeof import('@vueuse/core').onElementRemoval
   const onErrorCaptured: typeof import('vue').onErrorCaptured
   const onKeyStroke: typeof import('@vueuse/core').onKeyStroke
   const onLongPress: typeof import('@vueuse/core').onLongPress
@@ -210,6 +215,7 @@ declare global {
   const productListApi: typeof import('../api/product').productListApi
   const productPaginationApi: typeof import('../api/product').productPaginationApi
   const provide: typeof import('vue').provide
+  const provideLocal: typeof import('@vueuse/core').provideLocal
   const reactify: typeof import('@vueuse/core').reactify
   const reactifyObject: typeof import('@vueuse/core').reactifyObject
   const reactive: typeof import('vue').reactive
@@ -251,6 +257,7 @@ declare global {
   const resolveComponent: typeof import('vue').resolveComponent
   const resolveRef: typeof import('@vueuse/core').resolveRef
   const resolveUnref: typeof import('@vueuse/core').resolveUnref
+  const router: typeof import('../composables/index').router
   const saveSettingApi: typeof import('../api/system').saveSettingApi
   const setActivePinia: typeof import('pinia').setActivePinia
   const setMapStoreSuffix: typeof import('pinia').setMapStoreSuffix
@@ -384,13 +391,17 @@ declare global {
   const updateSupplierStatusApi: typeof import('../api/supplier').updateSupplierStatusApi
   const updateUserStatus: typeof import('../api/user').updateUserStatus
   const uploadCustomerInvoiceApi: typeof import('../api/customer').uploadCustomerInvoiceApi
+  const uploadFileApi: typeof import('../api/file').uploadFileApi
   const useActiveElement: typeof import('@vueuse/core').useActiveElement
+  const useAnimate: typeof import('@vueuse/core').useAnimate
   const useAppStore: typeof import('../stores/app').useAppStore
+  const useArrayDifference: typeof import('@vueuse/core').useArrayDifference
   const useArrayEvery: typeof import('@vueuse/core').useArrayEvery
   const useArrayFilter: typeof import('@vueuse/core').useArrayFilter
   const useArrayFind: typeof import('@vueuse/core').useArrayFind
   const useArrayFindIndex: typeof import('@vueuse/core').useArrayFindIndex
   const useArrayFindLast: typeof import('@vueuse/core').useArrayFindLast
+  const useArrayIncludes: typeof import('@vueuse/core').useArrayIncludes
   const useArrayJoin: typeof import('@vueuse/core').useArrayJoin
   const useArrayMap: typeof import('@vueuse/core').useArrayMap
   const useArrayReduce: typeof import('@vueuse/core').useArrayReduce
@@ -409,10 +420,12 @@ declare global {
   const useCatch: typeof import('../composables/useCatch').useCatch
   const useClearStorage: typeof import('../composables/useStorage').useClearStorage
   const useClipboard: typeof import('@vueuse/core').useClipboard
+  const useClipboardItems: typeof import('@vueuse/core').useClipboardItems
   const useClone: typeof import('../composables/useClone').useClone
   const useCloned: typeof import('@vueuse/core').useCloned
   const useColorMode: typeof import('@vueuse/core').useColorMode
   const useConfirmDialog: typeof import('@vueuse/core').useConfirmDialog
+  const useCountdown: typeof import('@vueuse/core').useCountdown
   const useCounter: typeof import('@vueuse/core').useCounter
   const useCssModule: typeof import('vue').useCssModule
   const useCssVar: typeof import('@vueuse/core').useCssVar
@@ -495,7 +508,9 @@ declare global {
   const useOnline: typeof import('@vueuse/core').useOnline
   const usePageLeave: typeof import('@vueuse/core').usePageLeave
   const useParallax: typeof import('@vueuse/core').useParallax
+  const useParentElement: typeof import('@vueuse/core').useParentElement
   const usePascalCase: typeof import('../composables/general').usePascalCase
+  const usePerformanceObserver: typeof import('@vueuse/core').usePerformanceObserver
   const usePermission: typeof import('@vueuse/core').usePermission
   const usePermissionStore: typeof import('../stores/permission').usePermissionStore
   const usePointer: typeof import('@vueuse/core').usePointer
@@ -507,6 +522,7 @@ declare global {
   const usePreferredDark: typeof import('@vueuse/core').usePreferredDark
   const usePreferredLanguages: typeof import('@vueuse/core').usePreferredLanguages
   const usePreferredReducedMotion: typeof import('@vueuse/core').usePreferredReducedMotion
+  const usePreferredReducedTransparency: typeof import('@vueuse/core').usePreferredReducedTransparency
   const usePrevious: typeof import('@vueuse/core').usePrevious
   const useRafFn: typeof import('@vueuse/core').useRafFn
   const useRefHistory: typeof import('@vueuse/core').useRefHistory
@@ -514,6 +530,7 @@ declare global {
   const useResizeObserver: typeof import('@vueuse/core').useResizeObserver
   const useRoute: typeof import('vue-router').useRoute
   const useRouter: typeof import('vue-router').useRouter
+  const useSSRWidth: typeof import('@vueuse/core').useSSRWidth
   const useScreenOrientation: typeof import('@vueuse/core').useScreenOrientation
   const useScreenSafeArea: typeof import('@vueuse/core').useScreenSafeArea
   const useScriptTag: typeof import('@vueuse/core').useScriptTag
@@ -545,6 +562,7 @@ declare global {
   const useThrottleFn: typeof import('@vueuse/core').useThrottleFn
   const useThrottledRefHistory: typeof import('@vueuse/core').useThrottledRefHistory
   const useTimeAgo: typeof import('@vueuse/core').useTimeAgo
+  const useTimeAgoIntl: typeof import('@vueuse/core').useTimeAgoIntl
   const useTimeout: typeof import('@vueuse/core').useTimeout
   const useTimeoutFn: typeof import('@vueuse/core').useTimeoutFn
   const useTimeoutPoll: typeof import('@vueuse/core').useTimeoutPoll
@@ -575,8 +593,10 @@ declare global {
   const watchArray: typeof import('@vueuse/core').watchArray
   const watchAtMost: typeof import('@vueuse/core').watchAtMost
   const watchDebounced: typeof import('@vueuse/core').watchDebounced
+  const watchDeep: typeof import('@vueuse/core').watchDeep
   const watchEffect: typeof import('vue').watchEffect
   const watchIgnorable: typeof import('@vueuse/core').watchIgnorable
+  const watchImmediate: typeof import('@vueuse/core').watchImmediate
   const watchOnce: typeof import('@vueuse/core').watchOnce
   const watchPausable: typeof import('@vueuse/core').watchPausable
   const watchPostEffect: typeof import('vue').watchPostEffect

@@ -1,8 +1,8 @@
 <script setup name="User" lang="ts">
+import type { TreeNodeData } from 'element-plus/es/components/tree/src/tree.type'
+import { debounce } from 'lodash'
 import { copyLayoutApi, layoutPaginationApi, removeLayoutApi } from '@/api/layout'
 import { useLocale } from '@/hooks/useLocale'
-import { ElMessage, ElTreeV2 } from 'element-plus'
-import { debounce } from 'lodash'
 import Detail from './components/Detail.vue'
 
 const { t: $t } = useLocale()
@@ -70,11 +70,11 @@ const detail = ref<LayoutData>({
 })
 
 // 修改
-const handleEdit = (data: LayoutData) => {
+const handleEdit = (data: TreeNodeData) => {
   actionType.value = 'edit'
   detailRef.value.init(actionType.value, data)
   visible.value = true
-  detail.value = data
+  detail.value = data as LayoutData
 }
 
 const handleCopy = async (id: string) => {
@@ -140,7 +140,10 @@ const screenHeight = window.innerHeight - 104
   <div class="view-page">
     <div v-loading="loading" class="w-full overflow-hidden" :style="{ height: `${screenHeight}px` }">
       <div class="grid grid-cols-12 gap-5">
-        <div class="col-span-3 lg:col-span-3 xl:col-span-3 2xl:col-span-3 bg-white pa-5 border-r border-gray-200" :style="{ height: `${screenHeight}px` }">
+        <div
+          class="col-span-3 lg:col-span-3 xl:col-span-3 2xl:col-span-3 bg-white pa-5 border-r border-gray-200"
+          :style="{ height: `${screenHeight}px` }"
+        >
           <div class="w-full flex items-center justify-between mb-5 fix">
             <div>
               <h4>{{ $t('router.layout') }}</h4>
@@ -178,7 +181,12 @@ const screenHeight = window.innerHeight - 104
               <template #default="{ node }">
                 <span class="block w-80 truncate" :title="node.data.layoutName">{{ node.data.layoutName }}</span>
                 <span class="treeIcon flex items-center justify-end">
-                  <Icon name="ant-design:copy-outlined" class="mr-2 cursor-pointer" color="#f56c6c" @click.prevent="handleCopy(node.data.id)" />
+                  <Icon
+                    name="ant-design:copy-outlined"
+                    class="mr-2 cursor-pointer"
+                    color="#f56c6c"
+                    @click.prevent="handleCopy(node.data.id)"
+                  />
                   <Icon name="ep:arrow-right" />
                 </span>
               </template>
@@ -194,16 +202,15 @@ const screenHeight = window.innerHeight - 104
             />
           </div>
         </div>
-        <div class="col-span-9 lg:col-span-9 xl:col-span-9 2xl:col-span-9 bg-white border border-gray-200 overflow-y-auto" :style="{ height: `${screenHeight}px` }">
+        <div
+          class="col-span-9 lg:col-span-9 xl:col-span-9 2xl:col-span-9 bg-white border border-gray-200 overflow-y-auto"
+          :style="{ height: `${screenHeight}px` }"
+        >
           <div v-show="actionType === 'none'" class="flex justify-center items-center h-full min-h-screen">
             <div class="w-full">
               <div class="flex justify-center">
                 <div class="flex justify-center w-full">
-                  <ElInput
-                    :placeholder="$t('comps.listSearchPlaceholder')"
-                    clearable
-                    style="width: 300px"
-                  >
+                  <ElInput :placeholder="$t('comps.listSearchPlaceholder')" clearable style="width: 300px">
                     <template #append>
                       <EBtn>
                         <Icon icon="ep:search" />
@@ -240,7 +247,7 @@ const screenHeight = window.innerHeight - 104
 </template>
 
 <style lang="css" scoped>
-:deep(.el-tree){
-   background-color: transparent !important;
+:deep(.el-tree) {
+  background-color: transparent !important;
 }
 </style>

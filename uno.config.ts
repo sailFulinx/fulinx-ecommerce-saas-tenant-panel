@@ -3,8 +3,8 @@ import {
   presetAttributify,
   presetIcons,
   presetTypography,
-  presetUno,
   presetWebFonts,
+  presetWind4,
   transformerDirectives,
   transformerVariantGroup,
 } from 'unocss'
@@ -12,7 +12,7 @@ import { useShortcuts } from 'unoist'
 
 export default defineConfig({
   presets: [
-    presetUno(),
+    presetWind4(),
     presetAttributify(),
     presetIcons({
       scale: 1.2,
@@ -28,6 +28,7 @@ export default defineConfig({
         caveat: 'Caveat',
         nunito: ['Nunito'],
       },
+      timeouts: false,
     }),
   ],
   shortcuts: [
@@ -64,10 +65,7 @@ export default defineConfig({
       warning: '#ffb400',
       danger: '#f53f3f',
     },
-    fontFamily: {
-      MiSans: 'MiSans',
-    },
-    breakpoints: {
+    breakpoint: {
       'sm': '640px',
       'md': '768px',
       'lg': '1024px',
