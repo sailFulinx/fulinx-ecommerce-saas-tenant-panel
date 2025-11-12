@@ -113,6 +113,11 @@ interface ArticleDetailListResultDo {
 
   /* Custom List */
   customList?: CustomDataType[]
+
+  /* Is Custom Layout */
+  isCustomLayout: boolean
+
+  layoutContent?: string
 }
 
 // Article File Vo
@@ -128,20 +133,11 @@ interface ArticleFileVo {
 }
 
 interface CreateArticleParams {
-  /* Article Type */
-  articleType: number | null
-
   /* Language Id */
   languageId: string
 
-  /* Is Custom Layout */
-  isCustomLayout: boolean
-
-  /* Layout Id */
-  layoutId?: string | null
-
   /* 分类ID */
-  categoryIds?: number[]
+  categoryIds?: string[]
 
   /* 状态 */
   status?: boolean
@@ -169,27 +165,6 @@ interface CreateArticleParams {
   tags?: string[]
 }
 
-// 新增文章基础信息
-interface CreateArticleBaseParams {
-  /* Article Type */
-  articleType: number
-
-  /* Language Id */
-  languageId: string
-
-  /* Article Name */
-  articleName: string
-
-  /* Is Custom Layout */
-  isCustomLayout: boolean
-
-  /* Layout Id */
-  layoutId?: number
-
-  /* 文章描述 */
-  articleDescription?: string
-}
-
 // 新增文章标题
 interface CreateArticleNameParams {
   /* Article ID */
@@ -211,7 +186,7 @@ interface CreateArticleCategoryParams {
   languageId: string
 
   /* Category ID Array */
-  categoryIds: Record<string, unknown>[]
+  categoryIds: string[]
 }
 
 // 新增文章文件
@@ -337,7 +312,7 @@ interface UpdateArticleIsCustomLayoutParams {
   isCustomLayout: boolean
 
   /* Layout ID */
-  layoutId: string
+  layoutContent: string
 }
 
 // 更新文章SEO
@@ -379,6 +354,28 @@ interface UpdateArticleFileParams {
   articleFileDeletedIds: string[]
 }
 
+interface UpdateArticleSortParams {
+  /* Article ID */
+  articleId: string
+
+  /* Language Id */
+  languageId: string
+
+  /* Sort */
+  sort: number
+}
+
+interface UpdateArticleIsTopParams {
+  /* Article ID */
+  articleId: string
+
+  /* Language Id */
+  languageId: string
+
+  /* Is Top */
+  isTop: boolean
+}
+
 // 更新文章标签
 interface UpdateArticleTagParams {
   /* Article Tag ID */
@@ -396,21 +393,12 @@ interface ShowArticleParams {
   languageId: string
 }
 
-interface CreateArticleRes {
+interface CreateRes {
   /* Article ID */
   id: string
 
-  /* Article Type, 1-Blog, 2-Page, 3-Product, 4-Video,5-image */
-  articleType: number
-
   /* Status, 0 - Disabled , 1 - Enabled */
   status: boolean
-
-  /* Is Custom Layout */
-  isCustomLayout: boolean
-
-  /* Layout ID */
-  layoutId: string
 
   /* Soft Delete Flag */
   isDelete: number
@@ -438,7 +426,7 @@ interface CreateArticleRes {
 interface ArticleListParams {
   languageId: string
   articleName?: string | null
-  articleId?: string | null | string
+  articleId?: number | null | string
   articleType?: string | null
 }
 
@@ -447,26 +435,11 @@ interface ArticleListData {
   /* Article ID */
   id: string
 
-  /* Article Type */
-  articleType: number
-
-  /* Article Type Label */
-  articleTypeLabel: string
-
   /* Category Ids */
-  categoryids: string[]
+  categoryIds: string[]
 
   /* Status, 0 - Disabled , 1 - Enabled */
   status: boolean
-
-  /* Is Custom Layout */
-  isCustomLayout: boolean
-
-  /* Layout ID */
-  layoutId: string
-
-  /* */
-  layoutListResultDo: LayoutData & CommonField
 
   /* Language ID */
   languageId: string
@@ -520,16 +493,35 @@ interface ArticleListData {
   recordUpdateTime: string
 }
 
+interface ArticleAdminLocalizedViewDo {
+  languageId: string
+  languageName: string
+  languageCode: string
+  /* Category Name List */
+  categoryNameList?: string[]
+  /* Article Category List Result Dos */
+  articleCategoryRelationListResultDos: (ArticleCategoryListResultDo & CommonField)[]
+
+  /* Category Name List */
+  categoryNameList?: string[]
+
+  /* */
+  articleDetailListResultDo: ArticleDetailListResultDo & CommonField
+
+  /* Article File List Result Dos */
+  articleFileRelationListResultDos: (ArticleFileListResultDo & CommonField)[]
+
+  /* */
+  articleSeoListResultDo: ArticleSeoListResultDo & CommonField
+
+  /* Article Tag List Result Dos */
+  articleTagListResultDos: (ArticleTagListResultDo & CommonField)[]
+}
+
 // 文章新增，更新返回数据
 interface ArticleShowData {
   /* Article ID */
   id: string
-
-  /* Article Type */
-  articleType: number
-
-  /* Article Type Label */
-  articleTypeLabel: string
 
   /* Category Ids */
   categoryIds: string[]
@@ -537,14 +529,45 @@ interface ArticleShowData {
   /* Status, 0 - Disabled , 1 - Enabled */
   status: boolean
 
-  /* Is Custom Layout */
-  isCustomLayout: boolean
+  articleAdminLocalizedViewDos: ArticleAdminLocalizedViewDo[]
 
-  /* Layout ID */
-  layoutId: string | null
+  /* Slug ID */
+  slugId: string
 
-  /* */
-  layoutListResultDo: LayoutData & CommonField
+  /* Article Slug */
+  slug: string
+
+  /* Soft Delete Flag */
+  isDelete: number
+
+  /* Remark */
+  remark: string
+
+  /* Record Version */
+  recordVersion: number
+
+  /* Record Create Name */
+  recordCreateName: string
+
+  /* Record Update Name */
+  recordUpdateName: string
+
+  /* Record Create Time */
+  recordCreateTime: string
+
+  /* Record Update Time */
+  recordUpdateTime: string
+}
+
+interface ArticleCurrentShowData {
+  /* Article ID */
+  id: string
+
+  /* Category Ids */
+  categoryIds: string[]
+
+  /* Status, 0 - Disabled , 1 - Enabled */
+  status: boolean
 
   /* Article Category List Result Dos */
   articleCategoryListResultDos: (ArticleCategoryListResultDo & CommonField)[]
@@ -559,7 +582,7 @@ interface ArticleShowData {
   articleFileListResultDos: (ArticleFileListResultDo & CommonField)[]
 
   /* */
-  seoListResultDo: ArticleSeoListResultDo & CommonField
+  articleSeoListResultDo: ArticleSeoListResultDo & CommonField
 
   /* Article Tag List Result Dos */
   articleTagListResultDos: (ArticleTagListResultDo & CommonField)[]
@@ -590,32 +613,6 @@ interface ArticleShowData {
 
   /* Record Update Time */
   recordUpdateTime: string
-}
-
-// 文章类型
-interface ArticleTypeListParams {
-  articleTypeCode: string | null
-}
-
-// 文章类型数据
-interface ArticleTypeData {
-  code: string
-  id: string
-  message: string
-}
-
-// 文章类型列表返回数据
-interface ListArticleTypeRes {
-  list: ArticleTypeData[]
-  total: number
-}
-
-interface CustomDataType {
-  id: number
-  customFieldName: string
-  customType: string
-  customTitle: string
-  customContent: any
 }
 
 // 新增文章Slug

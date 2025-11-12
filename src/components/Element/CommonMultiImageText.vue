@@ -1,6 +1,6 @@
 <script setup name="CommonImageText" lang="ts">
-import { hasContentElements } from '@/utils'
 import { ElMessage } from 'element-plus'
+import { hasContentElements } from '@/utils'
 
 const props = defineProps({
   componentData: {
@@ -48,7 +48,7 @@ async function getFormData() {
   const fileRes = uploadRef.value.getFileData()
   if (!fileRes || !fileRes.fileDataList || fileRes.fileDataList.length === 0) {
     ElMessage.error('请上传图片')
-    return false
+    throw new Error('请上传图片')
   }
   form.content.imageTextList = fileRes.fileDataList
   return form
@@ -58,10 +58,13 @@ async function setFormData(formData: FormData) {
   await nextTick()
   if (hasContentElements(formData.content)) {
     if (formData.content.imageTextList && Array.isArray(formData.content.imageTextList)) {
-      uploadRef.value.setFileData(formData.content.imageTextList)
+      await uploadRef.value.setFileData(formData.content.imageTextList)
+    } else {
+      await uploadRef.value.setFileData([])
     }
     form = { ...formData }
   } else {
+    await uploadRef.value.setFileData([])
     form = reactive({ ...createForm() })
   }
 }

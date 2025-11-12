@@ -1,11 +1,11 @@
 <script setup lang="ts">
+import type { RouteMeta } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { useLocale } from '@/hooks/useLocale'
 import { usePermissionStore } from '@/stores/permission'
 import { pathResolve } from '@/utils/routerHelper'
-import { filter, treeToList } from '@/utils/tree'
-import { useRouter } from 'vue-router'
 
-import type { RouteMeta } from 'vue-router'
+import { filter, treeToList } from '@/utils/tree'
 
 const { t: $t } = useLocale()
 

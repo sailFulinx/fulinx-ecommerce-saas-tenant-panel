@@ -91,6 +91,7 @@ export default {
   operate: '操作',
   enabled: '启用',
   disabled: '禁用',
+  isTop: '是否置顶',
   placeholder: {
     language: '语言必须选择',
   },

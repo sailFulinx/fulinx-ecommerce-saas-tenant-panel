@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { uploadFileApi } from '@/api/file'
+import type { UploadProps } from 'element-plus'
 import { Delete } from '@element-plus/icons-vue'
-import { ElMessage, type UploadProps } from 'element-plus'
+import { ElMessage } from 'element-plus'
+import { uploadFileApi } from '@/api/file'
 
 const emit = defineEmits(['save'])
 
@@ -11,15 +12,17 @@ const buttonLinkRef = ref()
 
 const dialogVisible = ref(false)
 
-const sourceUrl = import.meta.env.VITE_RESOURCE_URL
-
 const formRef = ref()
 
 const createFormData = (): MultiImageTextItem => {
   return {
     id: 0,
     image: {
-      id: 0,
+      id: '',
+      bucketName: '',
+      etag: '',
+      s3Key: '',
+      isPublic: true,
       originalFileName: '',
       fileName: '',
       fileContentType: '',
@@ -92,15 +95,20 @@ const init = () => {
   form = createFormData()
 }
 
-const handleVisible = async (val?: MultiImageTextItem) => {
+const currentIndex = ref(-1)
+const handleVisible = async (val?: MultiImageTextItem, index?: number) => {
   dialogVisible.value = true
+  currentIndex.value = -1
   if (val) {
     init()
     form = reactive({ ...jsonParse(val) })
-    imageUrl.value = sourceUrl + form.image.fileUrl
+    imageUrl.value = form.image.fileUrl
     await nextTick()
     imageLinkRef.value.setLinkData(form.imageLink)
     buttonLinkRef.value.setLinkData(form.buttonLink)
+  }
+  if (index !== undefined && index !== null && index > -1) {
+    currentIndex.value = index
   }
 }
 
@@ -125,7 +133,7 @@ const handleSave = async () => {
   form.imageLink = await imageLinkRef.value.getLinkData()
   form.buttonLink = await buttonLinkRef.value.getLinkData()
   dialogVisible.value = false
-  emit('save', form)
+  emit('save', form, currentIndex.value)
   init()
 }
 
@@ -143,7 +151,7 @@ defineExpose({
         <ElUpload
           :loading="loading"
           class="avatar-uploader"
-          action
+          action=""
           accept=".jpg,.jpeg,.png,.gif"
           :http-request="handleUpload"
           :show-file-list="false"

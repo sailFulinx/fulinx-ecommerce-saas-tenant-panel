@@ -1,12 +1,11 @@
-import { usePermissionStore } from '@/stores/permission'
+import type { RouteRecordRaw } from 'vue-router'
 import router from './router'
-import { useUserStore } from './stores/user'
+// import { useUserStore } from './stores/user'
 
 export const initPermission = async () => {
   const permissionStore = usePermissionStore()
 
   const whiteList = ['/login'] // 不重定向白名单
-
   router.beforeEach(async (to, from, next) => {
     if (localStorage.getItem('token')) {
       if (to.path === '/login') {
@@ -19,7 +18,7 @@ export const initPermission = async () => {
         await useUserStore().getUserInfo()
         await permissionStore.generateRoutes()
         permissionStore.getAddRouters.forEach(route => {
-          router.addRoute(route) // 动态添加可访问路由表
+          router.addRoute(route as RouteRecordRaw) // 动态添加可访问路由表
         })
         const redirectPath = from.query.redirect || to.path
         const redirect = decodeURIComponent(redirectPath as string)
@@ -35,6 +34,4 @@ export const initPermission = async () => {
       }
     }
   })
-
-  router.afterEach(to => {})
 }

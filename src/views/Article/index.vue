@@ -1,26 +1,8 @@
 <script setup lang="ts">
-import { articlePaginationApi, fetchArticleTypeListApi, removeArticleApi } from '@/api/article'
 import { usePreferenceStore } from '@/stores/preference'
-import { convertStatus } from '@/utils/article'
-import { ElMessage } from 'element-plus'
+import { convertStatus } from '@/utils/status'
 
-const articleTypePayload = reactive<ArticleTypeListParams>({
-  articleTypeCode: null,
-})
-
-const articleTypes = ref<ListArticleTypeRes>({
-  list: [],
-  total: 0,
-})
-
-const getArticleTypeList = async () => {
-  const { data } = await fetchArticleTypeListApi(articleTypePayload).catch(error => {
-    throw error
-  })
-  articleTypes.value = { ...data }
-}
-
-getArticleTypeList()
+const router = useRouter()
 
 const listResult = ref<TableResponse<ArticleListData & CommonField>>({
   list: [],
@@ -127,6 +109,60 @@ const handleCreate = () => {
 const handleRedirectEdit = (val: ArticleListData & CommonField) => {
   router.push({ name: 'ShowArticle', params: { id: val.id } })
 }
+
+// 处理排序变更
+const handleSortChange = async (row: ArticleListData & CommonField, value: number | undefined) => {
+  // 如果值为 undefined，不执行更新操作
+  if (value === undefined) {
+    return
+  }
+
+  try {
+    await updateArticleSortApi({
+      articleId: row.id,
+      languageId: listQuery.languageId,
+      sort: value,
+    })
+    ElMessage({
+      message: '排序更新成功',
+      type: 'success',
+      duration: 2000,
+    })
+    getList()
+  } catch (err) {
+    ElMessage({
+      message: '排序更新失败',
+      type: 'error',
+      duration: 2000,
+    })
+    throw err
+  }
+}
+
+// 处理置顶变更
+const handleIsTopChange = async (row: ArticleListData & CommonField, value: boolean) => {
+  try {
+    await updateArticleIsTopApi({
+      articleId: row.id,
+      languageId: listQuery.languageId,
+      isTop: value,
+    })
+    ElMessage({
+      message: value ? '已置顶' : '已取消置顶',
+      type: 'success',
+      duration: 2000,
+    })
+    getList()
+  } catch (err) {
+    ElMessage({
+      message: '置顶操作失败',
+      type: 'error',
+      duration: 2000,
+    })
+    throw err
+  }
+}
+
 init()
 </script>
 
@@ -138,14 +174,6 @@ init()
           <div class="mr-5">
             {{ $t('router.article') }}
           </div>
-          <ElSelect v-model="listQuery.articleType" :placeholder="$t('article.placeholder.articleType')" clearable filterable class="mr-5 w-50" @change="getList">
-            <ElOption
-              v-for="item in articleTypes.list"
-              :key="item.id"
-              :value="item.id"
-              :label="item.message"
-            />
-          </ElSelect>
           <ElInput
             v-model="listQuery.articleName"
             clearable
@@ -183,14 +211,31 @@ init()
         @selection-change="selectedArticleItem"
       >
         <ElTableColumn type="selection" width="55" />
-        <ElTableColumn :label="$t('article.articleType')" width="120">
-          <template #default="scope">
-            <span>{{ scope.row.articleTypeLabel }}</span>
-          </template>
-        </ElTableColumn>
         <ElTableColumn :label="$t('article.articleName')">
           <template #default="scope">
             <span>{{ scope.row.articleName }}</span>
+          </template>
+        </ElTableColumn>
+        <ElTableColumn prop="sort" :label="$t('common.sort')" width="150">
+          <template #default="scope">
+            <ElInputNumber
+              v-model="scope.row.sort"
+              :min="0"
+              controls-position="right"
+              size="small"
+              @change="handleSortChange(scope.row, $event)"
+            />
+          </template>
+        </ElTableColumn>
+        <ElTableColumn :label="$t('common.isTop')" width="120">
+          <template #default="scope">
+            <ElSwitch
+              v-model="scope.row.isTop"
+              inline-prompt
+              :active-text="$t('common.yes')"
+              :inactive-text="$t('common.no')"
+              @change="handleIsTopChange(scope.row, Boolean($event))"
+            />
           </template>
         </ElTableColumn>
         <ElTableColumn :label="$t('common.status')" width="120">

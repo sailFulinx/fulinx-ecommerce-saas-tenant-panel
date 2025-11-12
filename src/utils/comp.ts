@@ -5,6 +5,7 @@
 const componentModules = import.meta.glob('@/components/Element/*.vue')
 // 动态获取组件
 export const getComponent = (elementComponentCode: string) => {
+  console.log('getComponent', elementComponentCode)
   const componentPath = `/src/components/Element/${elementComponentCode}.vue`
   if (componentModules[componentPath]) {
     return defineAsyncComponent(componentModules[componentPath] as () => Promise<any>)

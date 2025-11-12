@@ -1,7 +1,6 @@
+import { cloneDeep } from 'lodash-es'
 import { asyncRouterMap, constantRouterMap } from '@/router'
 import { flatMultiLevelRoutes } from '@/utils/routerHelper'
-import { cloneDeep } from 'lodash-es'
-import { defineStore } from 'pinia'
 
 export const usePermissionStore = defineStore('permission', () => {
   const routers = ref<AppRouteRecordRaw[]>([])

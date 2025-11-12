@@ -1,11 +1,5 @@
 <script setup lang="ts">
-import { resetPasswordApi } from '@/api/user'
-import { useLocale } from '@/hooks/useLocale'
 import { resetRouter } from '@/router'
-import { useTagsViewStore } from '@/stores/tagsView'
-import { useUserStore } from '@/stores/user'
-import { ElDropdown, ElDropdownItem, ElDropdownMenu, ElMessage, ElMessageBox } from 'element-plus'
-import { useRouter } from 'vue-router'
 
 const tagsViewStore = useTagsViewStore()
 
@@ -42,8 +36,8 @@ const passwordForm = ref({
 })
 
 const passwordRules = reactive({
-  oldPassword: [{ required: true, type: 'string', message: '请输入旧密码', trigger: 'blur' }],
-  newPassword: [{ required: true, type: 'string', message: '请输入密新码', trigger: 'blur' }],
+  oldPassword: [{ required: true, message: '请输入旧密码', trigger: 'blur' }],
+  newPassword: [{ required: true, message: '请输入密新码', trigger: 'blur' }],
 })
 
 const handleEditPassword = () => {
@@ -78,7 +72,7 @@ const updatePassword = async () => {
 <template>
   <div>
     <ElDropdown trigger="click">
-      <div class="flex items-center">
+      <div class="flex items-center cursor-pointer">
         <img src="@/assets/imgs/avatar.jpg" alt="" class="w-36px rounded-[50%]">
         <span class="text-13px pl-3">{{ userStore.userDetail?.username || 'admin' }}</span>
       </div>

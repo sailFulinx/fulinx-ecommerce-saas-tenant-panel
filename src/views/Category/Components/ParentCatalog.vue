@@ -1,36 +1,34 @@
 <script setup lang="ts">
-import { editCategoryParentApi, listCategoryApi } from '@/api/category'
-import { useLocale } from '@/hooks/useLocale'
-import { usePreferenceStore } from '@/stores/preference'
+import type { FormRules } from 'element-plus'
 
 const emit = defineEmits(['initFormData'])
-
-const selectLanguage = ref<LanguageData>(usePreferenceStore().preference?.language)
 
 const { t: $t } = useLocale()
 
 const id = useRoute().params.id as string
 
-const dialogVisible = ref<boolean>(false)
+const dialogVisible = ref(false)
 
 const loading = reactive({
   init: false,
   categories: false,
 })
 
-const rules = reactive({
-  parentId: [{ required: true, type: 'number', message: $t('category.rules.parentId'), trigger: 'change' }],
-})
+const rules: FormRules = {
+  parentIds: [{ required: true, type: 'array', message: '请选择选择上级分类', trigger: 'change' }],
+}
 
-const formRef = ref()
+const formRef = useTemplateRef('formRef')
 
 interface ParentForm {
   parentId: string
   parentIds: string[]
+  languageId: string
 }
-let form = reactive<ParentForm>({
-  parentId: '',
+const form = reactive<ParentForm>({
+  parentId: '0',
   parentIds: [],
+  languageId: '',
 })
 
 const cascaderProps = {
@@ -42,14 +40,14 @@ const cascaderProps = {
 }
 
 // Category
-const categoriesData = ref<ListCategoryRes>({
+const categoriesData = ref<CategoryListRes>({
   list: [],
   total: 0,
 })
 
 // Disable all children
 const disableAllChildren = (children: CategoryData[]) => {
-  if (!children || children.length === 0) {
+  if (!children.length) {
     return
   }
 
@@ -83,20 +81,20 @@ const disableCategoryById = (categories: CategoryData[], id: string) => {
 
 const getCategoriesData = async () => {
   loading.categories = true
-  const { data } = await listCategoryApi({ languageId: selectLanguage.value.id }).catch(error => {
+  const { data } = await categoryListApi({ languageId: form.languageId }).catch(error => {
     loading.categories = false
     throw error
   })
   const newCategories: any[] = []
-  if (data.list.length !== 0) {
+  if (data.list.length) {
     newCategories[0] = {
-      id: 0,
+      id: '0',
       categoryName: '一级栏目',
       children: data.list,
     }
   } else {
     newCategories[0] = {
-      id: 0,
+      id: '0',
       categoryName: '一级栏目',
     }
   }
@@ -104,44 +102,45 @@ const getCategoriesData = async () => {
   loading.categories = false
 }
 
-const cascaderDisabled = ref<boolean>(false)
+const cascaderDisabled = ref(false)
 
-const resetForm = () =>
-  reactive({
-    parentId: '',
-    parentIds: [],
-  })
+const resetForm = (languageId: string) => {
+  form.parentId = ''
+  form.parentIds = []
+  form.languageId = languageId
+}
 
-const openDialog = async (val: CategoryData & CommonField) => {
+const openDialog = async (val: CategoryShowData, languageId: string) => {
   cascaderDisabled.value = false
-  form = resetForm()
+  resetForm(languageId)
   dialogVisible.value = true
-  if (val && val.parentIds && val.parentIds?.length > 0) {
+  if (val?.parentIds?.length) {
     form.parentIds = [...val.parentIds]
   }
   await getCategoriesData()
 }
 
-const handleSave = async () => {
-  form.parentId = form.parentIds?.at(-1) as string
-  const valid = await formRef.value.validate((valid: boolean) => {
+const onSave = async () => {
+  $catch(async () => {
+    form.parentId = form.parentIds!.at(-1) as string
+
+    const valid = await formRef.value!.validate()
     if (!valid) {
       return false
     }
+
+    const payload = {
+      categoryId: id,
+      parentId: form.parentId,
+      languageId: form.languageId,
+    }
+    await categoryParentEditApi(payload).catch(error => {
+      throw error
+    })
+    ElMessage.success($t('success.edit'))
+    emit('initFormData')
+    dialogVisible.value = false
   })
-  if (!valid) {
-    return false
-  }
-  const payload = {
-    categoryId: id,
-    parentId: form.parentId,
-    languageId: usePreferenceStore().preference?.language?.id,
-  }
-  await editCategoryParentApi(payload).catch(error => {
-    throw error
-  })
-  emit('initFormData')
-  dialogVisible.value = false
 }
 
 defineExpose({
@@ -169,7 +168,7 @@ defineExpose({
         <EBtn @click="dialogVisible = false">
           取消
         </EBtn>
-        <EBtn type="primary" @click="handleSave">
+        <EBtn type="primary" @click="onSave">
           提交
         </EBtn>
       </div>

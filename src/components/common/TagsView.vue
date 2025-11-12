@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { useLocale } from '@/hooks/useLocale'
-import { useScrollTo } from '@/hooks/useScrollTo'
-import { usePermissionStore } from '@/stores/permission'
-import { useTagsViewStore } from '@/stores/tagsView'
-import { filterAffixTags } from '@/utils/tagsView'
-import { useTemplateRefsList } from '@vueuse/core'
-import { ElScrollbar } from 'element-plus'
-import { useRouter } from 'vue-router'
-import type { ContextMenuExpose } from '@/types/contextMenu'
 import type { RouteLocationNormalizedLoaded, RouterLinkProps } from 'vue-router'
+import type { ContextMenuExpose } from '@/types/contextMenu'
+// import { useTemplateRefsList } from '@vueuse/core'
+// import { ElScrollbar } from 'element-plus'
+// import { useRouter } from 'vue-router'
+// import { useLocale } from '@/hooks/useLocale'
+// import { useScrollTo } from '@/hooks/useScrollTo'
+// import { usePermissionStore } from '@/stores/permission'
+// import { useTagsViewStore } from '@/stores/tagsView'
+import { filterAffixTags } from '@/utils/tagsView'
 import ContextMenu from '../common/Menu/ContextMenu.vue'
 
 const { t } = useLocale()
@@ -121,7 +121,7 @@ const closeRightTags = () => {
 const tagLinksRefs = useTemplateRefsList<RouterLinkProps>()
 
 // elscroll 实例
-const scrollbarRef = ref<ComponentRef<typeof ElScrollbar>>()
+const scrollbarRef = useTemplateRef<CompInstance['ElScrollbar']>('scrollbarRef')
 
 // 保存滚动位置
 const scrollLeftNumber = ref(0)
@@ -252,20 +252,14 @@ watch(
 </script>
 
 <template>
-  <div
-    id="tags-view"
-    class="tags-view flex w-full relative bg-white items-center h-[var(--tags-view-height)]"
-  >
+  <div id="tags-view" class="tags-view flex w-full relative items-center h-[var(--tags-view-height)]">
     <span
-      class="text-center leading-[var(--tags-view-height)] cursor-pointer border border-gray-200 px-3 py-1.65 mx-1"
+      class="text-center leading-[var(--tags-view-height)] cursor-pointer border border-gray-200 dark:border-gray-400 rounded px-3 py-1.65 mx-1"
       @click="move(-200)"
     >
-      <Icon
-        icon="ep:d-arrow-left"
-        :size="4"
-        color="#333"
-      />
+      <Icon icon="ep:d-arrow-left" :size="4" />
     </span>
+
     <div class="overflow-hidden flex-1">
       <ElScrollbar ref="scrollbarRef" @scroll="scroll">
         <div class="flex h-full w-full">
@@ -331,7 +325,8 @@ watch(
               },
             ]"
             :tag-item="item"
-            class="tag__item flex items-center" :class="[
+            class="tag__item flex items-center"
+            :class="[
               {
                 'is-active': isActive(item),
               },
@@ -341,7 +336,7 @@ watch(
             <div>
               <RouterLink :ref="tagLinksRefs.set" v-slot="{ navigate }" :to="{ ...item }" custom>
                 <div
-                  class="h-full flex justify-center items-center whitespace-nowrap border border-gray-200 py-1.65 px-5 mr-1 relative group"
+                  class="h-full flex justify-center items-center whitespace-nowrap border border-gray-200 dark:border-gray-400 rounded py-1.65 px-5 mr-1 relative group"
                   :class="[isActive(item) ? 'bg-blue-400 text-white' : 'bg-white text-black hover:bg-gray-100']"
                   @click="navigate"
                 >
@@ -360,26 +355,21 @@ watch(
         </div>
       </ElScrollbar>
     </div>
+
     <span
-      class="text-center leading-[var(--tags-view-height)] cursor-pointer border border-gray-200 px-3 py-1.65 mr-1"
+      class="text-center leading-[var(--tags-view-height)] cursor-pointer border border-gray-200 dark:border-gray-400 rounded px-3 py-1.65 mr-1"
       @click="move(200)"
     >
-      <Icon
-        icon="ep:d-arrow-right"
-        :size="4"
-        color="#333"
-      />
+      <Icon icon="ep:d-arrow-right" :size="4" />
     </span>
+
     <span
-      class="text-center leading-[var(--tags-view-height)] cursor-pointer border border-gray-200 px-3 py-1.65"
+      class="text-center leading-[var(--tags-view-height)] cursor-pointer border border-gray-200 dark:border-gray-400 rounded px-3 py-1.65"
       @click="refreshSelectedTag(selectedTag)"
     >
-      <Icon
-        icon="ant-design:reload-outlined"
-        :size="4"
-        color="#333"
-      />
+      <Icon icon="ant-design:reload-outlined" :size="4" />
     </span>
+
     <ContextMenu
       trigger="click"
       :schema="[
@@ -435,13 +425,9 @@ watch(
       ]"
     >
       <span
-        class="text-center leading-[var(--tags-view-height)] cursor-pointer border border-gray-200 px-3 py-1.65 mx-1"
+        class="text-center leading-[var(--tags-view-height)] cursor-pointer border border-gray-200 dark:border-gray-400 rounded px-3 py-1.65 mx-1"
       >
-        <Icon
-          icon="ant-design:setting-outlined"
-          :size="4"
-          color="#333"
-        />
+        <Icon icon="ant-design:setting-outlined" :size="4" />
       </span>
     </ContextMenu>
   </div>

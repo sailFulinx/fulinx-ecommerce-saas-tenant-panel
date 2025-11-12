@@ -1,15 +1,19 @@
 import type { ConfigEnv, UserConfig } from 'vite'
 import { resolve } from 'node:path'
+import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 import Vue from '@vitejs/plugin-vue'
 import UnoCSS from 'unocss/vite'
 import AutoImport from 'unplugin-auto-import/vite'
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import Components from 'unplugin-vue-components/vite'
-import DefineOptions from 'unplugin-vue-define-options/vite'
 import { loadEnv } from 'vite'
-import { createStyleImportPlugin, ElementPlusResolve } from 'vite-plugin-style-import'
+import { ViteMcp } from 'vite-plugin-mcp'
 import ServerUrlCopy from 'vite-plugin-url-copy'
 import vueDevTools from 'vite-plugin-vue-devtools'
 
+const resolves = dir => {
+  return resolve(__dirname, dir)
+}
 // https://vitejs.dev/config/
 const root = process.cwd()
 
@@ -18,52 +22,45 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
   let env = {} as any
   const isBuild = command === 'build'
   if (!isBuild) {
-    env = loadEnv((process.argv[3] === '--mode' ? process.argv[4] : process.argv[3]), root)
+    env = loadEnv(process.argv[3] === '--mode' ? process.argv[4] : process.argv[3], root)
+  } else {
     env = loadEnv(mode, root)
   }
   return {
-    base: env.VITE_BASE_PATH,
+    resolve: {
+      alias: {
+        '@': resolves('src'),
+      },
+    },
     plugins: [
       UnoCSS(),
       ServerUrlCopy(),
-      Vue(),
-      Components({
-        dts: 'src/components.d.ts',
+      Vue({
+        script: {
+          defineModel: true,
+          propsDestructure: true,
+        },
       }),
-      createStyleImportPlugin({
-        resolves: [ElementPlusResolve()],
-        libs: [{
-          libraryName: 'element-plus',
-          esModule: true,
-          resolveStyle: name => {
-            return `element-plus/es/components/${name.substring(3)}/style/css`
-          },
-        }],
+      VueI18nPlugin({
+        runtimeOnly: true,
+        compositionOnly: true,
+        include: [resolve(__dirname, 'src/locales/**')],
       }),
-      // VueI18nPlugin({
-      //   runtimeOnly: true,
-      //   compositionOnly: true,
-      //   include: [resolve(__dirname, 'src/locales/**')],
-      // }),
-      DefineOptions(),
       vueDevTools(),
       AutoImport({
-        include: [
-          /\.[tj]sx?$/, // .ts, .tsx, .js, .jsx
-          /\.vue$/,
-          /\.vue\?vue/, // .vue
-        ],
-        imports: ['vue', 'vue-router'],
-        dirs: ['./src/composables'],
-        dts: 'src/auto-imports.d.ts',
+        resolvers: [ElementPlusResolver()],
+        imports: ['vue', 'vue-router', 'pinia', '@vueuse/core'],
+
+        dirs: ['./src/composables/**', './src/hooks/**', './src/stores/**', './src/api/**'],
+        dts: 'src/types/auto-imports.d.ts',
       }),
+      Components({
+        resolvers: [ElementPlusResolver()],
+        dts: 'src/types/components.d.ts',
+      }),
+      ViteMcp(),
     ],
-    resolve: {
-      extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.scss', '.css'],
-      alias: {
-        '@': resolve('./src'),
-      },
-    },
+
     build: {
       minify: 'terser',
       outDir: env.VITE_OUT_DIR || 'dist',
@@ -77,24 +74,24 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
       },
     },
     server: {
-      port: 4001,
-      proxy: {
-        '/api': {
-          target: env.VITE_API_URL, // 后端服务地址
-          changeOrigin: true, // 是否改变来源
-          rewrite: path => path.replace(/^\/api/, ''),
-        },
-      },
-      hmr: {
-        overlay: false,
-      },
-      host: '0.0.0.0',
+      port: 5700,
+      // proxy: {
+      //   // 选项写法
+      //   '/api': {
+      //     target: 'http://127.0.0.1:8000',
+      //     changeOrigin: true,
+      //     rewrite: path => path.replace(/^\/api/, ''),
+      //   },
+      // },
+      // hmr: {
+      //   overlay: false,
+      // },
+      // host: '0.0.0.0',
     },
     optimizeDeps: {
       include: [
         'vue',
         'vue-router',
-        'vue-types',
         'element-plus/es/locale/lang/zh-cn',
         'element-plus/es/locale/lang/en',
         'axios',

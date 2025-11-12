@@ -1,8 +1,8 @@
-import { isUrl } from '@/utils/is'
+import type { RouteLocationNormalized, RouteMeta, Router, RouteRecordNormalized, RouteRecordRaw } from 'vue-router'
 import { cloneDeep, omit } from 'lodash-es'
 import { createRouter, createWebHashHistory } from 'vue-router'
 
-import type { RouteLocationNormalized, RouteMeta, Router, RouteRecordNormalized, RouteRecordRaw } from 'vue-router'
+import { isUrl } from '@/utils/is'
 
 const modules = import.meta.glob('../views/**/*.{vue,tsx}')
 
@@ -27,10 +27,10 @@ export const getRawRoute = (route: RouteLocationNormalized): RouteLocationNormal
     ...opt,
     matched: (matched
       ? matched.map(item => ({
-        meta: item.meta,
-        name: item.name,
-        path: item.path,
-      }))
+          meta: item.meta,
+          name: item.name,
+          path: item.path,
+        }))
       : undefined) as RouteRecordNormalized[],
   }
 }

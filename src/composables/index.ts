@@ -1,4 +1,5 @@
-export { default as router } from '@/router/index'
 export { getToken, removeToken, setToken } from '@/utils/auth'
 
-export { defineStore } from 'pinia'
+export { default as request } from '@/utils/axios'
+
+export const log = console.log

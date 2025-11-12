@@ -3,7 +3,7 @@
 <template>
   <div>
     <RouterLink class="flex items-center cursor-pointer pl-8px relative" to="/">
-      <img src="@/assets/imgs/logo.png" class="w-24px h-24px">
+      <img src="@/assets/imgs/logo.png" class="w-24px h-24px dark:invert">
     </RouterLink>
   </div>
 </template>

@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useLocale } from '@/hooks/useLocale'
-import { ElDropdown, ElDropdownItem, ElDropdownMenu } from 'element-plus'
 import type { PropType } from 'vue'
 import type { RouteLocationNormalizedLoaded } from 'vue-router'
 import type { contextMenuSchema } from '../../../types/contextMenu'
@@ -32,7 +30,7 @@ const visibleChange = (visible: boolean) => {
   emit('visibleChange', visible, props.tagItem)
 }
 
-const elDropdownMenuRef = ref<ComponentRef<typeof ElDropdown>>()
+const elDropdownMenuRef = ref<CompInstance['ElDropdown']>()
 
 defineExpose({
   elDropdownMenuRef,

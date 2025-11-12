@@ -1,6 +1,6 @@
 <script setup name="CommonCardGroup" lang="ts">
-import { hasContentElements } from '@/utils'
 import { ElMessage } from 'element-plus'
+import { hasContentElements } from '@/utils'
 
 const props = defineProps({
   componentData: {

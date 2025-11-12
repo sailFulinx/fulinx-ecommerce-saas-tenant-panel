@@ -1,6 +1,6 @@
 <script setup name="CommonCard" lang="ts">
-import { hasContentElements } from '@/utils'
 import { ElMessage } from 'element-plus'
+import { hasContentElements } from '@/utils'
 
 const props = defineProps({
   componentData: {
@@ -27,12 +27,12 @@ const createForm = (): FormData => {
   return {
     content: {
       image: {
-        id: '',
+        id: 0,
         originalFileName: '',
         fileName: '',
         fileContentType: '',
         fileExtensionName: '',
-        uploadPath: '',
+        path: '',
         fileUrl: '',
         sha256: '',
       },

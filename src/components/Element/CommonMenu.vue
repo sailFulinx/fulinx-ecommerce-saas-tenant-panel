@@ -1,8 +1,8 @@
 <script setup name="ThemeHeaderMenu" lang="ts">
-import { menuTypes } from '@/data/theme'
-import { hasContentElements } from '@/utils'
 import { ElMessage } from 'element-plus'
 import { VueDraggable } from 'vue-draggable-plus'
+import { menuTypes } from '@/data/theme'
+import { hasContentElements } from '@/utils'
 
 const props = defineProps<{
   componentData: {
@@ -12,6 +12,7 @@ const props = defineProps<{
 
 const loading = ref(false)
 const moduleLinkRef = ref()
+const imageLinkRef = ref()
 const themeSubMenuRef = ref()
 const formRef = ref()
 const dragging = ref(false)
@@ -35,13 +36,26 @@ const createMenuData = (index: number = 0): MenuData => ({
   isDropDownCustom: false,
   image: {
     id: '',
+    bucketName: '',
+    etag: '',
+    s3Key: '',
+    isPublic: true,
     originalFileName: '',
     fileName: '',
     fileContentType: '',
     fileExtensionName: '',
-    uploadPath: '',
+    path: '',
     fileUrl: '',
     sha256: '',
+  },
+  imageAlt: '',
+  imageLink: {
+    id: 0,
+    linkType: '',
+    linkLabel: '',
+    linkUrl: '',
+    linkValue: '',
+    children: [],
   },
   children: [],
 })
@@ -54,15 +68,24 @@ const menus = ref<MenuData[]>([])
 onMounted(async () => {
   loading.value = true
   await useWaitRef(moduleLinkRef)
+  await useWaitRef(imageLinkRef)
   await nextTick()
   loading.value = false
+  if (!props.componentData.content) {
+    return
+  }
   if (hasContentElements(props.componentData.content)) {
     const menuList = JSON.parse(JSON.stringify(props.componentData.content)) as MenuData[] // props.componentData.content
     menus.value = menuList
     currentMenu.value = menuList[0]
     await nextTick()
-    if (currentMenu.value && moduleLinkRef.value) {
-      moduleLinkRef.value.setLinkData(currentMenu.value.link)
+    if (currentMenu.value) {
+      if (moduleLinkRef.value) {
+        moduleLinkRef.value.setLinkData(currentMenu.value.link)
+      }
+      if (imageLinkRef.value) {
+        imageLinkRef.value.setLinkData(currentMenu.value.imageLink)
+      }
     }
   }
 })
@@ -80,6 +103,13 @@ function changeLinkType(val: LinkData) {
   currentMenu.value.linkValue = val.linkValue
 }
 
+function changeImageLinkType(val: LinkData) {
+  if (!currentMenu.value || !currentMenu.value.imageLink) {
+    return
+  }
+  currentMenu.value.imageLink = { ...val }
+}
+
 /**
  * 更改当前菜单
  */
@@ -87,7 +117,12 @@ async function changeCurrentMenu(index: number) {
   const selectMenu = menus.value[index]
   await saveMenuData()
   currentMenu.value = selectMenu
-  moduleLinkRef.value.setLinkData(selectMenu.link)
+  if (moduleLinkRef.value) {
+    moduleLinkRef.value.setLinkData(selectMenu.link)
+  }
+  if (imageLinkRef.value) {
+    imageLinkRef.value.setLinkData(selectMenu.imageLink)
+  }
 }
 
 /**
@@ -107,6 +142,9 @@ const addMenu = async () => {
     currentMenu.value = newMenu // 设置当前选中的菜单
     if (moduleLinkRef.value) {
       moduleLinkRef.value.setLinkData(newMenu.link) // 更新链接数据
+    }
+    if (imageLinkRef.value) {
+      imageLinkRef.value.setLinkData(newMenu.imageLink)
     }
   })
 }
@@ -134,12 +172,28 @@ async function saveMenuData() {
   currentMenu.value.linkType = linkData.linkType
   currentMenu.value.linkUrl = linkData.linkUrl
   currentMenu.value.linkValue = linkData.linkValue
+
+  const imageLinkData = await imageLinkRef.value.getLinkData()
+  currentMenu.value.imageLink = { ...imageLinkData }
   // 获取子菜单
   if (themeSubMenuRef.value) {
     currentMenu.value.children = themeSubMenuRef.value.getFormData()
   }
   // 如果isDropDownCustom 为false，且当前菜单链接类型是category，则需要设置children
-  if (!currentMenu.value.isDropDownCustom && currentMenu.value.link && currentMenu.value.link?.linkType === 'category') {
+  if (
+    !currentMenu.value.isDropDownCustom
+    && currentMenu.value.link
+    && (currentMenu.value.link?.linkType === 'category'
+      || currentMenu.value.link?.linkType === 'categoryBody'
+      || currentMenu.value.link?.linkType === 'categoryCosmetic'
+      || currentMenu.value.link?.linkType === 'categoryDepartment'
+      || currentMenu.value.link?.linkType === 'categoryEdutainment'
+      || currentMenu.value.link?.linkType === 'categoryEvent'
+      || currentMenu.value.link?.linkType === 'categoryOutcome'
+      || currentMenu.value.link?.linkType === 'categoryVideo'
+      || currentMenu.value.link?.linkType === 'categorySurgery'
+      || currentMenu.value.link?.linkType === 'categoryTweakment')
+  ) {
     if (currentMenu.value.link && currentMenu.value.link.children && currentMenu.value.link.children.length > 0) {
       const currentMenuChildren: MenuData[] = []
       currentMenu.value.link.children.forEach((item, index) => {
@@ -156,10 +210,8 @@ async function saveMenuData() {
       currentMenu.value.children = currentMenuChildren
     }
   }
-  if (currentMenu.value.menuType === 'megaMenu') {
-    const image = uploadSingleRef.value.getFileData()
-    currentMenu.value.image = image.fileData
-  }
+  const image = uploadSingleRef.value.getFileData()
+  currentMenu.value.image = image.fileData
   menus.value.forEach((item, index) => {
     if (currentMenu.value && item.id === currentMenu.value.id) {
       menus.value[index] = currentMenu.value
@@ -202,12 +254,12 @@ defineExpose({
 
 <template>
   <div v-loading="loading" class="flex px-3 py-3">
-    <div class="w-1/4 pr-2">
+    <div class="w-2/5 pr-2">
       <div class="border border-gray-200 px-3 py-3">
         <VueDraggable v-model="menus" item-key="id" @start="dragging = true" @end="dragEnd">
           <div v-for="(item, index) in menus" :key="index" class="w-full mb-3">
             <div
-              class="w-full flex items-center justify-between px-4 py-3 rounded border cursor-pointer transition duration-200"
+              class="w-full flex items-center justify-between px-4 py-3 rounded border border-gray-300 cursor-pointer transition duration-200"
               :class="[
                 item.id === currentMenu?.id ? 'bg-blue-400 text-white' : 'bg-white text-black hover:bg-gray-100',
               ]"
@@ -215,7 +267,7 @@ defineExpose({
             >
               <div class="flex items-center space-x-2">
                 <span><Icon icon="ant-design:holder-outlined" /></span>
-                <span>{{ item.menuLabel }}</span>
+                <span class="text-sm truncate">{{ item.menuLabel }}</span>
               </div>
               <div class="flex items-center" @click.stop="removeMenu(index)">
                 <Icon icon="ant-design:close-outlined" />
@@ -229,12 +281,12 @@ defineExpose({
         </ElButton>
       </div>
     </div>
-    <div v-if="currentMenu" class="w-3/4 pl-2">
+    <div v-if="currentMenu" class="w-3/5 pl-2">
       <ElCard shadow="never">
         <template #header>
           <span>{{ currentMenu?.menuLabel }}</span>
         </template>
-        <ElForm ref="formRef" label-width="160px">
+        <ElForm ref="formRef" label-width="90px">
           <ElFormItem label="菜单名称" required>
             <ElInput
               v-model="currentMenu.menuLabel"
@@ -261,11 +313,38 @@ defineExpose({
           </ElFormItem>
           <!-- 下拉菜单 -->
           <div v-if="currentMenu?.menuType === 'dropDown'">
-            <ElFormItem v-if="currentMenu.link?.linkType === 'category'" label="是否自定义下拉菜单" required>
+            <ElFormItem
+              v-if="
+                currentMenu.link?.linkType === 'category'
+                  || currentMenu.link?.linkType === 'categoryBody'
+                  || currentMenu.link?.linkType === 'categoryCosmetic'
+                  || currentMenu.link?.linkType === 'categoryDepartment'
+                  || currentMenu.link?.linkType === 'categoryEdutainment'
+                  || currentMenu.link?.linkType === 'categoryEvent'
+                  || currentMenu.link?.linkType === 'categoryOutcome'
+                  || currentMenu.link?.linkType === 'categoryVideo'
+                  || currentMenu.link?.linkType === 'categorySurgery'
+                  || currentMenu.link?.linkType === 'categoryTweakment'
+              "
+              label="自定义"
+              required
+            >
               <ElSwitch v-model="currentMenu.isDropDownCustom" />
             </ElFormItem>
             <ElFormItem
-              v-if="currentMenu.isDropDownCustom || currentMenu.link?.linkType !== 'category'"
+              v-if="
+                currentMenu.isDropDownCustom
+                  || (currentMenu.link?.linkType !== 'category'
+                    && currentMenu.link?.linkType !== 'categoryBody'
+                    && currentMenu.link?.linkType !== 'categoryCosmetic'
+                    && currentMenu.link?.linkType !== 'categoryDepartment'
+                    && currentMenu.link?.linkType !== 'categoryEdutainment'
+                    && currentMenu.link?.linkType !== 'categoryEvent'
+                    && currentMenu.link?.linkType !== 'categoryOutcome'
+                    && currentMenu.link?.linkType !== 'categoryVideo'
+                    && currentMenu.link?.linkType !== 'categorySurgery'
+                    && currentMenu.link?.linkType !== 'categoryTweakment')
+              "
               label="下拉菜单"
               required
             >
@@ -280,6 +359,18 @@ defineExpose({
           </ElFormItem>
           <ElFormItem label="图片">
             <UploadSingleImage ref="uploadSingleRef" :image-data="currentMenu?.image" />
+          </ElFormItem>
+          <ElFormItem label="图片Alt">
+            <ElInput
+              v-model="currentMenu.imageAlt"
+              class="input-line"
+              minlength="1"
+              maxlength="60"
+              placeholder="图片Alt"
+            />
+          </ElFormItem>
+          <ElFormItem label="图片链接">
+            <ModuleLink ref="imageLinkRef" :is-need-children="true" @change-link-type="changeImageLinkType" />
           </ElFormItem>
         </ElForm>
       </ElCard>

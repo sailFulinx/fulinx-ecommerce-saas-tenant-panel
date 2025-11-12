@@ -1,23 +1,39 @@
-import { useGetPreference, useInitPreference } from '@/hooks/usePreference'
-import { defineStore } from 'pinia'
+import { StorageSerializers } from '@vueuse/core'
+
+interface PreferenceType {
+  language: LanguageData
+}
 
 export const usePreferenceStore = defineStore('preference', () => {
-  const preference = ref<any>({})
+  const { languages } = useInStore(useLanguageStore)
+  const preference = useStorage<PreferenceType>('preference', null, undefined, { serializer: StorageSerializers.object })
+
+  const initPreference = () => {
+    const langList = languages.value
+    const defaultLanguage = langList[0]
+
+    preference.value = {
+      language: defaultLanguage,
+    }
+  }
 
   const getPreferences = () => {
+    if (!preference.value?.language) {
+      initPreference()
+    }
+
     return preference.value
   }
-  const setPreferences = () => {
-    if (!useGetPreference()) {
-      useInitPreference()
-    }
-    preference.value = JSON.parse(useGetPreference())
+
+  const setPreference = (payload: PreferenceType) => {
+    preference.value = payload
     return preference.value
   }
 
   return {
     preference,
+    initPreference,
     getPreferences,
-    setPreferences,
+    setPreference,
   }
 })

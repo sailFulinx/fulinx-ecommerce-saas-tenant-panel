@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { uploadFileApi } from '@/api/file'
-import { Delete, Plus } from '@element-plus/icons-vue'
-import { ElIcon, ElImage, ElMessage, ElUpload, type UploadFile, type UploadFiles, type UploadProps } from 'element-plus'
+import type { UploadFile, UploadFiles, UploadProps } from 'element-plus'
+import { ElIcon, ElMessage, ElUpload } from 'element-plus'
 import { VueDraggable } from 'vue-draggable-plus'
+import { uploadFileApi } from '@/api/file'
 
 const emit = defineEmits(['removeFile'])
 
@@ -12,8 +12,6 @@ const loading = ref(false)
 const beforeUploadFileDataList = ref<UploadFile[]>([])
 const fileDataList = ref<MultiImageTextItem[]>([])
 
-const sourceUrl = import.meta.env.VITE_RESOURCE_URL
-
 const imageTextDialogRef = ref()
 
 const handleExceed = () => {
@@ -21,7 +19,7 @@ const handleExceed = () => {
 }
 
 const beforeUpload: UploadProps['beforeUpload'] = rawFile => {
-  const isJPGOrPNG = rawFile.type === 'image/jpeg' || rawFile.type === 'image/png' || rawFile.type === 'image/gif'
+  const isJPGOrPNG = rawFile.type === 'image/jpeg' || rawFile.type === 'image/png' || rawFile.type === 'image/gif' || rawFile.type === 'image/svg+xml'
   const isLt50M = rawFile.size / 1024 / 1024 < 50
 
   if (!isJPGOrPNG) {
@@ -59,6 +57,16 @@ const handleUpload = async ({ file }: { file: any }) => {
   beforeUploadFileDataList.value.push(file)
   const formData = new FormData()
   formData.append('file', file)
+  // 生成当前日期格式为 YYYYMMDD 的字符串
+  const now = new Date()
+  const year = now.getFullYear()
+  const month = String(now.getMonth() + 1).padStart(2, '0')
+  const day = String(now.getDate()).padStart(2, '0')
+  const datePath = `${year}${month}${day}`
+
+  // 构造新的上传路径
+  formData.append('folder', `images/${datePath}`)
+  formData.append('isPublic', 'true')
   const res = await processUpload(formData)
   if (res) {
     if (!fileDataList.value) {
@@ -96,16 +104,13 @@ const handleSuccess = (response: any, uploadFile: UploadFile, _uploadFiles: Uplo
 }
 
 const handleEdit = async (index: number) => {
-  imageTextDialogRef.value.handleVisible(fileDataList.value[index])
+  imageTextDialogRef.value.handleVisible(fileDataList.value[index], index)
 }
 
-const handleSaveFileData = (val: MultiImageTextItem) => {
-  fileDataList.value.map(item => {
-    if (item.id === val.id) {
-      Object.assign(item, val)
-      return item
-    }
-  })
+const handleSaveFileData = (val: MultiImageTextItem, indexData: number) => {
+  if (fileDataList.value[indexData]) {
+    Object.assign(fileDataList.value[indexData], val)
+  }
 }
 
 const handleChangeSort = () => {
@@ -119,6 +124,7 @@ const getFileData = () => {
 }
 
 const setFileData = (fileList: MultiImageTextItem[]) => {
+  fileDataList.value = []
   if (fileList && fileList.length === 0) {
     return
   }
@@ -148,7 +154,7 @@ defineExpose({ getFileData, setFileData })
           <!-- 中间图片 -->
           <div v-if="item.image.fileUrl" class="w-full h-42 flex items-center justify-center p-2">
             <div>
-              <img class="w-full max-h-42 rounded object-cover py-2" :src="`${sourceUrl}${item.image.fileUrl}`">
+              <img class="w-full max-h-42 rounded object-cover py-2" :src="`${item.image.fileUrl}`">
             </div>
           </div>
           <div class="w-full px-2 mb-2">
@@ -162,11 +168,11 @@ defineExpose({ getFileData, setFileData })
         </div>
       </div>
       <ElUpload
-        :loading="loading"
+        v-loading="loading"
         class="w-full border border-gray-300 rounded p-2 flex items-center justify-center bg-white"
         :multiple="true"
         action=""
-        accept=".jpg,.jpeg,.png"
+        accept=".jpg,.jpeg,.png,.gif,.svg"
         :file-list="beforeUploadFileDataList"
         list-type="picture-card"
         :http-request="handleUpload"

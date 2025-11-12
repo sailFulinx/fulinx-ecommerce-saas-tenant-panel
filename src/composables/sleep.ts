@@ -13,4 +13,4 @@ const useWaitRef = async (ref: any, maxRetries = 10, interval = 100) => {
   return ref.value // 返回最后的值，无论是否获取到
 }
 
-export { useSleep, useSleep as $sleep, useWaitRef }
+export { useSleep as $sleep, useSleep, useWaitRef }

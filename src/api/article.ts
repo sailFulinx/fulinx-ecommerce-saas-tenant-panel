@@ -1,39 +1,9 @@
 import request from '@/utils/axios'
 
-/**
- * 新增文章
- * @param {object} data 新增文章请求参数
- * @param {number} data.articleType Article Type
- * @param {number} data.languageId Language Id
- * @param {boolean} data.isCustomLayout Is Custom Layout
- * @param {Array} data.categoryIds 分类ID
- * @param {boolean} data.status 状态
- * @param {Array} data.articleDetailVoList 文章详情请求参数
- * @returns
- */
-export function CreateArticleApi(data: CreateArticleParams): Promise<CreateArticleRes> {
+export function CreateArticleApi(data: CreateArticleParams): Promise<CreateRes> {
   return request.post({
     url: 'system/article',
     data,
-    token: true,
-  })
-}
-
-/**
- * 新增文章基础信息
- * @param {object} params 新增文章基础信息请求参数
- * @param {number} params.articleType Article Type
- * @param {number} params.languageId Language Id
- * @param {string} params.articleName Article Name
- * @param {boolean} params.isCustomLayout Is Custom Layout
- * @param {number} params.layoutId Layout Id
- * @param {string} params.articleDescription 文章描述
- * @returns
- */
-export function createArticleBaseApi(params: CreateArticleBaseParams): Promise<IResponse<ArticleShowData>> {
-  return request.post({
-    url: 'system/article/create/base',
-    data: params,
     token: true,
   })
 }
@@ -46,14 +16,6 @@ export function createArticleNameApi(params: CreateArticleNameParams): Promise<I
   })
 }
 
-/**
- * 新增文章分类
- * @param {object} params 新增文章分类请求参数
- * @param {number} params.articleId Article ID
- * @param {number} params.languageId Language Id
- * @param {Array} params.categoryIds Category ID Array
- * @returns
- */
 export function createArticleCategoryApi(params: CreateArticleCategoryParams): Promise<IResponse<ArticleShowData>> {
   return request.post({
     url: 'system/article/create/category',
@@ -202,22 +164,6 @@ export function updateArticleNameApi(params: UpdateArticleNameParams): Promise<I
 }
 
 /**
- * 更新文章类型
- * @param {object} params 修改文章类型请求参数
- * @param {number} params.articleId Article ID
- * @param {number} params.languageId Language Id
- * @param {number} params.articleType Article Type
- * @returns
- */
-export function updateArticleTypeApi(params: UpdateArticleTypeParams): Promise<IResponse<ArticleShowData>> {
-  return request.post({
-    url: 'system/article/update/articleType',
-    data: params,
-    token: true,
-  })
-}
-
-/**
  * 更新文章分类
  * @param {object} params 修改文章分类请求参数
  * @param {number} params.articleId Article ID
@@ -333,6 +279,22 @@ export function updateArticleFileApi(params: UpdateArticleFileParams): Promise<I
   })
 }
 
+export function updateArticleSortApi(params: UpdateArticleSortParams): Promise<IResponse<ArticleShowData>> {
+  return request.post({
+    url: 'system/article/update/sort',
+    data: params,
+    token: true,
+  })
+}
+
+export function updateArticleIsTopApi(params: UpdateArticleIsTopParams): Promise<IResponse<ArticleShowData>> {
+  return request.post({
+    url: 'system/article/update/isTop',
+    data: params,
+    token: true,
+  })
+}
+
 /**
  * 查看文章
  * @param {object} params 文章详情请求参数
@@ -340,6 +302,7 @@ export function updateArticleFileApi(params: UpdateArticleFileParams): Promise<I
  * @param {number} params.languageId Language Id
  * @returns
  */
+
 export function showArticleApi(params: ShowArticleParams): Promise<IResponse<ArticleShowData>> {
   return request.post({
     url: 'system/article/show',
@@ -365,14 +328,5 @@ export function articleListApi(
     url: 'system/article/list',
     data,
     token: true,
-  })
-}
-
-export function fetchArticleTypeListApi(
-  data?: ArticleTypeListParams,
-): Promise<IResponse<TableResponse<ArticleTypeData>>> {
-  return request.post({
-    url: 'share/public/article/type/list',
-    data,
   })
 }

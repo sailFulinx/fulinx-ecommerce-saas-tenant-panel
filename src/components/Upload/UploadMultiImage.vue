@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { uploadFileApi } from '@/api/file'
-import { ElMessage, ElUpload, type UploadFile, type UploadProps } from 'element-plus'
+import type { UploadFile, UploadProps } from 'element-plus'
+import { ElMessage, ElUpload } from 'element-plus'
 import { VueDraggable } from 'vue-draggable-plus'
+import { uploadFileApi } from '@/api/file'
 
 const emit = defineEmits(['removeFile'])
 
@@ -11,14 +12,12 @@ const fileDataList = ref<FileData[]>([])
 const uploadProgress = ref<{ [key: string]: number }>({})
 const dragging = ref(false)
 
-const sourceUrl = import.meta.env.VITE_RESOURCE_URL
-
 const handleExceed = (_files: File[]) => {
   ElMessage.error('您最多只能上传10张图片!')
 }
 
 const beforeUpload: UploadProps['beforeUpload'] = rawFile => {
-  const isJPGOrPNG = rawFile.type === 'image/jpeg' || rawFile.type === 'image/png'
+  const isJPGOrPNG = rawFile.type === 'image/jpeg' || rawFile.type === 'image/png' || rawFile.type === 'image/gif' || rawFile.type === 'image/svg+xml'
   const isLt50M = rawFile.size / 1024 / 1024 < 50
 
   if (!isJPGOrPNG) {
@@ -54,6 +53,16 @@ const handleUpload = async ({ file }: { file: any }) => {
   beforeUploadFileDataList.value.push(file)
   const formData = new FormData()
   formData.append('file', file)
+  // 生成当前日期格式为 YYYYMMDD 的字符串
+  const now = new Date()
+  const year = now.getFullYear()
+  const month = String(now.getMonth() + 1).padStart(2, '0')
+  const day = String(now.getDate()).padStart(2, '0')
+  const datePath = `${year}${month}${day}`
+
+  // 构造新的上传路径
+  formData.append('folder', `images/${datePath}`)
+  formData.append('isPublic', 'true')
   const res = await processUpload(formData)
   if (res) {
     if (!res.sort) {
@@ -73,20 +82,12 @@ const handleProgress = (event: { percent: number }, uploadFile: UploadFile) => {
 }
 
 const handleChangeSort = () => {
-  fileDataList.value.map((item, index) => {
+  fileDataList.value.forEach((item, index) => {
     item.sort = index + 1
   })
 }
 
 const getFileData = () => {
-  fileDataList.value = fileDataList.value.map((item, index) => {
-    return {
-      ...item,
-      isDefault: index === 0,
-      fileId: item.id,
-      sort: index + 1,
-    }
-  })
   return { fileDataList: JSON.parse(JSON.stringify(fileDataList.value)) }
 }
 
@@ -119,14 +120,14 @@ defineExpose({ getFileData, setFileData })
               <Icon icon="ant-design:holder-outlined" />
             </EBtn>
             <EBtn text type="danger" @click.stop="handleRemove(index)">
-              <Icon icon="ep:delete" />
+              <Icon :size="4" icon="ep:delete" />
             </EBtn>
           </div>
 
           <!-- 中间图片 -->
           <div v-if="item.fileUrl" class="w-full h-42 flex items-center justify-center p-2">
             <div>
-              <img class="w-full max-h-42 rounded object-cover py-2" :src="`${sourceUrl}${item.fileUrl}`">
+              <img class="w-full max-h-42 rounded object-cover py-2" :src="`${item.fileUrl}`">
             </div>
           </div>
         </div>
@@ -134,11 +135,11 @@ defineExpose({ getFileData, setFileData })
 
       <!-- 上传按钮 -->
       <ElUpload
-        :loading="loading"
+        v-loading="loading"
         class="w-full border border-gray-300 rounded p-2 flex items-center justify-center bg-white"
         :multiple="true"
         action=""
-        accept=".jpg,.jpeg,.png"
+        accept=".jpg,.jpeg,.png,.gif,.svg"
         :file-list="beforeUploadFileDataList"
         list-type="picture-card"
         :http-request="handleUpload"
@@ -164,7 +165,7 @@ defineExpose({ getFileData, setFileData })
 
 <style lang="css" scoped>
 :deep(.el-upload--picture-card) {
-  background-color: #FFF !important;
+  background-color: #fff !important;
   border: 0 none !important;
 }
 </style>

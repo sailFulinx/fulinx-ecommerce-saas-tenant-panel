@@ -20,7 +20,8 @@ const form = reactive<FormData>({
   content: {
     contentData: {
       readContentType: '',
-      readContentValue: 0,
+      readContentValue: '',
+      readContentCount: 1,
     },
   },
   status: true,
@@ -40,20 +41,19 @@ const moduleReadContentRef = ref()
 
 async function getFormData() {
   form.content.contentData = await moduleReadContentRef.value.getReadContentData()
-  if (
-    !form.content.contentData
-    || !form.content.contentData.readContentValue
-    || !form.content.contentData.readContentType
-  ) {
-    ElMessage.error('请配置内容')
+  if (!form.content.contentData || !form.content.contentData.readContentType) {
+    ElMessage.error('请配置类型')
     return false
   }
   return form
 }
 
 async function setFormData(formData: FormData) {
+  if (!formData.content?.contentData) {
+    return
+  }
   await nextTick()
-  await moduleReadContentRef.value.setReadContentData(formData.content.contentData)
+  await moduleReadContentRef.value.setReadContentData(formData.content?.contentData)
   form.status = formData.status
 }
 

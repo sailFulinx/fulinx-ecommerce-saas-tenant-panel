@@ -1,13 +1,10 @@
 <script setup lang="ts">
-import { editCategoryCustomApi } from '@/api/category'
-import { useLocale } from '@/hooks/useLocale'
 import { convertCustomTypeValue } from '@/utils/general'
-import { ElMessage } from 'element-plus'
 
-const props = defineProps({
-  customList: Array as any,
-  categoryDetailId: String,
-})
+const props = defineProps<{
+  customList: any[]
+  categoryDetailId: string
+}>()
 
 const { t: $t } = useLocale()
 
@@ -72,6 +69,17 @@ const handleAddCustom = async () => {
 // Remove a custom entry by index
 const handleRemoveCustom = (index: number) => {
   customs.value.splice(index, 1)
+  $catch(async () => {
+    const payload = {
+      categoryDetailId: props.categoryDetailId,
+      customs: JSON.stringify(customs.value),
+    }
+    await categoryCustomEditApi(payload).catch((error: any) => {
+      throw error
+    })
+
+    ElMessage.success($t('success.edit'))
+  })
 }
 
 // Edit a custom entry by index
@@ -95,6 +103,7 @@ const cancelEditCustomData = () => {
 
 // Receive child component data and Save or update custom data
 const getCustomData = async (val: CustomDataType) => {
+  // log(val)
   if (!customs.value) {
     return
   }
@@ -108,7 +117,7 @@ const getCustomData = async (val: CustomDataType) => {
     // Update existing custom data
     customs.value[index] = { ...val }
   }
-  initCustomData()
+  // initCustomData()
 
   if (!props.categoryDetailId) {
     return
@@ -117,7 +126,7 @@ const getCustomData = async (val: CustomDataType) => {
     categoryDetailId: props.categoryDetailId,
     customs: JSON.stringify(customs.value),
   }
-  await editCategoryCustomApi(payload).catch((error: any) => {
+  await categoryCustomEditApi(payload).catch((error: any) => {
     throw error
   })
   customVisible.value = false
@@ -151,13 +160,13 @@ const getCustomData = async (val: CustomDataType) => {
           <div v-if="scope.row.customType === 'image'">
             <div v-for="imageItem in scope.row.customContent" :key="imageItem">
               <div class="flex justify-start mb-5 space-x-0 sm:space-x-2 overflow-x-auto">
-                <ElImage class="w-32 sm:w-40" :src="`${sourceUrl}${imageItem.fileUrl}`" fit="contain" />
+                <ElImage class="w-32 sm:w-40" :src="`${imageItem.fileUrl}`" fit="contain" />
               </div>
             </div>
           </div>
           <div v-if="scope.row.customType === 'video'">
             <div class="flex justify-start mb-5 space-x-0 sm:space-x-2 overflow-x-auto">
-              <video class="w-32 sm:w-40" :src="`${sourceUrl}${scope.row.customContent.fileUrl}`" fit="contain" />
+              <video class="w-32 sm:w-40" :src="`${scope.row.customContent.fileUrl}`" fit="contain" />
             </div>
           </div>
         </template>

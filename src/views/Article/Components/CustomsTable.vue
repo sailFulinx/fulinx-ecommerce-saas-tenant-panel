@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import { updateArticleCustomsApi } from '@/api/article'
 import { useLocale } from '@/hooks/useLocale'
 import { convertCustomTypeValue } from '@/utils/general'
-import { ElMessage } from 'element-plus'
 
 const props = defineProps({
   customList: Array as any,
@@ -156,13 +154,13 @@ const getCustomData = async (val: CustomDataType) => {
           <div v-if="scope.row.customType === 'image'">
             <div v-for="imageItem in scope.row.customContent" :key="imageItem">
               <div class="flex justify-start mb-5 space-x-0 sm:space-x-2 overflow-x-auto">
-                <ElImage class="w-32 sm:w-40" :src="`${sourceUrl}${imageItem.fileUrl}`" fit="contain" />
+                <ElImage class="w-32 sm:w-40" :src="`${imageItem.fileUrl}`" fit="contain" />
               </div>
             </div>
           </div>
           <div v-if="scope.row.customType === 'video'">
             <div class="flex justify-start mb-5 space-x-0 sm:space-x-2 overflow-x-auto">
-              <video class="w-32 sm:w-40" :src="`${sourceUrl}${scope.row.customContent.fileUrl}`" fit="contain" />
+              <video class="w-32 sm:w-40" :src="`${scope.row.customContent.fileUrl}`" fit="contain" />
             </div>
           </div>
         </template>

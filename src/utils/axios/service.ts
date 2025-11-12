@@ -1,10 +1,7 @@
 import type { AxiosError, AxiosInstance, AxiosRequestHeaders, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
-import { resetRouter } from '@/router'
 import axios from 'axios'
-import { ElMessage } from 'element-plus'
-
 import qs from 'qs'
-
+import router from '@/router'
 import { config } from './config'
 
 // 创建axios实例
@@ -74,26 +71,21 @@ service.interceptors.response.use(
         ElMessage.error('无权限或TOKEN过期')
         localStorage.removeItem('token')
         localStorage.removeItem('tokenExpiration')
-        router.push('/login').then(() => {
-          resetRouter() // 重置静态路由表
-        })
+        router.push('/login')
+        return Promise.reject(error)
       } else {
-        router.push('/dashboard/analysis').then(() => {
-          // resetRouter() // 重置静态路由表
-        })
-        ElMessage.error(data.errorMessage)
+        router.push('/dashboard/analysis')
+        ElMessage.error('无权限或TOKEN过期')
+        return Promise.reject(error)
       }
     } else if (error.response?.status === 403) {
       ElMessage.error('不允许访问')
-      // const data = error.response?.data as any
-      router.push('/dashboard/analysis').then(() => {
-        // resetRouter() // 重置静态路由表
-      })
+      router.push('/dashboard/analysis')
       return Promise.reject(error)
     }
-    // console.log(error) // for debug
-    const resData = error?.response?.data as IResponse
-    const res = resData?.errorMessage ? resData.errorMessage : { message: '失去响应，请检查网络' }
+    console.log(error) // for debug
+    const resData = error?.response?.data as any
+    const res = resData?.errorMessage ? resData.errorMessage : '失去响应，请检查网络'
     ElMessage.error(res)
     return Promise.reject(error)
   },

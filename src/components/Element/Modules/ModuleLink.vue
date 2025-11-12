@@ -1,6 +1,26 @@
 <script setup name="ThemeLinkType" lang="ts">
-import { articleListApi } from '@/api/article'
-import { listCategoryApi } from '@/api/category'
+// 导入所有分类API
+import { categoryBodyListApi } from '@/api/category/body'
+import { categoryCosmeticListApi } from '@/api/category/cosmetic'
+import { categoryDepartmentListApi } from '@/api/category/department'
+import { categoryEdutainmentListApi } from '@/api/category/edutainment'
+import { categoryEventListApi } from '@/api/category/event'
+import { categoryListApi as normalCategoryListApi } from '@/api/category/normal'
+import { categoryOutcomeListApi } from '@/api/category/outcome'
+import { categorySurgeryListApi } from '@/api/category/surgery'
+import { categoryTweakmentListApi } from '@/api/category/tweakment'
+import { categoryVideoListApi } from '@/api/category/video'
+// 导入所有内容API
+import { articleListApi } from '@/api/content/article'
+import { cosmeticListApi } from '@/api/content/cosmetic'
+import { doctorListApi } from '@/api/content/doctor'
+import { edutainmentListApi } from '@/api/content/edutainment'
+import { eventListApi } from '@/api/content/event'
+import { outcomeListApi } from '@/api/content/outcome'
+import { pageListApi } from '@/api/content/page'
+import { surgeryListApi } from '@/api/content/surgery'
+import { tweakmentListApi } from '@/api/content/tweakment'
+import { videoListApi } from '@/api/content/video'
 import { linkTypes } from '@/data/theme'
 import { usePreferenceStore } from '@/stores/preference'
 
@@ -14,7 +34,6 @@ const props = defineProps({
 
 const emit = defineEmits(['changeLinkType'])
 const linkType = ref<string>('')
-// const linkValue = ref<string>('')
 
 // TODO 需要读取对应类型的slug，也就是说这里需要加上slug，但有一个问题就是如果slug发生了更改，这个地方怎么更新？从后端更新？还是前台做一个刷新的按钮更新
 const linkData = reactive<LinkData>({
@@ -31,16 +50,30 @@ const categoriesProps = reactive({
   checkStrictly: true,
   multiple: false,
 })
-const categories = ref<ListCategoryRes>({
+let prevLinkType: string = ''
+const categories = ref<TableResponse<CategoryData & CommonField>>({
   list: [],
   total: 0,
 })
 const categoriesRef = ref()
-let prevLinkType: string = ''
 const status = reactive<any>({
   category: false,
+  categoryBody: false,
+  categoryCosmetic: false,
+  categoryDepartment: false,
+  categoryEdutainment: false,
+  categoryEvent: false,
+  categoryOutcome: false,
+  categoryVideo: false,
   article: false,
+  cosmetic: false,
+  doctor: false,
+  event: false,
+  outcome: false,
+  video: false,
+  page: false,
   externalLink: false,
+  home: false,
 })
 const loading = reactive({
   init: false,
@@ -51,6 +84,62 @@ const articles = ref<TableResponse<ArticleListData & CommonField>>({
   total: 0,
 })
 
+// 分类API映射
+const categoryApis: Record<string, Function> = {
+  category: normalCategoryListApi,
+  categoryBody: categoryBodyListApi,
+  categoryCosmetic: categoryCosmeticListApi,
+  categoryDepartment: categoryDepartmentListApi,
+  categoryEdutainment: categoryEdutainmentListApi,
+  categoryEvent: categoryEventListApi,
+  categoryOutcome: categoryOutcomeListApi,
+  categoryVideo: categoryVideoListApi,
+  categorySurgery: categorySurgeryListApi,
+  categoryTweakment: categoryTweakmentListApi,
+}
+
+// 内容API映射
+const contentApis: Record<string, Function> = {
+  article: articleListApi,
+  edutainment: edutainmentListApi,
+  cosmetic: cosmeticListApi,
+  doctor: doctorListApi,
+  event: eventListApi,
+  outcome: outcomeListApi,
+  video: videoListApi,
+  page: pageListApi,
+  surgery: surgeryListApi,
+  tweakment: tweakmentListApi,
+}
+
+// 分类标签字段映射
+const categoryLabelFields: Record<string, string> = {
+  category: 'categoryName',
+  categoryBody: 'categoryBodyName',
+  categoryCosmetic: 'categoryCosmeticName',
+  categoryDepartment: 'categoryDepartmentName',
+  categoryEdutainment: 'categoryEdutainmentName',
+  categoryEvent: 'categoryEventName',
+  categoryOutcome: 'categoryOutcomeName',
+  categoryVideo: 'categoryVideoName',
+  categorySurgery: 'categorySurgeryName',
+  categoryTweakment: 'categoryTweakmentName',
+}
+
+// 内容标签字段映射
+const contentLabelFields: Record<string, string> = {
+  article: 'articleName',
+  edutainment: 'edutainmentName',
+  cosmetic: 'cosmeticName',
+  doctor: 'doctorName',
+  event: 'eventName',
+  outcome: 'outcomeName',
+  video: 'videoName',
+  page: 'pageName',
+  surgery: 'surgeryName',
+  tweakment: 'tweakmentName',
+}
+
 /**
  * 获取分类数据
  */
@@ -59,10 +148,24 @@ async function getCategoryData() {
   const payload = {
     languageId: usePreferenceStore().preference?.language.id,
   }
-  const { data } = await listCategoryApi(payload).catch(err => {
-    throw err
-  })
-  categories.value = data
+
+  // 根据分类类型调用对应的API
+  const api = categoryApis[linkType.value]
+  if (api) {
+    const { data } = await api(payload).catch((err: any) => {
+      loading.data = false
+      throw err
+    })
+    categories.value = data
+  }
+
+  // 动态设置分类标签字段
+  if (categoryLabelFields[linkType.value]) {
+    categoriesProps.label = categoryLabelFields[linkType.value]
+  } else {
+    categoriesProps.label = 'categoryName'
+  }
+
   loading.data = false
 }
 
@@ -79,13 +182,18 @@ async function getArticlesData() {
   if (linkData.linkValue === '/') {
     return
   }
-  articlePayload.articleId = Number(linkData.linkValue) || null
+  articlePayload.articleId = linkData.linkValue || null
   loading.data = true
-  const { data } = await articleListApi(articlePayload).catch(err => {
-    loading.data = false
-    throw err
-  })
-  articles.value = data
+
+  // 根据内容类型调用对应的API
+  const api = contentApis[linkType.value]
+  if (api) {
+    const { data } = await api(articlePayload).catch((err: any) => {
+      loading.data = false
+      throw err
+    })
+    articles.value = data
+  }
   loading.data = false
 }
 
@@ -100,18 +208,25 @@ const queryArticlesData = (query: string) => {
 async function getLinkRemoteData() {
   // linkValue.value = ''
   linkData.linkValue = ''
-  if (linkType.value === 'article') {
+
+  // 处理内容类型
+  if (Object.keys(contentApis).includes(linkType.value)) {
     articlePayload.articleName = null
     await getArticlesData()
   }
-  if (linkType.value === 'category') {
+
+  // 处理分类类型
+  if (Object.keys(categoryApis).includes(linkType.value)) {
     await getCategoryData()
   }
+
+  // 重置状态
   if (prevLinkType) {
     status[prevLinkType] = false
   }
   status[linkType.value] = true
   prevLinkType = linkType.value
+
   linkData.linkUrl = '/'
   linkData.linkValue = ''
   linkData.linkType = linkType.value
@@ -124,28 +239,31 @@ async function changeLinkType() {
   // 更改上级菜单链接类型
   emit('changeLinkType', linkData)
 }
+
 function changeLinkValue(v: any) {
-  if (linkType.value === 'category') {
+  // 处理分类类型
+  if (Object.keys(categoryApis).includes(linkType.value)) {
     const childrenConfig = [] as LinkData[]
     const nodeRes = categoriesRef.value.getCheckedNodes()
     const data = nodeRes[0]?.data || {}
-    const slug = data.slug || `/category/${data.id}`
+    const slug = data.slug || `/${linkType.value}/${data.id}`
     linkData.linkValue = data.id
     linkData.linkUrl = `${slug}`
-    linkData.linkLabel = data.categoryName
+    linkData.linkLabel = data[categoryLabelFields[linkType.value] as keyof typeof data] || data.categoryName
     linkData.linkType = linkType.value
     if (props.isNeedChildren) {
       const children = data.children
       if (children) {
         linkData.linkUrl = `${slug}`
         for (const item of children) {
-          const { slug, categoryName, id } = item
-          const slugData = slug || `/category/${id}`
+          const { slug, id } = item
+          const label = item[categoryLabelFields[linkType.value] as keyof typeof item] || item.categoryName
+          const slugData = slug || `/${linkType.value}/${id}`
           const childrenItem = {
             linkType: linkType.value,
             linkUrl: `${slugData}`,
             linkValue: id,
-            linkLabel: categoryName,
+            linkLabel: label,
             children: [],
           } as LinkData
           childrenConfig.push(childrenItem)
@@ -157,26 +275,31 @@ function changeLinkValue(v: any) {
     }
     return
   }
-  let linkUrl = ''
-  if (linkType.value === 'article') {
-    const slug = v.slug || `/article/${v.id}`
-    linkUrl = `${slug}`
-    linkData.linkUrl = linkUrl || ''
-    linkData.linkLabel = v.articleName
+
+  // 处理内容类型
+  if (Object.keys(contentApis).includes(linkType.value)) {
+    const slug = v.slug || `/${linkType.value}/${v.id}`
+    linkData.linkUrl = `${slug}` || ''
+    linkData.linkLabel = v[contentLabelFields[linkType.value] as keyof typeof v] || v.articleName || ''
+    linkData.linkValue = v.id || ''
+    linkData.linkType = linkType.value
   }
-  linkData.linkValue = v.id || ''
-  linkData.linkType = linkType.value
 }
 
+// 保留原有的 setLinkData 方法，但内部实现改为更新 linkData 和 linkType
 const setLinkData = async (linkDataVal: LinkData) => {
   linkType.value = linkDataVal.linkType
   await getLinkRemoteData()
-  // linkValue.value = linkDataVal.linkValue
   linkData.linkLabel = linkDataVal.linkLabel || ''
   linkData.linkType = linkDataVal.linkType || ''
   linkData.linkUrl = linkDataVal.linkUrl || ''
   linkData.linkValue = linkDataVal.linkValue || ''
   linkData.children = linkDataVal.children || []
+}
+
+// 添加一个辅助函数来安全地访问对象属性
+function getLabelValue(item: any, fieldName: string): string {
+  return item[fieldName] || ''
 }
 
 function getLinkData() {
@@ -188,8 +311,9 @@ function getLinkData() {
     linkData.linkValue = '/'
     linkData.linkLabel = 'Home'
   }
-  return jsonParse(linkData)
+  return { ...linkData }
 }
+
 defineExpose({
   getLinkData,
   setLinkData,
@@ -212,24 +336,24 @@ defineExpose({
         </ElSelect>
       </div>
       <div class="w-2/3">
-        <!-- 博客分类 -->
+        <!-- 分类类型 -->
         <ElCascader
-          v-if="status.category"
+          v-if="Object.keys(categoryApis).includes(linkType)"
           ref="categoriesRef"
           v-model="linkData.linkValue"
           :loading="loading.data"
           :show-all-levels="false"
           :props="categoriesProps"
           clearable
-          placeholder="请选择博客分类，支持搜索"
+          placeholder="请选择分类，支持搜索"
           :options="categories.list"
           filterable
           class="w-full"
           @change="changeLinkValue"
         />
-        <!-- 文章 -->
+        <!-- 内容类型 -->
         <ElSelect
-          v-if="status.article"
+          v-if="Object.keys(contentApis).includes(linkType)"
           v-model="linkData.linkValue"
           filterable
           clearable
@@ -243,12 +367,14 @@ defineExpose({
           <ElOption
             v-for="item in articles.list"
             :key="item.id"
-            :label="item.articleName"
+            :label="getLabelValue(item, contentLabelFields[linkType]) || item.articleName || ''"
             :value="item.id"
             style="height: 60px; line-height: 60px"
             @click="changeLinkValue(item)"
           >
-            <span style="line-height: 60px">{{ item.articleName }}</span>
+            <span style="line-height: 60px">
+              {{ getLabelValue(item, contentLabelFields[linkType]) || item.articleName || '' }}
+            </span>
           </ElOption>
         </ElSelect>
         <!-- 外部链接 -->

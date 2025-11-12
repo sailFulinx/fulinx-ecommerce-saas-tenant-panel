@@ -1,22 +1,22 @@
-import { loginApi } from '@/api/auth'
-import { fetchUserInfoApi } from '@/api/user'
-import { defineStore } from 'pinia'
-
 export const useUserStore = defineStore('user', () => {
   // 用户详情
   const userDetail = ref<UserDetailResponseType | null>({
     operatorName: '',
-    userId: '',
+    userId: 0,
     userRoleIds: [],
     userType: 0,
-    userProfileId: '',
+    userProfileId: 0,
     username: '',
     firstName: '',
     lastName: '',
     gender: 0,
     telephone: '',
     post: '',
-    authorities: [],
+    authorities: [
+      {
+        authority: '',
+      },
+    ],
   })
 
   // 登录
@@ -45,17 +45,21 @@ export const useUserStore = defineStore('user', () => {
   const resetUser = () => {
     userDetail.value = {
       operatorName: '',
-      userId: '',
+      userId: 0,
       userRoleIds: [],
       userType: 0,
-      userProfileId: '',
+      userProfileId: 0,
       username: '',
       firstName: '',
       lastName: '',
       gender: 0,
       telephone: '',
       post: '',
-      authorities: [],
+      authorities: [
+        {
+          authority: '',
+        },
+      ],
     }
   }
 

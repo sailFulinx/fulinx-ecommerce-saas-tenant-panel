@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { uploadFileApi } from '@/api/file'
 import Quill from 'quill'
+import { uploadFileApi } from '@/api/file'
 import 'quill/dist/quill.snow.css'
 
 // 定义编辑器和上传进度的状态
@@ -10,13 +10,20 @@ let quillInstance: Quill | null = null // 保存 Quill 实例
 
 const uploadProgress = ref<number | null>(null)
 
-// 获取文件的源 URL（根据你的项目配置）
-const sourceUrl = import.meta.env.VITE_RESOURCE_URL
-
 // 处理图片/视频上传
 const handleFileUpload = async (file: File) => {
   const formData = new FormData()
   formData.append('file', file)
+  // 生成当前日期格式为 YYYYMMDD 的字符串
+  const now = new Date()
+  const year = now.getFullYear()
+  const month = String(now.getMonth() + 1).padStart(2, '0')
+  const day = String(now.getDate()).padStart(2, '0')
+  const datePath = `${year}${month}${day}`
+
+  // 构造新的上传路径
+  formData.append('folder', `images/${datePath}`)
+  formData.append('isPublic', 'true')
 
   try {
     // 调用 uploadFileApi，并传递进度回调
@@ -69,14 +76,20 @@ onMounted(() => {
             const input = document.createElement('input')
             input.setAttribute('type', 'file')
             input.setAttribute('accept', 'image/*')
+            input.setAttribute('multiple', 'true') // 允许多选
             input.click()
 
             input.onchange = async () => {
-              const file = input.files?.[0]
-              if (file) {
-                const url = await handleFileUpload(file)
-                if (url) {
-                  insertToEditor(quillInstance!, sourceUrl + url, 'image')
+              const files = input.files
+              if (files) {
+                for (let i = 0; i < files.length; i++) {
+                  const file = files[i]
+                  if (file) {
+                    const url = await handleFileUpload(file)
+                    if (url) {
+                      insertToEditor(quillInstance!, url, 'image')
+                    }
+                  }
                 }
               }
             }
@@ -93,7 +106,7 @@ onMounted(() => {
               if (file) {
                 const url = await handleFileUpload(file)
                 if (url) {
-                  insertToEditor(quillInstance!, sourceUrl + url, 'video')
+                  insertToEditor(quillInstance!, url, 'video')
                 }
               }
             }

@@ -1,9 +1,7 @@
-import { defineStore } from 'pinia'
-
 export const useAppStore = defineStore('app', () => {
   const title = ref(import.meta.env.VITE_APP_TITLE)
-  const locale = ref<string>('zh-CN')
-  const collapse = ref<boolean>(false)
+  const locale = ref('zh-CN')
+  const collapse = ref(false)
 
   const setTitle = (value: string) => {
     title.value = value

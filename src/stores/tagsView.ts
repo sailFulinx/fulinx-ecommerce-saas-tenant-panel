@@ -1,9 +1,9 @@
+import type { RouteLocationNormalizedLoaded } from 'vue-router'
+import { defineStore } from 'pinia'
+import { computed, ref } from 'vue'
 import router from '@/router'
 import { findIndex } from '@/utils'
 import { getRawRoute } from '@/utils/routerHelper'
-import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
-import type { RouteLocationNormalizedLoaded } from 'vue-router'
 
 export const useTagsViewStore = defineStore('tagsView', () => {
   const visitedViews = ref<RouteLocationNormalizedLoaded[]>([])

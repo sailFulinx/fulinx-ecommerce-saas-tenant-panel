@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { customTypes } from '@/data/general'
 import { useLocale } from '@/hooks/useLocale'
-import { ElMessage } from 'element-plus'
 
 const emit = defineEmits(['getCustomData', 'cancelEditCustomData'])
 
@@ -22,8 +21,8 @@ const form = reactive<CustomDataType>({
 })
 
 const rules = reactive({
-  customFieldName: [{ required: true, type: 'string', message: $t('comps.custom.placeholder.fieldName'), trigger: 'blur' }],
-  customTitle: [{ required: true, type: 'string', message: $t('placeholder.inputTitle'), trigger: 'blur' }],
+  customFieldName: [{ required: true, message: $t('comps.custom.placeholder.fieldName'), trigger: 'blur' }],
+  customTitle: [{ required: true, message: $t('placeholder.inputTitle'), trigger: 'blur' }],
 })
 
 const getRemovedFiles = (val: number) => {
@@ -42,7 +41,7 @@ const setFormData = async (data: CustomDataType) => {
   form.customType = data.customType
   if (form.customType === 'editor') {
     await nextTick()
-    customEditorRef.value.setEditorData(data.customContent)
+    customEditorRef.value.setEditorContent(data.customContent)
   }
 
   if (form.customType === 'image') {
@@ -73,7 +72,7 @@ const saveFormData = async () => {
   try {
     if (form.customType === 'editor') {
       await nextTick()
-      form.customContent = customEditorRef?.value?.getEditorData()
+      form.customContent = customEditorRef?.value?.getEditorContent()
     }
     if (form.customType === 'image') {
       await nextTick()

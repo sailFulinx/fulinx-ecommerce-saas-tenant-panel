@@ -1,6 +1,6 @@
 import { Icon } from '@iconify/vue'
 import { ElMenuItem, ElSubMenu } from 'element-plus'
-import { defineComponent, h } from 'vue'
+import { defineComponent } from 'vue'
 
 const MenuItem = defineComponent({
   props: {

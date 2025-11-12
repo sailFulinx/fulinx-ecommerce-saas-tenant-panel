@@ -1,24 +1,21 @@
 <script setup lang="ts">
-import { CreateArticleApi, fetchArticleTypeListApi } from '@/api/article'
-import { listCategoryApi } from '@/api/category'
-import { layoutListApi } from '@/api/layout'
 import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
 import { useTagsViewStore } from '@/stores/tagsView'
 import { convertCustomTypeValue } from '@/utils/general'
-import { ElCard, ElInput, ElMessage } from 'element-plus'
 
 const { t: $t } = useLocale()
 
 const uploadRef = ref()
 
+const router = useRouter()
+
 const sourceUrl = useFileRootUrl()
 
 const rules = reactive({
-  articleType: [{ required: true, type: 'number', message: '内容类型必填', trigger: 'change' }],
-  languageId: [{ required: true, type: 'number', message: '语言必须选择', trigger: 'change' }],
-  status: [{ required: true, type: 'boolean', message: '状态必填', trigger: 'change' }],
-  articleName: [{ required: true, type: 'string', message: '内容名称必须填写', trigger: 'blur' }],
+  languageId: [{ required: true, message: '语言必须选择', trigger: 'change' }],
+  status: [{ required: true, message: '状态必填', trigger: 'change' }],
+  articleName: [{ required: true, message: '内容名称必须填写', trigger: 'blur' }],
 })
 
 const loading = reactive({
@@ -56,24 +53,6 @@ const getLayoutList = async () => {
 
 getLayoutList()
 
-const articleTypePayload = reactive<ArticleTypeListParams>({
-  articleTypeCode: null,
-})
-
-const articleTypes = ref<ListArticleTypeRes>({
-  list: [],
-  total: 0,
-})
-
-const getArticleTypeList = async () => {
-  const { data } = await fetchArticleTypeListApi(articleTypePayload).catch(error => {
-    throw error
-  })
-  articleTypes.value = { ...data }
-}
-
-getArticleTypeList()
-
 const articleFormRef = ref()
 
 const customs = ref<any[]>([])
@@ -92,10 +71,7 @@ const currentCustomData = ref({
 
 const createArticleForm = (): CreateArticleParams => {
   return {
-    articleType: null,
     languageId: '',
-    isCustomLayout: false,
-    layoutId: null,
     categoryIds: [],
     status: true,
     articleName: '',
@@ -114,7 +90,7 @@ const categories = ref<any[]>([])
 
 const inputTagValue = ref<string>('')
 const inputTagVisible = ref(false)
-const InputRef = ref<InstanceType<typeof ElInput>>()
+const InputRef = ref<CompInstance['ElInput']>()
 
 const tags = ref<string[]>([])
 
@@ -144,24 +120,20 @@ const getCategories = async () => {
     const payload = {
       languageId: usePreferenceStore().preference.language.id,
     }
-    const { data } = await listCategoryApi(payload)
+    const { data } = await categoryListApi(payload)
     categories.value = data.list
   } catch (error) {
     console.error('Failed to fetch categories:', error)
   }
 }
 
-const selectedCategoryValue = ref<string[] | number[] | any>([])
+const selectedCategoryValue = ref<string[] | string[] | any>([])
 
 const cascaderProps = {
   expandTrigger: 'hover' as const,
   label: 'categoryName',
   value: 'id',
   multiple: true,
-}
-
-const handleChangeCategory = (val: number[]) => {
-  console.log(val)
 }
 
 const initCustomData = () => {
@@ -216,16 +188,13 @@ const deleteTagView = (refresh: boolean) => {
     tagsViewStore.delCachedView()
   }
   tagsViewStore.delVisitedView(router.currentRoute.value)
-  router.push({ name: 'Article' })
+  router.push({ name: 'ArticleList' })
 }
 
 const save = async () => {
   articleForm.languageId = usePreferenceStore().preference.language.id
-  articleForm.categoryIds = [...new Set(selectedCategoryValue.value.flat() as number[])]
+  articleForm.categoryIds = [...new Set(selectedCategoryValue.value.flat() as string[])]
   articleForm.articleDescription = editorRef.value.getEditorContent()
-  if (!articleForm.isCustomLayout) {
-    articleForm.layoutId = null
-  }
   articleForm.customs = JSON.stringify(customs.value)
   const files = uploadRef.value.getFileData()
   if (files && files.fileDataList && files.fileDataList.length > 0) {
@@ -295,44 +264,9 @@ onMounted(() => {
           <div class="grid grid-cols-4">
             <!-- 去掉 flex-wrap -->
             <!-- 第一部分：ElSelect -->
-            <div class="col-span-1 mr-4 flex items-center">
-              <ElFormItem label="内容类型" prop="articleType" class="w-full">
-                <ElSelect v-model="articleForm.articleType" class="flex-1">
-                  <ElOption
-                    v-for="item in articleTypes.list"
-                    :key="item.id"
-                    :value="item.id"
-                    :label="item.message"
-                  />
-                </ElSelect>
-              </ElFormItem>
-            </div>
-
-            <!-- 第二部分：ElSwitch 是否自定义布局 -->
-            <div class="col-span-1 mr-4 flex items-center">
-              <!-- 调整宽度 -->
-              <ElFormItem label="是否自定义布局" prop="isCustomLayout" class="w-full">
-                <ElSwitch v-model="articleForm.isCustomLayout" class="mr-4" />
-                <ElSelect
-                  v-if="articleForm.isCustomLayout"
-                  v-model="articleForm.layoutId"
-                  clearable
-                  filterable
-                  :placeholder="$t('article.placeholder.layout')"
-                  class="flex-1"
-                >
-                  <ElOption
-                    v-for="item in listLayoutData.list"
-                    :key="item.id"
-                    :label="item.layoutName"
-                    :value="item.id"
-                  />
-                </ElSelect>
-              </ElFormItem>
-            </div>
 
             <!-- 第三部分：ElCascader 所在分类 -->
-            <div v-if="articleForm.articleType !== 2" class="col-span-1 mr-4 flex items-center">
+            <div class="col-span-1 mr-4 flex items-center">
               <!-- 适当增加宽度 -->
               <ElFormItem label="分类" prop="categoryId" class="w-full">
                 <ElCascader
@@ -342,7 +276,6 @@ onMounted(() => {
                   clearable
                   filterable
                   class="w-full"
-                  @change="handleChangeCategory"
                 />
               </ElFormItem>
             </div>
@@ -444,7 +377,7 @@ onMounted(() => {
                               <div class="flex justify-start mb-5 space-x-0 sm:space-x-2 overflow-x-auto">
                                 <video
                                   class="w-32 sm:w-40"
-                                  :src="`${sourceUrl}${scope.row.customContent.fileUrl}`"
+                                  :src="`${scope.row.customContent.fileUrl}`"
                                   fit="contain"
                                 />
                               </div>
