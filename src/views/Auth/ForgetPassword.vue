@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import LoginForm from './components/LoginForm.vue'
+import ForgetPasswordForm from './components/ForgetPasswordForm.vue'
 
 const title = ref(import.meta.env.VITE_APP_TITLE)
 
@@ -16,7 +16,7 @@ const version = useVersion()
         <TransitionGroup appear tag="div" enter-active-class="animate__animated animate__bounceInLeft">
           <img key="1" src="@/assets/svgs/login-box-bg.svg" :alt="title" class="w-80">
           <div key="2" class="text-3xl text-black">
-            {{ $t('login.welcome') }}
+            {{ $t('forgetPassword.welcome') }}
           </div>
         </TransitionGroup>
       </div>
@@ -27,7 +27,7 @@ const version = useVersion()
     <div class="flex-1 p-8 relative">
       <Transition appear enter-active-class="animate__animated animate__bounceInRight">
         <div class="h-full flex items-center justify-center w-full">
-          <LoginForm class="w-full max-w-lg p-5 h-auto bg-white rounded-3xl" />
+          <ForgetPasswordForm class="w-full max-w-lg p-5 h-auto bg-white rounded-3xl" />
         </div>
       </Transition>
     </div>

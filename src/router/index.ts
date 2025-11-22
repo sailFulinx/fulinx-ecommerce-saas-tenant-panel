@@ -3,11 +3,11 @@ import type { RouteRecordRaw } from 'vue-router'
 import type { AppRouteRecordRaw } from '@/types/common'
 
 import { createRouter, createWebHashHistory } from 'vue-router'
-import { useLocale } from '@/hooks/useLocale'
 
 import { Layout } from '@/utils/routerHelper'
 
 import article from './modules/article'
+import auth from './modules/auth'
 import catalog from './modules/catalog'
 import category from './modules/category'
 import customer from './modules/customer'
@@ -17,8 +17,6 @@ import marketing from './modules/marketing'
 import order from './modules/order'
 import site from './modules/site'
 import system from './modules/system'
-
-const { t: $t } = useLocale()
 
 export const constantRouterMap: AppRouteRecordRaw[] = [
   {
@@ -47,16 +45,7 @@ export const constantRouterMap: AppRouteRecordRaw[] = [
       noTagsView: true,
     },
   },
-  {
-    path: '/login',
-    component: () => import('@/views/Login/Login.vue'),
-    name: 'Login',
-    meta: {
-      hidden: true,
-      title: $t('router.login'),
-      noTagsView: true,
-    },
-  },
+  auth,
   {
     path: '/404',
     component: () => import('@/views/Error/404.vue'),
@@ -89,7 +78,7 @@ const router = createRouter({
 })
 
 export const resetRouter = (): void => {
-  const resetWhiteNameList = ['Redirect', 'Login', 'NoFind', 'Root']
+  const resetWhiteNameList = ['Redirect', 'Login', 'NoFind', 'Root', 'Register', 'ForgetPassword']
   router.getRoutes().forEach(route => {
     const { name } = route
     if (name && !resetWhiteNameList.includes(name as string)) {

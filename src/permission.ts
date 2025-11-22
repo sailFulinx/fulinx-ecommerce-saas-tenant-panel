@@ -5,10 +5,10 @@ import router from './router'
 export const initPermission = async () => {
   const permissionStore = usePermissionStore()
 
-  const whiteList = ['/login'] // 不重定向白名单
+  const whiteList = ['/auth/login'] // 不重定向白名单
   router.beforeEach(async (to, from, next) => {
     if (localStorage.getItem('token')) {
-      if (to.path === '/login') {
+      if (to.path === '/auth/login') {
         next({ path: '/' })
       } else {
         if (permissionStore.getIsAddRouters) {
@@ -30,7 +30,7 @@ export const initPermission = async () => {
       if (whiteList.includes(to.path)) {
         next()
       } else {
-        next(`/login?redirect=${to.path}`) // 否则全部重定向到登录页
+        next(`/auth/login?redirect=${to.path}`) // 否则全部重定向到登录页
       }
     }
   })

@@ -78,7 +78,7 @@ service.interceptors.response.use(
         ElMessage.error('无权限或TOKEN过期')
         localStorage.removeItem('token')
         localStorage.removeItem('tokenExpiration')
-        router.push('/login')
+        router.push('/auth/login')
         return Promise.reject(error)
       } else {
         router.push('/dashboard/analysis')

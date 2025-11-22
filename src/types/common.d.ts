@@ -34,7 +34,7 @@ declare interface IResponse<T = any> {
   errorMessage: null | string
 }
 
-declare interface AppRouteRecordRaw extends Omit<RouteRecordRaw, 'meta'> {
+export declare interface AppRouteRecordRaw extends Omit<RouteRecordRaw, 'meta'> {
   name: string
   meta: RouteMeta
   component?: Component | string

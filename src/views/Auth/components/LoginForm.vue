@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { loginApi } from '@/api/auth'
+import type { RouteRecordRaw } from 'vue-router'
 import { fetchCaptchaApi } from '@/api/captcha'
 import { useLocale } from '@/hooks/useLocale'
 import { usePermissionStore } from '@/stores/permission'
-import { useUserStore } from '@/stores/user'
 
-import type { RouteRecordRaw } from 'vue-router'
+import { useUserStore } from '@/stores/user'
 
 const { t: $t } = useLocale()
 
@@ -27,9 +26,9 @@ const form = ref<LoginRequestType>({
 })
 
 const rules = reactive({
-  username: [{ required: true, type: 'string', message: $t('login.usernamePlaceholder'), trigger: 'blur' }],
-  password: [{ required: true, type: 'string', message: $t('login.passwordPlaceholder'), trigger: 'blur' }],
-  captchaValue: [{ required: true, type: 'string', message: $t('login.captchaValuePlaceholder'), trigger: 'blur' }],
+  email: [{ required: true, type: 'string', message: $t('auth.emailPlaceholder'), trigger: 'blur' }],
+  password: [{ required: true, type: 'string', message: $t('auth.passwordPlaceholder'), trigger: 'blur' }],
+  captchaValue: [{ required: true, type: 'string', message: $t('auth.captchaValuePlaceholder'), trigger: 'blur' }],
 })
 
 const loading = reactive({
@@ -94,32 +93,40 @@ const signIn = async () => {
     loading.login = false
   }
 }
+
+const goToRegister = () => {
+  push('/register')
+}
+
+const goToForgetPassword = () => {
+  push('/forget-password')
+}
 </script>
 
 <template>
   <div>
     <h1 class="text-center mb-5 font-bold text-2xl">
-      {{ $t('login.login') }}
+      {{ $t('auth.login') }}
     </h1>
     <ElForm ref="formRef" :model="form" label-width="120px" label-position="top" size="large" :rules="rules">
-      <ElFormItem :label="$t('login.username')" prop="username">
-        <ElInput v-model="form.username" class="input-line" clearable :placeholder="$t('login.usernamePlaceholder')" />
+      <ElFormItem :label="$t('auth.username')" prop="username">
+        <ElInput v-model="form.username" class="input-line" clearable :placeholder="$t('auth.usernamePlaceholder')" />
       </ElFormItem>
-      <ElFormItem :label="$t('login.password')" prop="password">
+      <ElFormItem :label="$t('auth.password')" prop="password">
         <ElInput
           v-model="form.password"
           class="input-line"
           clearable
           type="password"
           show-password
-          :placeholder="$t('login.passwordPlaceholder')"
+          :placeholder="$t('auth.passwordPlaceholder')"
         />
       </ElFormItem>
-      <ElFormItem :label="$t('login.captchaValue')" prop="captchaValue">
+      <ElFormItem :label="$t('auth.captchaValue')" prop="captchaValue">
         <ElInput
           v-model="form.captchaValue"
           class="input-line-captcha"
-          :placeholder="$t('login.captchaValuePlaceholder')"
+          :placeholder="$t('auth.captchaValuePlaceholder')"
           :input-style="inputStyle"
         >
           <template #suffix>
@@ -129,8 +136,16 @@ const signIn = async () => {
       </ElFormItem>
     </ElForm>
     <EBtn :loading="loading.login" type="primary" class="w-[100%]" @click="signIn">
-      {{ $t('login.login') }}
+      {{ $t('auth.login') }}
     </EBtn>
+    <div class="mt-4 flex justify-between">
+      <ElButton type="primary" link @click="goToRegister">
+        {{ $t('auth.goToRegister') }}
+      </ElButton>
+      <ElButton type="primary" link @click="goToForgetPassword">
+        {{ $t('auth.forgetPassword') }}
+      </ElButton>
+    </div>
   </div>
 </template>
 

@@ -21,7 +21,7 @@ const loginOut = () => {
       localStorage.removeItem('tokenExpiration')
       userStore.resetUser()
       resetRouter() // 重置静态路由表
-      replace('/login')
+      replace('/auth/login')
     })
     .catch(() => {})
 }
@@ -65,7 +65,7 @@ const updatePassword = async () => {
   localStorage.removeItem('token')
   localStorage.removeItem('tokenExpiration')
   resetRouter() // 重置静态路由表
-  replace('/login')
+  replace('/auth/login')
 }
 </script>
 

@@ -16,7 +16,7 @@ const version = useVersion()
         <TransitionGroup appear tag="div" enter-active-class="animate__animated animate__bounceInLeft">
           <img key="1" src="@/assets/svgs/login-box-bg.svg" :alt="title" class="w-80">
           <div key="2" class="text-3xl text-black">
-            {{ $t('login.welcome') }}
+            {{ $t('auth.welcome') }}
           </div>
         </TransitionGroup>
       </div>

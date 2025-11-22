@@ -1,5 +1,6 @@
 import analytics from './modules/zh-CN/analytics'
 import article from './modules/zh-CN/article'
+import auth from './modules/zh-CN/auth'
 import brand from './modules/zh-CN/brand'
 import category from './modules/zh-CN/category'
 import common from './modules/zh-CN/common'
@@ -12,7 +13,6 @@ import file from './modules/zh-CN/file'
 import imp from './modules/zh-CN/imp'
 import invoice from './modules/zh-CN/invoice'
 import layout from './modules/zh-CN/layout'
-import login from './modules/zh-CN/login'
 import message from './modules/zh-CN/message'
 import order from './modules/zh-CN/order'
 import parameter from './modules/zh-CN/parameter'
@@ -44,7 +44,7 @@ export default {
   file,
   imp,
   layout,
-  login,
+  auth,
   message,
   parameter,
   parameterGroup,
