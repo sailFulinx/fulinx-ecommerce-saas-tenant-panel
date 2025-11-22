@@ -1,4 +1,5 @@
 import type { AxiosError, AxiosInstance, AxiosRequestHeaders, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
+import type { RequestOption } from './index'
 import axios from 'axios'
 import qs from 'qs'
 import router from '@/router'
@@ -6,20 +7,26 @@ import { config } from './config'
 
 // 创建axios实例
 const service: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL, // api 的 base_url
   timeout: config.request_timeout, // 请求超时时间
 })
 
 // request拦截器
 service.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
+    // 根据 isBusinessApi 参数决定使用哪个 baseURL
+    if ((config as RequestOption).isBusinessApi) {
+      config.baseURL = import.meta.env.VITE_API_BUSINESS_URL
+    } else {
+      config.baseURL = import.meta.env.VITE_API_URL
+    }
+
     if (
       config.method === 'post'
       && (config.headers as AxiosRequestHeaders)['Content-Type'] === 'application/x-www-form-urlencoded'
     ) {
       config.data = qs.stringify(config.data)
     }
-    if (config.headers.token) {
+    if ((config as RequestOption).token) {
       config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`
     }
     // get参数编码

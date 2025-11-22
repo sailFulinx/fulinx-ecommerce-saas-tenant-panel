@@ -5,9 +5,10 @@ import { service } from './service'
 const { default_headers } = config
 
 // 定义请求参数类型（可扩展）
-interface RequestOption extends AxiosRequestConfig {
+export interface RequestOption extends AxiosRequestConfig {
   headersType?: string
   token?: boolean
+  isBusinessApi?: boolean
 }
 
 // request 函数支持泛型

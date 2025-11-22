@@ -9,6 +9,7 @@ export function tenantLoginApi(data: LoginRequestType): Promise<IResponse<AuthRe
     url: 'tenant/authentication/login',
     data,
     token: false,
+    isBusinessApi: false,
   })
 }
 
@@ -17,6 +18,7 @@ export function tenantRegisterApi(data: RegisterParams): Promise<IResponse<boole
     url: 'tenant/authentication/register',
     data,
     token: false,
+    isBusinessApi: false,
   })
 }
 
@@ -25,6 +27,7 @@ export function tenantRegisterConfirmApi(data: RegisterConfirmParams): Promise<I
     url: 'tenant/authentication/register/confirm',
     data,
     token: false,
+    isBusinessApi: false,
   })
 }
 
@@ -41,5 +44,6 @@ export function tenantForgetPasswordConfirmApi(data: ForgetPasswordConfirmParams
     url: 'tenant/authentication/forget/password/confirm',
     data,
     token: false,
+    isBusinessApi: false,
   })
 }
