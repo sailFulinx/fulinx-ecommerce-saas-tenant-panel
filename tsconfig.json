@@ -1,46 +1,29 @@
-/* eslint-disable jsonc/comma-dangle */
-/* eslint-disable jsonc/sort-keys */
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
-    "skipLibCheck": true,
-    "useDefineForClassFields": true,
-    "lib": ["ESNext", "DOM", "DOM.Iterable"],
-
-    /* Bundler mode */
-    "moduleResolution": "Node",
-    "allowImportingTsExtensions": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
+    "target": "esnext",
     "jsx": "preserve",
-
-    /* Linting */
-    "strict": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-
+    "lib": ["esnext", "dom"],
+    "useDefineForClassFields": true,
+    "experimentalDecorators": true,
     "baseUrl": ".",
+    "module": "esnext",
+    "moduleResolution": "node",
     "paths": {
-      "@": ["src"],
-      "@/*": ["src/*"],
-      "@img/*": ["src/assets/images/*"],
-      "@api/*": ["src/api/*"],
-      "@views/*": ["src/views/*"],
-      "@comps/*": ["src/components/*"]
+      "@/*": ["src/*"]
     },
-    "types": [
-      "vite/client"
-      // "element-plus/global",
-    ],
+    "resolveJsonModule": true,
+    "typeRoots": ["./node_modules/@types/", "./types", "./node_modules"],
+    "types": ["vite/client"],
+    "allowImportingTsExtensions": true,
     "allowJs": true,
-    "strictNullChecks": true,
-    "noUnusedLocals": true,
+    "strict": true,
+    "strictFunctionTypes": false,
+    "noEmit": true,
+    "sourceMap": true,
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "types/**/*"],
-  "exclude": ["dist", "node_modules", "eslint.config.js"]
-  // "references": [{ "path": "./tsconfig.node.json" }],
+  "include": ["src/**/*", "types/**/*.d.ts", "src/**/*.ts", "src/**/*.d.ts", "vite-env.d.ts"],
+  "exclude": ["dist", "node_modules"]
 }

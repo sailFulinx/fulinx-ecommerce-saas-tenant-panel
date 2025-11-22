@@ -1,4 +1,3 @@
-import request from '@/utils/axios'
 /**
  * 验证码
  * @param data

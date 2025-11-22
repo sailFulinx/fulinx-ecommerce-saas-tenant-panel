@@ -66,16 +66,16 @@ interface RouteMeta extends Record<string | number | symbol, unknown> {
   canTo?: boolean
 }
 
-type Component<T = any> =
-  | ReturnType<typeof defineComponent>
-  | (() => Promise<typeof import('*.vue')>)
-  | (() => Promise<T>)
+type Component<T = any>
+  = | ReturnType<typeof defineComponent>
+    | (() => Promise<typeof import('*.vue')>)
+    | (() => Promise<T>)
 
 /**
  * 分页
  */
 interface Pagination {
-  id?: string | null
+  id?: number | null
   status?: number | null
   isDelete?: number | null
   pageNumber?: number
@@ -88,7 +88,7 @@ interface PaginationComponentData {
 }
 
 interface CommonField {
-  id: string
+  id: number
   isDelete?: number | null
   remark?: string | null
   recordVersion?: number | null
@@ -110,5 +110,25 @@ interface PaginationComponentDataType {
 
 interface PreferenceType {
   language: LanguageData
-  currency: CurrencyData
+}
+
+interface RemoveRequestParams {
+  ids: number[]
+}
+
+type ElementType = 'bag' | 'bagOpening' | 'tube' | 'connector' | 'filter' | 'blade' | 'other' | 'subBag'
+
+interface ElementInfo {
+  id: string | number
+  type: ElementType
+  [key: string]: any
+}
+
+interface ElementInfoWithCount {
+  groupId: string | number | null
+  id: string | number | null
+  type: ElementType
+  typeLabel: string
+  count: number
+  elementInfo: ElementInfo
 }
