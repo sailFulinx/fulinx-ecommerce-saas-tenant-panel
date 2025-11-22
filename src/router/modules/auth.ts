@@ -1,5 +1,3 @@
-import type { AppRouteRecordRaw } from '@/types/common'
-
 const auth: AppRouteRecordRaw = {
   path: '/auth',
   name: 'Auth',

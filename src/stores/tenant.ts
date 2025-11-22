@@ -17,6 +17,7 @@ export const useTenantStore = defineStore('tenant', () => {
     const { data } = await tenantLoginApi({ email, password, captchaKey, captchaValue }).catch(error => {
       throw error
     })
+    console.log(data)
     localStorage.setItem('token', data.accessToken)
     localStorage.setItem('tokenExpiration', data.accessTokenExpiration)
     tenantDetail.value = data.tenantDetail

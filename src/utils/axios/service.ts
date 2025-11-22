@@ -13,6 +13,7 @@ const service: AxiosInstance = axios.create({
 // request拦截器
 service.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
+    console.log(config)
     // 根据 isBusinessApi 参数决定使用哪个 baseURL
     if ((config as RequestOption).isBusinessApi) {
       config.baseURL = import.meta.env.VITE_API_BUSINESS_URL
@@ -26,7 +27,8 @@ service.interceptors.request.use(
     ) {
       config.data = qs.stringify(config.data)
     }
-    if ((config as RequestOption).token) {
+
+    if (config.headers.token) {
       config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`
     }
     // get参数编码
