@@ -298,6 +298,11 @@ declare global {
   const syncRefs: typeof import('@vueuse/core').syncRefs
   const t: typeof import('../hooks/useLocale').t
   const templateRef: typeof import('@vueuse/core').templateRef
+  const tenantForgetPasswordApi: typeof import('../api/auth').tenantForgetPasswordApi
+  const tenantForgetPasswordConfirmApi: typeof import('../api/auth').tenantForgetPasswordConfirmApi
+  const tenantLoginApi: typeof import('../api/auth').tenantLoginApi
+  const tenantRegisterApi: typeof import('../api/auth').tenantRegisterApi
+  const tenantRegisterConfirmApi: typeof import('../api/auth').tenantRegisterConfirmApi
   const themeList: typeof import('../api/theme').themeList
   const themePagination: typeof import('../api/theme').themePagination
   const throttledRef: typeof import('@vueuse/core').throttledRef
