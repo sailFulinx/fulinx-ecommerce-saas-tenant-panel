@@ -3,8 +3,8 @@ import { formatTime } from '@/utils'
 
 const router = useRouter()
 const statistics = ref<StatisticsData>({
-  siteCount: '',
-  orderCount: '',
+  siteCount: 0,
+  orderCount: 0,
   customerCount: '',
   appointmentCount: '',
 })

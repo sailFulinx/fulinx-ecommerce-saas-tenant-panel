@@ -20,4 +20,12 @@ export default {
   captchaValue: '验证码',
   captchaValuePlaceholder: '请输入验证码',
   goToLogin: '已有账号？去登录',
+  registerSuccess: '请查收邮件并点击确认链接完成注册',
+  registerConfirm: '注册确认',
+  registerConfirmDescription: '请点击下面的按钮完成注册确认',
+  confirmRegistration: '确认注册',
+  registerConfirmSuccess: '注册确认成功',
+  registerConfirmFailed: '注册确认失败',
+  invalidToken: '无效的确认令牌',
+  redirectToLogin: '即将跳转到登录页面...',
 }

@@ -54,6 +54,35 @@ interface EditUserPasswordType {
   newPassword: string
 }
 
+interface TenantDetail {
+  /* */
+  operatorName: string
+
+  /* Tenant ID */
+  tenantId: string
+
+  /* Telephone */
+  telephone: string
+
+  /* firstName */
+  firstName: string
+
+  /* lastName */
+  lastName: string
+
+  /* Email */
+  email: string
+
+  /* Is Email Verify */
+  isEmailVerify: number
+
+  /* Tenant Profile ID */
+  tenantProfileId: string
+
+  /* Gender, 1 - Male, 2 - Female */
+  gender: number
+}
+
 /**
  * 用户登录
  */
@@ -63,7 +92,7 @@ interface AuthResponseType {
   accessTokenExpiration: string
   refreshToken: string
   refreshTokenExpiration: string
-  userDetail: UserDetailResponseType
+  tenantDetail: TenantDetail
 }
 
 /**

@@ -4,7 +4,7 @@ import { fetchCaptchaApi } from '@/api/captcha'
 import { useLocale } from '@/hooks/useLocale'
 import { usePermissionStore } from '@/stores/permission'
 
-import { useUserStore } from '@/stores/user'
+import { useTenantStore } from '@/stores/tenant'
 
 const { t: $t } = useLocale()
 
@@ -14,12 +14,12 @@ const { addRoute, push } = useRouter()
 
 const redirect = ref<string>('')
 
-const userStore = useUserStore()
+const tenantStore = useTenantStore()
 
 const formRef = ref()
 
 const form = ref<LoginRequestType>({
-  username: '',
+  email: '',
   password: '',
   captchaKey: '',
   captchaValue: '',
@@ -77,7 +77,7 @@ const signIn = async () => {
   loading.login = true
   form.value.captchaKey = captchaKey.value
   try {
-    const res = await userStore.login(form.value)
+    const res = await tenantStore.login(form.value)
     loading.login = false
     if (res) {
       await permissionStore.generateRoutes()
@@ -109,8 +109,8 @@ const goToForgetPassword = () => {
       {{ $t('auth.login') }}
     </h1>
     <ElForm ref="formRef" :model="form" label-width="120px" label-position="top" size="large" :rules="rules">
-      <ElFormItem :label="$t('auth.username')" prop="username">
-        <ElInput v-model="form.username" class="input-line" clearable :placeholder="$t('auth.usernamePlaceholder')" />
+      <ElFormItem :label="$t('auth.email')" prop="email">
+        <ElInput v-model="form.email" class="input-line" clearable :placeholder="$t('auth.emailPlaceholder')" />
       </ElFormItem>
       <ElFormItem :label="$t('auth.password')" prop="password">
         <ElInput

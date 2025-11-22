@@ -1,11 +1,17 @@
 import type { RouteRecordRaw } from 'vue-router'
 import router from './router'
-// import { useUserStore } from './stores/user'
+// import { useTenantStore } from './stores/user'
 
 export const initPermission = async () => {
   const permissionStore = usePermissionStore()
 
-  const whiteList = ['/auth/login', '/auth/register', '/auth/forget-password'] // 不重定向白名单
+  const whiteList = [
+    '/auth/login',
+    '/auth/register',
+    '/auth/register/confirm',
+    '/auth/forget-password',
+    '/auth/forget-password/confirm',
+  ] // 不重定向白名单
   router.beforeEach(async (to, from, next) => {
     if (localStorage.getItem('token')) {
       if (to.path === '/auth/login') {
@@ -15,7 +21,7 @@ export const initPermission = async () => {
           next()
           return
         }
-        await useUserStore().getUserInfo()
+        await useTenantStore().getTenantInfo()
         await permissionStore.generateRoutes()
         permissionStore.getAddRouters.forEach((route: any) => {
           router.addRoute(route as RouteRecordRaw) // 动态添加可访问路由表

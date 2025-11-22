@@ -92,8 +92,6 @@ const handleRegister = async () => {
     await tenantRegisterApi(form.value)
     ElMessage.success($t('auth.registerSuccess'))
     loading.register = false
-    // 跳转到登录页
-    push('/auth/login')
   } catch (error) {
     console.log(error)
     fetchCaptcha()

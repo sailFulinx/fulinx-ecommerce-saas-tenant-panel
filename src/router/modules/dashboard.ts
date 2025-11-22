@@ -1,6 +1,6 @@
-import { Layout } from '@/utils/routerHelper'
+import type { AppRouteRecordRaw } from '@/types/common'
 
-import type { AppRouteRecordRaw } from '../types'
+import { Layout } from '@/utils/routerHelper'
 
 const { t: $t } = useLocale()
 
@@ -26,7 +26,7 @@ const dashboard: AppRouteRecordRaw = {
         icon: 'ant-design:dashboard-outlined',
       },
     },
-  ]
+  ],
 }
 
 export default dashboard

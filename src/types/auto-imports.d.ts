@@ -144,6 +144,7 @@ declare global {
   const fetchRolePaginationApi: typeof import('../api/role').fetchRolePaginationApi
   const fetchSiteConfigCheckoutSetting: typeof import('../api/site').fetchSiteConfigCheckoutSetting
   const fetchSiteConfigMailSetting: typeof import('../api/site').fetchSiteConfigMailSetting
+  const fetchTenantInfoApi: typeof import('../api/tenant').fetchTenantInfoApi
   const fetchUserDetailApi: typeof import('../api/user').fetchUserDetailApi
   const fetchUserInfoApi: typeof import('../api/user').fetchUserInfoApi
   const fetchUserPaginationApi: typeof import('../api/user').fetchUserPaginationApi
@@ -560,6 +561,7 @@ declare global {
   const useTagsViewStore: typeof import('../stores/tagsView').useTagsViewStore
   const useTemplateRef: typeof import('vue').useTemplateRef
   const useTemplateRefsList: typeof import('@vueuse/core').useTemplateRefsList
+  const useTenantStore: typeof import('../stores/tenant').useTenantStore
   const useTextDirection: typeof import('@vueuse/core').useTextDirection
   const useTextSelection: typeof import('@vueuse/core').useTextSelection
   const useTextareaAutosize: typeof import('@vueuse/core').useTextareaAutosize
@@ -579,7 +581,6 @@ declare global {
   const useTransition: typeof import('@vueuse/core').useTransition
   const useUrlSearchParams: typeof import('@vueuse/core').useUrlSearchParams
   const useUserMedia: typeof import('@vueuse/core').useUserMedia
-  const useUserStore: typeof import('../stores/user').useUserStore
   const useVModel: typeof import('@vueuse/core').useVModel
   const useVModels: typeof import('@vueuse/core').useVModels
   const useVersion: typeof import('../composables/general').useVersion

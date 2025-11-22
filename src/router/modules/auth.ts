@@ -33,7 +33,7 @@ const auth: AppRouteRecordRaw = {
     {
       path: 'register/confirm',
       name: 'RegisterConfirm',
-      component: () => import('@/views/Auth/Login.vue'),
+      component: () => import('@/views/Auth/RegisterConfirm.vue'),
       meta: {
         hidden: true,
         title: '注册确认',

@@ -103,13 +103,6 @@ export function updateUserStatus(data: UserStatusUpdateRequest): Promise<IRespon
   })
 }
 
-export function fetchUserInfoApi(): Promise<IResponse<UserDetailResponseType>> {
-  return request.get({
-    url: 'system/user',
-    token: true,
-  })
-}
-
 export function resetPasswordApi(data: ResetUserPasswordType): Promise<IResponse<UserDataType & CommonField>> {
   return request.post({
     url: 'system/user/reset/password',

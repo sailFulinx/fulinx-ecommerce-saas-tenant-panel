@@ -2,7 +2,7 @@
  * 登录请求
  */
 interface LoginRequestType {
-  username: string
+  email: string
   password: string
   captchaKey: string
   captchaValue: string

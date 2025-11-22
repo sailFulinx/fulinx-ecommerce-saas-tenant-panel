@@ -3,7 +3,7 @@ import { resetRouter } from '@/router'
 
 const tagsViewStore = useTagsViewStore()
 
-const userStore = useUserStore()
+const tenantStore = useTenantStore()
 
 const { replace } = useRouter()
 
@@ -19,7 +19,7 @@ const loginOut = () => {
       tagsViewStore.delAllViews()
       localStorage.removeItem('token')
       localStorage.removeItem('tokenExpiration')
-      userStore.resetUser()
+      tenantStore.resetTenant()
       resetRouter() // 重置静态路由表
       replace('/auth/login')
     })
@@ -74,7 +74,7 @@ const updatePassword = async () => {
     <ElDropdown trigger="click">
       <div class="flex items-center cursor-pointer">
         <img src="@/assets/imgs/avatar.jpg" alt="" class="w-36px rounded-[50%]">
-        <span class="text-13px pl-3">{{ userStore.userDetail?.username || 'admin' }}</span>
+        <span class="text-13px pl-3">{{ tenantStore.userDetail?.username || 'admin' }}</span>
       </div>
       <template #dropdown>
         <ElDropdownMenu>
