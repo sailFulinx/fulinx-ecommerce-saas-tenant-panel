@@ -1,5 +1,3 @@
-import type { AppRouteRecordRaw } from '@/types/common'
-
 import { Layout } from '@/utils/routerHelper'
 
 const { t: $t } = useLocale()

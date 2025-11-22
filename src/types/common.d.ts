@@ -34,12 +34,12 @@ declare interface IResponse<T = any> {
   errorMessage: null | string
 }
 
-export declare interface AppRouteRecordRaw extends Omit<RouteRecordRaw, 'meta'> {
+declare interface AppRouteRecordRaw extends Omit<RouteRecordRaw, 'meta'> {
   name: string
   meta: RouteMeta
   component?: Component | string
   children?: AppRouteRecordRaw[]
-  props?: Recordable
+  props?: Recordable | boolean
   fullPath?: string
 }
 
@@ -75,7 +75,6 @@ type Component<T = any>
  * 分页
  */
 interface Pagination {
-  id?: number | null
   status?: number | null
   isDelete?: number | null
   pageNumber?: number
@@ -88,7 +87,7 @@ interface PaginationComponentData {
 }
 
 interface CommonField {
-  id: number
+  id: string
   isDelete?: number | null
   remark?: string | null
   recordVersion?: number | null
@@ -112,23 +111,10 @@ interface PreferenceType {
   language: LanguageData
 }
 
-interface RemoveRequestParams {
-  ids: number[]
-}
-
-type ElementType = 'bag' | 'bagOpening' | 'tube' | 'connector' | 'filter' | 'blade' | 'other' | 'subBag'
-
-interface ElementInfo {
-  id: string | number
-  type: ElementType
-  [key: string]: any
-}
-
-interface ElementInfoWithCount {
-  groupId: string | number | null
-  id: string | number | null
-  type: ElementType
-  typeLabel: string
-  count: number
-  elementInfo: ElementInfo
+interface CustomDataType {
+  id: number
+  customFieldName: string
+  customType: string
+  customTitle: string
+  customContent: any
 }
