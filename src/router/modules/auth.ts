@@ -3,7 +3,6 @@ import type { AppRouteRecordRaw } from '@/types/common'
 const auth: AppRouteRecordRaw = {
   path: '/auth',
   name: 'Auth',
-  component: () => import('@/views/Auth/Login.vue'),
   redirect: '/auth/login',
   meta: {
     hidden: true,
@@ -28,6 +27,16 @@ const auth: AppRouteRecordRaw = {
       meta: {
         hidden: true,
         title: '注册',
+        noTagsView: true,
+      },
+    },
+    {
+      path: 'register/confirm',
+      name: 'RegisterConfirm',
+      component: () => import('@/views/Auth/Login.vue'),
+      meta: {
+        hidden: true,
+        title: '注册确认',
         noTagsView: true,
       },
     },

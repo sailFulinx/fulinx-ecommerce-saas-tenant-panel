@@ -5,6 +5,7 @@ export default {
   email: '邮箱',
   goToRegister: '没有账号？去注册',
   password: '密码',
+  confirmPassword: '确认密码',
   register: '注册',
   checkPassword: '确认密码',
   login: '登录',
@@ -15,6 +16,8 @@ export default {
   usernamePlaceholder: '请输入用户名',
   emailPlaceholder: '请输入邮箱',
   passwordPlaceholder: '请输入密码',
+  confirmPasswordPlaceholder: '请输入确认密码',
   captchaValue: '验证码',
   captchaValuePlaceholder: '请输入验证码',
+  goToLogin: '已有账号？去登录',
 }

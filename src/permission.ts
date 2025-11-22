@@ -5,7 +5,7 @@ import router from './router'
 export const initPermission = async () => {
   const permissionStore = usePermissionStore()
 
-  const whiteList = ['/auth/login'] // 不重定向白名单
+  const whiteList = ['/auth/login', '/auth/register', '/auth/forget-password'] // 不重定向白名单
   router.beforeEach(async (to, from, next) => {
     if (localStorage.getItem('token')) {
       if (to.path === '/auth/login') {
@@ -17,7 +17,7 @@ export const initPermission = async () => {
         }
         await useUserStore().getUserInfo()
         await permissionStore.generateRoutes()
-        permissionStore.getAddRouters.forEach(route => {
+        permissionStore.getAddRouters.forEach((route: any) => {
           router.addRoute(route as RouteRecordRaw) // 动态添加可访问路由表
         })
         const redirectPath = from.query.redirect || to.path

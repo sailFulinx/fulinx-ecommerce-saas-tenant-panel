@@ -26,9 +26,9 @@ const form = ref<LoginRequestType>({
 })
 
 const rules = reactive({
-  email: [{ required: true, type: 'string', message: $t('auth.emailPlaceholder'), trigger: 'blur' }],
-  password: [{ required: true, type: 'string', message: $t('auth.passwordPlaceholder'), trigger: 'blur' }],
-  captchaValue: [{ required: true, type: 'string', message: $t('auth.captchaValuePlaceholder'), trigger: 'blur' }],
+  email: [{ required: true, message: $t('auth.emailPlaceholder'), trigger: 'blur' }],
+  password: [{ required: true, message: $t('auth.passwordPlaceholder'), trigger: 'blur' }],
+  captchaValue: [{ required: true, message: $t('auth.captchaValuePlaceholder'), trigger: 'blur' }],
 })
 
 const loading = reactive({
@@ -81,7 +81,7 @@ const signIn = async () => {
     loading.login = false
     if (res) {
       await permissionStore.generateRoutes()
-      permissionStore.getAddRouters.forEach(route => {
+      permissionStore.getAddRouters.forEach((route: any) => {
         addRoute(route as RouteRecordRaw) // 动态添加可访问路由表
       })
       permissionStore.setIsAddRouters(true)
@@ -95,11 +95,11 @@ const signIn = async () => {
 }
 
 const goToRegister = () => {
-  push('/register')
+  push('/auth/register')
 }
 
 const goToForgetPassword = () => {
-  push('/forget-password')
+  push('/auth/forget-password')
 }
 </script>
 

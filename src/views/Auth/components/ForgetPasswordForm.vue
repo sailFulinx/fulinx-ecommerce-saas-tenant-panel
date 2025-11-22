@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { FormRules } from 'element-plus'
 import { useRouter } from 'vue-router'
 import { tenantForgetPasswordApi } from '@/api/auth'
 import { fetchCaptchaApi } from '@/api/captcha'
@@ -15,7 +16,7 @@ const form = ref<ForgetPasswordParams>({
   captchaValue: '',
 })
 
-const rules = reactive({
+const rules = reactive<FormRules>({
   email: [
     { required: true, type: 'email', message: $t('forgetPassword.emailPlaceholder'), trigger: 'blur' },
   ],

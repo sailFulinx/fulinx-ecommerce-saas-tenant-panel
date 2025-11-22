@@ -19,18 +19,18 @@ const form = ref<RegisterParams>({
 
 const rules = reactive({
   email: [
-    { required: true, type: 'email', message: $t('register.emailPlaceholder'), trigger: 'blur' },
+    { required: true, type: 'email' as const, message: $t('auth.emailPlaceholder'), trigger: 'blur' },
   ],
   password: [
-    { required: true, message: $t('register.passwordPlaceholder'), trigger: 'blur' },
-    { min: 6, message: $t('register.passwordLength'), trigger: 'blur' },
+    { required: true, message: $t('auth.passwordPlaceholder'), trigger: 'blur' },
+    { min: 6, message: $t('auth.passwordLength'), trigger: 'blur' },
   ],
   confirmPassword: [
-    { required: true, message: $t('register.confirmPasswordPlaceholder'), trigger: 'blur' },
+    { required: true, message: $t('auth.confirmPasswordPlaceholder'), trigger: 'blur' },
     {
       validator: (rule: any, value: string, callback: any) => {
         if (value !== form.value.password) {
-          callback(new Error($t('register.passwordNotMatch')))
+          callback(new Error($t('auth.passwordNotMatch')))
         } else {
           callback()
         }
@@ -39,7 +39,7 @@ const rules = reactive({
     },
   ],
   captchaValue: [
-    { required: true, message: $t('register.captchaValuePlaceholder'), trigger: 'blur' },
+    { required: true, message: $t('auth.captchaValuePlaceholder'), trigger: 'blur' },
   ],
 })
 
@@ -62,7 +62,7 @@ const fetchCaptcha = async () => {
   loading.captchaValue = true
   const payload = {
     captchaKey: captchaKey.value,
-    captchaType: 1,
+    captchaType: 2,
   }
   const { data } = await fetchCaptchaApi(payload).catch(error => {
     loading.captchaValue = false
@@ -90,7 +90,7 @@ const handleRegister = async () => {
   form.value.captchaKey = captchaKey.value
   try {
     await tenantRegisterApi(form.value)
-    ElMessage.success($t('register.registerSuccess'))
+    ElMessage.success($t('auth.registerSuccess'))
     loading.register = false
     // 跳转到登录页
     push('/auth/login')
@@ -109,42 +109,42 @@ const goToLogin = () => {
 <template>
   <div>
     <h1 class="text-center mb-5 font-bold text-2xl">
-      {{ $t('register.register') }}
+      {{ $t('auth.register') }}
     </h1>
     <ElForm ref="formRef" :model="form" label-width="120px" label-position="top" size="large" :rules="rules">
-      <ElFormItem :label="$t('register.email')" prop="email">
+      <ElFormItem :label="$t('auth.email')" prop="email">
         <ElInput
           v-model="form.email"
           class="input-line"
           clearable
-          :placeholder="$t('register.emailPlaceholder')"
+          :placeholder="$t('auth.emailPlaceholder')"
         />
       </ElFormItem>
-      <ElFormItem :label="$t('register.password')" prop="password">
+      <ElFormItem :label="$t('auth.password')" prop="password">
         <ElInput
           v-model="form.password"
           class="input-line"
           clearable
           type="password"
           show-password
-          :placeholder="$t('register.passwordPlaceholder')"
+          :placeholder="$t('auth.passwordPlaceholder')"
         />
       </ElFormItem>
-      <ElFormItem :label="$t('register.confirmPassword')" prop="confirmPassword">
+      <ElFormItem :label="$t('auth.confirmPassword')" prop="confirmPassword">
         <ElInput
           v-model="form.confirmPassword"
           class="input-line"
           clearable
           type="password"
           show-password
-          :placeholder="$t('register.confirmPasswordPlaceholder')"
+          :placeholder="$t('auth.confirmPasswordPlaceholder')"
         />
       </ElFormItem>
-      <ElFormItem :label="$t('register.captchaValue')" prop="captchaValue">
+      <ElFormItem :label="$t('auth.captchaValue')" prop="captchaValue">
         <ElInput
           v-model="form.captchaValue"
           class="input-line-captcha"
-          :placeholder="$t('register.captchaValuePlaceholder')"
+          :placeholder="$t('auth.captchaValuePlaceholder')"
           :input-style="inputStyle"
         >
           <template #suffix>
@@ -154,12 +154,11 @@ const goToLogin = () => {
       </ElFormItem>
     </ElForm>
     <EBtn :loading="loading.register" type="primary" class="w-[100%]" @click="handleRegister">
-      {{ $t('register.register') }}
+      {{ $t('auth.register') }}
     </EBtn>
     <div class="mt-4 text-center">
-      <span class="text-gray-600">{{ $t('register.haveAccount') }}</span>
       <ElButton type="primary" link @click="goToLogin">
-        {{ $t('register.goToLogin') }}
+        {{ $t('auth.goToLogin') }}
       </ElButton>
     </div>
   </div>
