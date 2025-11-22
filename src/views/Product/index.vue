@@ -2,8 +2,8 @@
 import { productExportListApi, productPaginationApi, removeProductApi } from '@/api/product'
 import { usePreferenceStore } from '@/stores/preference'
 import { formatTime } from '@/utils'
-import { downloadProduct } from '@/utils/download'
-import { ElMessage } from 'element-plus'
+
+const router = useRouter()
 
 const listResult = ref<TableResponse<ProductListData & CommonField>>({
   list: [],
@@ -128,7 +128,6 @@ const handleExport = async () => {
   }).catch(err => {
     throw err
   })
-  await downloadProduct(data.list)
 }
 // init()
 </script>

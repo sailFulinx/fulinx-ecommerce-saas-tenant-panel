@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { listCategoryApi } from '@/api/category'
+import { categoryListApi } from '@/api/category'
 import {
   createProductDetailApi,
   updateProductCategoryApi,
@@ -176,7 +176,7 @@ const listCategoryData = ref<ListCategoryRes>({
 
 const getCategoryList = async () => {
   loading.category = true
-  const { data } = await listCategoryApi(listCategoryPayload).catch(error => {
+  const { data } = await categoryListApi(listCategoryPayload).catch(error => {
     loading.category = true
     throw error
   })
