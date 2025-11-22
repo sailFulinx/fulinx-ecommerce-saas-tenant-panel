@@ -36,6 +36,7 @@ export function tenantForgetPasswordApi(data: ForgetPasswordParams): Promise<IRe
     url: 'tenant/authentication/forget/password',
     data,
     token: false,
+    isBusinessApi: false,
   })
 }
 

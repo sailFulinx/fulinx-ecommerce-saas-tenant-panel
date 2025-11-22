@@ -1,5 +1,4 @@
 import type { AxiosError, AxiosInstance, AxiosRequestHeaders, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
-import type { RequestOption } from './index'
 import axios from 'axios'
 import qs from 'qs'
 import router from '@/router'
@@ -13,14 +12,12 @@ const service: AxiosInstance = axios.create({
 // request拦截器
 service.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    console.log(config)
     // 根据 isBusinessApi 参数决定使用哪个 baseURL
-    if ((config as RequestOption).isBusinessApi) {
+    if (config.headers.isBusinessApi) {
       config.baseURL = import.meta.env.VITE_API_BUSINESS_URL
     } else {
       config.baseURL = import.meta.env.VITE_API_URL
     }
-
     if (
       config.method === 'post'
       && (config.headers as AxiosRequestHeaders)['Content-Type'] === 'application/x-www-form-urlencoded'

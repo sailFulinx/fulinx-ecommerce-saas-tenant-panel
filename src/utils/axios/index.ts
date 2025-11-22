@@ -13,7 +13,6 @@ export interface RequestOption extends AxiosRequestConfig {
 
 // request 函数支持泛型
 const request = <T>(option: RequestOption) => {
-  console.log(option)
   const { url, method, params, data, headersType, responseType, token, isBusinessApi } = option
   return service({
     url,
@@ -24,8 +23,8 @@ const request = <T>(option: RequestOption) => {
     headers: {
       'Content-Type': headersType || default_headers,
       token,
+      isBusinessApi,
     },
-    isBusinessApi,
   }) as Promise<T>
 }
 
