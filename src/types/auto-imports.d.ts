@@ -98,11 +98,13 @@ declare global {
   const createShippingCompanyApi: typeof import('../api/shipping').createShippingCompanyApi
   const createShippingCompanyTemplateApi: typeof import('../api/shipping').createShippingCompanyTemplateApi
   const createSite: typeof import('../api/site').createSite
+  const createStoreApi: typeof import('../api/tenant').createStoreApi
   const createSupplierApi: typeof import('../api/supplier').createSupplierApi
   const createSupplierDetailApi: typeof import('../api/supplier').createSupplierDetailApi
   const createSupplierSeoApi: typeof import('../api/supplier').createSupplierSeoApi
   const createSupplierSlugApi: typeof import('../api/supplier').createSupplierSlugApi
   const createTemplatePromise: typeof import('@vueuse/core').createTemplatePromise
+  const createTenantStoreApi: typeof import('../api/tenant').createTenantStoreApi
   const createTheme: typeof import('../api/theme').createTheme
   const createUnrefFn: typeof import('@vueuse/core').createUnrefFn
   const createUserApi: typeof import('../api/user').createUserApi
@@ -248,8 +250,10 @@ declare global {
   const removeShippingCompanyApi: typeof import('../api/shipping').removeShippingCompanyApi
   const removeShippingCompanyTemplateApi: typeof import('../api/shipping').removeShippingCompanyTemplateApi
   const removeSite: typeof import('../api/site').removeSite
+  const removeStoreApi: typeof import('../api/tenant').removeStoreApi
   const removeSupplierApi: typeof import('../api/supplier').removeSupplierApi
   const removeSupplierFileApi: typeof import('../api/supplier').removeSupplierFileApi
+  const removeTenantStoreApi: typeof import('../api/tenant').removeTenantStoreApi
   const removeTheme: typeof import('../api/theme').removeTheme
   const removeToken: typeof import('../composables/index').removeToken
   const removeUserApi: typeof import('../api/user').removeUserApi
@@ -288,6 +292,7 @@ declare global {
   const showShippingCompanyTemplateApi: typeof import('../api/shipping').showShippingCompanyTemplateApi
   const showSite: typeof import('../api/site').showSite
   const showSupplierApi: typeof import('../api/supplier').showSupplierApi
+  const showTenantStoreApi: typeof import('../api/tenant').showTenantStoreApi
   const showTheme: typeof import('../api/theme').showTheme
   const siteConfigCheckoutSetting: typeof import('../api/site').siteConfigCheckoutSetting
   const siteConfigMailSetting: typeof import('../api/site').siteConfigMailSetting
@@ -304,6 +309,8 @@ declare global {
   const tenantLoginApi: typeof import('../api/auth').tenantLoginApi
   const tenantRegisterApi: typeof import('../api/auth').tenantRegisterApi
   const tenantRegisterConfirmApi: typeof import('../api/auth').tenantRegisterConfirmApi
+  const tenantStoreListApi: typeof import('../api/tenant').tenantStoreListApi
+  const tenantStorePaginationApi: typeof import('../api/tenant').tenantStorePaginationApi
   const themeList: typeof import('../api/theme').themeList
   const themePagination: typeof import('../api/theme').themePagination
   const throttledRef: typeof import('@vueuse/core').throttledRef
@@ -384,6 +391,7 @@ declare global {
   const updateProductSupplierApi: typeof import('../api/product').updateProductSupplierApi
   const updateShippingCompanyApi: typeof import('../api/shipping').updateShippingCompanyApi
   const updateShippingCompanyTemplateApi: typeof import('../api/shipping').updateShippingCompanyTemplateApi
+  const updateStoreApi: typeof import('../api/tenant').updateStoreApi
   const updateSupplierCodeApi: typeof import('../api/supplier').updateSupplierCodeApi
   const updateSupplierDetailApi: typeof import('../api/supplier').updateSupplierDetailApi
   const updateSupplierDetailDescriptionApi: typeof import('../api/supplier').updateSupplierDetailDescriptionApi
@@ -395,6 +403,7 @@ declare global {
   const updateSupplierSeoMetaTitleApi: typeof import('../api/supplier').updateSupplierSeoMetaTitleApi
   const updateSupplierSlugApi: typeof import('../api/supplier').updateSupplierSlugApi
   const updateSupplierStatusApi: typeof import('../api/supplier').updateSupplierStatusApi
+  const updateTenantStoreApi: typeof import('../api/tenant').updateTenantStoreApi
   const updateUserStatus: typeof import('../api/user').updateUserStatus
   const uploadCustomerInvoiceApi: typeof import('../api/customer').uploadCustomerInvoiceApi
   const uploadFileApi: typeof import('../api/file').uploadFileApi
