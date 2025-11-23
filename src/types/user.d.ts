@@ -93,6 +93,7 @@ interface AuthResponseType {
   refreshToken: string
   refreshTokenExpiration: string
   tenantDetail: TenantDetail
+  tenantStoreList: (TenantStoreListData & CommonField)[]
 }
 
 /**

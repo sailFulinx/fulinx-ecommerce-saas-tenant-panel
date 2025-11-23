@@ -4,10 +4,49 @@ import ToolHeader from './components/ToolHeader.vue'
 
 const appStore = useAppStore()
 const { collapse } = storeToRefs(appStore)
+
+const tenantStore = useTenantStore()
+const { tenantStoreList } = storeToRefs(tenantStore)
+
+// 创建店铺相关的响应式数据
+const storeForm = reactive({
+  storeName: '',
+})
+
+const loading = ref(false)
+
+// 创建店铺的方法
+const createStore = async () => {
+  if (!storeForm.storeName.trim()) {
+    ElMessage.warning('请输入店铺名称')
+    return
+  }
+
+  try {
+    loading.value = true
+    const params: TenantStoreCreateParams = {
+      storeName: storeForm.storeName.trim(),
+    }
+
+    await createTenantStoreApi(params)
+    ElMessage.success('店铺创建成功')
+
+    // 重新获取租户信息
+    await tenantStore.getTenantInfo()
+
+    // 清空表单
+    storeForm.storeName = ''
+  } catch (error) {
+    console.error('创建店铺失败:', error)
+    ElMessage.error('店铺创建失败')
+  } finally {
+    loading.value = false
+  }
+}
 </script>
 
 <template>
-  <div class="h-screen">
+  <div v-if="tenantStoreList && tenantStoreList.length > 0" class="h-screen">
     <!-- 左侧内容 -->
     <div
       :class="`${collapse ? 'w-17' : 'w-64'}`"
@@ -47,6 +86,32 @@ const { collapse } = storeToRefs(appStore)
           </div>
         </ElScrollbar>
       </main>
+    </div>
+  </div>
+  <div v-else>
+    <div class="flex flex-col items-center justify-center h-screen">
+      <h2 class="text-2xl font-bold mb-6">
+        欢迎使用FULINX ECOMMERCE
+      </h2>
+      <p class="text-gray-600 mb-8">
+        您还没有创建任何店铺，请先创建一个店铺
+      </p>
+      <div class="w-80">
+        <ElInput
+          v-model="storeForm.storeName"
+          placeholder="请输入店铺名称"
+          class="mb-4"
+          @keyup.enter="createStore"
+        />
+        <ElButton
+          type="primary"
+          :loading="loading"
+          class="w-full"
+          @click="createStore"
+        >
+          {{ loading ? '创建中...' : '创建店铺' }}
+        </ElButton>
+      </div>
     </div>
   </div>
 </template>

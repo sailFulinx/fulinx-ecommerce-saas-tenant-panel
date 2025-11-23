@@ -12,15 +12,17 @@ export const useTenantStore = defineStore('tenant', () => {
     gender: 0,
   })
 
+  const tenantStoreList = ref<(TenantStoreListData & CommonField)[]>([])
+
   // 登录
   const login = async ({ email, password, captchaKey, captchaValue }: LoginRequestType) => {
     const { data } = await tenantLoginApi({ email, password, captchaKey, captchaValue }).catch(error => {
       throw error
     })
-    console.log(data)
     localStorage.setItem('token', data.accessToken)
     localStorage.setItem('tokenExpiration', data.accessTokenExpiration)
     tenantDetail.value = data.tenantDetail
+    tenantStoreList.value = data.tenantStoreList
     return data
   }
 
@@ -28,12 +30,20 @@ export const useTenantStore = defineStore('tenant', () => {
     const { data } = await fetchTenantInfoApi().catch(error => {
       throw error
     })
+    const res = await tenantStoreListApi({ tenantId: data.tenantId }).catch(error => {
+      throw error
+    })
+    tenantStoreList.value = res.data.list
     tenantDetail.value = data
     return data
   }
 
   const setTenantDetail = (value: TenantDetail) => {
     tenantDetail.value = value
+  }
+
+  const setTenantStoreList = (value: (TenantStoreListData & CommonField)[]) => {
+    tenantStoreList.value = value
   }
 
   const resetTenant = () => {
@@ -48,11 +58,14 @@ export const useTenantStore = defineStore('tenant', () => {
       tenantProfileId: '',
       gender: 0,
     }
+    tenantStoreList.value = []
   }
 
   return {
     tenantDetail,
     setTenantDetail,
+    tenantStoreList,
+    setTenantStoreList,
     login,
     resetTenant,
     getTenantInfo,

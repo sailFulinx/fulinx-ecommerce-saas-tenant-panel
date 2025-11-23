@@ -33,6 +33,7 @@ const handleOpenPreference = async () => {
       <!-- <div class="mr-2 flex items-center">
         <DarkSwitch />
       </div> -->
+      <StoreInfo class="hover-trigger mr-2" />
       <UserInfo class="hover-trigger" />
     </div>
     <Preference ref="preferenceDialogRef" />
