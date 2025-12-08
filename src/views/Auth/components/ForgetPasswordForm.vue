@@ -18,10 +18,10 @@ const form = ref<ForgetPasswordParams>({
 
 const rules = reactive<FormRules>({
   email: [
-    { required: true, type: 'email', message: $t('forgetPassword.emailPlaceholder'), trigger: 'blur' },
+    { required: true, type: 'email', message: $t('auth.emailPlaceholder'), trigger: 'blur' },
   ],
   captchaValue: [
-    { required: true, message: $t('forgetPassword.captchaValuePlaceholder'), trigger: 'blur' },
+    { required: true, message: $t('auth.captchaValuePlaceholder'), trigger: 'blur' },
   ],
 })
 
@@ -44,7 +44,7 @@ const fetchCaptcha = async () => {
   loading.captchaValue = true
   const payload = {
     captchaKey: captchaKey.value,
-    captchaType: 1,
+    captchaType: 3,
   }
   const { data } = await fetchCaptchaApi(payload).catch(error => {
     loading.captchaValue = false
@@ -72,7 +72,7 @@ const handleSubmit = async () => {
   form.value.captchaKey = captchaKey.value
   try {
     await tenantForgetPasswordApi(form.value)
-    ElMessage.success($t('forgetPassword.submitSuccess'))
+    ElMessage.success($t('auth.forgetPasswordSuccess'))
     loading.submit = false
     // 跳转到登录页
     push('/auth/login')
@@ -91,22 +91,22 @@ const goToLogin = () => {
 <template>
   <div>
     <h1 class="text-center mb-5 font-bold text-2xl">
-      {{ $t('forgetPassword.title') }}
+      {{ $t('auth.forgetPassword') }}
     </h1>
     <ElForm ref="formRef" :model="form" label-width="120px" label-position="top" size="large" :rules="rules">
-      <ElFormItem :label="$t('forgetPassword.email')" prop="email">
+      <ElFormItem :label="$t('auth.email')" prop="email">
         <ElInput
           v-model="form.email"
           class="input-line"
           clearable
-          :placeholder="$t('forgetPassword.emailPlaceholder')"
+          :placeholder="$t('auth.emailPlaceholder')"
         />
       </ElFormItem>
-      <ElFormItem :label="$t('forgetPassword.captchaValue')" prop="captchaValue">
+      <ElFormItem :label="$t('auth.captchaValue')" prop="captchaValue">
         <ElInput
           v-model="form.captchaValue"
           class="input-line-captcha"
-          :placeholder="$t('forgetPassword.captchaValuePlaceholder')"
+          :placeholder="$t('auth.captchaValuePlaceholder')"
           :input-style="inputStyle"
         >
           <template #suffix>
@@ -116,11 +116,11 @@ const goToLogin = () => {
       </ElFormItem>
     </ElForm>
     <EBtn :loading="loading.submit" type="primary" class="w-[100%]" @click="handleSubmit">
-      {{ $t('forgetPassword.submit') }}
+      {{ $t('common.submit') }}
     </EBtn>
     <div class="mt-4 text-center">
       <ElButton type="primary" link @click="goToLogin">
-        {{ $t('forgetPassword.goToLogin') }}
+        {{ $t('auth.goToLogin') }}
       </ElButton>
     </div>
   </div>

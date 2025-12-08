@@ -26,7 +26,6 @@ const handleConfirm = async () => {
     console.error('Error confirming registration:', error)
   })
   if (data) {
-    console.log(2222)
     confirmSuccess.value = true
     ElMessage.success($t('auth.registerConfirmSuccess'))
     localStorage.setItem('token', data.accessToken)

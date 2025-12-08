@@ -119,7 +119,7 @@ const goToForgetPassword = () => {
           clearable
           type="password"
           show-password
-          :placeholder="$t('auth.passwordPlaceholder')"
+          :placeholder="`${$t('auth.passwordPlaceholder')} (${$t('auth.passwordMinLength')})`"
         />
       </ElFormItem>
       <ElFormItem :label="$t('auth.captchaValue')" prop="captchaValue">

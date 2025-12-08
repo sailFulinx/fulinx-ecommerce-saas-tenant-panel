@@ -21,6 +21,7 @@ export default {
   captchaValuePlaceholder: '请输入验证码',
   goToLogin: '已有账号？去登录',
   registerSuccess: '请查收邮件并点击确认链接完成注册',
+  forgetPasswordSuccess: '请查收邮件并点击链接重置密码',
   registerConfirm: '注册确认',
   registerConfirmDescription: '请点击下面的按钮完成注册确认',
   confirmRegistration: '确认注册',
@@ -28,4 +29,10 @@ export default {
   registerConfirmFailed: '注册确认失败',
   invalidToken: '无效的确认令牌',
   redirectToLogin: '即将跳转到登录页面...',
+  forgetPasswordConfirm: '重置密码',
+  forgetPasswordConfirmSuccess: '密码重置成功',
+  forgetPasswordConfirmFailed: '密码重置失败',
+  confirmPasswordReset: '确认重置密码',
+  passwordMinLength: '密码长度至少6位',
+  passwordNotMatch: '两次输入的密码不一致',
 }
