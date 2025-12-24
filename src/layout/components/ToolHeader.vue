@@ -9,7 +9,7 @@ const handleOpenPreference = async () => {
 }
 
 const handleOpenDocument = () => {
-  window.open('https://doc.cms.fulinx.com')
+  window.open('https://doc.cms.fulinx.com', '_blank')
 }
 </script>
 
