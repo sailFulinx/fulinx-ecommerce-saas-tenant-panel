@@ -46,7 +46,7 @@ const editorConfig = {
   placeholder: '请输入内容内容...',
   MENU_CONF: {
     uploadImage: {
-      server: `${import.meta.env.VITE_API_URL}server-side/file`,
+      server: `${import.meta.env.VITE_API_TENANT_URL}server-side/file`,
       fieldName: 'file',
       allowedFileTypes: ['image/*'],
       maxFileSize: 20 * 1024 * 1024, // 1M

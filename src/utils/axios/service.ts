@@ -12,12 +12,21 @@ const service: AxiosInstance = axios.create({
 // request拦截器
 service.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    // 根据 isBusinessApi 参数决定使用哪个 baseURL
-    if (config.headers.isBusinessApi) {
-      config.baseURL = import.meta.env.VITE_API_BUSINESS_URL
+    // 根据 isTenantApi 参数决定使用哪个 baseURL
+    if (config.headers.isTenantApi) {
+      config.baseURL = import.meta.env.VITE_API_TENANT_URL
     } else {
-      config.baseURL = import.meta.env.VITE_API_URL
+      config.baseURL = import.meta.env.VITE_API_BUSINESS_URL
     }
+
+    // 设置 X-API-ACCESS 头部
+    const apiAccessKey = import.meta.env.VITE_X_API_ACCESS
+    if (apiAccessKey) {
+      config.headers['X-API-ACCESS'] = apiAccessKey
+    } else {
+      console.warn('VITE_X_API_ACCESS is not set')
+    }
+
     if (
       config.method === 'post'
       && (config.headers as AxiosRequestHeaders)['Content-Type'] === 'application/x-www-form-urlencoded'

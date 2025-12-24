@@ -8,5 +8,6 @@ export function fetchCaptchaApi(data: CaptchaRequest): Promise<IResponse<Captcha
     url: 'share/public/captcha/fetch',
     data,
     token: false,
+    isTenantApi: true,
   })
 }

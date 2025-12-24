@@ -26,6 +26,7 @@ import seo from './modules/zh-CN/seo'
 import setting from './modules/zh-CN/setting'
 import shipping from './modules/zh-CN/shipping'
 import size from './modules/zh-CN/size'
+import store from './modules/zh-CN/store'
 import success from './modules/zh-CN/success'
 import supplier from './modules/zh-CN/supplier'
 import theme from './modules/zh-CN/theme'
@@ -58,6 +59,7 @@ export default {
   size,
   success,
   supplier,
+  store,
   theme,
   user,
   warning,

@@ -8,12 +8,12 @@ const { default_headers } = config
 export interface RequestOption extends AxiosRequestConfig {
   headersType?: string
   token?: boolean
-  isBusinessApi?: boolean
+  isTenantApi?: boolean
 }
 
 // request 函数支持泛型
 const request = <T>(option: RequestOption) => {
-  const { url, method, params, data, headersType, responseType, token, isBusinessApi } = option
+  const { url, method, params, data, headersType, responseType, token, isTenantApi } = option
   return service({
     url,
     method,
@@ -23,7 +23,7 @@ const request = <T>(option: RequestOption) => {
     headers: {
       'Content-Type': headersType || default_headers,
       token,
-      isBusinessApi,
+      isTenantApi,
     },
   }) as Promise<T>
 }

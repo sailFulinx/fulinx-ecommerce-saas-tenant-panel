@@ -20,7 +20,7 @@ VITE_OUT_DIR=dist-pro
 VITE_APP_TITLE=FulinxEcommerce
 
 # API URL
-VITE_API_URL=https://api.tanpoqiuer.cn/api/
+VITE_API_TENANT_URL=https://api.tanpoqiuer.cn/api/
 
 # 资源URL
 VITE_RESOURCE_URL=https://image.tanpoqiuer.cn/

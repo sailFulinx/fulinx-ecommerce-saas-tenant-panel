@@ -4,7 +4,7 @@ export function fetchTenantInfoApi(): Promise<IResponse<TenantDetail>> {
   return request.get({
     url: 'tenant/info',
     token: true,
-    isBusinessApi: false,
+    isTenantApi: true,
   })
 }
 
@@ -13,7 +13,7 @@ export function createTenantStoreApi(data: TenantStoreCreateParams): Promise<IRe
     url: 'tenant/store',
     data,
     token: true,
-    isBusinessApi: false,
+    isTenantApi: true,
   })
 }
 
@@ -22,7 +22,7 @@ export function updateTenantStoreApi(data: TenantStoreUpdateParams): Promise<IRe
     url: 'tenant/store',
     data,
     token: true,
-    isBusinessApi: false,
+    isTenantApi: true,
   })
 }
 
@@ -31,7 +31,7 @@ export function removeTenantStoreApi(data: TenantStoreRemoveParams): Promise<IRe
     url: 'tenant/store',
     data,
     token: true,
-    isBusinessApi: false,
+    isTenantApi: true,
   })
 }
 
@@ -40,6 +40,7 @@ export function showTenantStoreApi(params: ShowStoreParams): Promise<IResponse<S
     url: 'tenant/store/show',
     data: params,
     token: true,
+    isTenantApi: true,
   })
 }
 
@@ -50,6 +51,7 @@ export function tenantStorePaginationApi(
     url: 'tenant/store/pagination',
     data,
     token: true,
+    isTenantApi: true,
   })
 }
 
@@ -60,5 +62,6 @@ export function tenantStoreListApi(
     url: 'tenant/store/list',
     data,
     token: true,
+    isTenantApi: true,
   })
 }

@@ -7,6 +7,10 @@ const handleOpenPreference = async () => {
   await nextTick()
   preferenceDialogRef.value?.openDialog()
 }
+
+const handleOpenDocument = () => {
+  window.open('https://doc.cms.fulinx.com')
+}
 </script>
 
 <template>
@@ -16,9 +20,17 @@ const handleOpenPreference = async () => {
       <!-- <Breadcrumb /> -->
     </div>
     <div class="flex items-center">
+      <StoreInfo class="hover-trigger mr-2" />
       <!-- <LocaleDropdown class="hover-trigger" color="var(--top-header-text-color)" /> -->
       <div class="mr-2 fs-14px">
-        <span><a href="https://doc.cms.fulinx.com" target="_blank">{{ $t('common.document') }}</a></span>
+        <EBtn type="primary" text @click="handleOpenDocument">
+          <Icon
+            icon="ep:document"
+            class=" hover-trigger cursor-pointer"
+            :size="5"
+          />
+          {{ $t('common.document') }}
+        </EBtn>
       </div>
       <div class="mr-2 flex items-center fs-14px">
         <EBtn type="primary" text @click="handleOpenPreference">
@@ -33,7 +45,6 @@ const handleOpenPreference = async () => {
       <!-- <div class="mr-2 flex items-center">
         <DarkSwitch />
       </div> -->
-      <StoreInfo class="hover-trigger mr-2" />
       <UserInfo class="hover-trigger" />
     </div>
     <Preference ref="preferenceDialogRef" />
