@@ -20,23 +20,23 @@ const handleOpenDocument = () => {
       <!-- <Breadcrumb /> -->
     </div>
     <div class="flex items-center">
-      <StoreInfo class="hover-trigger mr-2" />
+      <StoreInfo class="hover-trigger mr-1" />
       <!-- <LocaleDropdown class="hover-trigger" color="var(--top-header-text-color)" /> -->
-      <div class="mr-2 fs-14px">
+      <div class="mr-1 fs-14px">
         <EBtn type="primary" text @click="handleOpenDocument">
           <Icon
             icon="ep:document"
-            class=" hover-trigger cursor-pointer"
+            class="mr-1 hover-trigger cursor-pointer"
             :size="5"
           />
           {{ $t('common.document') }}
         </EBtn>
       </div>
-      <div class="mr-2 flex items-center fs-14px">
+      <div class="mr-1 flex items-center fs-14px">
         <EBtn type="primary" text @click="handleOpenPreference">
           <Icon
             icon="ep:setting"
-            class=" hover-trigger cursor-pointer"
+            class="mr-1 hover-trigger cursor-pointer"
             :size="5"
           />
           {{ $t('common.Preference') }}
