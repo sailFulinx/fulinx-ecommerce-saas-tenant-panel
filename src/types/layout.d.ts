@@ -76,3 +76,12 @@ interface LayoutRowData {
 interface LayoutComponentForm {
   componentId: string | null
 }
+
+interface ListLayoutTypeParams {
+  /* Layout Type */
+  layoutTypeCode?: string | null
+}
+
+interface LayoutTypeData {
+
+}

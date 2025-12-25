@@ -6,6 +6,7 @@ export default {
   system: '系统设置',
   dashboard: '首页',
   content: '内容管理',
+  catalogCategory: '产品分类管理',
   siteSetting: '网站设置',
   app: '应用管理',
   page: '页面管理',

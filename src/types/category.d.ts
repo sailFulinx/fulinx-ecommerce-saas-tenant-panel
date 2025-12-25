@@ -1,41 +1,40 @@
-interface CategoryDetailData {
-  /* Category Detail ID */
+interface CategoryCreateParams {
+  /* Category Type, 1: Product, 2: Article */
+  categoryType: number
+  parentId: string
+  /* Language Id */
+  languageId: string
+  /* Category  Name */
+  categoryName: string
+  parentIds?: string[]
+}
+
+interface CategoryCreateRes {
   id: string
 
-  /* Category ID */
-  categoryId: string
+  /* Category Type, 1: Product, 2: Article */
+  categoryType: number
 
-  /* Language ID */
-  languageId: string
+  /* Parent ID */
+  parentId: string
 
-  /* Language Code */
-  languageCode: string
+  /* Parent Ids */
+  parentIds: string[]
 
-  /* Language Name */
-  languageName: string
+  /* Status, 0: Disabled 1: Enabled */
+  status: boolean
 
-  /* Category Name */
-  categoryName: string
+  /* Category  Detail List Result Dos */
+  categoryDetailListResultDo: CategoryDetail
 
-  /* Parent Category Names */
-  parentCategoryNames: string[]
+  /* Category  Seo List Result Dos */
+  categorySeoListResultDo: CategorySeoData
 
-  /* Category Description */
-  categoryDescription: string
+  /* Slug ID */
+  slugId: string
 
-  /* Category File Id */
-  categoryFileId: string
-
-  /* */
-  fileVo: FileData
-
-  /* Customs */
-  customs: string
-
-  customList: CustomDataType[]
-
-  /* Is Default */
-  isDefault: boolean
+  /* Slug */
+  slug: string
 
   /* Soft Delete Flag */
   isDelete: number
@@ -59,24 +58,21 @@ interface CategoryDetailData {
   recordUpdateTime: string
 }
 
-interface RemoveCategoryParams {
-  ids: string[]
-}
-
 interface CategoryListParams {
   /* ID */
   id?: string | null
 
+  /* Category Type, 1: Product, 2: Article */
+  categoryType?: number | null
+
   /* Language Id */
-  languageId?: string | null
+  languageId?: string
 
   /* Language Code */
-  languageCode?: string | null
+  languageCode?: string
 
-  /* Category Name */
-  categoryName?: string | null
-
-  categoryType?: number
+  /* Category  Name */
+  categoryName?: string
 
   /* Status, 0: Disabled 1: Enabled */
   status?: boolean
@@ -89,17 +85,14 @@ interface CategoryData {
   /* Category ID */
   id: string
 
+  /* Category Type, 1: Product, 2: Article */
+  categoryType: number
+
   /* Parent ID */
   parentId: string
 
   /* Parent Ids */
-  parentIds: string[]
-
-  /* Category File ID */
-  categoryFileId: string
-
-  /* */
-  categoryFileVo: FileData
+  parentIds: Record<string, unknown>[]
 
   /* Language Id */
   languageId: string
@@ -110,38 +103,110 @@ interface CategoryData {
   /* Category Name */
   categoryName: string
 
-  /* Category Description */
+  /* Status, 0: Disabled 1: Enabled */
+  status: boolean
+
+  /* Is Top */
+  isTop: boolean
+
+  /* Sort */
+  sort: number
+
+  /* Slug ID */
+  slugId: string
+
+  /* Slug */
+  slug: string
+
+  children: CategoryData[]
+}
+
+interface CategoryListRes {
+  list: (CategoryData & CommonField)[]
+  total: number
+}
+
+interface CategoryDetail {
+  /* Category  Detail ID */
+  id: string
+
+  /* Category  ID */
+  categoryId: string
+
+  /* Language ID */
+  languageId: string
+
+  /* Language Code */
+  languageCode: string
+
+  /* Language Name */
+  languageName: string
+
+  /* Category  Name */
+  categoryName: string
+
+  categoryShortName: string
+
+  /* Parent Category  Names */
+  parentCategoryNames: string[]
+
+  /* Category  Description */
   categoryDescription: string
+
+  categoryShortDescription: string
+
+  /* Category  File Id */
+  categoryFileId: string
+
+  /* */
+  fileVo: FileData
 
   /* Customs */
   customs: string
 
-  /* Meta Title */
-  metaTitle: string
+  customList: CustomDataType[]
 
-  /* Meta Description */
-  metaDescription: string
+  /* Layout Type, 1: default, 2: devCustomized, 3: userDefined  */
+  layoutType: number
 
-  /* Status, 0: Disabled 1: Enabled */
-  status: boolean
+  /* Layout Type Label  */
+  layoutTypeLabel: string
 
-  disabled: boolean
+  /* Dev Component Name */
+  devComponentName: string
 
-  /* Children */
-  children: CategoryData[]
+  layoutContent: string | null
 
-  /* Category Slug ID */
-  slugId: string
+  /* Is Default */
+  isDefault: boolean
 
-  /* Article Slug */
-  slug: string
+  /* Soft Delete Flag */
+  isDelete: number
+
+  /* Remark */
+  remark: string
+
+  /* Record Version */
+  recordVersion: number
+
+  /* Record Create Name */
+  recordCreateName: string
+
+  /* Record Update Name */
+  recordUpdateName: string
+
+  /* Record Create Time */
+  recordCreateTime: string
+
+  /* Record Update Time */
+  recordUpdateTime: string
 }
 
 interface CategorySeoData {
-  /* Category SEO ID */
+  /* Category  SEO ID */
   id: string
 
-  /* Category ID */
+  /* Category  ID */
   categoryId: string
 
   /* Language ID */
@@ -184,29 +249,29 @@ interface CategorySeoData {
   recordUpdateTime: string
 }
 
-interface ShowCategoryParams {
-  /* Category ID */
-  categoryId: string
+interface CategoryShowListItem {
+  /* Language Code */
+  languageCode: string
 
-  /* Language Id */
-  languageId: string | null
+  /* Language Name */
+  languageName: string
+
+  /* */
+  categoryDetailListResultDo: CategoryDetail | null
+
+  /* */
+  categorySeoListResultDo: CategorySeoData | null
 }
 
 interface CategoryShowData {
-  /* Category ID */
+  /* Category  ID */
   id: string
+
+  /* Category Type, 1: Product, 2: Article */
+  categoryType: number
 
   /* Parent ID */
   parentId: string
-
-  /* Is Custom Layout */
-  isCustomLayout: boolean
-
-  /* Layout Id */
-  layoutId: string | null
-
-  /* */
-  layoutListResultDo: LayoutData & CommonField
 
   /* Parent Ids */
   parentIds: string[]
@@ -214,17 +279,14 @@ interface CategoryShowData {
   /* Status, 0: Disabled 1: Enabled */
   status: boolean
 
-  /* */
-  categoryDetailListResultDo: CategoryDetailData
-
-  /* */
-  seoListResultDo: CategorySeoData
-
-  /* Category Slug ID */
+  /* Slug ID */
   slugId: string
 
-  /* Article Slug */
+  /* Slug */
   slug: string
+
+  /* Category  Show List */
+  categoryAdminLocalizedViewDos: CategoryShowListItem[]
 
   /* Soft Delete Flag */
   isDelete: number
@@ -248,159 +310,160 @@ interface CategoryShowData {
   recordUpdateTime: string
 }
 
-interface ListCategoryRes {
-  list: (CategoryData & CommonField)[]
-  total: number
-}
+interface CategoryShowParams {
+  /* Category  ID */
+  categoryId: string
 
-interface CategoryRequestParams {
-  /* Parent Id */
-  parentId: string
-
-  parentIds: string[]
-
-  /* Status, 0: Disabled 1: Enabled */
-  status: boolean
-
-  /* 新增分类详情请求参数 */
-  categoryDetailVoList: CategoryDetailItem[]
-
-  categoryDetailDoList?: CategoryDetailItem[]
-
-  deleteLanguageIdList?: string[]
-}
-
-interface CategoryCreateRequestParams {
-  categoryType: number
-  /* Parent Id */
-  parentId: string
-
-  parentIds?: string[]
-
+  /* Language ID */
   languageId: string
-
-  /* Category Name */
-  categoryName: string
 }
 
-interface CategoryUpdateLayoutParams {
-  /* Category Id */
-  categoryId: string
-
-  languageId: string
-
-  /* Is Custom Layout */
-  isCustomLayout: boolean
-
-  /* Layout Id */
-  layoutId: string
-}
-
-interface CategoryUpdateLayoutSort {
-  categoryId: string
-  sort: number
-}
-
-interface CategoryUpdateCategoryTypeParams {
-  /* Category Id */
-  categoryId: string
-
-  categoryType: number
-}
-
-interface CategoryUpdateStatusParams {
-  /* Category Id */
-  categoryId: string
-
-  /* Status, 0: Disabled 1: Enabled */
-  status: boolean
-
-  /* Language Id */
-  languageId: string | null
-}
-
-interface CategoryUpdateParentParams {
-  /* Category Id */
-  categoryId: string
-
-  /* Parent Id */
-  parentId: string
-
-  /* Language Id */
-  languageId: string | null
-}
-
-interface CategoryCreateCategoryNameParams {
-  /* Category Id */
-  categoryId: string
-
-  /* languageId Id */
-  languageId: string
-
-  /* Category Name */
-  categoryName: string
-}
-
-interface CategoryCreateCategorySeoParams {
-  /* Category Id */
-  categoryId: string
-
-  /* languageId Id */
-  languageId: string
-
-  /* Meta Title */
-  metaTitle: string
-
-  /* Meta Description */
-  metaDescription?: string
-}
-
-interface CategoryCreateCategorySlugParams {
-  /* Category Id */
-  categoryId: string
-
-  /* languageId Id */
-  languageId: string
-
-  /* Slug */
-  slug: string
-}
-
-interface CategoryUpdateCategoryNameParams {
-  /* Category Detail Id */
+interface CategoryDescriptionParams {
+  /* Category  Detail Id */
   categoryDetailId: string
 
-  /* Category Name */
-  categoryName: string
-}
-
-interface CategoryUpdateCategoryDescriptionParams {
-  /* Category Detail Id */
-  categoryDetailId: string
-
-  /* Category Description */
+  /* Category  Description */
   categoryDescription: string
 }
 
-interface CategoryUpdateCategoryFileParams {
-  /* Category Detail Id */
+interface CategoryShortDescriptionParams {
+  /* Category  Detail Id */
   categoryDetailId: string
 
-  /* Category File Id */
-  categoryFileId: string | null
+  /* Category  Description */
+  categoryShortDescription: string
 }
 
-interface CategoryUpdateCategoryCustomParams {
-  /* Category Detail Id */
+interface CategoryCustomParams {
+  /* Category  Detail Id */
   categoryDetailId: string
 
   /* Customs */
   customs: string
 }
 
-interface CategoryUpdateCategorySeoParams {
-  /* Category Seo ID */
+interface CategorySortParams {
+  /* Category  Id */
+  categoryId: string
+  /* Language ID */
+  languageId: string
+  /* Sort */
+  sort: number
+}
+
+interface CategoryIsTopParams {
+  /* Category  Id */
+  categoryId: string
+
+  /* Language ID */
+  languageId: string
+
+  /* Is Top */
+  isTop: boolean
+}
+
+interface CategoryNameParams {
+  /* Category  Detail Id */
+  categoryDetailId: string
+
+  /* Category  Name */
+  categoryName: string
+}
+
+interface CategoryShortNameParams {
+  /* Category  Detail Id */
+  categoryDetailId: string
+
+  /* Category  Name */
+  categoryShortName: string
+}
+
+interface CategoryFileParams {
+  /* Category  Detail Id */
+  categoryDetailId: string
+
+  /* Category  File Id */
+  categoryFileId?: string
+}
+
+interface CategorySeoParams {
+  /* Category  Seo ID */
   categorySeoId: string
+
+  /* Meta Title */
+  metaTitle?: string
+
+  /* Meta Description */
+  metaDescription?: string
+}
+
+interface CategorySlugParams {
+  /* Slug ID */
+  slugId: string
+
+  /* Language Id */
+  languageId: string
+
+  /* Slug */
+  slug: string
+}
+
+interface CategoryLayoutParams {
+  /* Category  Detail Id */
+  categoryDetailId: string
+
+  /* Language ID */
+  languageId: string
+
+  /* Layout Type, 1: default, 2: devCustomized, 3: userDefined  */
+  layoutType: number
+
+  /* Dev Component Name */
+  devComponentName?: string
+
+  /* Layout ID */
+  layoutContent?: string
+}
+
+interface CategoryParentParams {
+  /* Category  Id */
+  categoryId: string
+
+  /* Parent Id */
+  parentId: string
+
+  /* Language ID */
+  languageId: string
+}
+
+interface CategoryStatusParams {
+  /* Category  Id */
+  categoryId: string
+
+  /* Status, 0: Disabled 1: Enabled */
+  status: boolean
+
+  /* Language ID */
+  languageId: string
+}
+
+interface CategoryNameCreateParams {
+  /* Category  ID */
+  categoryId: string
+
+  /* Language ID */
+  languageId: string
+
+  /* Category  Name */
+  categoryName: string
+}
+
+interface CategorySeoCreateParams {
+  /* Category  ID */
+  categoryId: string
+
+  /* Language ID */
+  languageId: string
 
   /* Meta Title */
   metaTitle: string
@@ -409,13 +472,29 @@ interface CategoryUpdateCategorySeoParams {
   metaDescription?: string
 }
 
-interface CategoryUpdateCategorySlugParams {
-  /* Category Slug ID */
-  slugId: string
-
-  /* Slug */
-  slug: string
+interface CategorySlugCreateParams {
+  /* Category  ID */
+  categoryId: string
 
   /* Language Id */
   languageId: string
+
+  /* Slug */
+  slug: string
+}
+
+interface RemoveCategoryParams {
+  /* Category  Ids */
+  ids: string[]
+}
+
+interface CopyCategoryParams {
+  /* Category  Id */
+  categoryId: string
+
+  /* From Language Id */
+  fromLanguageId: string
+
+  /* To Language Id */
+  toLanguageId: string
 }

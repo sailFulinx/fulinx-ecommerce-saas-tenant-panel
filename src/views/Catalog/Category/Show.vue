@@ -37,7 +37,7 @@ const loading = reactive({
 const createFormData = (): CategoryShowData => {
   return {
     id: '0',
-    categoryType: 2,
+    categoryType: 1,
     parentId: '0',
     parentIds: [],
     status: true,

@@ -17,7 +17,7 @@ const catalogRouter: AppRouteRecordRaw = {
   children: [
     {
       path: 'product/list',
-      component: () => import('@/views/Product/index.vue'),
+      component: () => import('@/views/Catalog/Product/index.vue'),
       name: 'ProductList',
       meta: {
         title: $t('router.product'),
@@ -26,7 +26,7 @@ const catalogRouter: AppRouteRecordRaw = {
     },
     {
       path: 'product/create',
-      component: () => import('@/views/Product/Create.vue'),
+      component: () => import('@/views/Catalog/Product/Create.vue'),
       name: 'CreateProduct',
       meta: {
         title: $t('product.add'),
@@ -39,7 +39,7 @@ const catalogRouter: AppRouteRecordRaw = {
     },
     {
       path: 'product/show/:id',
-      component: () => import('@/views/Product/Show.vue'),
+      component: () => import('@/views/Catalog/Product/Show.vue'),
       name: 'ShowProduct',
       meta: {
         title: $t('product.show'),
@@ -50,9 +50,10 @@ const catalogRouter: AppRouteRecordRaw = {
         props: true,
       },
     },
+
     {
       path: 'parameter',
-      component: () => import('@/views/Parameter/index.vue'),
+      component: () => import('@/views/Catalog/Parameter/index.vue'),
       name: 'ParameterList',
       meta: {
         title: $t('router.parameter'),
@@ -61,7 +62,7 @@ const catalogRouter: AppRouteRecordRaw = {
     },
     {
       path: 'parameter/create',
-      component: () => import('@/views/Parameter/Create.vue'),
+      component: () => import('@/views/Catalog/Parameter/Create.vue'),
       name: 'CreateParameter',
       meta: {
         title: $t('parameter.add'),
@@ -74,7 +75,7 @@ const catalogRouter: AppRouteRecordRaw = {
     },
     {
       path: 'parameter/show/:id',
-      component: () => import('@/views/Parameter/Show.vue'),
+      component: () => import('@/views/Catalog/Parameter/Show.vue'),
       name: 'ShowParameter',
       meta: {
         title: $t('parameter.show'),
@@ -87,7 +88,7 @@ const catalogRouter: AppRouteRecordRaw = {
     },
     {
       path: 'supplier',
-      component: () => import('@/views/Supplier/index.vue'),
+      component: () => import('@/views/Catalog/Supplier/index.vue'),
       name: 'SupplierList',
       meta: {
         title: $t('router.supplier'),
@@ -96,7 +97,7 @@ const catalogRouter: AppRouteRecordRaw = {
     },
     {
       path: 'supplier/create',
-      component: () => import('@/views/Supplier/Create.vue'),
+      component: () => import('@/views/Catalog/Supplier/Create.vue'),
       name: 'CreateSupplier',
       meta: {
         title: $t('supplier.add'),
@@ -109,7 +110,7 @@ const catalogRouter: AppRouteRecordRaw = {
     },
     {
       path: 'supplier/show/:id',
-      component: () => import('@/views/Supplier/Show.vue'),
+      component: () => import('@/views/Catalog/Supplier/Show.vue'),
       name: 'ShowSupplier',
       meta: {
         title: $t('supplier.show'),
@@ -122,12 +123,35 @@ const catalogRouter: AppRouteRecordRaw = {
     },
     {
       path: 'file',
-      component: () => import('@/views/File/index.vue'),
+      component: () => import('@/views/Catalog/File/index.vue'),
       name: 'FileList',
       meta: {
         title: $t('router.file'),
         icon: 'ant-design:file-image-outlined',
       },
+    },
+    {
+      path: 'category',
+      component: () => import('@/views/Catalog/Category/index.vue'),
+      name: 'ProductCategoryList',
+      meta: {
+        title: $t('router.catalogCategory'),
+        icon: 'ep:document',
+        noCache: true,
+      },
+    },
+    {
+      path: 'category/show/:id(\\d+)',
+      component: () => import('@/views/Catalog/Category/Show.vue'),
+      name: 'ShowCategory',
+      meta: {
+        title: `${$t('category.show')}`,
+        noCache: true,
+        hidden: true,
+        canTo: true,
+        activeMenu: '/category',
+      },
+      props: true,
     },
   ],
 }

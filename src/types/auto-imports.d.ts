@@ -11,7 +11,11 @@ declare global {
   const $flashy: typeof import('../composables/useFlashy').$flashy
   const $inStore: typeof import('../composables/useInStore').$inStore
   const $sleep: typeof import('../composables/sleep').$sleep
+  const CopyArticleApi: typeof import('../api/article').CopyArticleApi
+  const CopyArticleDetailApi: typeof import('../api/article').CopyArticleDetailApi
+  const CopyPageApi: typeof import('../api/page').CopyPageApi
   const CreateArticleApi: typeof import('../api/article').CreateArticleApi
+  const CreatePageApi: typeof import('../api/page').CreatePageApi
   const EffectScope: typeof import('vue').EffectScope
   const ElMessage: typeof import('element-plus/es').ElMessage
   const ElMessageBox: typeof import('element-plus/es').ElMessageBox
@@ -79,6 +83,9 @@ declare global {
   const createInjectionState: typeof import('@vueuse/core').createInjectionState
   const createLayoutApi: typeof import('../api/layout').createLayoutApi
   const createOrderShipmentApi: typeof import('../api/order').createOrderShipmentApi
+  const createPageNameApi: typeof import('../api/page').createPageNameApi
+  const createPageSeoApi: typeof import('../api/page').createPageSeoApi
+  const createPageSlugApi: typeof import('../api/page').createPageSlugApi
   const createParameterApi: typeof import('../api/parameter').createParameterApi
   const createParameterDetailApi: typeof import('../api/parameter').createParameterDetailApi
   const createParameterGroupApi: typeof import('../api/parameter').createParameterGroupApi
@@ -133,6 +140,7 @@ declare global {
   const extendRef: typeof import('@vueuse/core').extendRef
   const fetchArticleMissingStatistics: typeof import('../api/dashboard').fetchArticleMissingStatistics
   const fetchArticleSeoCheckList: typeof import('../api/dashboard').fetchArticleSeoCheckList
+  const fetchArticleTypeListApi: typeof import('../api/article').fetchArticleTypeListApi
   const fetchCaptchaApi: typeof import('../api/captcha').fetchCaptchaApi
   const fetchCategoryMissingStatistics: typeof import('../api/dashboard').fetchCategoryMissingStatistics
   const fetchCategorySeoCheckList: typeof import('../api/dashboard').fetchCategorySeoCheckList
@@ -140,6 +148,7 @@ declare global {
   const fetchImpDetailApi: typeof import('../api/imp').fetchImpDetailApi
   const fetchImpPaginationApi: typeof import('../api/imp').fetchImpPaginationApi
   const fetchLanguageListApi: typeof import('../api/language').fetchLanguageListApi
+  const fetchLayoutTypeListApi: typeof import('../api/common').fetchLayoutTypeListApi
   const fetchPermissionListApi: typeof import('../api/permission').fetchPermissionListApi
   const fetchRoleDetailApi: typeof import('../api/role').fetchRoleDetailApi
   const fetchRoleListApi: typeof import('../api/role').fetchRoleListApi
@@ -205,6 +214,8 @@ declare global {
   const onWatcherCleanup: typeof import('vue').onWatcherCleanup
   const orderListApi: typeof import('../api/order').orderListApi
   const orderPaginationApi: typeof import('../api/order').orderPaginationApi
+  const pageListApi: typeof import('../api/page').pageListApi
+  const pagePaginationApi: typeof import('../api/page').pagePaginationApi
   const parameterGroupListApi: typeof import('../api/parameter').parameterGroupListApi
   const parameterGroupPaginationApi: typeof import('../api/parameter').parameterGroupPaginationApi
   const parameterGroupParameterRelationListApi: typeof import('../api/parameter').parameterGroupParameterRelationListApi
@@ -241,6 +252,7 @@ declare global {
   const removeCouponApi: typeof import('../api/coupon').removeCouponApi
   const removeLayoutApi: typeof import('../api/layout').removeLayoutApi
   const removeMessageApi: typeof import('../api/message').removeMessageApi
+  const removePageApi: typeof import('../api/page').removePageApi
   const removeParameterApi: typeof import('../api/parameter').removeParameterApi
   const removeParameterGroupApi: typeof import('../api/parameter').removeParameterGroupApi
   const removeParameterGroupParameterRelationApi: typeof import('../api/parameter').removeParameterGroupParameterRelationApi
@@ -283,6 +295,7 @@ declare global {
   const showLayoutApi: typeof import('../api/layout').showLayoutApi
   const showMessageApi: typeof import('../api/message').showMessageApi
   const showOrderApi: typeof import('../api/order').showOrderApi
+  const showPageApi: typeof import('../api/page').showPageApi
   const showParameterApi: typeof import('../api/parameter').showParameterApi
   const showParameterGroupApi: typeof import('../api/parameter').showParameterGroupApi
   const showParameterValueApi: typeof import('../api/parameter').showParameterValueApi
@@ -336,11 +349,15 @@ declare global {
   const updateArticleFileApi: typeof import('../api/article').updateArticleFileApi
   const updateArticleIsCustomLayoutApi: typeof import('../api/article').updateArticleIsCustomLayoutApi
   const updateArticleIsTopApi: typeof import('../api/article').updateArticleIsTopApi
+  const updateArticleLayoutApi: typeof import('../api/article').updateArticleLayoutApi
   const updateArticleNameApi: typeof import('../api/article').updateArticleNameApi
   const updateArticleSeoApi: typeof import('../api/article').updateArticleSeoApi
+  const updateArticleShortDescriptionApi: typeof import('../api/article').updateArticleShortDescriptionApi
+  const updateArticleShortNameApi: typeof import('../api/article').updateArticleShortNameApi
   const updateArticleSlugApi: typeof import('../api/article').updateArticleSlugApi
   const updateArticleSortApi: typeof import('../api/article').updateArticleSortApi
   const updateArticleStatusApi: typeof import('../api/article').updateArticleStatusApi
+  const updateArticleTypeApi: typeof import('../api/article').updateArticleTypeApi
   const updateBrandDetailApi: typeof import('../api/brand').updateBrandDetailApi
   const updateBrandDetailBrandNameApi: typeof import('../api/brand').updateBrandDetailBrandNameApi
   const updateBrandDetailDescriptionApi: typeof import('../api/brand').updateBrandDetailDescriptionApi
@@ -362,6 +379,15 @@ declare global {
   const updateCouponTypeApi: typeof import('../api/coupon').updateCouponTypeApi
   const updateCouponValueApi: typeof import('../api/coupon').updateCouponValueApi
   const updateOrderStatusApi: typeof import('../api/order').updateOrderStatusApi
+  const updatePageCustomsApi: typeof import('../api/page').updatePageCustomsApi
+  const updatePageDescriptionApi: typeof import('../api/page').updatePageDescriptionApi
+  const updatePageLayoutApi: typeof import('../api/page').updatePageLayoutApi
+  const updatePageNameApi: typeof import('../api/page').updatePageNameApi
+  const updatePageSeoApi: typeof import('../api/page').updatePageSeoApi
+  const updatePageShortDescriptionApi: typeof import('../api/page').updatePageShortDescriptionApi
+  const updatePageShortNameApi: typeof import('../api/page').updatePageShortNameApi
+  const updatePageSlugApi: typeof import('../api/page').updatePageSlugApi
+  const updatePageStatusApi: typeof import('../api/page').updatePageStatusApi
   const updateParameterDetailParameterNameApi: typeof import('../api/parameter').updateParameterDetailParameterNameApi
   const updateParameterGroupDetailParameterGroupNameApi: typeof import('../api/parameter').updateParameterGroupDetailParameterGroupNameApi
   const updateParameterGroupStatusApi: typeof import('../api/parameter').updateParameterGroupStatusApi

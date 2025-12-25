@@ -16,7 +16,7 @@ const languageId = ref()
 
 const listPayload = reactive<CategoryListParams & Pagination>({
   languageId: undefined,
-  categoryType: 2,
+  categoryType: 1,
   categoryName: '',
   id: null,
   pageNumber: 1,

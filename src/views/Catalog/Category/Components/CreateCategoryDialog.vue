@@ -18,7 +18,7 @@ const loading = reactive({
 
 const form = reactive<CategoryCreateParams>({
   languageId: preferenceLanguage.value?.id || '',
-  categoryType: 2,
+  categoryType: 1,
   categoryName: '',
   parentId: '0',
   parentIds: [],
