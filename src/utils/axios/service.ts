@@ -2,6 +2,7 @@ import type { AxiosError, AxiosInstance, AxiosRequestHeaders, AxiosResponse, Int
 import axios from 'axios'
 import qs from 'qs'
 import router from '@/router'
+import { useTenantStore } from '@/stores/tenant'
 import { config } from './config'
 
 // 创建axios实例
@@ -25,6 +26,12 @@ service.interceptors.request.use(
       config.headers['X-API-ACCESS'] = apiAccessKey
     } else {
       console.warn('VITE_X_API_ACCESS is not set')
+    }
+
+    // 获取租户store实例，添加X-TENANT-STORE-ID到请求头
+    const tenantStore = useTenantStore()
+    if (tenantStore.defaultStoreId) {
+      config.headers['X-TENANT-STORE-ID'] = tenantStore.defaultStoreId
     }
 
     if (
