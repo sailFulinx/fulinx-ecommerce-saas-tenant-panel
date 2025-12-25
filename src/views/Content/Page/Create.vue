@@ -6,8 +6,6 @@ import { convertCustomTypeValue } from '@/utils/general'
 
 const { t: $t } = useLocale()
 
-const uploadRef = ref()
-
 const router = useRouter()
 
 const sourceUrl = useFileRootUrl()
@@ -15,7 +13,7 @@ const sourceUrl = useFileRootUrl()
 const rules = reactive({
   languageId: [{ required: true, message: '语言必须选择', trigger: 'change' }],
   status: [{ required: true, message: '状态必填', trigger: 'change' }],
-  articleName: [{ required: true, message: '内容名称必须填写', trigger: 'blur' }],
+  pageName: [{ required: true, message: '内容名称必须填写', trigger: 'blur' }],
 })
 
 const loading = reactive({
@@ -23,37 +21,9 @@ const loading = reactive({
   button: false,
 })
 
-const pageTitle = $t('article.add')
+const pageTitle = $t('page.add')
 
-const listLayoutPayload = reactive<LayoutListParams>({
-  layoutName: null,
-})
-
-const listLayoutData = ref<TableResponse<LayoutData & CommonField>>({
-  list: [],
-  total: 0,
-})
-
-const getLayoutList = async () => {
-  loading.init = true
-  if (listLayoutPayload.layoutName === '') {
-    listLayoutPayload.layoutName = null
-  }
-  if (listLayoutPayload.layoutName && listLayoutPayload.layoutName?.length <= 1) {
-    loading.init = false
-    return
-  }
-  const { data } = await layoutListApi(listLayoutPayload).catch(error => {
-    loading.init = false
-    throw error
-  })
-  listLayoutData.value = data
-  loading.init = false
-}
-
-getLayoutList()
-
-const articleFormRef = ref()
+const pageFormRef = ref()
 
 const customs = ref<any[]>([])
 
@@ -69,72 +39,19 @@ const currentCustomData = ref({
   customContent: '',
 })
 
-const createArticleForm = (): CreateArticleParams => {
+const createPageForm = (): CreatePageParams => {
   return {
     languageId: '',
-    categoryIds: [],
     status: true,
-    articleName: '',
+    pageName: '',
     metaTitle: '',
     metaDescription: '',
-    articleDescription: '',
+    pageDescription: '',
     customs: '',
-    articleFileVoList: [],
-    tags: [],
   }
 }
 
-const articleForm = reactive<CreateArticleParams>(createArticleForm())
-
-const categories = ref<any[]>([])
-
-const inputTagValue = ref<string>('')
-const inputTagVisible = ref(false)
-const InputRef = ref<CompInstance['ElInput']>()
-
-const tags = ref<string[]>([])
-
-const handleCloseTag = (index: number) => {
-  if (tags.value && tags.value.length > 0) {
-    tags.value.splice(index, 1)
-  }
-}
-
-const showInput = () => {
-  inputTagVisible.value = true
-  nextTick(() => {
-    InputRef.value!.input!.focus()
-  })
-}
-
-const handleInputConfirm = () => {
-  if (inputTagValue.value.length >= 3) {
-    articleForm.tags?.push(inputTagValue.value)
-  }
-  inputTagVisible.value = false
-  inputTagValue.value = ''
-}
-
-const getCategories = async () => {
-  try {
-    const payload = {
-      languageId: usePreferenceStore().preference.language.id,
-    }
-    const { data } = await categoryListApi(payload)
-    categories.value = data.list
-  } catch (error) {
-    console.error('Failed to fetch categories:', error)
-  }
-}
-
-const selectedCategoryValue = ref<string[] | string[] | any>([])
-
-const cascaderProps = {
-  expandTrigger: 'hover' as const,
-  label: 'categoryName',
-  value: 'id',
-  multiple: true,
-}
+const pageForm = reactive<CreatePageParams>(createPageForm())
 
 const initCustomData = () => {
   currentCustomData.value = {
@@ -188,25 +105,15 @@ const deleteTagView = (refresh: boolean) => {
     tagsViewStore.delCachedView()
   }
   tagsViewStore.delVisitedView(router.currentRoute.value)
-  router.push({ name: 'ArticleList' })
+  router.push({ name: 'PageList' })
 }
 
 const save = async () => {
-  articleForm.languageId = usePreferenceStore().preference.language.id
-  articleForm.categoryIds = [...new Set(selectedCategoryValue.value.flat() as string[])]
-  articleForm.articleDescription = editorRef.value.getEditorContent()
-  articleForm.customs = JSON.stringify(customs.value)
-  const files = uploadRef.value.getFileData()
-  if (files && files.fileDataList && files.fileDataList.length > 0) {
-    files.fileDataList.forEach((item: FileData & CommonField, index: number) => {
-      articleForm.articleFileVoList?.push({
-        articleFileId: item.id,
-        isDefault: index === 0,
-        sort: item?.sort || 0,
-      })
-    })
-  }
-  const valid = await articleFormRef.value.validate((valid: boolean) => {
+  pageForm.languageId = usePreferenceStore().preference.language.id
+  pageForm.pageDescription = editorRef.value.getEditorContent()
+  pageForm.customs = JSON.stringify(customs.value)
+
+  const valid = await pageFormRef.value.validate((valid: boolean) => {
     if (!valid) {
       return false
     }
@@ -215,7 +122,7 @@ const save = async () => {
     return false
   }
 
-  await CreateArticleApi(articleForm).catch(err => {
+  await CreatePageApi(pageForm).catch(err => {
     throw err
   })
 
@@ -226,10 +133,6 @@ const save = async () => {
     duration: 2000,
   })
 }
-
-onMounted(() => {
-  getCategories()
-})
 </script>
 
 <template>
@@ -252,39 +155,23 @@ onMounted(() => {
       </div>
     </div>
     <div class="view-main theme-card">
-      <ElForm ref="articleFormRef" :model="articleForm" :rules="rules" label-width="120px">
+      <ElForm ref="pageFormRef" :model="pageForm" :rules="rules" label-width="120px">
         <!-- 基础信息 -->
         <ElCard shadow="never" class="mb-5">
           <template #header>
             <div class="card-header">
-              <span>{{ $t('article.base') }}</span>
+              <span>{{ $t('page.base') }}</span>
             </div>
           </template>
 
           <div class="grid grid-cols-4">
             <!-- 去掉 flex-wrap -->
             <!-- 第一部分：ElSelect -->
-
-            <!-- 第三部分：ElCascader 所在分类 -->
-            <div class="col-span-1 mr-4 flex items-center">
-              <!-- 适当增加宽度 -->
-              <ElFormItem label="分类" prop="categoryId" class="w-full">
-                <ElCascader
-                  v-model="selectedCategoryValue"
-                  :options="categories"
-                  :props="cascaderProps"
-                  clearable
-                  filterable
-                  class="w-full"
-                />
-              </ElFormItem>
-            </div>
-
             <!-- 第四部分：ElSwitch 状态 -->
             <div class="col-span-1 flex items-center">
               <!-- 控制宽度一致 -->
               <ElFormItem label="状态" prop="status" class="w-full">
-                <ElSwitch v-model="articleForm.status" />
+                <ElSwitch v-model="pageForm.status" />
               </ElFormItem>
             </div>
           </div>
@@ -293,7 +180,7 @@ onMounted(() => {
         <ElCard shadow="never" class="mb-5 theme-card">
           <template #header>
             <div class="flex justify-between">
-              <div>{{ $t('article.content') }}</div>
+              <div>{{ $t('page.content') }}</div>
             </div>
           </template>
           <div>
@@ -302,47 +189,19 @@ onMounted(() => {
                 <ElCard shadow="never" class="w-full mb-5">
                   <template #header>
                     <div class="card-header">
-                      <span>{{ $t('article.base') }}</span>
+                      <span>{{ $t('page.base') }}</span>
                     </div>
                   </template>
-                  <ElFormItem label="标题" prop="articleName">
+                  <ElFormItem label="标题" prop="pageName">
                     <ElInput
-                      v-model="articleForm.articleName"
+                      v-model="pageForm.pageName"
                       minlength="1"
                       maxlength="120"
                       placeholder="标题，少于120个字符"
                     />
                   </ElFormItem>
-                  <ElFormItem label="内容" prop="articleDescription">
-                    <Editor ref="editorRef" v-model="articleForm.articleDescription" :height="300" />
-                  </ElFormItem>
-                  <ElFormItem label="内容标签">
-                    <ElTag
-                      v-for="(tag, index) in articleForm.tags"
-                      :key="index"
-                      closable
-                      :disable-transitions="false"
-                      class="mr-2"
-                      @close="handleCloseTag(index)"
-                    >
-                      {{ tag }}
-                    </ElTag>
-                    <ElInput
-                      v-if="inputTagVisible"
-                      ref="InputRef"
-                      v-model="inputTagValue"
-                      class="w-20"
-                      style="width: 100px"
-                      size="small"
-                      @keyup.enter="handleInputConfirm"
-                      @blur="handleInputConfirm"
-                    />
-                    <EBtn v-else class="button-new-tag" size="small" @click="showInput">
-                      + 新标签
-                    </EBtn>
-                  </ElFormItem>
-                  <ElFormItem label="图片">
-                    <UploadMultiImage ref="uploadRef" />
+                  <ElFormItem label="内容" prop="pageDescription">
+                    <Editor ref="editorRef" v-model="pageForm.pageDescription" :height="300" />
                   </ElFormItem>
                   <ElFormItem label="自定义信息" class="flex flex-wrap">
                     <div class="w-full mb-5">
@@ -410,12 +269,12 @@ onMounted(() => {
                 <ElCard shadow="never" class="w-full">
                   <template #header>
                     <div class="card-header">
-                      <span>{{ $t('article.seo') }}</span>
+                      <span>{{ $t('page.seo') }}</span>
                     </div>
                   </template>
                   <ElFormItem label="元标题" prop="metaTitle">
                     <ElInput
-                      v-model="articleForm.metaTitle"
+                      v-model="pageForm.metaTitle"
                       class="input-line"
                       minlength="1"
                       maxlength="60"
@@ -424,7 +283,7 @@ onMounted(() => {
                   </ElFormItem>
                   <ElFormItem label="元描述" prop="metaDescription">
                     <ElInput
-                      v-model="articleForm.metaDescription"
+                      v-model="pageForm.metaDescription"
                       class="input-line"
                       type="textarea"
                       rows="4"

@@ -1,10 +1,8 @@
-import type { AppRouteRecordRaw } from '@/types/common'
-
 import { Layout } from '@/utils/routerHelper'
 
 const { t: $t } = useLocale()
 
-const order: AppRouteRecordRaw = {
+const orderRouter: AppRouteRecordRaw = {
   path: '/order',
   component: Layout,
   redirect: '/order/list',
@@ -40,4 +38,4 @@ const order: AppRouteRecordRaw = {
   ],
 }
 
-export default order
+export default orderRouter

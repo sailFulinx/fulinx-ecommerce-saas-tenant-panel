@@ -4,9 +4,10 @@ import type { FormRules } from 'element-plus'
 const emit = defineEmits(['getList'])
 const { t: $t } = useLocale()
 
-const { preference } = useInStore(usePreferenceStore)
-
-const preferenceLanguage = toRef(() => preference.value.language)
+const preferenceStore = usePreferenceStore()
+// 修复：使用 getPreferences() 方法确保 preference 被正确初始化
+const preference = preferenceStore.getPreferences()
+const preferenceLanguage = computed(() => preference?.language)
 
 const dialogVisible = ref(false)
 
@@ -16,7 +17,7 @@ const loading = reactive({
 })
 
 const form = reactive<CategoryCreateParams>({
-  languageId: '',
+  languageId: preferenceLanguage.value?.id || '',
   categoryName: '',
   parentId: '0',
   parentIds: [],
@@ -67,10 +68,11 @@ const resetForm = () => {
   form.parentIds = []
   form.parentId = '0'
   form.categoryName = ''
-  form.languageId = preferenceLanguage.value.id
+  form.languageId = preferenceLanguage.value?.id || ''
 }
 
 const openDialog = async (val?: CategoryData) => {
+  form.categoryName = val?.categoryName || ''
   cascaderDisabled.value = false
   resetForm()
   dialogVisible.value = true
@@ -82,16 +84,15 @@ const openDialog = async (val?: CategoryData) => {
   await getCategoriesData()
 }
 
-const createCategory = async () => {
+const createCategory = async (categoryName: string) => {
   loading.init = true
   const payload = $clone(form)
+  payload.categoryName = categoryName
   // delete payload.parentIds
   await categoryCreateApi(payload).catch(error => {
     loading.init = false
     throw error
   })
-  ElMessage.success($t('success.create'))
-  loading.init = false
 }
 
 const formRef = useTemplateRef('formRef')
@@ -103,7 +104,16 @@ const onSave = () => {
     if (!valid) {
       return false
     }
-    await createCategory()
+
+    // 解析多行输入的分类名称
+    const categoryNames = form.categoryName.split('\n').filter(name => name.trim() !== '')
+
+    // 批量创建分类
+    const promises = categoryNames.map(name => createCategory(name.trim()))
+    await Promise.all(promises)
+
+    ElMessage.success($t('success.create'))
+    loading.init = false
     emit('getList')
     dialogVisible.value = false
   })
@@ -111,7 +121,7 @@ const onSave = () => {
 
 const rules: FormRules = {
   parentIds: [{ required: true, type: 'array', message: '请选择选择上级分类', trigger: 'change' }],
-  categoryName: [{ required: true, message: '请输入分类名称', trigger: 'blur' }],
+  categoryName: [{ required: true, message: '请输入至少一个分类名称', trigger: 'blur' }],
 }
 
 defineExpose({
@@ -139,11 +149,10 @@ defineExpose({
         <ElInput
           v-model="form.categoryName"
           class="input-line"
+          type="textarea"
+          :rows="6"
           clearable
-          show-word-limit
-          minlength="1"
-          maxlength="120"
-          :placeholder="$t('category.placeholder.categoryName')"
+          :placeholder="`${$t('category.placeholder.categoryName')}（每行一个分类名称）`"
         />
       </ElFormItem>
     </ElForm>
@@ -152,7 +161,7 @@ defineExpose({
         <ElButton @click="dialogVisible = false">
           取消
         </ElButton>
-        <ElButton type="primary" @click="onSave">
+        <ElButton type="primary" :loading="loading.init" @click="onSave">
           提交
         </ElButton>
       </div>

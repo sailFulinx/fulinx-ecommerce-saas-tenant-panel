@@ -1,22 +1,19 @@
 import type { RouteRecordRaw } from 'vue-router'
-
-import type { AppRouteRecordRaw } from '@/types/common'
-
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
+import { useLocale } from '@/hooks/useLocale'
 
 import { Layout } from '@/utils/routerHelper'
 
-import article from './modules/article'
-import auth from './modules/auth'
-import catalog from './modules/catalog'
-import category from './modules/category'
-import customer from './modules/customer'
-// 导入模块化路由
-import dashboard from './modules/dashboard'
-import marketing from './modules/marketing'
-import order from './modules/order'
-import site from './modules/site'
-import system from './modules/system'
+// 导入模块路由
+import appRouter from './modules/app'
+import catalogRouter from './modules/catalog'
+import contentRouter from './modules/content'
+import customerRouter from './modules/customer'
+import dashboardRouter from './modules/dashboard'
+import orderRouter from './modules/order'
+import siteRouter from './modules/site'
+
+const { t: $t } = useLocale()
 
 export const constantRouterMap: AppRouteRecordRaw[] = [
   {
@@ -31,11 +28,11 @@ export const constantRouterMap: AppRouteRecordRaw[] = [
   {
     path: '/redirect',
     component: Layout,
-    name: 'Redirect',
+    name: 'RedirectWrap',
     children: [
       {
         path: '/redirect/:path(.*)',
-        name: 'RedirectPath',
+        name: 'Redirect',
         component: () => import('@/views/Redirect/Redirect.vue'),
         meta: {},
       },
@@ -45,7 +42,16 @@ export const constantRouterMap: AppRouteRecordRaw[] = [
       noTagsView: true,
     },
   },
-  auth,
+  {
+    path: '/login',
+    component: () => import('@/views/Auth/Login.vue'),
+    name: 'Login',
+    meta: {
+      hidden: true,
+      title: $t('router.login'),
+      noTagsView: true,
+    },
+  },
   {
     path: '/404',
     component: () => import('@/views/Error/404.vue'),
@@ -59,26 +65,25 @@ export const constantRouterMap: AppRouteRecordRaw[] = [
 ]
 
 export const asyncRouterMap: AppRouteRecordRaw[] = [
-  dashboard,
-  catalog,
-  order,
-  customer,
-  category,
-  article,
-  marketing,
-  site,
-  system,
+  dashboardRouter,
+  catalogRouter,
+  customerRouter,
+  orderRouter,
+  contentRouter,
+  appRouter,
+  siteRouter,
 ]
 
 const router = createRouter({
-  history: createWebHistory(),
+  // history: createWebHistory(),
+  history: createWebHashHistory(),
   strict: true,
   routes: constantRouterMap as RouteRecordRaw[],
   scrollBehavior: () => ({ left: 0, top: 0 }),
 })
 
 export const resetRouter = (): void => {
-  const resetWhiteNameList = ['Redirect', 'Login', 'NoFind', 'Root', 'Register', 'ForgetPassword']
+  const resetWhiteNameList = ['Redirect', 'Login', 'NoFind', 'Root']
   router.getRoutes().forEach(route => {
     const { name } = route
     if (name && !resetWhiteNameList.includes(name as string)) {

@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { usePreferenceStore } from '@/stores/preference'
 import { convertStatus } from '@/utils/status'
+
+const preferenceStore = usePreferenceStore()
 
 const router = useRouter()
 
-const listResult = ref<TableResponse<ArticleListData & CommonField>>({
+const listResult = ref<TableResponse<PageListData & CommonField>>({
   list: [],
   total: 0,
 })
@@ -13,21 +14,26 @@ const loading = reactive({
   list: false,
   del: false,
 })
-const listQuery = reactive<ArticleListParams & Pagination>({
-  languageId: usePreferenceStore().preference?.language.id,
-  articleName: '',
-  articleType: null,
+// 修复：确保在 preference 为 null 时也能正确处理
+const preference = ref<PreferenceType | null>(null)
+const languageId = ref()
+
+const listQuery = reactive<PageListParams & Pagination>({
+  languageId: languageId.value || undefined,
+  pageName: '',
+  pageType: null,
   pageSize: 20,
   pageNumber: 1,
 })
+
 const selectedList = ref<string[]>([])
 
 const getList = async () => {
   loading.list = true
-  if (listQuery.articleName === '') {
-    listQuery.articleName = null
+  if (listQuery.pageName === '') {
+    listQuery.pageName = null
   }
-  const { data } = await articlePaginationApi(listQuery).catch(err => {
+  const { data } = await pagePaginationApi(listQuery).catch(err => {
     loading.list = false
     throw err
   })
@@ -35,9 +41,24 @@ const getList = async () => {
   loading.list = false
 }
 
+// 修复：确保在 preference 加载完成后再加载依赖它的数据
+const initPreferenceAndLoadData = async () => {
+  preference.value = await preferenceStore.getPreferences()
+  languageId.value = preference.value?.language?.id
+  listQuery.languageId = languageId.value || undefined
+
+  // preference加载完成后，再加载依赖它的数据
+  if (preference.value?.language?.id) {
+    await getList()
+  }
+}
+
+// 不要在这里使用 await，避免阻塞组件渲染
+initPreferenceAndLoadData()
+
 // watch preference language
 watch(
-  () => usePreferenceStore().preference?.language,
+  () => preferenceStore.getPreferences()?.language,
   val => {
     if (val) {
       listQuery.languageId = val.id
@@ -60,15 +81,15 @@ const pagination = (val: PaginationComponentDataType) => {
   getList()
 }
 
-const selectedArticleItem = (val: ArticleListData[]) => {
+const selectedPageItem = (val: PageListData[]) => {
   selectedList.value = []
   val.forEach(item => {
     selectedList.value.push(item.id)
   })
 }
-const handleDelete = async (row: ArticleListData & CommonField) => {
+const handleDelete = async (row: PageListData & CommonField) => {
   loading.list = true
-  await removeArticleApi({ ids: [row.id] }).catch(err => {
+  await removePageApi({ ids: [row.id] }).catch(err => {
     loading.list = false
     throw err
   })
@@ -90,7 +111,7 @@ const handleMultiDelete = async () => {
     loading.list = false
     return
   }
-  await removeArticleApi({ ids: selectedList.value }).catch(err => {
+  await removePageApi({ ids: selectedList.value }).catch(err => {
     loading.list = false
     throw err
   })
@@ -103,66 +124,12 @@ const handleMultiDelete = async () => {
   })
 }
 const handleCreate = () => {
-  router.push({ name: 'CreateArticle' })
+  router.push({ name: 'CreatePage' })
 }
 
-const handleRedirectEdit = (val: ArticleListData & CommonField) => {
-  router.push({ name: 'ShowArticle', params: { id: val.id } })
+const handleRedirectEdit = (val: PageListData & CommonField) => {
+  router.push({ name: 'ShowPage', params: { id: val.id } })
 }
-
-// 处理排序变更
-const handleSortChange = async (row: ArticleListData & CommonField, value: number | undefined) => {
-  // 如果值为 undefined，不执行更新操作
-  if (value === undefined) {
-    return
-  }
-
-  try {
-    await updateArticleSortApi({
-      articleId: row.id,
-      languageId: listQuery.languageId,
-      sort: value,
-    })
-    ElMessage({
-      message: '排序更新成功',
-      type: 'success',
-      duration: 2000,
-    })
-    getList()
-  } catch (err) {
-    ElMessage({
-      message: '排序更新失败',
-      type: 'error',
-      duration: 2000,
-    })
-    throw err
-  }
-}
-
-// 处理置顶变更
-const handleIsTopChange = async (row: ArticleListData & CommonField, value: boolean) => {
-  try {
-    await updateArticleIsTopApi({
-      articleId: row.id,
-      languageId: listQuery.languageId,
-      isTop: value,
-    })
-    ElMessage({
-      message: value ? '已置顶' : '已取消置顶',
-      type: 'success',
-      duration: 2000,
-    })
-    getList()
-  } catch (err) {
-    ElMessage({
-      message: '置顶操作失败',
-      type: 'error',
-      duration: 2000,
-    })
-    throw err
-  }
-}
-
 init()
 </script>
 
@@ -172,12 +139,12 @@ init()
       <div class="flex justify-between items-center">
         <div class="flex flex-1 items-center">
           <div class="mr-5">
-            {{ $t('router.article') }}
+            {{ $t('router.page') }}
           </div>
           <ElInput
-            v-model="listQuery.articleName"
+            v-model="listQuery.pageName"
             clearable
-            :placeholder="$t('article.placeholder.articleName')"
+            :placeholder="$t('page.placeholder.pageName')"
             style="width: 200px"
             class="filter-item mr-5"
             @clear="getList"
@@ -208,34 +175,12 @@ init()
         default-expand-all
         highlight-current-row
         border
-        @selection-change="selectedArticleItem"
+        @selection-change="selectedPageItem"
       >
         <ElTableColumn type="selection" width="55" />
-        <ElTableColumn :label="$t('article.articleName')">
+        <ElTableColumn :label="$t('page.pageName')">
           <template #default="scope">
-            <span>{{ scope.row.articleName }}</span>
-          </template>
-        </ElTableColumn>
-        <ElTableColumn prop="sort" :label="$t('common.sort')" width="150">
-          <template #default="scope">
-            <ElInputNumber
-              v-model="scope.row.sort"
-              :min="0"
-              controls-position="right"
-              size="small"
-              @change="handleSortChange(scope.row, $event)"
-            />
-          </template>
-        </ElTableColumn>
-        <ElTableColumn :label="$t('common.isTop')" width="120">
-          <template #default="scope">
-            <ElSwitch
-              v-model="scope.row.isTop"
-              inline-prompt
-              :active-text="$t('common.yes')"
-              :inactive-text="$t('common.no')"
-              @change="handleIsTopChange(scope.row, Boolean($event))"
-            />
+            <span>{{ scope.row.pageName }}</span>
           </template>
         </ElTableColumn>
         <ElTableColumn :label="$t('common.status')" width="120">

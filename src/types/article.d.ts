@@ -105,8 +105,13 @@ interface ArticleDetailListResultDo {
   /* Article Name */
   articleName: string
 
+  articleShortName: string
+
   /* Description */
   articleDescription: string
+
+  /* Short Description */
+  articleShortDescription: string
 
   /* Customs */
   customs: string
@@ -114,8 +119,14 @@ interface ArticleDetailListResultDo {
   /* Custom List */
   customList?: CustomDataType[]
 
-  /* Is Custom Layout */
-  isCustomLayout: boolean
+  /* Layout Type, 1: default, 2: devCustomized, 3: userDefined  */
+  layoutType: number
+
+  /* Layout Type Label  */
+  layoutTypeLabel: string
+
+  /* Dev Component Name */
+  devComponentName: string
 
   layoutContent?: string
 }
@@ -135,6 +146,9 @@ interface ArticleFileVo {
 interface CreateArticleParams {
   /* Language Id */
   languageId: string
+
+  /* Article Type */
+  articleType: number | undefined
 
   /* 分类ID */
   categoryIds?: string[]
@@ -163,6 +177,22 @@ interface CreateArticleParams {
   articleFileVoList?: ArticleFileVo[]
   /* 文件Tag数组 */
   tags?: string[]
+}
+
+interface CopyArticleParams {
+  /* Article ID */
+  articleId: string
+}
+
+interface CopyArticleDetailParams {
+  /* Article ID */
+  articleId: string
+
+  /* From Language Id */
+  fromLanguageId: string
+
+  /* To Language Id */
+  toLanguageId: string
 }
 
 // 新增文章标题
@@ -255,6 +285,26 @@ interface UpdateArticleDescriptionParams {
   articleDescription: string
 }
 
+interface UpdateArticleShortDescriptionParams {
+  /* Article Detail ID */
+  articleDetailId: string
+
+  /* Article Description */
+  articleShortDescription: string
+}
+
+// 更新文章类型
+interface UpdateArticleTypeParams {
+  /* Article ID */
+  articleId: string
+
+  /* Language Id */
+  languageId: string
+
+  /* Article Type */
+  articleType: number
+}
+
 // 更新文章名称
 interface UpdateArticleNameParams {
   /* Article Detail ID */
@@ -262,6 +312,14 @@ interface UpdateArticleNameParams {
 
   /* Article Name */
   articleName: string
+}
+
+interface UpdateArticleShortNameParams {
+  /* Article Detail ID */
+  articleDetailId: string
+
+  /* Article Name */
+  articleShortName: string
 }
 
 // 更新文章类型
@@ -301,15 +359,18 @@ interface UpdateArticleCustomsParams {
 }
 
 // 更新文章是否自定义布局
-interface UpdateArticleIsCustomLayoutParams {
+interface UpdateArticleLayoutParams {
   /* Article ID */
-  articleId: string
+  articleDetailId: string
 
   /* Language Id */
   languageId: string
 
-  /* Is Custom Layout */
-  isCustomLayout: boolean
+  /* Layout Type, 1: default, 2: devCustomized, 3: userDefined  */
+  layoutType: number
+
+  /* Dev Component Name */
+  devComponentName?: string
 
   /* Layout ID */
   layoutContent: string
@@ -427,7 +488,8 @@ interface ArticleListParams {
   languageId: string
   articleName?: string | null
   articleId?: number | null | string
-  articleType?: string | null
+  articleType?: string | null | number
+  categoryId?: string | null
 }
 
 // 文章列表单元数据
@@ -522,6 +584,10 @@ interface ArticleAdminLocalizedViewDo {
 interface ArticleShowData {
   /* Article ID */
   id: string
+
+  articleType: number | null
+
+  articleTypeLabel: string
 
   /* Category Ids */
   categoryIds: string[]
@@ -637,4 +703,22 @@ interface UpdateArticleSlugParams {
 
   /* Slug */
   slug: string
+}
+
+// 文章类型
+interface ArticleTypeListParams {
+  articleTypeCode: string | null
+}
+
+// 文章类型数据
+interface ArticleTypeData {
+  code: string
+  id: number
+  articleTypeName: string
+}
+
+// 文章类型列表返回数据
+interface ListArticleTypeRes {
+  list: ArticleTypeData[]
+  total: number
 }

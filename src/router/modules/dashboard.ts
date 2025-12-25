@@ -1,8 +1,9 @@
+import { useLocale } from '@/hooks/useLocale'
 import { Layout } from '@/utils/routerHelper'
 
 const { t: $t } = useLocale()
 
-const dashboard: AppRouteRecordRaw = {
+const dashboardRouter: AppRouteRecordRaw = {
   path: '/dashboard',
   component: Layout,
   redirect: '/dashboard/analysis',
@@ -27,4 +28,4 @@ const dashboard: AppRouteRecordRaw = {
   ],
 }
 
-export default dashboard
+export default dashboardRouter

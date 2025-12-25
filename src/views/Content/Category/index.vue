@@ -1,4 +1,5 @@
 <script setup name="Category" lang="ts">
+import { get } from 'sortablejs'
 import CreateCategoryDialog from './Components/CreateCategoryDialog.vue'
 
 const router = useRouter()
@@ -8,14 +9,17 @@ const loading = reactive({
   init: false,
 })
 
-const { preference } = useInStore(usePreferenceStore)
+const preferenceStore = usePreferenceStore()
+// 修复：确保在 preference 为 null 时也能正确处理
+const preference = ref<PreferenceType | null>(null)
+const languageId = ref()
 
 const listPayload = reactive<CategoryListParams & Pagination>({
-  languageId: preference.value.language.id,
+  languageId: undefined,
   categoryName: '',
   id: null,
   pageNumber: 1,
-  pageSize: 20,
+  pageSize: 1000,
 })
 
 const listData = ref<CategoryListRes>({
@@ -33,8 +37,15 @@ const getList = async () => {
   listData.value = { ...data }
   loading.init = false
 }
-getList()
 
+const initPreference = async () => {
+  preference.value = await preferenceStore.getPreferences()
+  languageId.value = preference.value?.language?.id
+  listPayload.languageId = languageId.value || undefined
+  getList()
+}
+
+initPreference()
 const paginationList = (val: PaginationComponentData) => {
   if (val) {
     listPayload.pageSize = val.limit
@@ -45,7 +56,7 @@ const paginationList = (val: PaginationComponentData) => {
 
 // watch preference language
 watch(
-  () => preference.value?.language,
+  () => preferenceStore.getPreferences()?.language,
   val => {
     if (val) {
       listPayload.languageId = val.id
@@ -65,7 +76,7 @@ const handleCreateChildCategory = (item: CategoryData) => {
 }
 
 const handleShow = (val: CategoryData & CommonField) => {
-  router.push({ name: 'ShowCategoryNormal', params: { id: val.id } })
+  router.push({ name: 'ShowCategory', params: { id: val.id } })
 }
 
 let deleteIds: string[] = []
@@ -117,14 +128,14 @@ const handleDelete = async (val: CategoryData & CommonField) => {
           <span>{{ $t('router.category') }}</span>
         </div>
         <div>
-          <ElButton @click="handleCreate">
+          <EBtn @click="handleCreate">
             <Icon icon="ep:plus" class="mr-1" />
             {{ $t('common.create') }}
-          </ElButton>
-          <ElButton type="danger" @click="handleMultiDelete">
+          </EBtn>
+          <EBtn type="danger" @click="handleMultiDelete">
             <Icon icon="ep:delete" class="mr-1" />
             {{ $t('common.remove') }}
-          </ElButton>
+          </EBtn>
         </div>
       </div>
     </div>
@@ -134,7 +145,7 @@ const handleDelete = async (val: CategoryData & CommonField) => {
         :data="listData.list"
         stripe
         row-key="id"
-        style="width: 100%"
+        :style="{ width: '100%' }"
         tooltip-effect="dark"
         highlight-current-row
         default-expand-all
@@ -145,18 +156,18 @@ const handleDelete = async (val: CategoryData & CommonField) => {
         <ElTableColumn prop="categoryName" :label="`${$t('category.categoryName')}`" />
         <ElTableColumn fixed="right" :label="`${$t('common.action')}`" width="280">
           <template #default="scope">
-            <ElButton size="small" type="primary" @click="handleCreateChildCategory(scope.row)">
+            <EBtn type="primary" @click="handleCreateChildCategory(scope.row)">
               <Icon icon="ep:plus" class="mr-1" />
               {{ $t('category.createChildCategory') }}
-            </ElButton>
-            <ElButton size="small" type="default" @click="handleShow(scope.row)">
+            </EBtn>
+            <EBtn type="default" @click="handleShow(scope.row)">
               <Icon icon="ep:edit" class="mr-1" />
               {{ $t('common.view') }}
-            </ElButton>
-            <ElButton size="small" type="danger" @click="handleDelete(scope.row)">
+            </EBtn>
+            <EBtn type="danger" @click="handleDelete(scope.row)">
               <Icon icon="ep:delete" class="mr-1" />
               {{ $t('common.remove') }}
-            </ElButton>
+            </EBtn>
           </template>
         </ElTableColumn>
       </ElTable>

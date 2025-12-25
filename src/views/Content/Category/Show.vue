@@ -13,11 +13,9 @@ const { id } = defineProps<{
 
 const { t: $t } = useLocale()
 
-const { getLanguagesListByCode } = useInStore(useLanguageStore)
+const { getLanguagesListByCode } = useLanguageStore()
 const languageListByCode = getLanguagesListByCode()
-
-const { preference } = useInStore(usePreferenceStore)
-const selectLanguage = ref<LanguageData>(preference.value.language)
+const selectLanguage = ref<LanguageData>(usePreferenceStore().preference?.language)
 
 const languageCode = ref('')
 
@@ -116,7 +114,7 @@ const handleClickUpdateParentId = async (val: CategoryShowData) => {
 }
 
 watch(
-  () => preference.value.language,
+  () => usePreferenceStore().preference?.language,
   val => {
     if (val) {
       selectLanguage.value = val
@@ -208,7 +206,7 @@ provide(categoryKey, {
         <div v-for="item in form.categoryAdminLocalizedViewDos" :key="item.languageCode">
           <div v-show="languageCode === item.languageCode">
             <div v-show="activeName === 'base'">
-              <BasePane :current-item="item" />
+              <BasePane :current-item="item" :category-admin-localized-view-dos="form.categoryAdminLocalizedViewDos" />
             </div>
             <div v-show="activeName === 'seo'">
               <SeoPane :current-item="item" />

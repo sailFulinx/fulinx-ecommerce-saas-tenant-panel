@@ -1,10 +1,8 @@
 import { Layout } from '@/utils/routerHelper'
 
-import type { AppRouteRecordRaw } from '../types'
-
 const { t: $t } = useLocale()
 
-const catalog: AppRouteRecordRaw = {
+const catalogRouter: AppRouteRecordRaw = {
   path: '/catalog',
   component: Layout,
   redirect: '/catalog/product/list',
@@ -131,7 +129,7 @@ const catalog: AppRouteRecordRaw = {
         icon: 'ant-design:file-image-outlined',
       },
     },
-  ]
+  ],
 }
 
-export default catalog
+export default catalogRouter

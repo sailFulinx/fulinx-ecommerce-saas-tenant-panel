@@ -1,15 +1,15 @@
-import type { AppRouteRecordRaw } from '@/types/common'
+import { useLocale } from '@/hooks/useLocale'
 import { Layout } from '@/utils/routerHelper'
 
 const { t: $t } = useLocale()
 
-const system: AppRouteRecordRaw = {
+const systemRouter: AppRouteRecordRaw = {
   path: '/system',
   component: Layout,
-  redirect: '/system/user/list',
+  redirect: '/system/user',
   name: 'System',
   meta: {
-    title: '系统设置',
+    title: $t('router.system'),
     icon: 'ant-design:setting-outlined',
     noCache: true,
     hidden: false,
@@ -17,80 +17,49 @@ const system: AppRouteRecordRaw = {
   },
   children: [
     {
-      path: 'user/list',
-      component: () => import('@/views/User/index.vue'),
-      name: 'SystemUser',
+      path: 'user',
+      component: Layout,
+      redirect: '/system/user/list',
+      name: 'User',
       meta: {
         title: $t('router.user'),
         icon: 'ant-design:user-outlined',
-      },
-    },
-    {
-      path: 'role/list',
-      component: () => import('@/views/Role/index.vue'),
-      name: 'Role',
-      meta: {
-        title: $t('router.role'),
-        icon: 'ant-design:safety-certificate-outlined',
-      },
-    },
-    {
-      path: 'shipping/company',
-      component: () => import('@/views/Shipping/index.vue'),
-      name: 'ShippingCompanyList',
-      meta: {
-        title: $t('router.shippingCompany'),
-        icon: 'ant-design:truck-outlined',
+        noCache: true,
+        hidden: false,
+        canTo: false,
       },
       children: [
         {
-          path: 'create',
-          component: () => import('@/views/Shipping/Create.vue'),
-          name: 'CreateShippingCompany',
+          path: 'list',
+          component: () => import('@/views/User/index.vue'),
+          name: 'UserList',
           meta: {
-            title: $t('router.createShippingCompany'),
-            noCache: true,
-            hidden: true,
-            canTo: true,
-            activeMenu: '/shipping/company',
-            props: true,
-          },
-        },
-        {
-          path: 'show/:id',
-          component: () => import('@/views/Shipping/Show.vue'),
-          name: 'ShowShippingCompany',
-          meta: {
-            title: $t('shipping.show'),
-            noCache: true,
-            hidden: true,
-            canTo: true,
-            activeMenu: '/shipping/company',
-            props: true,
+            title: $t('router.user'),
+            icon: 'ant-design:user-outlined',
           },
         },
       ],
     },
     {
-      path: 'imp',
-      component: () => import('@/views/Imp/index.vue'),
-      name: 'Imp',
+      path: 'role',
+      component: Layout,
+      redirect: '/system/role/list',
+      name: 'Role',
       meta: {
-        title: $t('router.imp'),
-        icon: 'ant-design:upload-outlined',
+        title: $t('router.role'),
+        icon: 'ant-design:safety-certificate-outlined',
+        noCache: true,
+        hidden: false,
+        canTo: false,
       },
       children: [
         {
-          path: 'log/:id',
-          component: () => import('@/views/Imp/Detail.vue'),
-          name: 'ImpLog',
+          path: 'list',
+          component: () => import('@/views/Role/index.vue'),
+          name: 'RoleList',
           meta: {
-            title: $t('router.impLog'),
-            noCache: true,
-            hidden: true,
-            canTo: true,
-            activeMenu: '/system/imp',
-            props: true,
+            title: $t('router.role'),
+            icon: 'ant-design:safety-certificate-outlined',
           },
         },
       ],
@@ -98,4 +67,4 @@ const system: AppRouteRecordRaw = {
   ],
 }
 
-export default system
+export default systemRouter

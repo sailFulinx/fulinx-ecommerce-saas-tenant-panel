@@ -28,6 +28,8 @@ const loading = reactive({
 const createFormData = (): ArticleShowData => {
   return {
     id: '',
+    articleType: null,
+    articleTypeLabel: '',
     categoryIds: [],
     status: true,
     articleAdminLocalizedViewDos: [],
@@ -303,9 +305,11 @@ const handleGetRemoveFile = (_indexValue: number) => {
           <div v-show="languageId === item.languageId">
             <div v-show="activeName === 'base'">
               <ArticleBaseInfo
+                :article-data="form"
                 :article-detail="item"
                 :language-id="item.languageId"
                 :article-id="id"
+                v-model:article-admin-localized-view-dos="form.articleAdminLocalizedViewDos"
                 @refresh-data="initFormData"
                 @remove-tag="handleRemoveTag"
                 @show-input-tag="showInputTag"

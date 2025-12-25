@@ -1,10 +1,8 @@
-import type { AppRouteRecordRaw } from '@/types/common'
-
 import { Layout } from '@/utils/routerHelper'
 
 const { t: $t } = useLocale()
 
-const customer: AppRouteRecordRaw = {
+const customerRouter: AppRouteRecordRaw = {
   path: '/customer',
   component: Layout,
   redirect: '/customer/list',
@@ -63,4 +61,4 @@ const customer: AppRouteRecordRaw = {
   ],
 }
 
-export default customer
+export default customerRouter

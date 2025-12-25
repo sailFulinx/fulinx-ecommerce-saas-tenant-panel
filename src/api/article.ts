@@ -8,6 +8,22 @@ export function CreateArticleApi(data: CreateArticleParams): Promise<CreateRes> 
   })
 }
 
+export function CopyArticleApi(data: CopyArticleParams): Promise<IResponse<boolean>> {
+  return request.post({
+    url: 'system/article/copy',
+    data,
+    token: true,
+  })
+}
+
+export function CopyArticleDetailApi(data: CopyArticleDetailParams): Promise<CreateRes> {
+  return request.post({
+    url: 'system/article/copy/detail',
+    data,
+    token: true,
+  })
+}
+
 export function createArticleNameApi(params: CreateArticleNameParams): Promise<IResponse<ArticleShowData>> {
   return request.post({
     url: 'system/article/create/articleName',
@@ -132,6 +148,22 @@ export function removeArticleTagApi(params: RemoveArticleTagParams): Promise<IRe
 }
 
 /**
+ * 更新文章类型
+ * @param {object} params 修改文章类型请求参数
+ * @param {number} params.articleId Article ID
+ * @param {number} params.languageId Language Id
+ * @param {number} params.articleType Article Type
+ * @returns
+ */
+export function updateArticleTypeApi(params: UpdateArticleTypeParams): Promise<IResponse<ArticleShowData>> {
+  return request.post({
+    url: 'system/article/update/articleType',
+    data: params,
+    token: true,
+  })
+}
+
+/**
  * 更新文章描述
  * @param {object} params 修改文章描述请求参数
  * @param {number} params.articleId Article ID
@@ -148,6 +180,16 @@ export function updateArticleDescriptionApi(
   })
 }
 
+export function updateArticleShortDescriptionApi(
+  params: UpdateArticleShortDescriptionParams,
+): Promise<IResponse<ArticleShowData>> {
+  return request.post({
+    url: 'system/article/update/articleShortDescription',
+    data: params,
+    token: true,
+  })
+}
+
 /**
  * 更新文章名称
  * @param {object} params 修改文章名称请求参数
@@ -158,6 +200,14 @@ export function updateArticleDescriptionApi(
 export function updateArticleNameApi(params: UpdateArticleNameParams): Promise<IResponse<ArticleShowData>> {
   return request.post({
     url: 'system/article/update/articleName',
+    data: params,
+    token: true,
+  })
+}
+
+export function updateArticleShortNameApi(params: UpdateArticleShortNameParams): Promise<IResponse<ArticleShowData>> {
+  return request.post({
+    url: 'system/article/update/articleShortName',
     data: params,
     token: true,
   })
@@ -194,21 +244,11 @@ export function updateArticleCustomsApi(params: UpdateArticleCustomsParams): Pro
     token: true,
   })
 }
-
-/**
- * 更新文章是否自定义布局
- * @param {object} params 修改文章是否自定义布局请求参数
- * @param {number} params.articleId Article ID
- * @param {number} params.languageId Language Id
- * @param {boolean} params.isCustomLayout Is Custom Layout
- * @param {number} params.layoutId Layout ID
- * @returns
- */
-export function updateArticleIsCustomLayoutApi(
-  params: UpdateArticleIsCustomLayoutParams,
+export function updateArticleLayoutApi(
+  params: UpdateArticleLayoutParams,
 ): Promise<IResponse<ArticleShowData>> {
   return request.post({
-    url: 'system/article/update/isCustomLayout',
+    url: 'system/article/update/layout',
     data: params,
     token: true,
   })
@@ -328,5 +368,14 @@ export function articleListApi(
     url: 'system/article/list',
     data,
     token: true,
+  })
+}
+
+export function fetchArticleTypeListApi(
+  data?: ArticleTypeListParams,
+): Promise<IResponse<TableResponse<ArticleTypeData>>> {
+  return request.post({
+    url: 'share/public/article/type/list',
+    data,
   })
 }

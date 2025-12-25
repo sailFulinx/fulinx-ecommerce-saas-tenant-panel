@@ -1,31 +1,33 @@
-import type { AppRouteRecordRaw } from '@/types/common'
+import { useLocale } from '@/hooks/useLocale'
 import { Layout } from '@/utils/routerHelper'
 
 const { t: $t } = useLocale()
-const site: AppRouteRecordRaw = {
+
+const siteRouter: AppRouteRecordRaw = {
   path: '/site',
   component: Layout,
   redirect: '/site/list',
-  name: 'Site',
+  name: 'SiteSetting',
   meta: {
-    title: '网站管理',
-    icon: 'ant-design:cloud-server-outlined',
+    title: $t('router.siteSetting'),
+    icon: 'ant-design:layout-outlined',
     noCache: true,
     hidden: false,
     canTo: false,
   },
   children: [
     {
-      path: 'list',
+      path: 'web/list',
       component: () => import('@/views/Site/index.vue'),
       name: 'SiteList',
       meta: {
         title: '网站列表',
         icon: 'ant-design:cloud-server-outlined',
+        noCache: true,
       },
     },
     {
-      path: 'create',
+      path: 'web/create',
       component: () => import('@/views/Site/Create.vue'),
       name: 'CreateSite',
       meta: {
@@ -38,7 +40,7 @@ const site: AppRouteRecordRaw = {
       },
     },
     {
-      path: 'edit/:id',
+      path: 'web/edit/:id(\\d+)',
       component: () => import('@/views/Site/Edit.vue'),
       name: 'EditSite',
       meta: {
@@ -51,21 +53,31 @@ const site: AppRouteRecordRaw = {
       },
     },
     {
+      path: 'component/list',
+      component: () => import('@/views/Component/index.vue'),
+      name: 'ComponentList',
+      meta: {
+        title: $t('router.component'),
+        icon: 'ant-design:block-outlined',
+      },
+    },
+    {
+      path: 'component/view',
+      component: () => import('@/views/Component/view.vue'),
+      name: 'ComponentView',
+      meta: {
+        title: '组件预览',
+        icon: 'ant-design:block-outlined',
+        hidden: true,
+      },
+    },
+    {
       path: 'layout/list',
       component: () => import('@/views/Layout/index.vue'),
       name: 'LayoutList',
       meta: {
         title: $t('router.layout'),
         icon: 'ant-design:layout-outlined',
-      },
-    },
-    {
-      path: 'layout/component/list',
-      component: () => import('@/views/Component/index.vue'),
-      name: 'ComponentList',
-      meta: {
-        title: $t('router.component'),
-        icon: 'ant-design:block-outlined',
       },
     },
     {
@@ -91,7 +103,7 @@ const site: AppRouteRecordRaw = {
       },
     },
     {
-      path: 'theme/edit/:id',
+      path: 'theme/edit/:id(\\d+)',
       component: () => import('@/views/Theme/Edit.vue'),
       name: 'EditTheme',
       meta: {
@@ -104,7 +116,7 @@ const site: AppRouteRecordRaw = {
       },
     },
     {
-      path: 'theme/setting/:id',
+      path: 'theme/setting/:id(\\d+)',
       component: () => import('@/views/Theme/Components/ComponentSetting.vue'),
       name: 'EditThemeComponent',
       meta: {
@@ -119,4 +131,4 @@ const site: AppRouteRecordRaw = {
   ],
 }
 
-export default site
+export default siteRouter

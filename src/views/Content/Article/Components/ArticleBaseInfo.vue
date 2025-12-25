@@ -5,6 +5,7 @@ import Editor from '@/components/common/Editor.vue'
 import CustomsTable from './CustomsTable.vue'
 
 interface Props {
+  articleData?: ArticleShowData
   articleDetail?: ArticleAdminLocalizedViewDo
   languageId: string
   articleId: string
@@ -21,11 +22,16 @@ const emit = defineEmits<{
   getRemoveFile: [index: number]
 }>()
 
+const resourceUrl = import.meta.env.VITE_RESOURCE_URL
+
 const { t: $t } = useLocale()
 
 // 文章名称相关
 const inputArticleNameVisible = ref<boolean>(false)
 const currentArticleName = ref<string>('')
+// 文章短名称相关
+const inputArticleShortNameVisible = ref<boolean>(false)
+const currentArticleShortName = ref<string>('')
 
 const handleClickUpdateArticleName = (articleName: string) => {
   currentArticleName.value = articleName
@@ -53,6 +59,30 @@ const editArticleName = async (articleDetailId: string) => {
   emit('refreshData')
 }
 
+// 文章短名称相关方法
+const handleClickUpdateArticleShortName = (articleShortName: string) => {
+  currentArticleShortName.value = articleShortName
+  inputArticleShortNameVisible.value = true
+}
+
+const handleCancelUpdateArticleShortName = () => {
+  inputArticleShortNameVisible.value = false
+}
+
+const editArticleShortName = async (articleDetailId: string) => {
+  // 短名称可以为空
+  await updateArticleShortNameApi({
+    articleShortName: currentArticleShortName.value,
+    articleDetailId,
+  }).catch(error => {
+    throw error
+  })
+  currentArticleShortName.value = ''
+  inputArticleShortNameVisible.value = false
+  ElMessage.success($t('success.edit'))
+  emit('refreshData')
+}
+
 const createArticleName = async () => {
   if (!currentArticleName.value) {
     ElMessage.warning($t('article.error.articleName'))
@@ -72,6 +102,9 @@ const createArticleName = async () => {
 const isExpanded = ref(false)
 const inputArticleDescriptionVisible = ref<boolean>(false)
 const currentArticleDescription = ref<string>('<p></p>')
+// 文章短描述相关
+const inputArticleShortDescriptionVisible = ref<boolean>(false)
+const currentArticleShortDescription = ref<string>('')
 const editorRefs = ref()
 
 const toggleExpand = () => {
@@ -104,6 +137,80 @@ const editArticleDescription = async (articleDetailId: string) => {
   inputArticleDescriptionVisible.value = false
   ElMessage.success($t('success.edit'))
   emit('refreshData')
+}
+
+// 文章短描述相关方法
+const handleClickUpdateArticleShortDescription = (articleShortDescription: string) => {
+  currentArticleShortDescription.value = articleShortDescription
+  inputArticleShortDescriptionVisible.value = true
+}
+
+const handleCancelUpdateArticleShortDescription = () => {
+  inputArticleShortDescriptionVisible.value = false
+}
+
+const editArticleShortDescription = async (articleDetailId: string) => {
+  // 短描述可以为空
+  await updateArticleShortDescriptionApi({
+    articleDetailId,
+    articleShortDescription: currentArticleShortDescription.value,
+  }).catch(error => {
+    throw error
+  })
+  currentArticleShortDescription.value = ''
+  inputArticleShortDescriptionVisible.value = false
+  ElMessage.success($t('success.edit'))
+  emit('refreshData')
+}
+
+// 更新类型
+
+const articleTypePayload = reactive<ArticleTypeListParams>({
+  articleTypeCode: null,
+})
+
+const articleTypes = ref<ListArticleTypeRes>({
+  list: [],
+  total: 0,
+})
+
+const getArticleTypeList = async () => {
+  const { data } = await fetchArticleTypeListApi(articleTypePayload).catch(error => {
+    throw error
+  })
+  articleTypes.value = { ...data }
+}
+
+const articleTypeVisible = ref<boolean>(false)
+
+const currentArticleType = ref<number | undefined>(undefined)
+
+const handleEditArticleType = () => {
+  if (props.articleData?.articleType) {
+    currentArticleType.value = props.articleData?.articleType
+  }
+  articleTypeVisible.value = true
+  getArticleTypeList()
+}
+
+const handleCancelEditArticleType = () => {
+  articleTypeVisible.value = false
+}
+const handleSaveArticleType = async () => {
+  if (!currentArticleType.value) {
+    ElMessage.warning($t('article.error.articleType'))
+    return
+  }
+  await updateArticleTypeApi({
+    articleId: props.articleId,
+    languageId: props.languageId,
+    articleType: currentArticleType.value,
+  }).catch(error => {
+    throw error
+  })
+  articleTypeVisible.value = false
+  emit('refreshData')
+  ElMessage.success($t('success.edit'))
 }
 
 // 标签相关
@@ -168,7 +275,10 @@ const articleFileList = ref<(FileData & CommonField)[]>([])
 const deletedFileIds = ref<string[]>([])
 
 const handleClickUpdateArticleFile = async () => {
-  if (props.articleDetail?.articleFileRelationListResultDos && props.articleDetail?.articleFileRelationListResultDos.length !== 0) {
+  if (
+    props.articleDetail?.articleFileRelationListResultDos
+    && props.articleDetail?.articleFileRelationListResultDos.length !== 0
+  ) {
     const articleFileListData: (FileData & CommonField)[] = []
     props.articleDetail.articleFileRelationListResultDos.forEach((item: ArticleFileListResultDo & CommonField) => {
       articleFileListData.push(item.fileVo)
@@ -215,11 +325,91 @@ const editArticleFile = async () => {
   ElMessage.success($t('success.edit'))
   emit('refreshData')
 }
+
+const refreshFormData = () => {
+  emit('refreshData')
+}
+
+// 复制功能相关
+const articleAdminLocalizedViewDos = defineModel<ArticleAdminLocalizedViewDo[]>('articleAdminLocalizedViewDos', { required: true })
+const copyLanguageCode = ref('')
+const fromLanguageId = ref('')
+
+const handleCopyArticle = async () => {
+  if (!copyLanguageCode.value) {
+    ElMessage.warning($t('article.error.copyLanguageCode'))
+    return
+  }
+
+  // 查找源语言ID
+  if (articleAdminLocalizedViewDos.value) {
+    articleAdminLocalizedViewDos.value.forEach(item => {
+      if (item.languageCode === copyLanguageCode.value) {
+        fromLanguageId.value = item.languageId
+      }
+    })
+  }
+
+  if (!fromLanguageId.value) {
+    ElMessage.warning($t('article.error.copyLanguageCode'))
+    return
+  }
+
+  await CopyArticleDetailApi({
+    articleId: props.articleId,
+    fromLanguageId: fromLanguageId.value,
+    toLanguageId: props.languageId,
+  }).catch(error => {
+    throw error
+  })
+
+  ElMessage.success($t('success.copy'))
+  copyLanguageCode.value = ''
+  fromLanguageId.value = ''
+  emit('refreshData')
+}
 </script>
 
 <template>
   <ElCard v-if="articleDetail?.articleDetailListResultDo" shadow="never" class="mb-5">
     <div class="w-full mt-0 pt-0">
+      <!-- 文章类型 -->
+      <div class="w-full flex border-b border-gray-200 p-4">
+        <div class="w-30 font-semibold text-gray-700 flex-shrink-0">
+          {{ $t('article.articleType') }}:
+        </div>
+        <div class="flex-1 w-full flex items-center">
+          <span v-if="!articleTypeVisible" class="mr-2">
+            {{ articleData?.articleTypeLabel }}
+            <EBtn type="primary" text @click="handleEditArticleType()">
+              <Icon icon="ep:edit" :size="5" class="mr-1" />
+            </EBtn>
+          </span>
+          <span v-else>
+            <ElSelect
+              v-model="currentArticleType"
+              :placeholder="$t('article.placeholder.articleType')"
+              clearable
+              filterable
+              class="mr-5 w-100"
+              style="width: 100px"
+            >
+              <ElOption
+                v-for="item in articleTypes.list"
+                :key="item.id"
+                :value="item.id"
+                :label="item.articleTypeName"
+              />
+            </ElSelect>
+            <EBtn text @click="handleCancelEditArticleType">
+              <Icon icon="ep:close" :size="5" class="mr-1" />
+            </EBtn>
+            <EBtn type="danger" class="ml-5" @click="handleSaveArticleType">
+              <Icon icon="ep:check" :size="5" class="mr-1" />
+            </EBtn>
+          </span>
+        </div>
+      </div>
       <!-- 文章名称 -->
       <div class="w-full flex border-b border-gray-200 p-4">
         <div class="w-30 font-semibold text-gray-700 flex-shrink-0">
@@ -248,6 +438,39 @@ const editArticleFile = async () => {
             type="primary"
             text
             @click="handleClickUpdateArticleName(articleDetail.articleDetailListResultDo.articleName)"
+          >
+            <Icon icon="ep:edit" :size="5" class="mr-1" />
+          </EBtn>
+        </div>
+      </div>
+      <!-- 文章短名称 -->
+      <div class="w-full flex border-b border-gray-200 p-4">
+        <div class="w-30 font-semibold text-gray-700 flex-shrink-0">
+          {{ $t('article.articleShortName') }}:
+        </div>
+        <div class="flex-1 w-full flex items-center">
+          <span v-if="!inputArticleShortNameVisible" class="mr-2">
+            {{ articleDetail.articleDetailListResultDo.articleShortName }}
+          </span>
+          <span v-else>
+            <ElInput
+              v-model="currentArticleShortName"
+              clearable
+              minlength="1"
+              maxlength="250"
+              style="width: 300px"
+              class="mr-2"
+              @blur="editArticleShortName(articleDetail.articleDetailListResultDo.id)"
+            />
+            <EBtn text @click="handleCancelUpdateArticleShortName">
+              <Icon icon="ep:close" :size="5" class="mr-1" />
+            </EBtn>
+          </span>
+          <EBtn
+            v-if="!inputArticleShortNameVisible"
+            type="primary"
+            text
+            @click="handleClickUpdateArticleShortName(articleDetail.articleDetailListResultDo.articleShortName)"
           >
             <Icon icon="ep:edit" :size="5" class="mr-1" />
           </EBtn>
@@ -305,6 +528,52 @@ const editArticleFile = async () => {
           </div>
         </div>
       </div>
+      <!-- 短描述 -->
+      <div class="w-full flex border-b border-gray-200 p-4">
+        <div class="w-30 font-semibold text-gray-700 flex-shrink-0">
+          {{ $t('article.shortDescription') }}:
+        </div>
+        <div class="flex-1 w-full flex items-center">
+          <div v-if="!inputArticleShortDescriptionVisible" class="w-full mr-2">
+            <div class="flex items-center mb-5">
+              <div class="mr-2">
+                <EBtn
+                  type="primary"
+                  plain
+                  @click="
+                    handleClickUpdateArticleShortDescription(articleDetail.articleDetailListResultDo.articleShortDescription)
+                  "
+                >
+                  <Icon icon="ep:edit" :size="5" class="mr-1" />
+                  {{ $t('common.edit') }}
+                </EBtn>
+              </div>
+            </div>
+            <div class="grid grid-cols-12 gap-4">
+              <div class="col-span-12 p-4">
+                {{ articleDetail.articleDetailListResultDo.articleShortDescription }}
+              </div>
+            </div>
+          </div>
+          <div v-else class="w-full">
+            <ElInput
+              v-model="currentArticleShortDescription"
+              type="textarea"
+              :rows="4"
+              class="w-full mb-5"
+              style="width: 100%"
+            />
+            <div class="flex justify-center items-center">
+              <EBtn @click="handleCancelUpdateArticleShortDescription">
+                {{ $t('common.cancel') }}
+              </EBtn>
+              <EBtn type="primary" @click="editArticleShortDescription(articleDetail.articleDetailListResultDo.id)">
+                {{ $t('common.save') }}
+              </EBtn>
+            </div>
+          </div>
+        </div>
+      </div>
       <!-- 标签 -->
       <div class="w-full flex border-b border-gray-200 p-4">
         <div class="w-30 font-semibold text-gray-700 flex-shrink-0">
@@ -351,7 +620,7 @@ const editArticleFile = async () => {
                 :key="fItem.id"
                 class="col-span-1 border border-gray-200 pa-4"
               >
-                <ElImage :src="fItem.fileVo?.fileUrl" />
+                <ElImage :src="resourceUrl + fItem.fileVo?.fileUrl" />
               </div>
             </div>
           </div>
@@ -377,16 +646,37 @@ const editArticleFile = async () => {
           <CustomsTable
             :custom-list="articleDetail.articleDetailListResultDo.customList"
             :article-detail-id="articleDetail.articleDetailListResultDo.id"
+            @refresh-data="refreshFormData"
           />
         </div>
       </div>
     </div>
   </ElCard>
   <ElCard v-else>
-    <div class="flex justify-center items-center mb-5">
-      <ElAlert :title="$t('article.warning.noDetailData')" type="warning" show-icon />
+    <div class="flex-col justify-center items-center mb-5">
+      <div class="w-full mb-5">
+        <ElAlert :title="$t('article.warning.noDetailData')" type="warning" show-icon />
+      </div>
+      <div class="bg-red-50 pa-3 flex justify-between items-center">
+        <ElSelect
+          v-model="copyLanguageCode"
+          placeholder="请选择"
+          style="width: 200px"
+        >
+          <ElOption
+            v-for="item in (articleAdminLocalizedViewDos || []).filter(i => i.languageCode !== articleDetail?.languageCode)"
+            :key="item.languageCode"
+            :label="item.languageName"
+            :value="item.languageCode"
+          />
+        </ElSelect>
+        <EBtn type="primary" @click="handleCopyArticle">
+          <Icon icon="ant-design:save-outlined" :size="5" class="mr-1" />
+          复制
+        </EBtn>
+      </div>
     </div>
-    <div class="flex justify-center items-center mb-5">
+    <div class="pa-3 flex justify-center items-center mb-5">
       <ElInput v-model="currentArticleName" :placeholder="$t('article.placeholder.articleName')" />
       <EBtn type="primary" class="ml-5" @click="createArticleName">
         <Icon icon="ant-design:save-outlined" :size="5" class="mr-1" />
