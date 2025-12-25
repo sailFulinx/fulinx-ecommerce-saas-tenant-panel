@@ -140,7 +140,7 @@ declare global {
   const extendRef: typeof import('@vueuse/core').extendRef
   const fetchArticleMissingStatistics: typeof import('../api/dashboard').fetchArticleMissingStatistics
   const fetchArticleSeoCheckList: typeof import('../api/dashboard').fetchArticleSeoCheckList
-  const fetchArticleTypeListApi: typeof import('../api/article').fetchArticleTypeListApi
+  const fetchArticleTypeListApi: typeof import('../api/common').fetchArticleTypeListApi
   const fetchCaptchaApi: typeof import('../api/captcha').fetchCaptchaApi
   const fetchCategoryMissingStatistics: typeof import('../api/dashboard').fetchCategoryMissingStatistics
   const fetchCategorySeoCheckList: typeof import('../api/dashboard').fetchCategorySeoCheckList

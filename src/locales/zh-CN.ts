@@ -15,6 +15,7 @@ import invoice from './modules/zh-CN/invoice'
 import layout from './modules/zh-CN/layout'
 import message from './modules/zh-CN/message'
 import order from './modules/zh-CN/order'
+import page from './modules/zh-CN/page'
 import parameter from './modules/zh-CN/parameter'
 import parameterGroup from './modules/zh-CN/parameterGroup'
 import permission from './modules/zh-CN/permission'
@@ -52,6 +53,7 @@ export default {
   product,
   permission,
   placeholder,
+  page,
   role,
   router,
   seo,

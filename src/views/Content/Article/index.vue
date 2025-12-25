@@ -53,7 +53,7 @@ initPreference()
 const listQuery = reactive<ArticleListParams & Pagination>({
   languageId: languageId.value || undefined,
   articleName: '',
-  articleType: 2,
+  articleType: null,
   pageSize: 20,
   pageNumber: 1,
 })
@@ -67,6 +67,7 @@ const getCategories = async () => {
   try {
     const payload = {
       languageId: preference.value?.language?.id,
+      categoryType: 2,
     }
     const { data } = await categoryListApi(payload)
     categories.value = data.list

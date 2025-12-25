@@ -4,3 +4,12 @@ export function fetchLayoutTypeListApi(data?: ListLayoutTypeParams): Promise<IRe
     data,
   })
 }
+
+export function fetchArticleTypeListApi(
+  data?: ArticleTypeListParams,
+): Promise<IResponse<TableResponse<ArticleTypeData>>> {
+  return request.post({
+    url: 'share/public/common/article/type/list',
+    data,
+  })
+}

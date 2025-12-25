@@ -40,7 +40,7 @@ const categoriesData = ref<CategoryListRes>({
 
 const getCategoriesData = async () => {
   loading.categories = true
-  const { data } = await categoryListApi({ languageId: form.languageId }).catch(error => {
+  const { data } = await categoryListApi({ languageId: form.languageId, categoryType: 2 }).catch(error => {
     loading.categories = false
     throw error
   })

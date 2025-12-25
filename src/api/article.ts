@@ -370,12 +370,3 @@ export function articleListApi(
     token: true,
   })
 }
-
-export function fetchArticleTypeListApi(
-  data?: ArticleTypeListParams,
-): Promise<IResponse<TableResponse<ArticleTypeData>>> {
-  return request.post({
-    url: 'share/public/article/type/list',
-    data,
-  })
-}
