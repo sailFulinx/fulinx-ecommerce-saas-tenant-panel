@@ -94,6 +94,7 @@ export default {
   isTop: '是否置顶',
   placeholder: {
     language: '语言必须选择',
+    layoutType: '布局类型必须选择',
   },
-  layoutType: '布局类型'
+  layoutType: '布局类型',
 }
