@@ -29,6 +29,8 @@ interface CompData {
 
   /* Component Content */
   componentContent: string
+
+  isUsed: boolean
 }
 
 interface RemoveCompParams {
