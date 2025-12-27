@@ -1,4 +1,5 @@
 <script setup name="SupplierDetail" lang="ts">
+import { ElAlert, ElCard, ElInput, ElMessage, ElSwitch, ElTabPane } from 'element-plus'
 import {
   createSupplierApi,
   createSupplierDetailApi,
@@ -16,7 +17,6 @@ import {
 import { supplierCodes } from '@/data/supplier'
 import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
-import { ElAlert, ElCard, ElInput, ElMessage, ElSwitch, ElTabPane } from 'element-plus'
 
 const { t: $t } = useLocale()
 

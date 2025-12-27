@@ -1,11 +1,13 @@
 <script setup lang="ts">
+import { ElCard, ElInput, ElMessage } from 'element-plus'
 import { layoutListApi } from '@/api/layout'
 import { createSupplierApi } from '@/api/supplier'
 import { supplierCodes } from '@/data/supplier'
 import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
 import { useTagsViewStore } from '@/stores/tagsView'
-import { ElCard, ElInput, ElMessage } from 'element-plus'
+
+const router = useRouter()
 
 const { t: $t } = useLocale()
 

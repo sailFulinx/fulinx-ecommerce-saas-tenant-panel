@@ -54,7 +54,7 @@ const auth: AppRouteRecordRaw = {
       component: () => import('@/views/Auth/ForgetPasswordConfirm.vue'),
       meta: {
         hidden: true,
-        title: '注册确认',
+        title: '忘记密码确认',
         noTagsView: true,
       },
     },

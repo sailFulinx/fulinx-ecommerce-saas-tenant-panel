@@ -4,16 +4,15 @@ import { useLocale } from '@/hooks/useLocale'
 
 import { Layout } from '@/utils/routerHelper'
 
-// 导入模块路由
 import appRouter from './modules/app'
+// 导入模块路由
+import auth from './modules/auth'
 import catalogRouter from './modules/catalog'
 import contentRouter from './modules/content'
 import customerRouter from './modules/customer'
 import dashboardRouter from './modules/dashboard'
 import orderRouter from './modules/order'
 import siteRouter from './modules/site'
-
-const { t: $t } = useLocale()
 
 export const constantRouterMap: AppRouteRecordRaw[] = [
   {
@@ -42,16 +41,7 @@ export const constantRouterMap: AppRouteRecordRaw[] = [
       noTagsView: true,
     },
   },
-  {
-    path: '/login',
-    component: () => import('@/views/Auth/Login.vue'),
-    name: 'Login',
-    meta: {
-      hidden: true,
-      title: $t('router.login'),
-      noTagsView: true,
-    },
-  },
+  auth,
   {
     path: '/404',
     component: () => import('@/views/Error/404.vue'),

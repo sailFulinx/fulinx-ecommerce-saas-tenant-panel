@@ -114,6 +114,7 @@ const getCategories = async () => {
   try {
     const payload = {
       languageId: usePreferenceStore().preference.language.id,
+      categoryType: 2,
     }
     const { data } = await categoryListApi(payload)
     categories.value = data.list
@@ -382,11 +383,7 @@ onMounted(() => {
                             </div>
                             <div v-if="scope.row.customType === 'video'">
                               <div class="flex justify-start mb-5 space-x-0 sm:space-x-2 overflow-x-auto">
-                                <video
-                                  class="w-32 sm:w-40"
-                                  :src="`${scope.row.customContent.fileUrl}`"
-                                  fit="contain"
-                                />
+                                <video class="w-32 sm:w-40" :src="`${scope.row.customContent.fileUrl}`" fit="contain" />
                               </div>
                             </div>
                           </template>

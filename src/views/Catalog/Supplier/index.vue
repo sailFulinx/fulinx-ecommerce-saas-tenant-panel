@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import { ElMessage } from 'element-plus'
 import { removeSupplierApi, supplierPaginationApi } from '@/api/supplier'
 import avatar from '@/assets/imgs/avatar.jpg'
 import { usePreferenceStore } from '@/stores/preference'
-import { ElMessage } from 'element-plus'
+
+const router = useRouter()
 
 const sourceUrl = useFileRootUrl()
 
