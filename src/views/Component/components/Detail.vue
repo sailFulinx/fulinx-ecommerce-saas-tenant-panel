@@ -75,12 +75,8 @@ const handleSubmit = async () => {
   }
   loading.save = true
   if (simplifiedComponentLayoutRef.value) {
-    rows.value = simplifiedComponentLayoutRef.value.getData()
-    if (rows.value.length === 0) {
-      ElMessage.warning($t('comps.warning.emptyRow'))
-      return
-    }
-    form.componentContent = JSON.stringify(rows.value)
+    const fullData = simplifiedComponentLayoutRef.value.getData()
+    form.componentContent = JSON.stringify(fullData)
     if (actionType.value === 'add' || id.value === '' || id.value === null) {
       await createComponent()
     } else {
@@ -115,8 +111,8 @@ function init(actionTypeData: string, compData?: CompData) {
   } else {
     id.value = compData?.id ?? ''
     if (compData?.componentContent) {
-      rows.value = JSON.parse(compData.componentContent)
-      simplifiedComponentLayoutRef.value.setData(rows.value)
+      const parsedData = JSON.parse(compData.componentContent)
+      simplifiedComponentLayoutRef.value.setData(parsedData)
     }
     Object.assign(form, compData)
     pageTitle.value = $t('common.edit') + $t('comps.name')

@@ -35,6 +35,7 @@ interface DeviceLayout {
   pc: ComponentRowData[]
   pad: ComponentRowData[]
   mobile: ComponentRowData[]
+  isResponsiveMode?: boolean // 添加模式状态字段
 }
 
 // 定义组件内部的rows状态，并添加一个默认行
@@ -223,6 +224,7 @@ const layoutData = ref<DeviceLayout>({
       sort: 1,
     },
   ],
+  isResponsiveMode: true, // 默认为响应模式
 })
 
 // 当前选中的设备类型
@@ -682,12 +684,18 @@ const handleComponentDragStart = (event: DragEvent, component: ComponentStructur
 
 // 提供getData方法来获取rows数据
 const getData = () => {
-  return layoutData.value
+  // 返回数据时包含当前模式状态
+  return {
+    ...layoutData.value,
+    isResponsiveMode: isResponsiveMode.value,
+  }
 }
 
 // 提供setData方法来设置所有设备的数据
 const setData = (val: DeviceLayout) => {
   layoutData.value = val
+  // 恢复模式状态
+  isResponsiveMode.value = val.isResponsiveMode ?? true
 }
 
 // 提供getDeviceData方法来获取指定设备的数据
@@ -751,7 +759,7 @@ defineExpose({
         </div>
 
         <!-- 设备切换 -->
-        <div v-if="!isResponsiveMode" class="device-tabs">
+        <div v-if="!isResponsiveMode" class="device-tabs px-4">
           <EBtnGroup>
             <EBtn :type="currentDevice === 'pc' ? 'primary' : 'default'" @click="currentDevice = 'pc'">
               <Icon name="mynaui:desktop" :size="4" class="mr-2" />
