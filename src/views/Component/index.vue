@@ -77,9 +77,6 @@ const getList = debounce(async () => {
     throw error
   })
   listData.value = data
-  if (listData.value.list.length === 1) {
-    await handleEdit(listData.value.list[0])
-  }
   loading.value = false
 }, 300)
 
