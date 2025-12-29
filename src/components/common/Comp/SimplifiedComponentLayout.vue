@@ -19,59 +19,171 @@ const activeRowIndex = ref(0)
 const activeRowRowIndex = ref(0)
 const activeColIndex = ref(0)
 
+// 定义响应式数据，包含PC端、平板端和手机端的布局数据
+interface DeviceLayout {
+  pc: ComponentRowData[]
+  pad: ComponentRowData[]
+  mobile: ComponentRowData[]
+}
+
 // 定义组件内部的rows状态，并添加一个默认行
-const rows = ref<ComponentRowData[]>([
-  {
-    id: 1,
-    rowName: 'Row 1',
-    isFullScreen: false,
-    marginTop: 0,
-    marginBottom: 0,
-    marginLeft: 0,
-    marginRight: 0,
-    paddingTop: 0,
-    paddingBottom: 0,
-    paddingLeft: 0,
-    paddingRight: 0,
-    backgroundColor: '',
-    backgroundImage: {} as any,
-    isContentFullScreen: false,
-    contents: [
-      {
-        id: 1,
-        rowRowName: '',
-        columnsCount: 1,
-        columnGap: 0,
-        marginTop: 0,
-        marginBottom: 0,
-        marginLeft: 0,
-        marginRight: 0,
-        paddingTop: 0,
-        paddingBottom: 0,
-        paddingLeft: 0,
-        paddingRight: 0,
-        contents: [
-          {
-            elementComponentCode: '',
-            elementComponentConfig: { content: null, status: true },
-            elementName: '',
-            elementType: '',
-            aliasName: '',
-            sort: 1,
-          },
-        ],
-        sort: 1,
-      },
-    ],
-    sort: 1,
-  },
-])
+const layoutData = ref<DeviceLayout>({
+  pc: [
+    {
+      id: 1,
+      rowName: 'PC Row 1',
+      isFullScreen: false,
+      marginTop: 0,
+      marginBottom: 0,
+      marginLeft: 0,
+      marginRight: 0,
+      paddingTop: 0,
+      paddingBottom: 0,
+      paddingLeft: 0,
+      paddingRight: 0,
+      backgroundColor: '',
+      backgroundImage: {} as any,
+      isContentFullScreen: false,
+      contents: [
+        {
+          id: 1,
+          rowRowName: '',
+          columnsCount: 1,
+          columnGap: 0,
+          marginTop: 0,
+          marginBottom: 0,
+          marginLeft: 0,
+          marginRight: 0,
+          paddingTop: 0,
+          paddingBottom: 0,
+          paddingLeft: 0,
+          paddingRight: 0,
+          contents: [
+            {
+              elementComponentCode: '',
+              elementComponentConfig: { content: null, status: true },
+              elementName: '',
+              elementType: '',
+              aliasName: '',
+              sort: 1,
+            },
+          ],
+          sort: 1,
+        },
+      ],
+      sort: 1,
+    },
+  ],
+  pad: [
+    {
+      id: 1,
+      rowName: 'Pad Row 1',
+      isFullScreen: false,
+      marginTop: 0,
+      marginBottom: 0,
+      marginLeft: 0,
+      marginRight: 0,
+      paddingTop: 0,
+      paddingBottom: 0,
+      paddingLeft: 0,
+      paddingRight: 0,
+      backgroundColor: '',
+      backgroundImage: {} as any,
+      isContentFullScreen: false,
+      contents: [
+        {
+          id: 1,
+          rowRowName: '',
+          columnsCount: 1,
+          columnGap: 0,
+          marginTop: 0,
+          marginBottom: 0,
+          marginLeft: 0,
+          marginRight: 0,
+          paddingTop: 0,
+          paddingBottom: 0,
+          paddingLeft: 0,
+          paddingRight: 0,
+          contents: [
+            {
+              elementComponentCode: '',
+              elementComponentConfig: { content: null, status: true },
+              elementName: '',
+              elementType: '',
+              aliasName: '',
+              sort: 1,
+            },
+          ],
+          sort: 1,
+        },
+      ],
+      sort: 1,
+    },
+  ],
+  mobile: [
+    {
+      id: 1,
+      rowName: 'Mobile Row 1',
+      isFullScreen: false,
+      marginTop: 0,
+      marginBottom: 0,
+      marginLeft: 0,
+      marginRight: 0,
+      paddingTop: 0,
+      paddingBottom: 0,
+      paddingLeft: 0,
+      paddingRight: 0,
+      backgroundColor: '',
+      backgroundImage: {} as any,
+      isContentFullScreen: false,
+      contents: [
+        {
+          id: 1,
+          rowRowName: '',
+          columnsCount: 1,
+          columnGap: 0,
+          marginTop: 0,
+          marginBottom: 0,
+          marginLeft: 0,
+          marginRight: 0,
+          paddingTop: 0,
+          paddingBottom: 0,
+          paddingLeft: 0,
+          paddingRight: 0,
+          contents: [
+            {
+              elementComponentCode: '',
+              elementComponentConfig: { content: null, status: true },
+              elementName: '',
+              elementType: '',
+              aliasName: '',
+              sort: 1,
+            },
+          ],
+          sort: 1,
+        },
+      ],
+      sort: 1,
+    },
+  ],
+})
+
+// 当前选中的设备类型
+const currentDevice = ref<'pc' | 'pad' | 'mobile'>('pc')
+
+// 获取当前设备的数据
+const currentRows = computed(() => {
+  return layoutData.value[currentDevice.value]
+})
 
 // 添加行
 const addRow = () => {
+  const currentRowsValue = layoutData.value[currentDevice.value]
   const newRow: ComponentRowData = {
-    id: rows.value.length + 1,
-    rowName: `Row ${rows.value.length + 1}`,
+    id: currentRowsValue.length + 1,
+    rowName: `${currentDevice.value === 'pc' ? 'PC' : currentDevice.value === 'pad' ? 'Pad' : 'Mobile'} Row ${
+      currentRowsValue.length + 1
+    }`,
     isFullScreen: false,
     marginTop: 0,
     marginBottom: 0,
@@ -111,15 +223,15 @@ const addRow = () => {
         sort: 1,
       },
     ],
-    sort: rows.value.length + 1,
+    sort: currentRowsValue.length + 1,
   }
-
-  rows.value.push(newRow)
+  layoutData.value[currentDevice.value].push(newRow)
 }
 
 // 添加内部行
 const addRowRow = (rowIndex: number) => {
-  const rowsCopy = [...rows.value]
+  const currentRowsValue = layoutData.value[currentDevice.value]
+  const rowsCopy = [...currentRowsValue]
   const row = rowsCopy[rowIndex]
 
   const newRowRow: RowRowData = {
@@ -149,12 +261,13 @@ const addRowRow = (rowIndex: number) => {
   }
 
   row.contents.push(newRowRow)
-  rows.value = rowsCopy
+  layoutData.value[currentDevice.value] = rowsCopy
 }
 
 // 添加列
 const addColumn = (rowIndex: number, rowRowIndex: number) => {
-  const rowsCopy = [...rows.value]
+  const currentRowsValue = layoutData.value[currentDevice.value]
+  const rowsCopy = [...currentRowsValue]
   const row = rowsCopy[rowIndex]
   const rowRow = row.contents[rowRowIndex]
 
@@ -171,12 +284,13 @@ const addColumn = (rowIndex: number, rowRowIndex: number) => {
     sort: rowRow.contents.length + 1,
   })
 
-  rows.value = rowsCopy
+  layoutData.value[currentDevice.value] = rowsCopy
 }
 
 // 删除列
 const deleteColumn = (rowIndex: number, rowRowIndex: number, colIndex: number) => {
-  const rowsCopy = [...rows.value]
+  const currentRowsValue = layoutData.value[currentDevice.value]
+  const rowsCopy = [...currentRowsValue]
   const row = rowsCopy[rowIndex]
   const rowRow = row.contents[rowRowIndex]
 
@@ -199,7 +313,7 @@ const deleteColumn = (rowIndex: number, rowRowIndex: number, colIndex: number) =
     })
   }
 
-  rows.value = rowsCopy
+  layoutData.value[currentDevice.value] = rowsCopy
 }
 
 // 设置列
@@ -207,18 +321,20 @@ const setColumn = (rowIndex: number, rowRowIndex: number, colIndex: number) => {
   activeRowIndex.value = rowIndex
   activeRowRowIndex.value = rowRowIndex
   activeColIndex.value = colIndex
+  const currentRowsValue = layoutData.value[currentDevice.value]
   columnDialogRef.value.openDialog(
     rowIndex,
     rowRowIndex,
     colIndex,
-    rows.value[rowIndex].contents[rowRowIndex].contents[colIndex],
+    currentRowsValue[rowIndex].contents[rowRowIndex].contents[colIndex],
   )
 }
 
 const getColumn = (rowIndex: number, rowRowIndex: number, colIndex: number, val: RowColumnData) => {
-  const rowsCopy = [...rows.value]
+  const currentRowsValue = layoutData.value[currentDevice.value]
+  const rowsCopy = [...currentRowsValue]
   rowsCopy[rowIndex].contents[rowRowIndex].contents[colIndex] = val
-  rows.value = rowsCopy
+  layoutData.value[currentDevice.value] = rowsCopy
   activeRowIndex.value = -1
   activeRowRowIndex.value = -1
   activeColIndex.value = -1
@@ -226,7 +342,8 @@ const getColumn = (rowIndex: number, rowRowIndex: number, colIndex: number, val:
 
 // 处理列拖拽排序
 const handleColumnSort = (rowIndex: number, rowRowIndex: number) => {
-  const rowsCopy = [...rows.value]
+  const currentRowsValue = layoutData.value[currentDevice.value]
+  const rowsCopy = [...currentRowsValue]
   const row = rowsCopy[rowIndex]
   const rowRow = row.contents[rowRowIndex]
 
@@ -235,12 +352,13 @@ const handleColumnSort = (rowIndex: number, rowRowIndex: number) => {
     col.sort = index + 1
   })
 
-  rows.value = rowsCopy
+  layoutData.value[currentDevice.value] = rowsCopy
 }
 
 // 删除内部行
 const deleteRowRow = (rowIndex: number, rowRowIndex: number) => {
-  const rowsCopy = [...rows.value]
+  const currentRowsValue = layoutData.value[currentDevice.value]
+  const rowsCopy = [...currentRowsValue]
   const row = rowsCopy[rowIndex]
 
   // 如果只有一行，不清空而是提示
@@ -258,23 +376,25 @@ const deleteRowRow = (rowIndex: number, rowRowIndex: number) => {
     rowRow.id = index + 1
   })
 
-  rows.value = rowsCopy
+  layoutData.value[currentDevice.value] = rowsCopy
 }
 
 // 设置内部行
 const setRowRow = (rowIndex: number, rowRowIndex: number) => {
   activeRowIndex.value = rowIndex
   activeRowRowIndex.value = rowRowIndex
+  const currentRowsValue = layoutData.value[currentDevice.value]
   rowRowDialogRef.value.openDialog(
     true,
     rowIndex,
-    rows.value[rowIndex].contents.length,
-    rows.value[rowIndex].contents[rowRowIndex],
+    currentRowsValue[rowIndex].contents.length,
+    currentRowsValue[rowIndex].contents[rowRowIndex],
   )
 }
 
 const getRowRow = (rowIndex: number, val: RowRowData) => {
-  const rowsCopy = [...rows.value]
+  const currentRowsValue = layoutData.value[currentDevice.value]
+  const rowsCopy = [...currentRowsValue]
   // 如果val.id与rows中元素的id相同修改，否则新增
   const index = rowsCopy[rowIndex].contents.findIndex(item => item.id === val.id)
   if (index > -1) {
@@ -282,31 +402,34 @@ const getRowRow = (rowIndex: number, val: RowRowData) => {
   } else {
     rowsCopy[rowIndex].contents.push(val)
   }
-  rows.value = rowsCopy
+  layoutData.value[currentDevice.value] = rowsCopy
   activeRowIndex.value = -1
   activeRowRowIndex.value = -1
 }
 
 // 删除行
 const deleteRow = (rowIndex: number) => {
-  const rowsCopy = [...rows.value]
+  const currentRowsValue = layoutData.value[currentDevice.value]
+  const rowsCopy = [...currentRowsValue]
   rowsCopy.splice(rowIndex, 1)
   // 更新排序
   rowsCopy.forEach((row, index) => {
     row.sort = index + 1
     row.id = index + 1
   })
-  rows.value = rowsCopy
+  layoutData.value[currentDevice.value] = rowsCopy
 }
 
 // 设置行
 const setRow = (rowIndex: number) => {
   activeRowIndex.value = rowIndex
-  rowDialogRef.value.openDialog(true, rows.value.length, rows.value[rowIndex])
+  const currentRowsValue = layoutData.value[currentDevice.value]
+  rowDialogRef.value.openDialog(true, currentRowsValue.length, currentRowsValue[rowIndex])
 }
 
 const getRow = (val: ComponentRowData) => {
-  const rowsCopy = [...rows.value]
+  const currentRowsValue = layoutData.value[currentDevice.value]
+  const rowsCopy = [...currentRowsValue]
   // 如果val.id与rows中元素的id相同修改，否则新增
   const index = rowsCopy.findIndex(item => item.id === val.id)
   if (index > -1) {
@@ -314,13 +437,14 @@ const getRow = (val: ComponentRowData) => {
   } else {
     rowsCopy.push(val)
   }
-  rows.value = rowsCopy
+  layoutData.value[currentDevice.value] = rowsCopy
   activeRowIndex.value = -1
 }
 
 // 添加组件到指定位置
 const addComponent = (rowIndex: number, rowRowIndex: number, colIndex: number, component: ComponentStructure) => {
-  const rowsCopy = [...rows.value]
+  const currentRowsValue = layoutData.value[currentDevice.value]
+  const rowsCopy = [...currentRowsValue]
   const col = rowsCopy[rowIndex].contents[rowRowIndex].contents[colIndex]
 
   // 设置组件类型和默认值
@@ -331,19 +455,21 @@ const addComponent = (rowIndex: number, rowRowIndex: number, colIndex: number, c
   if (component.webComponentCode) {
     col.webComponentCode = component.webComponentCode
   }
-  rows.value = rowsCopy
+  layoutData.value[currentDevice.value] = rowsCopy
 }
 
 // 编辑组件
 const editComponent = (rowIndex: number, rowRowIndex: number, colIndex: number, componentData: RowColumnData) => {
-  const rowsCopy = [...rows.value]
+  const currentRowsValue = layoutData.value[currentDevice.value]
+  const rowsCopy = [...currentRowsValue]
   rowsCopy[rowIndex].contents[rowRowIndex].contents[colIndex] = { ...componentData }
-  rows.value = rowsCopy
+  layoutData.value[currentDevice.value] = rowsCopy
 }
 
 // 删除组件
 const deleteComponent = (rowIndex: number, rowRowIndex: number, colIndex: number) => {
-  const rowsCopy = [...rows.value]
+  const currentRowsValue = layoutData.value[currentDevice.value]
+  const rowsCopy = [...currentRowsValue]
   const col = rowsCopy[rowIndex].contents[rowRowIndex].contents[colIndex]
 
   // 清空组件数据而不是删除列
@@ -353,12 +479,13 @@ const deleteComponent = (rowIndex: number, rowRowIndex: number, colIndex: number
   col.elementType = ''
   col.aliasName = ''
 
-  rows.value = rowsCopy
+  layoutData.value[currentDevice.value] = rowsCopy
 }
 
 // 检查列是否可以接受新组件
 const canDropComponent = (rowIndex: number, rowRowIndex: number, colIndex: number) => {
-  const row = rows.value[rowIndex]
+  const currentRowsValue = layoutData.value[currentDevice.value]
+  const row = currentRowsValue[rowIndex]
   const rowRow = row.contents[rowRowIndex]
   const col = rowRow.contents[colIndex]
 
@@ -372,17 +499,19 @@ const canDropComponent = (rowIndex: number, rowRowIndex: number, colIndex: numbe
 
 // 处理行拖拽排序
 const handleRowSort = () => {
-  const rowsCopy = [...rows.value]
+  const currentRowsValue = layoutData.value[currentDevice.value]
+  const rowsCopy = [...currentRowsValue]
   rowsCopy.forEach((row, index) => {
     row.sort = index + 1
     row.id = index + 1
   })
-  rows.value = rowsCopy
+  layoutData.value[currentDevice.value] = rowsCopy
 }
 
 // 处理内部行拖拽排序
 const handleRowRowSort = (rowIndex: number) => {
-  const rowsCopy = [...rows.value]
+  const currentRowsValue = layoutData.value[currentDevice.value]
+  const rowsCopy = [...currentRowsValue]
   const row = rowsCopy[rowIndex]
 
   row.contents.forEach((rowRow, index) => {
@@ -390,7 +519,7 @@ const handleRowRowSort = (rowIndex: number) => {
     rowRow.id = index + 1
   })
 
-  rows.value = rowsCopy
+  layoutData.value[currentDevice.value] = rowsCopy
 }
 
 // 开始拖拽组件
@@ -424,12 +553,22 @@ const handleDragOver = (event: DragEvent) => {
 
 // 提供getData方法来获取rows数据
 const getData = () => {
-  return rows.value
+  return layoutData.value
 }
 
-// 提供getData方法来获取rows数据
-const setData = (val: ComponentRowData[]) => {
-  rows.value = val
+// 提供setData方法来设置所有设备的数据
+const setData = (val: DeviceLayout) => {
+  layoutData.value = val
+}
+
+// 提供getDeviceData方法来获取指定设备的数据
+const getDeviceData = (device: 'pc' | 'pad' | 'mobile') => {
+  return layoutData.value[device]
+}
+
+// 提供setDeviceData方法来设置指定设备的数据
+const setDeviceData = (device: 'pc' | 'pad' | 'mobile', val: ComponentRowData[]) => {
+  layoutData.value[device] = val
 }
 
 // 打开组件管理器
@@ -437,28 +576,51 @@ const openComponentManager = (rowIndex: number, rowRowIndex: number, colIndex: n
   activeRowIndex.value = rowIndex
   activeRowRowIndex.value = rowRowIndex
   activeColIndex.value = colIndex
-  const componentData = rows.value[rowIndex].contents[rowRowIndex].contents[colIndex]
+  const currentRowsValue = layoutData.value[currentDevice.value]
+  const componentData = currentRowsValue[rowIndex].contents[rowRowIndex].contents[colIndex]
   componentManagerRef.value.openComponentManager(componentData)
 }
 
 // 更新组件数据
 const handleUpdateComponent = (componentConfig: any) => {
-  const rowsCopy = [...rows.value]
+  const currentRowsValue = layoutData.value[currentDevice.value]
+  const rowsCopy = [...currentRowsValue]
   const col = rowsCopy[activeRowIndex.value].contents[activeRowRowIndex.value].contents[activeColIndex.value]
   col.elementComponentConfig = componentConfig
-  rows.value = rowsCopy
+  layoutData.value[currentDevice.value] = rowsCopy
 }
 
 // 暴露方法给父组件
 defineExpose({
   getData,
   setData,
+  getDeviceData,
+  setDeviceData,
   addComponent,
   editComponent,
 })
 </script>
 
 <template>
+  <div class="w-full py-4 bg-gray-200 border-b border-gray-300">
+    <!-- 设备切换 -->
+    <div class="device-tabs">
+      <EBtnGroup>
+        <EBtn :type="currentDevice === 'pc' ? 'primary' : 'default'" @click="currentDevice = 'pc'">
+          <Icon name="mynaui:desktop" :size="4" class="mr-2" />
+          PC端
+        </EBtn>
+        <EBtn :type="currentDevice === 'pad' ? 'primary' : 'default'" @click="currentDevice = 'pad'">
+          <Icon name="mynaui:tablet" :size="4" class="mr-2" />
+          平板端
+        </EBtn>
+        <EBtn :type="currentDevice === 'mobile' ? 'primary' : 'default'" @click="currentDevice = 'mobile'">
+          <Icon name="mynaui:mobile" :size="4" class="mr-2" />
+          手机端
+        </EBtn>
+      </EBtnGroup>
+    </div>
+  </div>
   <div class="simplified-layout pa-4">
     <!-- 组件库面板 -->
     <div class="component-library">
@@ -492,15 +654,19 @@ defineExpose({
     <!-- 布局区域 -->
     <div class="layout-area">
       <VueDraggable
-        :model-value="rows"
+        :model-value="currentRows"
         item-key="id"
         :animation="200"
         @end="handleRowSort"
-        @update:model-value="(val:ComponentRowData[]) => rows = val"
+        @update:model-value="(val:ComponentRowData[]) => {
+          layoutData[currentDevice] = val;
+        }"
       >
-        <div v-for="(row, rowIndex) in rows" :key="row.id" class="layout-row">
+        <div v-for="(row, rowIndex) in currentRows" :key="row.id" class="layout-row">
           <div class="row-header">
-            <span v-if="!row.rowName">Row {{ rowIndex + 1 }}</span>
+            <span v-if="!row.rowName">
+              {{ currentDevice === 'pc' ? 'PC' : currentDevice === 'pad' ? 'Pad' : 'Mobile' }} Row {{ rowIndex + 1 }}
+            </span>
             <span v-else>{{ row.rowName }}</span>
             <div class="row-actions">
               <EBtn plain type="default" size="small" @click="setRow(rowIndex)">
@@ -519,9 +685,9 @@ defineExpose({
               :animation="200"
               @end="() => handleRowRowSort(rowIndex)"
               @update:model-value="(val: RowRowData[]) => {
-                const rowsCopy = [...rows];
+                const rowsCopy = [...currentRows];
                 rowsCopy[rowIndex].contents = val;
-                rows = rowsCopy;
+                layoutData[currentDevice] = rowsCopy;
               }"
             >
               <div v-for="(rowRow, rowRowIndex) in row.contents" :key="rowRow.id" class="layout-row-row mb-4">
@@ -555,9 +721,9 @@ defineExpose({
                     class="columns-container"
                     @end="() => handleColumnSort(rowIndex, rowRowIndex)"
                     @update:model-value="(val: RowColumnData[]) => {
-                      const rowsCopy = [...rows];
+                      const rowsCopy = [...currentRows];
                       rowsCopy[rowIndex].contents[rowRowIndex].contents = val;
-                      rows = rowsCopy;
+                      layoutData[currentDevice] = rowsCopy;
                     }"
                   >
                     <div
@@ -577,7 +743,10 @@ defineExpose({
                             <div
                               class="w-full flex items-center justify-between mb-4 border-b-1 border-gray-300 pb-2 px-0"
                             >
-                              <div>{{ col.aliasName || col.elementName || '未命名组件' }} <span v-if="col.aliasName"> - {{ col.elementName }}</span> </div>
+                              <div>
+                                {{ col.aliasName || col.elementName || '未命名组件' }}
+                                <span v-if="col.aliasName">- {{ col.elementName }}</span>
+                              </div>
                               <div>
                                 <div class="w-full flex items-center justify-between">
                                   <div class="mr-2">
@@ -679,6 +848,11 @@ defineExpose({
   width: 100%;
   display: flex;
   gap: 20px;
+}
+
+.device-tabs {
+  display: flex;
+  justify-content: center;
 }
 
 .component-library {
