@@ -76,7 +76,7 @@ interface ThemeConfigRequest {
 }
 
 interface ThemeRemoveRequest {
-  ids: string[]
+  ids: number[]
 }
 
 interface LinkData {
@@ -120,23 +120,15 @@ interface ComponentData {
 }
 
 interface ReadContentData {
-  readContentLabel: string
   readContentValue: string | null
   readContentType: string
-}
-
-interface MultiReadContentData {
-  readContentLabel: string
-  readContentValue: number | null
-  readContentType: string
+  readContentCount: number
 }
 
 interface ThemeSettingGlobal {
-  defaultHeaderComponentId: string | null
-  defaultFooterComponentId: string | null
-  homePageLayoutId: string | null
-  supplierPageLayoutId: string | null
-  helpPageLayoutId: string | null
+  defaultHeaderComponentId: number | null
+  defaultFooterComponentId: number | null
+  homePageLayoutId: number | null
 }
 
 interface ThemeSettingDataType {
@@ -146,26 +138,51 @@ interface ThemeSettingDataType {
   content: any
 }
 
-interface ElementData {
+interface RowColumnData {
   elementComponentCode: string
   webComponentCode?: string
   elementComponentConfig: ComponentConfig
   elementName: string
+  elementType: string
   aliasName: string
   elementId?: number
   rowElementId?: number
-  rowElementSort?: number
+  sort?: number
+}
+
+interface RowRowData {
+  id: number
+  rowRowName: string
+  columnsCount: number
+  columnGap: number
+  marginTop: number
+  marginBottom: number
+  marginLeft: number
+  marginRight: number
+  paddingTop: number
+  paddingBottom: number
+  paddingLeft: number
+  paddingRight: number
+  contents: RowColumnData[]
+  sort?: number
 }
 
 interface ComponentRowData {
   id: number
   rowName: string
-  columnsCount: number
   isFullScreen: boolean
-  rowGap: number
   marginTop: number
   marginBottom: number
-  columns: ElementData[]
+  marginLeft: number
+  marginRight: number
+  paddingTop: number
+  paddingBottom: number
+  paddingLeft: number
+  paddingRight: number
+  backgroundColor: string | null
+  backgroundImage: FileData
+  isContentFullScreen: boolean
+  contents: RowRowData[]
   sort: number
 }
 
@@ -182,8 +199,29 @@ interface MultiImageTextItem {
   sort: number
 }
 
+interface MultiFileItem {
+  id: number
+  file: FileData
+  fileLink: LinkData
+  alt: string
+  title: string
+  subTitle: string
+  textList: string[]
+  buttonText: string
+  buttonLink: LinkData
+  sort: number
+}
+
 interface CompElementFormData {
   elementComponentCode: string
   webComponentCode?: string
   aliasName: string
+}
+
+interface ComponentStructure {
+  type: string
+  name: string
+  icon: string
+  code: string
+  webComponentCode?: string
 }

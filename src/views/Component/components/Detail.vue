@@ -66,13 +66,13 @@ const handleSubmit = async () => {
     ElMessage.warning($t('comps.warning.componentName'))
     return
   }
-  if (rows.value.length === 0) {
-    ElMessage.warning($t('comps.warning.emptyRow'))
-    return
-  }
   loading.save = true
   if (simplifiedComponentLayoutRef.value) {
     rows.value = simplifiedComponentLayoutRef.value.getData()
+    if (rows.value.length === 0) {
+      ElMessage.warning($t('comps.warning.emptyRow'))
+      return
+    }
     form.componentContent = JSON.stringify(rows.value)
     if (actionType.value === 'add' || id.value === '' || id.value === null) {
       await createComponent()
