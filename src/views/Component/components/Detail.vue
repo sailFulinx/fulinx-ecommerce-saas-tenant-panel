@@ -2,7 +2,6 @@
 import { ElInput, ElMessage } from 'element-plus'
 import { debounce } from 'lodash'
 import { createCompApi, editCompApi } from '@/api/comp'
-import ComponentLayout from '@/components/common/Comp/ComponentLayout.vue'
 import { useLocale } from '@/hooks/useLocale'
 
 const emit = defineEmits(['getList', 'handleChangeVisible'])

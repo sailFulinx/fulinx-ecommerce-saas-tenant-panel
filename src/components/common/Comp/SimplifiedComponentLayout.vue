@@ -244,7 +244,20 @@ const addRow = () => {
   const deviceType = isResponsiveMode.value ? 'responsive' : currentDevice.value
   if (!layoutData.value || !layoutData.value[deviceType]) {
     console.error('layoutData or current device data is not initialized')
-    return
+    // 初始化数据结构
+    if (!layoutData.value) {
+      layoutData.value = {
+        responsive: [],
+        pc: [],
+        pad: [],
+        mobile: [],
+      }
+    }
+
+    // 初始化当前设备的数据
+    if (!layoutData.value[deviceType]) {
+      layoutData.value[deviceType] = []
+    }
   }
 
   const currentRowsValue = layoutData.value[deviceType]
@@ -780,7 +793,9 @@ defineExpose({
                 {{
                   isResponsiveMode
                     ? `PC Row ${rowIndex + 1}`
-                    : `${currentDevice === 'pc' ? 'PC' : currentDevice === 'pad' ? 'Pad' : 'Mobile'} Row ${rowIndex + 1}`
+                    : `${currentDevice === 'pc' ? 'PC' : currentDevice === 'pad' ? 'Pad' : 'Mobile'} Row ${
+                      rowIndex + 1
+                    }`
                 }}
               </span>
               <span v-else>{{ row.rowName }}</span>
@@ -920,8 +935,8 @@ defineExpose({
                               </div>
                             </div>
                           </div>
-                        <!-- 列删除按钮 -->
-                        <!-- <div class="w-full flex items-center justify-between">
+                          <!-- 列删除按钮 -->
+                          <!-- <div class="w-full flex items-center justify-between">
                           <div>
                             <EBtn plain size="small" type="default" @click="setColumn(rowIndex, rowRowIndex, colIndex)">
                               <Icon name="ant-design:setting-outlined" />
@@ -986,7 +1001,7 @@ defineExpose({
   width: 250px;
   border: 1px solid #dcdfe6;
   border-radius: 4px;
-  height: calc(100vh - 212px);
+  height: calc(100vh - 260px);
   display: flex;
   flex-direction: column;
 }
@@ -1035,7 +1050,7 @@ defineExpose({
 
 .layout-area {
   flex: 1;
-  height: calc(100vh - 212px);
+  height: calc(100vh - 240px);
   overflow-y: auto;
 }
 

@@ -148,7 +148,7 @@ const handleChangeVisible = () => {
 
 const leftScreenHeight = window.innerHeight - 340
 
-const screenHeight = window.innerHeight - 104
+const screenHeight = window.innerHeight - 44
 </script>
 
 <template>
