@@ -61,6 +61,7 @@ watch(
   () => {
     if (props.articleDetail?.layoutType) {
       currentLayoutType.value = props.articleDetail.layoutType
+      isShowLayoutEdit.value = true
     }
     if (props.articleDetail?.devComponentName) {
       devComponentName.value = props.articleDetail.devComponentName
@@ -93,6 +94,12 @@ const handleSubmitArticleLayout = async () => {
   isShowLayoutEdit.value = false
   ElMessage.success($t('success.edit'))
   emit('refreshData')
+}
+
+const handleCancel = () => {
+  isShowLayoutEdit.value = false
+  isFullScreen.value = false
+  currentLayoutType.value = 1
 }
 </script>
 
@@ -140,7 +147,7 @@ const handleSubmitArticleLayout = async () => {
                     <Icon :name="isFullScreen ? 'ant-design:fullscreen-exit-outlined' : 'ant-design:fullscreen-outlined'" class="mr-2" />
                     {{ isFullScreen ? $t('common.exitFullScreen') : $t('common.fullScreen') }}
                   </EBtn>
-                  <EBtn type="primary" @click="isShowLayoutEdit = false">
+                  <EBtn type="primary" @click="handleCancel">
                     <Icon icon="ep:close" :size="3" class="mr-1" />
                     {{ $t('common.cancel') }}
                   </EBtn>
@@ -167,8 +174,64 @@ const handleSubmitArticleLayout = async () => {
       </div>
     </div>
 
-    <div v-if="currentLayoutType === 3" class="mt-4  border border-gray-300">
-      <SimplifiedComponentLayout ref="simplifiedComponentLayoutRef" :is-full-screen="isFullScreen" />
+    <div v-if="currentLayoutType === 3" class="layout-container" :class="{ 'full-screen-mode': isFullScreen }">
+      <div class="sticky-header top-0 z-10 bg-white flex justify-between p-4 border border-gray-200 rounded-t-md">
+        <div /> <!-- 空div用于布局对齐 -->
+        <div v-if="isFullScreen" class="flex justify-end space-x-2">
+          <EBtn @click="handleCancel">
+            <Icon name="ep:close" class="mr-2" />
+            {{ $t('common.cancel') }}
+          </EBtn>
+          <EBtn type="primary" @click="handleSubmitArticleLayout">
+            <Icon name="ep:check" class="mr-2" />
+            {{ $t('common.submit') }}
+          </EBtn>
+          <EBtn @click="toggleFullScreen">
+            <Icon :name="isFullScreen ? 'ant-design:fullscreen-exit-outlined' : 'ant-design:fullscreen-outlined'" class="mr-2" />
+            {{ isFullScreen ? $t('common.exitFullScreen') : $t('common.fullScreen') }}
+          </EBtn>
+        </div>
+      </div>
+      <SimplifiedComponentLayout class="border border-gray-200" ref="simplifiedComponentLayoutRef" :is-full-screen="isFullScreen" />
     </div>
   </div>
 </template>
+
+<style scoped>
+.full-screen-mode {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  background-color: white;
+  padding: 0;
+  margin: 0;
+  overflow: auto;
+  box-sizing: border-box;
+}
+
+.sticky-header {
+  position: sticky !important;
+  position: -webkit-sticky !important;
+  top: 0;
+  z-index: 10000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 0;
+  border: none;
+  border-bottom: 1px solid #e4e7ed;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.full-screen-mode :deep(.layout-area) {
+  height: calc(100vh - 70px) !important;
+  overflow-y: auto;
+  padding-top: 10px;
+}
+
+.full-screen-mode :deep(.component-library) {
+  height: calc(100vh - 160px) !important;
+}
+</style>
