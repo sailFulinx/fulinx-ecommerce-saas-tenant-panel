@@ -6,6 +6,7 @@ export default {
   delete: '删除',
   view: '查看',
   back: '返回',
+  copy: '复制',
   cancel: '取消',
   closeAll: '关闭全部标签页',
   closeOther: '关闭其他标签页',
