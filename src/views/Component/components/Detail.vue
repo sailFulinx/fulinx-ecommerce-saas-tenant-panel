@@ -162,7 +162,7 @@ defineExpose({
       </div>
     </div>
     <div :class="{ 'full-screen-content': isFullScreen }">
-      <SimplifiedComponentLayout ref="simplifiedComponentLayoutRef" />
+      <SimplifiedComponentLayout ref="simplifiedComponentLayoutRef" :is-full-screen="isFullScreen" />
     </div>
   </div>
 </template>

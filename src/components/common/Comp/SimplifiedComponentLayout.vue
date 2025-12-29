@@ -6,6 +6,13 @@ import ComponentManager from './ComponentManager.vue'
 import RowDialog from './RowDialog.vue'
 import RowRowDialog from './RowRowDialog.vue'
 
+const { isFullScreen } = defineProps({
+  isFullScreen: {
+    type: Boolean,
+    default: false,
+  },
+})
+
 // 组件管理器引用
 const componentManagerRef = ref()
 
@@ -743,7 +750,7 @@ defineExpose({
     </div>
     <div class="simplified-layout pa-4">
       <!-- 组件库面板 -->
-      <div class="component-library">
+      <div :class="isFullScreen ? 'component-library-fullscreen' : 'component-library'">
         <div class="component-library-header">
           <h3 class="border-b-1 border-gray-600 py-3 flex items-center justify-start mb-0 px-4">
             组件库
@@ -1002,6 +1009,15 @@ defineExpose({
   border: 1px solid #dcdfe6;
   border-radius: 4px;
   height: calc(100vh - 260px);
+  display: flex;
+  flex-direction: column;
+}
+
+.component-library-fullscreen {
+  width: 250px;
+  border: 1px solid #dcdfe6;
+  border-radius: 4px;
+  height: calc(100vh - 160px);
   display: flex;
   flex-direction: column;
 }
