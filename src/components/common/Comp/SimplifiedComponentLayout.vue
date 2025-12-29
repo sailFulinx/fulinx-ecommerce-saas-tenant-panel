@@ -692,28 +692,23 @@ defineExpose({
 </script>
 
 <template>
-  <div class="w-full py-4 bg-gray-200 border-b border-gray-300">
-    <div class="flex justify-between items-center">
-      <!-- 响应式模式切换 -->
-      <div class="mode-toggle px-4">
-        <div class="flex justify-center items-center">
-          <EBtnGroup>
-            <EBtn :type="isResponsiveMode ? 'primary' : 'default'" @click="toggleResponsiveMode(true)">
-              响应式模式
-            </EBtn>
-            <EBtn :type="!isResponsiveMode ? 'primary' : 'default'" @click="toggleResponsiveMode(false)">
-              独立模式
-            </EBtn>
-          </EBtnGroup>
+  <div class="w-full">
+    <div class="w-full py-4 bg-gray-200 border-b border-gray-300">
+      <div class="flex justify-between items-center">
+        <!-- 响应式模式切换 -->
+        <div class="mode-toggle px-4">
+          <div class="flex justify-center items-center">
+            <EBtnGroup>
+              <EBtn :type="isResponsiveMode ? 'primary' : 'default'" @click="toggleResponsiveMode(true)">
+                响应式模式
+              </EBtn>
+              <EBtn :type="!isResponsiveMode ? 'primary' : 'default'" @click="toggleResponsiveMode(false)">
+                独立模式
+              </EBtn>
+            </EBtnGroup>
+          </div>
         </div>
-      </div>
-      <div class="flex items-center px-4">
-        <div>
-          <EBtn type="primary" @click="fullScreen">
-            <Icon name="icon-park-outline:full-screen-one" class="mr-2" />
-            全屏
-          </EBtn>
-        </div>
+
         <!-- 设备切换 -->
         <div v-if="!isResponsiveMode" class="device-tabs">
           <EBtnGroup>
@@ -733,199 +728,198 @@ defineExpose({
         </div>
       </div>
     </div>
-  </div>
-  <div class="simplified-layout pa-4">
-    <!-- 组件库面板 -->
-    <div class="component-library">
-      <div class="component-library-header">
-        <h3 class="border-b-1 border-gray-600 py-3 flex items-center justify-start mb-0 px-4">
-          组件库
-        </h3>
-      </div>
-      <div class="component-library-content pa-4">
-        <div v-for="category in componentCategories" :key="category.id" shadow="never" class="mb-4">
-          <div class="category-title mb-4 border-dashed border-b-1 border-gray-400 pb-4">
-            {{ category.name }}
-          </div>
+    <div class="simplified-layout pa-4">
+      <!-- 组件库面板 -->
+      <div class="component-library">
+        <div class="component-library-header">
+          <h3 class="border-b-1 border-gray-600 py-3 flex items-center justify-start mb-0 px-4">
+            组件库
+          </h3>
+        </div>
+        <div class="component-library-content pa-4">
+          <div v-for="category in componentCategories" :key="category.id" shadow="never" class="mb-4">
+            <div class="category-title mb-4 border-dashed border-b-1 border-gray-400 pb-4">
+              {{ category.name }}
+            </div>
 
-          <div class="components-grid">
-            <div
-              v-for="component in category.components"
-              :key="component.type"
-              class="component-item"
-              draggable="true"
-              @dragstart="event => handleComponentDragStart(event, component)"
-            >
-              <Icon :name="`${component.icon}`" />
-              <span>{{ component.name }}</span>
+            <div class="components-grid">
+              <div
+                v-for="component in category.components"
+                :key="component.type"
+                class="component-item"
+                draggable="true"
+                @dragstart="event => handleComponentDragStart(event, component)"
+              >
+                <Icon :name="`${component.icon}`" />
+                <span>{{ component.name }}</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- 布局区域 -->
-    <div class="layout-area">
-      <VueDraggable
-        :model-value="currentRows"
-        item-key="id"
-        :animation="200"
-        @end="handleRowSort"
-        @update:model-value="(val:ComponentRowData[]) => {
-          if (isResponsiveMode) {
-            layoutData.pc = val;
-          }
-          else {
-            layoutData[currentDevice] = val;
-          }
-        }"
-      >
-        <div v-for="(row, rowIndex) in currentRows" :key="row.id" class="layout-row">
-          <div class="row-header">
-            <span v-if="!row.rowName">
-              {{
-                isResponsiveMode
-                  ? `PC Row ${rowIndex + 1}`
-                  : `${currentDevice === 'pc' ? 'PC' : currentDevice === 'pad' ? 'Pad' : 'Mobile'} Row ${rowIndex + 1}`
-              }}
-            </span>
-            <span v-else>{{ row.rowName }}</span>
-            <div class="row-actions">
-              <EBtn plain type="default" size="small" @click="setRow(rowIndex)">
-                设置行
-              </EBtn>
-              <EBtn plain size="small" type="danger" @click="deleteRow(rowIndex)">
-                删除行
-              </EBtn>
+      <!-- 布局区域 -->
+      <div class="layout-area">
+        <VueDraggable
+          :model-value="currentRows"
+          item-key="id"
+          :animation="200"
+          @end="handleRowSort"
+          @update:model-value="(val:ComponentRowData[]) => {
+            if (isResponsiveMode) {
+              layoutData.pc = val;
+            }
+            else {
+              layoutData[currentDevice] = val;
+            }
+          }"
+        >
+          <div v-for="(row, rowIndex) in currentRows" :key="row.id" class="layout-row">
+            <div class="row-header">
+              <span v-if="!row.rowName">
+                {{
+                  isResponsiveMode
+                    ? `PC Row ${rowIndex + 1}`
+                    : `${currentDevice === 'pc' ? 'PC' : currentDevice === 'pad' ? 'Pad' : 'Mobile'} Row ${rowIndex + 1}`
+                }}
+              </span>
+              <span v-else>{{ row.rowName }}</span>
+              <div class="row-actions">
+                <EBtn plain type="default" size="small" @click="setRow(rowIndex)">
+                  设置行
+                </EBtn>
+                <EBtn plain size="small" type="danger" @click="deleteRow(rowIndex)">
+                  删除行
+                </EBtn>
+              </div>
             </div>
-          </div>
 
-          <div class="row-content">
-            <VueDraggable
-              :model-value="row.contents"
-              item-key="id"
-              :animation="200"
-              @end="() => handleRowRowSort(rowIndex)"
-              @update:model-value="(val: RowRowData[]) => {
-                const rowsCopy = [...currentRows];
-                rowsCopy[rowIndex].contents = val;
-                if (isResponsiveMode) {
-                  layoutData.pc = rowsCopy;
-                }
-                else {
-                  layoutData[currentDevice] = rowsCopy;
-                }
-              }"
-            >
-              <div v-for="(rowRow, rowRowIndex) in row.contents" :key="rowRow.id" class="layout-row-row mb-4">
-                <div class="row-row-header">
-                  <span v-if="!rowRow.rowRowName">Inner Row {{ rowRowIndex + 1 }}</span>
-                  <span v-else>{{ rowRow.rowRowName }}</span>
-                  <div class="row-row-actions">
-                    <EBtn plain type="default" size="small" @click="setRowRow(rowIndex, rowRowIndex)">
-                      设置内部行
-                    </EBtn>
-                    <EBtn plain size="small" type="primary" @click="addColumn(rowIndex, rowRowIndex)">
-                      添加列
-                    </EBtn>
-                    <EBtn
-                      v-if="row.contents.length > 1"
-                      plain
-                      size="small"
-                      type="danger"
-                      @click="deleteRowRow(rowIndex, rowRowIndex)"
-                    >
-                      删除内部行
-                    </EBtn>
+            <div class="row-content">
+              <VueDraggable
+                :model-value="row.contents"
+                item-key="id"
+                :animation="200"
+                @end="() => handleRowRowSort(rowIndex)"
+                @update:model-value="(val: RowRowData[]) => {
+                  const rowsCopy = [...currentRows];
+                  rowsCopy[rowIndex].contents = val;
+                  if (isResponsiveMode) {
+                    layoutData.pc = rowsCopy;
+                  }
+                  else {
+                    layoutData[currentDevice] = rowsCopy;
+                  }
+                }"
+              >
+                <div v-for="(rowRow, rowRowIndex) in row.contents" :key="rowRow.id" class="layout-row-row mb-4">
+                  <div class="row-row-header">
+                    <span v-if="!rowRow.rowRowName">Inner Row {{ rowRowIndex + 1 }}</span>
+                    <span v-else>{{ rowRow.rowRowName }}</span>
+                    <div class="row-row-actions">
+                      <EBtn plain type="default" size="small" @click="setRowRow(rowIndex, rowRowIndex)">
+                        设置内部行
+                      </EBtn>
+                      <EBtn plain size="small" type="primary" @click="addColumn(rowIndex, rowRowIndex)">
+                        添加列
+                      </EBtn>
+                      <EBtn
+                        v-if="row.contents.length > 1"
+                        plain
+                        size="small"
+                        type="danger"
+                        @click="deleteRowRow(rowIndex, rowRowIndex)"
+                      >
+                        删除内部行
+                      </EBtn>
+                    </div>
                   </div>
-                </div>
 
-                <div class="row-row-content">
-                  <VueDraggable
-                    :model-value="rowRow.contents"
-                    item-key="sort"
-                    :animation="200"
-                    class="columns-container"
-                    @end="() => handleColumnSort(rowIndex, rowRowIndex)"
-                    @update:model-value="(val: RowColumnData[]) => {
-                      const rowsCopy = [...currentRows];
-                      rowsCopy[rowIndex].contents[rowRowIndex].contents = val;
-                      if (isResponsiveMode) {
-                        layoutData.pc = rowsCopy;
-                      }
-                      else {
-                        layoutData[currentDevice] = rowsCopy;
-                      }
-                    }"
-                  >
-                    <div
-                      v-for="(col, colIndex) in rowRow.contents"
-                      :key="colIndex"
-                      class="layout-column"
-                      :class="`border-1 border-dashed border-gray-300 col-span-${12 / rowRow.contents.length}`"
-                      @drop="event => handleDrop(event, rowIndex, rowRowIndex, colIndex)"
-                      @dragover="handleDragOver"
+                  <div class="row-row-content">
+                    <VueDraggable
+                      :model-value="rowRow.contents"
+                      item-key="sort"
+                      :animation="200"
+                      class="columns-container"
+                      @end="() => handleColumnSort(rowIndex, rowRowIndex)"
+                      @update:model-value="(val: RowColumnData[]) => {
+                        const rowsCopy = [...currentRows];
+                        rowsCopy[rowIndex].contents[rowRowIndex].contents = val;
+                        if (isResponsiveMode) {
+                          layoutData.pc = rowsCopy;
+                        }
+                        else {
+                          layoutData[currentDevice] = rowsCopy;
+                        }
+                      }"
                     >
-                      <div class="column-content">
-                        <div v-if="!col.elementComponentCode" class="empty-column">
-                          <span>拖拽组件到此处</span>
-                        </div>
-                        <div v-else class="w-full">
-                          <div class="w-full component-preview bg-gray-50">
-                            <div
-                              class="w-full flex items-center justify-between mb-4 border-b-1 border-gray-300 pb-2 px-0"
-                            >
-                              <div>
-                                {{ col.aliasName || col.elementName || '未命名组件' }}
-                                <span v-if="col.aliasName">- {{ col.elementName }}</span>
-                              </div>
-                              <div>
-                                <div class="w-full flex items-center justify-between">
-                                  <div class="mr-2">
-                                    <EBtn
-                                      plain
-                                      size="small"
-                                      type="default"
-                                      @click="setColumn(rowIndex, rowRowIndex, colIndex)"
-                                    >
-                                      <Icon name="ant-design:setting-outlined" />
-                                    </EBtn>
-                                  </div>
-                                  <div v-if="rowRow.contents.length > 1">
-                                    <EBtn
-                                      plain
-                                      size="small"
-                                      type="danger"
-                                      @click="deleteColumn(rowIndex, rowRowIndex, colIndex)"
-                                    >
-                                      <Icon name="ant-design:delete-outlined" />
-                                    </EBtn>
+                      <div
+                        v-for="(col, colIndex) in rowRow.contents"
+                        :key="colIndex"
+                        class="layout-column"
+                        :class="`border-1 border-dashed border-gray-300 col-span-${12 / rowRow.contents.length}`"
+                        @drop="event => handleDrop(event, rowIndex, rowRowIndex, colIndex)"
+                        @dragover="handleDragOver"
+                      >
+                        <div class="column-content">
+                          <div v-if="!col.elementComponentCode" class="empty-column">
+                            <span>拖拽组件到此处</span>
+                          </div>
+                          <div v-else class="w-full">
+                            <div class="w-full component-preview bg-gray-50">
+                              <div
+                                class="w-full flex items-center justify-between mb-4 border-b-1 border-gray-300 pb-2 px-0"
+                              >
+                                <div>
+                                  {{ col.aliasName || col.elementName || '未命名组件' }}
+                                  <span v-if="col.aliasName">- {{ col.elementName }}</span>
+                                </div>
+                                <div>
+                                  <div class="w-full flex items-center justify-between">
+                                    <div class="mr-2">
+                                      <EBtn
+                                        plain
+                                        size="small"
+                                        type="default"
+                                        @click="setColumn(rowIndex, rowRowIndex, colIndex)"
+                                      >
+                                        <Icon name="ant-design:setting-outlined" />
+                                      </EBtn>
+                                    </div>
+                                    <div v-if="rowRow.contents.length > 1">
+                                      <EBtn
+                                        plain
+                                        size="small"
+                                        type="danger"
+                                        @click="deleteColumn(rowIndex, rowRowIndex, colIndex)"
+                                      >
+                                        <Icon name="ant-design:delete-outlined" />
+                                      </EBtn>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                            <div class="w-full flex items-center justify-between">
-                              <EBtn
-                                class="w-1/2"
-                                plain
-                                size="small"
-                                type="primary"
-                                @click="() => openComponentManager(rowIndex, rowRowIndex, colIndex)"
-                              >
-                                <Icon name="ant-design:setting-outlined" />
-                              </EBtn>
-                              <EBtn
-                                class="w-1/2"
-                                plain
-                                size="small"
-                                type="danger"
-                                @click="deleteComponent(rowIndex, rowRowIndex, colIndex)"
-                              >
-                                <Icon name="ant-design:delete-outlined" />
-                              </EBtn>
+                              <div class="w-full flex items-center justify-between">
+                                <EBtn
+                                  class="w-1/2"
+                                  plain
+                                  size="small"
+                                  type="primary"
+                                  @click="() => openComponentManager(rowIndex, rowRowIndex, colIndex)"
+                                >
+                                  <Icon name="ant-design:setting-outlined" />
+                                </EBtn>
+                                <EBtn
+                                  class="w-1/2"
+                                  plain
+                                  size="small"
+                                  type="danger"
+                                  @click="deleteComponent(rowIndex, rowRowIndex, colIndex)"
+                                >
+                                  <Icon name="ant-design:delete-outlined" />
+                                </EBtn>
+                              </div>
                             </div>
                           </div>
-                        </div>
                         <!-- 列删除按钮 -->
                         <!-- <div class="w-full flex items-center justify-between">
                           <div>
@@ -939,39 +933,40 @@ defineExpose({
                             </EBtn>
                           </div>
                         </div> -->
+                        </div>
                       </div>
-                    </div>
-                  </VueDraggable>
+                    </VueDraggable>
+                  </div>
                 </div>
-              </div>
-            </VueDraggable>
+              </VueDraggable>
 
-            <div class="add-row-row-button">
-              <EBtn type="primary" plain class="w-full" @click="addRowRow(rowIndex)">
-                <Icon name="ant-design:plus-outlined" />
-                添加内部行
-              </EBtn>
+              <div class="add-row-row-button">
+                <EBtn type="primary" plain class="w-full" @click="addRowRow(rowIndex)">
+                  <Icon name="ant-design:plus-outlined" />
+                  添加内部行
+                </EBtn>
+              </div>
             </div>
           </div>
+        </VueDraggable>
+
+        <div class="add-row-button">
+          <EBtn type="primary" plain class="w-full" @click="addRow">
+            <Icon name="ant-design:plus-outlined" />
+            添加行
+          </EBtn>
         </div>
-      </VueDraggable>
-
-      <div class="add-row-button">
-        <EBtn type="primary" plain class="w-full" @click="addRow">
-          <Icon name="ant-design:plus-outlined" />
-          添加行
-        </EBtn>
       </div>
-    </div>
 
-    <!-- Component Manager -->
-    <ComponentManager ref="componentManagerRef" @update-component="handleUpdateComponent" />
-    <!-- Row Dialog -->
-    <RowDialog ref="rowDialogRef" @get-row="getRow" />
-    <!-- Row Row Dialog -->
-    <RowRowDialog ref="rowRowDialogRef" @get-row-row="getRowRow" />
-    <!-- Column Dialog -->
-    <ColumnDialog ref="columnDialogRef" @get-column="getColumn" />
+      <!-- Component Manager -->
+      <ComponentManager ref="componentManagerRef" @update-component="handleUpdateComponent" />
+      <!-- Row Dialog -->
+      <RowDialog ref="rowDialogRef" @get-row="getRow" />
+      <!-- Row Row Dialog -->
+      <RowRowDialog ref="rowRowDialogRef" @get-row-row="getRowRow" />
+      <!-- Column Dialog -->
+      <ColumnDialog ref="columnDialogRef" @get-column="getColumn" />
+    </div>
   </div>
 </template>
 

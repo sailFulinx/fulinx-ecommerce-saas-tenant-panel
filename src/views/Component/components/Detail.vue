@@ -36,6 +36,14 @@ const actionType = ref('none')
 // rows
 const rows = ref<ComponentRowData[]>([])
 
+// 全屏状态
+const isFullScreen = ref(false)
+
+// 切换全屏
+const fullScreen = () => {
+  isFullScreen.value = !isFullScreen.value
+}
+
 /**
  * 保存数据
  */
@@ -123,8 +131,8 @@ defineExpose({
 </script>
 
 <template>
-  <div class="w-full">
-    <div class="sticky top-0 z-10 bg-white flex items-center justify-between pa-5 border-b border-gray-200">
+  <div :class="{ 'full-screen-mode': isFullScreen }" class="w-full">
+    <div :class="{ 'full-screen-header': isFullScreen }" class="sticky top-0 z-10 bg-white flex items-center justify-between pa-5 border-b border-gray-200">
       <!-- 组件名称 -->
       <div class="flex items-center">
         <h4 class="w-30 mr-3">
@@ -139,6 +147,11 @@ defineExpose({
       </div>
       <!-- 组件操作按钮 -->
       <div>
+        <EBtn @click="fullScreen">
+          <Icon name="icon-park-outline:full-screen-one" class="mr-2" />
+          {{ isFullScreen ? '退出全屏' : '全屏' }}
+        </EBtn>
+
         <EBtn class="filter-item" size="small" type="default" :loading="loading.save" @click="handleCancel">
           <Icon icon="ant-design:close-outlined" class="mr-1" />
           {{ $t('common.cancel') }}
@@ -149,6 +162,37 @@ defineExpose({
         </EBtn>
       </div>
     </div>
-    <SimplifiedComponentLayout ref="simplifiedComponentLayoutRef" />
+    <div :class="{ 'full-screen-content': isFullScreen }">
+      <SimplifiedComponentLayout ref="simplifiedComponentLayoutRef" />
+    </div>
   </div>
 </template>
+
+<style scoped>
+.full-screen-mode {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  background-color: white;
+  padding: 0;
+  margin: 0;
+  overflow: auto;
+  box-sizing: border-box;
+}
+
+.full-screen-header {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.full-screen-content {
+  margin-top: 70px; /* 为固定头部留出空间 */
+}
+</style>
