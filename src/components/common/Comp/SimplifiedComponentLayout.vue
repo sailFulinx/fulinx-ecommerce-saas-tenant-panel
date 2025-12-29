@@ -229,7 +229,28 @@ const layoutData = ref<DeviceLayout>({
 const currentDevice = ref<'pc' | 'pad' | 'mobile'>('pc')
 
 // 切换响应式模式
-const toggleResponsiveMode = (isResponsive: boolean) => {
+const toggleResponsiveMode = async (isResponsive: boolean) => {
+  if (!isResponsive && isResponsiveMode.value) { // 从响应模式切换到独立模式
+    try {
+      await ElMessageBox.confirm(
+        '是否拷贝响应模式数据到PC，平板，手机端？',
+        '提示',
+        {
+          confirmButtonText: '是',
+          cancelButtonText: '否',
+          type: 'warning',
+        },
+      )
+
+      // 用户选择"是"，复制响应式数据到所有设备
+      layoutData.value.pc = JSON.parse(JSON.stringify(layoutData.value.responsive))
+      layoutData.value.pad = JSON.parse(JSON.stringify(layoutData.value.responsive))
+      layoutData.value.mobile = JSON.parse(JSON.stringify(layoutData.value.responsive))
+    } catch {
+      // 用户选择"否"，不进行任何操作
+    }
+  }
+
   isResponsiveMode.value = isResponsive
   if (!isResponsive) {
     currentDevice.value = 'pc' // 默认切换到PC端
@@ -720,7 +741,7 @@ defineExpose({
           <div class="flex justify-center items-center">
             <EBtnGroup>
               <EBtn :type="isResponsiveMode ? 'primary' : 'default'" @click="toggleResponsiveMode(true)">
-                响应式模式
+                响应模式
               </EBtn>
               <EBtn :type="!isResponsiveMode ? 'primary' : 'default'" @click="toggleResponsiveMode(false)">
                 独立模式
