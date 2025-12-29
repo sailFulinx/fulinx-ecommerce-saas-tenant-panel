@@ -22,6 +22,8 @@ export default {
   delMessage: '是否删除所选中数据？',
   delNoData: '请选择需要删除的数据',
   delOk: '确定',
+  exitFullScreen: '退出全屏',
+  fullScreen: '全屏',
   default: '默认',
   delSuccess: '删除成功',
   delWarning: '提示',
