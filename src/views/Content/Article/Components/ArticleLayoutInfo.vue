@@ -167,7 +167,7 @@ const handleSubmitArticleLayout = async () => {
       </div>
     </div>
 
-    <div v-if="currentLayoutType === 3" class="mt-4">
+    <div v-if="currentLayoutType === 3" class="mt-4  border border-gray-300">
       <SimplifiedComponentLayout ref="simplifiedComponentLayoutRef" :is-full-screen="isFullScreen" />
     </div>
   </div>
