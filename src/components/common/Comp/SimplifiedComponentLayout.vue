@@ -233,23 +233,50 @@ const currentDevice = ref<'pc' | 'pad' | 'mobile'>('pc')
 // 切换响应式模式
 const toggleResponsiveMode = async (isResponsive: boolean) => {
   if (!isResponsive && isResponsiveMode.value) { // 从响应模式切换到独立模式
-    try {
-      await ElMessageBox.confirm(
-        '是否拷贝响应模式数据到PC，平板，手机端？',
-        '提示',
-        {
-          confirmButtonText: '是',
-          cancelButtonText: '否',
-          type: 'warning',
-        },
-      )
+    // 检查响应模式数据是否为空
+    const responsiveDataEmpty = !layoutData.value.responsive || layoutData.value.responsive.length === 0
 
-      // 用户选择"是"，复制响应式数据到所有设备
-      layoutData.value.pc = JSON.parse(JSON.stringify(layoutData.value.responsive))
-      layoutData.value.pad = JSON.parse(JSON.stringify(layoutData.value.responsive))
-      layoutData.value.mobile = JSON.parse(JSON.stringify(layoutData.value.responsive))
-    } catch {
-      // 用户选择"否"，不进行任何操作
+    if (!responsiveDataEmpty) { // 响应模式数据不为空才提示
+      try {
+        await ElMessageBox.confirm(
+          '是否拷贝响应模式数据到PC，平板，手机端？',
+          '提示',
+          {
+            confirmButtonText: '是',
+            cancelButtonText: '否',
+            type: 'warning',
+          },
+        )
+
+        // 用户选择"是"，复制响应式数据到所有设备
+        layoutData.value.pc = JSON.parse(JSON.stringify(layoutData.value.responsive))
+        layoutData.value.pad = JSON.parse(JSON.stringify(layoutData.value.responsive))
+        layoutData.value.mobile = JSON.parse(JSON.stringify(layoutData.value.responsive))
+      } catch {
+        // 用户选择"否"，不进行任何操作
+      }
+    }
+  } else if (isResponsive && !isResponsiveMode.value) { // 从独立模式切换到响应模式
+    // 检查PC端数据是否为空
+    const pcDataEmpty = !layoutData.value.pc || layoutData.value.pc.length === 0
+
+    if (!pcDataEmpty) { // PC端数据不为空才提示
+      try {
+        await ElMessageBox.confirm(
+          '是否拷贝PC端数据到响应模式？',
+          '提示',
+          {
+            confirmButtonText: '是',
+            cancelButtonText: '否',
+            type: 'warning',
+          },
+        )
+
+        // 用户选择"是"，将PC端数据复制到响应模式
+        layoutData.value.responsive = JSON.parse(JSON.stringify(layoutData.value.pc))
+      } catch {
+        // 用户选择"否"，不进行任何操作
+      }
     }
   }
 
