@@ -13,11 +13,22 @@ const { isFullScreen } = defineProps({
   },
 })
 
-const selectedCategoryContents = ref<ComponentStructureItem>({
-  type: 'row',
-  name: '',
-  icon: '',
-  styles: [],
+const selectedCategoryContents = ref<ComponentStructureItem>()
+
+// 计算属性：当未选择类别时显示所有组件样式
+const displayStyles = computed(() => {
+  // 如果没有选择任何类别（name为空），则显示所有类别中的所有样式
+  if (!selectedCategoryContents.value || !selectedCategoryContents.value.name) {
+    const allStyles: ComponentStyleStructure[] = []
+    componentCategories.forEach(category => {
+      category.components.forEach(component => {
+        allStyles.push(...component.styles)
+      })
+    })
+    return allStyles
+  }
+  // 如果选择了类别，则显示该类别下的样式
+  return selectedCategoryContents.value.styles
 })
 
 // 组件管理器引用
@@ -806,14 +817,14 @@ defineExpose({
           </h3>
         </div>
         <div class="component-library-content pa-4">
-          <ElSelect v-model="selectedCategoryContents" placeholder="请选择组件类别" value-key="name" class="mb-5">
-            <ElOptionGroup v-for="group in componentCategories" :key="group.type" :label="group.name">
+          <ElSelect v-model="selectedCategoryContents" placeholder="请选择组件类别" clearable filterable value-key="name" class="mb-5">
+            <ElOptionGroup v-for="group in componentCategories" :key="group.type" :label="group.name" class="border-t border-gray-200">
               <ElOption v-for="item in group.components" :key="item.type" :label="item.name" :value="item" />
             </ElOptionGroup>
           </ElSelect>
           <div class="components-grid">
             <div
-              v-for="style in selectedCategoryContents.styles"
+              v-for="style in displayStyles"
               :key="style.name"
               class="component-item"
               draggable="true"
