@@ -66,7 +66,11 @@ watch(
     if (props.articleDetail?.devComponentName) {
       devComponentName.value = props.articleDetail.devComponentName
     }
-    if (props.articleDetail?.layoutType === 3 && props.articleDetail?.layoutContent && simplifiedComponentLayoutRef.value) {
+    if (
+      props.articleDetail?.layoutType === 3
+      && props.articleDetail?.layoutContent
+      && simplifiedComponentLayoutRef.value
+    ) {
       rows.value = JSON.parse(props.articleDetail?.layoutContent)
       simplifiedComponentLayoutRef.value.setData(rows.value)
     }
@@ -144,7 +148,10 @@ const handleCancel = () => {
               <div>
                 <div class="w-full flex">
                   <EBtn v-if="currentLayoutType === 3" @click="toggleFullScreen">
-                    <Icon :name="isFullScreen ? 'ant-design:fullscreen-exit-outlined' : 'ant-design:fullscreen-outlined'" class="mr-2" />
+                    <Icon
+                      :name="isFullScreen ? 'ant-design:fullscreen-exit-outlined' : 'ant-design:fullscreen-outlined'"
+                      class="mr-2"
+                    />
                     {{ isFullScreen ? $t('common.exitFullScreen') : $t('common.fullScreen') }}
                   </EBtn>
                   <EBtn type="primary" @click="handleCancel">
@@ -174,10 +181,22 @@ const handleCancel = () => {
       </div>
     </div>
 
-    <div v-if="currentLayoutType === 3" class="layout-container" :class="{ 'full-screen-mode': isFullScreen }">
-      <div class="sticky-header top-0 z-10 bg-white flex justify-between p-4 border border-gray-200">
-        <div /> <!-- 空div用于布局对齐 -->
+    <div v-if="currentLayoutType === 3" class="border border-gray-200" :class="{ 'full-screen-mode': isFullScreen }">
+      <div
+        class="bg-white flex justify-between border border-gray-200"
+        :class="`${isFullScreen ? 'pa-4 sticky top-0 z-10' : ''}`"
+      >
+        <div v-if="isFullScreen">
+          修改布局
+        </div>
         <div v-if="isFullScreen" class="flex justify-end space-x-2">
+          <EBtn @click="toggleFullScreen">
+            <Icon
+              :name="isFullScreen ? 'ant-design:fullscreen-exit-outlined' : 'ant-design:fullscreen-outlined'"
+              class="mr-2"
+            />
+            {{ isFullScreen ? $t('common.exitFullScreen') : $t('common.fullScreen') }}
+          </EBtn>
           <EBtn @click="handleCancel">
             <Icon name="ep:close" class="mr-2" />
             {{ $t('common.cancel') }}
@@ -186,13 +205,12 @@ const handleCancel = () => {
             <Icon name="ep:check" class="mr-2" />
             {{ $t('common.submit') }}
           </EBtn>
-          <EBtn @click="toggleFullScreen">
-            <Icon :name="isFullScreen ? 'ant-design:fullscreen-exit-outlined' : 'ant-design:fullscreen-outlined'" class="mr-2" />
-            {{ isFullScreen ? $t('common.exitFullScreen') : $t('common.fullScreen') }}
-          </EBtn>
         </div>
       </div>
-      <SimplifiedComponentLayout ref="simplifiedComponentLayoutRef" class="border border-gray-200" :is-full-screen="isFullScreen" />
+      <SimplifiedComponentLayout
+        ref="simplifiedComponentLayoutRef"
+        :is-full-screen="isFullScreen"
+      />
     </div>
   </div>
 </template>
@@ -212,34 +230,8 @@ const handleCancel = () => {
   box-sizing: border-box;
 }
 
-.sticky-header {
-  position: sticky !important;
-  position: -webkit-sticky !important;
-  top: 0;
-  z-index: 10000;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 0;
-  border: none;
-  border-bottom: 1px solid #e4e7ed;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  background-color: white;
-}
-
-/* 全屏模式下 header 的样式调整 */
-.full-screen-mode .sticky-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 10001;
-  width: 100%;
-  box-sizing: border-box;
-  border-bottom: 1px solid #e4e7ed;
-}
-
 .full-screen-mode :deep(.layout-area) {
-  height: calc(100vh - 70px) !important;
+  height: calc(100vh - 160px) !important;
   overflow-y: auto;
   padding-top: 10px;
 }
