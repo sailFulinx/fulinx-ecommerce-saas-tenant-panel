@@ -29,15 +29,6 @@ const activeColIndex = ref(0)
 // 响应式模式
 const isResponsiveMode = ref(true)
 
-// 定义响应式数据，包含PC端、平板端和手机端的布局数据以及响应式数据
-interface DeviceLayout {
-  responsive: ComponentRowData[]
-  pc: ComponentRowData[]
-  pad: ComponentRowData[]
-  mobile: ComponentRowData[]
-  isResponsiveMode?: boolean // 添加模式状态字段
-}
-
 // 定义组件内部的rows状态，并添加一个默认行
 const layoutData = ref<DeviceLayout>({
   responsive: [
@@ -1073,7 +1064,7 @@ defineExpose({
   width: 250px;
   border: 1px solid #dcdfe6;
   border-radius: 4px;
-  height: calc(100vh - 160px);
+  height: calc(100vh - 162px);
   display: flex;
   flex-direction: column;
 }

@@ -33,7 +33,7 @@ getLayoutTypeList()
 const simplifiedComponentLayoutRef = ref()
 
 // rows
-const rows = ref<ComponentRowData[]>([])
+const rows = ref<DeviceLayout>()
 
 const isShowLayoutEdit = ref<boolean>(false)
 
@@ -175,7 +175,7 @@ const handleCancel = () => {
     </div>
 
     <div v-if="currentLayoutType === 3" class="layout-container" :class="{ 'full-screen-mode': isFullScreen }">
-      <div class="sticky-header top-0 z-10 bg-white flex justify-between p-4 border border-gray-200 rounded-t-md">
+      <div class="sticky-header top-0 z-10 bg-white flex justify-between p-4 border border-gray-200">
         <div /> <!-- 空div用于布局对齐 -->
         <div v-if="isFullScreen" class="flex justify-end space-x-2">
           <EBtn @click="handleCancel">
@@ -192,7 +192,7 @@ const handleCancel = () => {
           </EBtn>
         </div>
       </div>
-      <SimplifiedComponentLayout class="border border-gray-200" ref="simplifiedComponentLayoutRef" :is-full-screen="isFullScreen" />
+      <SimplifiedComponentLayout ref="simplifiedComponentLayoutRef" class="border border-gray-200" :is-full-screen="isFullScreen" />
     </div>
   </div>
 </template>
@@ -223,6 +223,19 @@ const handleCancel = () => {
   border-bottom: 1px solid #e4e7ed;
   padding-top: 10px;
   padding-bottom: 10px;
+  background-color: white;
+}
+
+/* 全屏模式下 header 的样式调整 */
+.full-screen-mode .sticky-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10001;
+  width: 100%;
+  box-sizing: border-box;
+  border-bottom: 1px solid #e4e7ed;
 }
 
 .full-screen-mode :deep(.layout-area) {

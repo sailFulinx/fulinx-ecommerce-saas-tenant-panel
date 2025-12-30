@@ -85,3 +85,12 @@ interface ListLayoutTypeParams {
 interface LayoutTypeData {
 
 }
+
+// 定义响应式数据，包含PC端、平板端和手机端的布局数据以及响应式数据
+interface DeviceLayout {
+  responsive: ComponentRowData[]
+  pc: ComponentRowData[]
+  pad: ComponentRowData[]
+  mobile: ComponentRowData[]
+  isResponsiveMode?: boolean // 添加模式状态字段
+}
