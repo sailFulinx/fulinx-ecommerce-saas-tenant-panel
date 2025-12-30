@@ -13,6 +13,13 @@ const { isFullScreen } = defineProps({
   },
 })
 
+const selectedCategoryContents = ref<ComponentStructureItem>({
+  type: 'row',
+  name: '',
+  icon: '',
+  styles: [],
+})
+
 // 组件管理器引用
 const componentManagerRef = ref()
 
@@ -223,21 +230,19 @@ const currentDevice = ref<'pc' | 'pad' | 'mobile'>('pc')
 
 // 切换响应式模式
 const toggleResponsiveMode = async (isResponsive: boolean) => {
-  if (!isResponsive && isResponsiveMode.value) { // 从响应模式切换到独立模式
+  if (!isResponsive && isResponsiveMode.value) {
+    // 从响应模式切换到独立模式
     // 检查响应模式数据是否为空
     const responsiveDataEmpty = !layoutData.value.responsive || layoutData.value.responsive.length === 0
 
-    if (!responsiveDataEmpty) { // 响应模式数据不为空才提示
+    if (!responsiveDataEmpty) {
+      // 响应模式数据不为空才提示
       try {
-        await ElMessageBox.confirm(
-          '是否拷贝响应模式数据到PC，平板，手机端？',
-          '提示',
-          {
-            confirmButtonText: '是',
-            cancelButtonText: '否',
-            type: 'warning',
-          },
-        )
+        await ElMessageBox.confirm('是否拷贝响应模式数据到PC，平板，手机端？', '提示', {
+          confirmButtonText: '是',
+          cancelButtonText: '否',
+          type: 'warning',
+        })
 
         // 用户选择"是"，复制响应式数据到所有设备
         layoutData.value.pc = JSON.parse(JSON.stringify(layoutData.value.responsive))
@@ -247,21 +252,19 @@ const toggleResponsiveMode = async (isResponsive: boolean) => {
         // 用户选择"否"，不进行任何操作
       }
     }
-  } else if (isResponsive && !isResponsiveMode.value) { // 从独立模式切换到响应模式
+  } else if (isResponsive && !isResponsiveMode.value) {
+    // 从独立模式切换到响应模式
     // 检查PC端数据是否为空
     const pcDataEmpty = !layoutData.value.pc || layoutData.value.pc.length === 0
 
-    if (!pcDataEmpty) { // PC端数据不为空才提示
+    if (!pcDataEmpty) {
+      // PC端数据不为空才提示
       try {
-        await ElMessageBox.confirm(
-          '是否拷贝PC端数据到响应模式？',
-          '提示',
-          {
-            confirmButtonText: '是',
-            cancelButtonText: '否',
-            type: 'warning',
-          },
-        )
+        await ElMessageBox.confirm('是否拷贝PC端数据到响应模式？', '提示', {
+          confirmButtonText: '是',
+          cancelButtonText: '否',
+          type: 'warning',
+        })
 
         // 用户选择"是"，将PC端数据复制到响应模式
         layoutData.value.responsive = JSON.parse(JSON.stringify(layoutData.value.pc))
@@ -585,19 +588,18 @@ const getRow = (val: ComponentRowData) => {
 }
 
 // 添加组件到指定位置
-const addComponent = (rowIndex: number, rowRowIndex: number, colIndex: number, component: ComponentStructure) => {
+const addComponent = (rowIndex: number, rowRowIndex: number, colIndex: number, style: ComponentStyleStructure) => {
   const deviceType = isResponsiveMode.value ? 'responsive' : currentDevice.value
   const currentRowsValue = layoutData.value[deviceType]
   const rowsCopy = [...currentRowsValue]
   const col = rowsCopy[rowIndex].contents[rowRowIndex].contents[colIndex]
 
   // 设置组件类型和默认值
-  col.elementComponentCode = component.code
-  col.elementType = component.type
-  col.elementName = component.name
-  col.aliasName = `${component.name} 组件`
-  if (component.webComponentCode) {
-    col.webComponentCode = component.webComponentCode
+  col.elementComponentCode = style.panelComponentCode
+  col.elementName = style.name
+  col.aliasName = `${style.name} 组件`
+  if (style.webComponentCode) {
+    col.webComponentCode = style.webComponentCode
   }
   layoutData.value[deviceType] = rowsCopy
 }
@@ -696,7 +698,7 @@ const handleDragOver = (event: DragEvent) => {
 }
 
 // 处理组件拖拽开始
-const handleComponentDragStart = (event: DragEvent, component: ComponentStructure) => {
+const handleComponentDragStart = (event: DragEvent, component: ComponentStyleStructure) => {
   event.dataTransfer?.setData('component', JSON.stringify(component))
 }
 
@@ -804,22 +806,21 @@ defineExpose({
           </h3>
         </div>
         <div class="component-library-content pa-4">
-          <div v-for="category in componentCategories" :key="category.id" shadow="never" class="mb-4">
-            <div class="category-title mb-4 border-dashed border-b-1 border-gray-400 pb-4">
-              {{ category.name }}
-            </div>
-
-            <div class="components-grid">
-              <div
-                v-for="component in category.components"
-                :key="component.type"
-                class="component-item"
-                draggable="true"
-                @dragstart="event => handleComponentDragStart(event, component)"
-              >
-                <Icon :name="`${component.icon}`" />
-                <span>{{ component.name }}</span>
-              </div>
+          <ElSelect v-model="selectedCategoryContents" placeholder="请选择组件类别" value-key="name" class="mb-5">
+            <ElOptionGroup v-for="group in componentCategories" :key="group.type" :label="group.name">
+              <ElOption v-for="item in group.components" :key="item.type" :label="item.name" :value="item" />
+            </ElOptionGroup>
+          </ElSelect>
+          <div class="components-grid">
+            <div
+              v-for="style in selectedCategoryContents.styles"
+              :key="style.name"
+              class="component-item"
+              draggable="true"
+              @dragstart="event => handleComponentDragStart(event, style)"
+            >
+              <img :src="style.thumbFileUrl">
+              <span>{{ style.name }}</span>
             </div>
           </div>
         </div>

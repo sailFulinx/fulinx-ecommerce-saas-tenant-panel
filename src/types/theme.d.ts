@@ -221,7 +221,19 @@ interface CompElementFormData {
 interface ComponentStructure {
   type: string
   name: string
+  components: ComponentStructureItem[]
+}
+
+interface ComponentStructureItem {
+  type: string
+  name: string
   icon: string
-  code: string
+  styles: ComponentStyleStructure[]
+}
+
+interface ComponentStyleStructure {
+  name: string
+  panelComponentCode: string
   webComponentCode?: string
+  thumbFileUrl: string
 }
