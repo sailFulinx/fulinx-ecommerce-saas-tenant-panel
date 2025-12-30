@@ -1113,7 +1113,7 @@ defineExpose({
 
 .layout-area {
   flex: 1;
-  height: calc(100vh - 240px);
+  height: calc(100vh - 166px);
   overflow-y: auto;
 }
 
