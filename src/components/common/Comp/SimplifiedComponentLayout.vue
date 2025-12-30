@@ -817,9 +817,19 @@ defineExpose({
           </h3>
         </div>
         <div class="component-library-content pa-4">
-          <ElSelect v-model="selectedCategoryContents" placeholder="请选择组件类别" clearable filterable value-key="name" class="mb-5">
-            <ElOptionGroup v-for="group in componentCategories" :key="group.type" :label="group.name" class="border-t border-gray-200">
-              <ElOption v-for="item in group.components" :key="item.type" :label="item.name" :value="item" />
+          <ElSelect v-model="selectedCategoryContents" placeholder="请选择组件类别" value-key="name" class="mb-5">
+            <ElOptionGroup
+              v-for="group in componentCategories"
+              :key="group.type"
+              :label="group.name"
+              class="option-group-label"
+            >
+              <ElOption
+                v-for="item in group.components"
+                :key="item.type"
+                :label="item.name"
+                :value="item"
+              />
             </ElOptionGroup>
           </ElSelect>
           <div class="components-grid">
@@ -1264,5 +1274,14 @@ defineExpose({
   width: 100%;
   text-align: center;
   padding: 10px 0;
+}
+
+.option-group-label {
+  & /deep/ .el-select-group__title {
+    color: #939393 !important;  /* 蓝色，可以根据需要修改 */
+    font-weight: bold;
+    font-size: 12px;
+    border-bottom: 1px solid #dcdfe6;
+  }
 }
 </style>
