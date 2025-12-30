@@ -1,26 +1,10 @@
 <script setup name="ThemeLinkType" lang="ts">
-// 导入所有分类API
-import { categoryBodyListApi } from '@/api/category/body'
-import { categoryCosmeticListApi } from '@/api/category/cosmetic'
-import { categoryDepartmentListApi } from '@/api/category/department'
-import { categoryEdutainmentListApi } from '@/api/category/edutainment'
-import { categoryEventListApi } from '@/api/category/event'
-import { categoryListApi as normalCategoryListApi } from '@/api/category/normal'
-import { categoryOutcomeListApi } from '@/api/category/outcome'
-import { categorySurgeryListApi } from '@/api/category/surgery'
-import { categoryTweakmentListApi } from '@/api/category/tweakment'
-import { categoryVideoListApi } from '@/api/category/video'
 // 导入所有内容API
-import { articleListApi } from '@/api/content/article'
-import { cosmeticListApi } from '@/api/content/cosmetic'
-import { doctorListApi } from '@/api/content/doctor'
-import { edutainmentListApi } from '@/api/content/edutainment'
-import { eventListApi } from '@/api/content/event'
-import { outcomeListApi } from '@/api/content/outcome'
-import { pageListApi } from '@/api/content/page'
-import { surgeryListApi } from '@/api/content/surgery'
-import { tweakmentListApi } from '@/api/content/tweakment'
-import { videoListApi } from '@/api/content/video'
+import { articleListApi } from '@/api/article'
+
+// 导入所有分类API
+import { categoryListApi as normalCategoryListApi } from '@/api/category'
+import { pageListApi } from '@/api/page'
 import { linkTypes } from '@/data/theme'
 import { usePreferenceStore } from '@/stores/preference'
 
@@ -87,57 +71,23 @@ const articles = ref<TableResponse<ArticleListData & CommonField>>({
 // 分类API映射
 const categoryApis: Record<string, Function> = {
   category: normalCategoryListApi,
-  categoryBody: categoryBodyListApi,
-  categoryCosmetic: categoryCosmeticListApi,
-  categoryDepartment: categoryDepartmentListApi,
-  categoryEdutainment: categoryEdutainmentListApi,
-  categoryEvent: categoryEventListApi,
-  categoryOutcome: categoryOutcomeListApi,
-  categoryVideo: categoryVideoListApi,
-  categorySurgery: categorySurgeryListApi,
-  categoryTweakment: categoryTweakmentListApi,
 }
 
 // 内容API映射
 const contentApis: Record<string, Function> = {
   article: articleListApi,
-  edutainment: edutainmentListApi,
-  cosmetic: cosmeticListApi,
-  doctor: doctorListApi,
-  event: eventListApi,
-  outcome: outcomeListApi,
-  video: videoListApi,
   page: pageListApi,
-  surgery: surgeryListApi,
-  tweakment: tweakmentListApi,
 }
 
 // 分类标签字段映射
 const categoryLabelFields: Record<string, string> = {
   category: 'categoryName',
-  categoryBody: 'categoryBodyName',
-  categoryCosmetic: 'categoryCosmeticName',
-  categoryDepartment: 'categoryDepartmentName',
-  categoryEdutainment: 'categoryEdutainmentName',
-  categoryEvent: 'categoryEventName',
-  categoryOutcome: 'categoryOutcomeName',
-  categoryVideo: 'categoryVideoName',
-  categorySurgery: 'categorySurgeryName',
-  categoryTweakment: 'categoryTweakmentName',
 }
 
 // 内容标签字段映射
 const contentLabelFields: Record<string, string> = {
   article: 'articleName',
-  edutainment: 'edutainmentName',
-  cosmetic: 'cosmeticName',
-  doctor: 'doctorName',
-  event: 'eventName',
-  outcome: 'outcomeName',
-  video: 'videoName',
   page: 'pageName',
-  surgery: 'surgeryName',
-  tweakment: 'tweakmentName',
 }
 
 /**
@@ -299,7 +249,7 @@ const setLinkData = async (linkDataVal: LinkData) => {
 
 // 添加一个辅助函数来安全地访问对象属性
 function getLabelValue(item: any, fieldName: string): string {
-  return item[fieldName] || ''
+  return `[${item.articleTypeLabel || ''}]${item[fieldName]}` || ''
 }
 
 function getLinkData() {

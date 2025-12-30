@@ -234,6 +234,6 @@ interface ComponentStructureItem {
 interface ComponentStyleStructure {
   name: string
   panelComponentCode: string
-  webComponentCode?: string
+  webComponentCode: string
   thumbFileUrl: string
 }

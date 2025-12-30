@@ -697,7 +697,7 @@ const handleDrop = (event: DragEvent, rowIndex: number, rowRowIndex: number, col
 
   if (event.dataTransfer?.getData('component')) {
     const component = JSON.parse(event.dataTransfer?.getData('component'))
-    if (component.type && component.code) {
+    if (component.webComponentCode && component.panelComponentCode) {
       addComponent(rowIndex, rowRowIndex, colIndex, component)
     }
   }
