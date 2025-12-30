@@ -30,6 +30,7 @@ export default {
   description: '描述',
   document: '帮助文档',
   doneLabel: '结束',
+  devComponentName: '定制组件名称',
   edit: '修改',
   endTimeText: '结束时间',
   expand: '展开',
@@ -98,6 +99,7 @@ export default {
   placeholder: {
     language: '语言必须选择',
     layoutType: '布局类型必须选择',
+    devComponentName: '请输入定制组件名称',
   },
   layoutType: '布局类型',
 }
