@@ -3,7 +3,6 @@ d
 import { layoutListApi } from '@/api/layout'
 import { createTheme, editTheme, showTheme } from '@/api/theme'
 import { useTagsViewStore } from '@/stores/tagsView'
-import { ElMessage } from 'element-plus'
 
 const props = defineProps({
   isEdit: {
@@ -12,11 +11,11 @@ const props = defineProps({
   },
 })
 
+const router = useRouter()
+
 const rules = reactive({
-  languageId: [{ required: true, type: 'number', message: '语言必须选择', trigger: 'blur' }],
-  themeName: [{ required: true, type: 'string', message: '网站名称必须填写', trigger: 'blur' }],
-  domain: [{ required: true, type: 'string', message: '域名必须填写', trigger: 'blur' }],
-  metaTitle: [{ required: true, type: 'string', message: '元标题必须填写', trigger: 'blur' }],
+  languageId: [{ required: true, message: '语言必须选择', trigger: 'blur' }],
+  themeName: [{ required: true, message: '主题名称必须填写', trigger: 'blur' }],
 })
 
 const id = useRoute().params.id as string
@@ -59,7 +58,7 @@ const themeThumb = ref<FileData>({
 
 const uploadThemeThumbRef = ref()
 
-const pageTitle = computed(() => (props.isEdit ? '编辑网站' : '添加网站'))
+const pageTitle = computed(() => (props.isEdit ? '编辑主题' : '添加主题'))
 
 const getThemeData = async () => {
   loading.init = true
@@ -212,7 +211,7 @@ onMounted(() => {
                   placeholder="主题版本，少于120个字符"
                 />
               </ElFormItem>
-              <ElFormItem label="主题效果图" required>
+              <ElFormItem label="主题效果图">
                 <UploadSingleImage
                   ref="uploadThemeThumbRef"
                   :image-data="themeThumb"

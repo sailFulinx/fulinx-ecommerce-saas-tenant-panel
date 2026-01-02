@@ -76,7 +76,7 @@ interface ThemeConfigRequest {
 }
 
 interface ThemeRemoveRequest {
-  ids: number[]
+  ids: string[]
 }
 
 interface LinkData {

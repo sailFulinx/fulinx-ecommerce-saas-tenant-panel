@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { removeTheme, themePagination } from '@/api/theme'
-import { ElMessage } from 'element-plus'
+
+const router = useRouter()
 
 const listResult = ref<TableResponse<ThemeData & CommonField>>({
   list: [],
@@ -97,11 +98,11 @@ const handleCreate = () => {
   router.push({ name: 'CreateTheme' })
 }
 
-const handleRedirectEdit = (val : (ThemeData & CommonField)) => {
+const handleRedirectEdit = (val: (ThemeData & CommonField)) => {
   router.push({ name: 'EditTheme', params: { id: val.id } })
 }
 
-const handleSettingComponent = (val : (ThemeData & CommonField)) => {
+const handleSettingComponent = (val: (ThemeData & CommonField)) => {
   router.push({ name: 'EditThemeComponent', params: { id: val.id } })
 }
 
@@ -154,16 +155,16 @@ init()
         </ElTableColumn>
         <ElTableColumn label="效果图">
           <template #default="scope">
-            <ElImage :src="scope.row.themeThumbFileVo?.fileUrl" style="width: 100px; height: auto" />
+            <ElImage v-if="scope.row.themeThumbFileVo" :src="scope.row.themeThumbFileVo?.fileUrl" style="width: 100px; height: auto" />
           </template>
         </ElTableColumn>
         <ElTableColumn label="操作" header-align="center" width="220" align="center" class-name="pl-15 fixed-width">
           <template #default="scope">
             <span class="mr-5">
-              <EBtn type="primary" size="small" @click="handleRedirectEdit(scope.row)">编辑</EBtn>
+              <EBtn type="warning" plain size="small" @click="handleSettingComponent(scope.row)">设置</EBtn>
             </span>
             <span class="mr-5">
-              <EBtn type="warning" plain size="small" @click="handleSettingComponent(scope.row)">设置</EBtn>
+              <EBtn type="primary" size="small" @click="handleRedirectEdit(scope.row)">编辑</EBtn>
             </span>
             <span>
               <EBtn size="small" type="danger" :loading="loading.del" @click="handleDelete(scope.row)">删除</EBtn>
