@@ -3,7 +3,6 @@ import { fetchLanguageListApi } from '@/api/language'
 import { createSite, editSite, showSite } from '@/api/site'
 import { themeList } from '@/api/theme'
 import { siteStatuses } from '@/data/site'
-import { ElInput, ElMessage } from 'element-plus'
 
 const props = defineProps({
   isEdit: {
@@ -11,6 +10,8 @@ const props = defineProps({
     default: false,
   },
 })
+
+const router = useRouter()
 
 const id = useRoute().params.id as string
 
@@ -82,7 +83,7 @@ const siteFormRef = ref()
 
 const siteForm = ref<SiteRequest>({
   themeId: '',
-  languageId: null,
+  languageId: '',
   domain: '',
   siteName: '',
   metaDescription: '',
@@ -91,66 +92,120 @@ const siteForm = ref<SiteRequest>({
   faviconFileId: null,
   logoFileVo: {
     id: '',
+    bucketName: '',
+    etag: '',
+    s3Key: '',
+    isPublic: true,
     originalFileName: '',
     fileName: '',
-    uploadPath: '',
-    fileUrl: '',
-    fileExtensionName: '',
     fileContentType: '',
+    fileExtensionName: '',
+    path: '',
+    fileUrl: '',
     sha256: '',
+    isDelete: 0,
+    remark: '',
+    recordVersion: 0,
+    recordCreateName: '',
+    recordUpdateName: '',
+    recordCreateTime: '',
+    recordUpdateTime: '',
   },
   faviconFileVo: {
     id: '',
+    bucketName: '',
+    etag: '',
+    s3Key: '',
+    isPublic: true,
     originalFileName: '',
     fileName: '',
-    uploadPath: '',
-    fileUrl: '',
-    fileExtensionName: '',
     fileContentType: '',
+    fileExtensionName: '',
+    path: '',
+    fileUrl: '',
     sha256: '',
+    isDelete: 0,
+    remark: '',
+    recordVersion: 0,
+    recordCreateName: '',
+    recordUpdateName: '',
+    recordCreateTime: '',
+    recordUpdateTime: '',
 
   },
   status: true,
 })
 
-const siteLogo = ref<FileData>({
+const siteLogo = ref<FileData & CommonField>({
   id: '',
+  bucketName: '',
+  etag: '',
+  s3Key: '',
+  isPublic: true,
   originalFileName: '',
   fileName: '',
-  uploadPath: '',
-  fileUrl: '',
-  fileExtensionName: '',
   fileContentType: '',
+  fileExtensionName: '',
+  path: '',
+  fileUrl: '',
   sha256: '',
+  isDelete: 0,
+  remark: '',
+  recordVersion: 0,
+  recordCreateName: '',
+  recordUpdateName: '',
+  recordCreateTime: '',
+  recordUpdateTime: '',
 })
 
-const siteFavicon = ref<FileData>({
+const siteFavicon = ref<FileData & CommonField>({
   id: '',
+  bucketName: '',
+  etag: '',
+  s3Key: '',
+  isPublic: true,
   originalFileName: '',
   fileName: '',
-  uploadPath: '',
-  fileUrl: '',
-  fileExtensionName: '',
   fileContentType: '',
+  fileExtensionName: '',
+  path: '',
+  fileUrl: '',
   sha256: '',
+  isDelete: 0,
+  remark: '',
+  recordVersion: 0,
+  recordCreateName: '',
+  recordUpdateName: '',
+  recordCreateTime: '',
+  recordUpdateTime: '',
 })
 
 const uploadLogoRef = ref()
 
 const uploadFaviconRef = ref()
 
+const tagsViewStore = useTagsViewStore()
+
+const deleteTagView = (refresh: boolean) => {
+  if (refresh) {
+    tagsViewStore.delCachedView()
+  }
+  tagsViewStore.delVisitedView(router.currentRoute.value)
+  router.push({ name: 'SiteList' })
+}
+
 const getSiteData = async () => {
   loading.init = true
   try {
     const { data } = await showSite(id)
-    if (data.logoFileVo) {
+    if (data.logoFileVo && data.logoFileVo.fileUrl) {
       siteLogo.value = data.logoFileVo
+      uploadLogoRef.value.setFileData(data.logoFileVo)
     }
-    if (data.faviconFileVo) {
+    if (data.faviconFileVo && data.faviconFileVo.fileUrl) {
       siteFavicon.value = data.faviconFileVo
+      uploadFaviconRef.value.setFileData(data.faviconFileVo)
     }
-    uploadLogoRef.value.setFileData(data.logoFileVo)
-    uploadFaviconRef.value.setFileData(data.faviconFileVo)
     Object.assign(siteForm.value, data)
   } catch (error) {
     console.error('Failed to fetch site data:', error)
@@ -165,6 +220,9 @@ const init = async () => {
 }
 
 const save = async () => {
+  if (!uploadLogoRef.value || !uploadFaviconRef.value) {
+    return
+  }
   const logo = uploadLogoRef.value.getFileData()
   if (!logo || !logo.fileData) {
     ElMessage.error('请上传网站logo')
@@ -185,10 +243,13 @@ const save = async () => {
     await editSite(id, siteForm.value).catch(err => {
       throw err
     })
+    ElMessage.success('修改成功')
   } else {
     await createSite(siteForm.value).catch(err => {
       throw err
     })
+    ElMessage.success('添加成功')
+    deleteTagView(true)
   }
   return true
 }

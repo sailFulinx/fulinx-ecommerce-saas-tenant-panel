@@ -5,7 +5,7 @@ import { uploadFileApi } from '@/api/file'
 
 const props = defineProps({
   imageData: {
-    type: Object as () => FileData,
+    type: Object as () => FileData & CommonField,
   },
 })
 const emit = defineEmits(['getData'])
@@ -14,7 +14,7 @@ const loading = ref(false)
 
 const imageUrl = ref('')
 
-const fileData = ref<FileData>({
+const fileData = ref<FileData & CommonField>({
   id: '',
   bucketName: '',
   etag: '',
@@ -27,6 +27,13 @@ const fileData = ref<FileData>({
   path: '',
   fileUrl: '',
   sha256: '',
+  isDelete: 0,
+  remark: '',
+  recordVersion: 0,
+  recordCreateName: '',
+  recordUpdateName: '',
+  recordCreateTime: '',
+  recordUpdateTime: '',
 })
 
 watch(
@@ -99,12 +106,19 @@ const handleDelete = () => {
     path: '',
     fileUrl: '',
     sha256: '',
+    isDelete: 0,
+    remark: '',
+    recordVersion: 0,
+    recordCreateName: '',
+    recordUpdateName: '',
+    recordCreateTime: '',
+    recordUpdateTime: '',
   }
   imageUrl.value = ''
   emit('getData', { fileData: fileData.value })
 }
 
-const setFileData = (data: FileData) => {
+const setFileData = (data: FileData & CommonField) => {
   fileData.value = data
   imageUrl.value = data.fileUrl
 }

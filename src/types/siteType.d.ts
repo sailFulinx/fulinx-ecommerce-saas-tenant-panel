@@ -34,8 +34,8 @@ interface SiteData {
   /* Status, 0 - Disabled , 1 - Enabled */
   status: boolean
 
-  logoFileVo?: FileData
-  faviconFileVo?: FileData
+  logoFileVo?: FileData & CommonField
+  faviconFileVo?: FileData & CommonField
 
   /* Soft Delete Flag */
   isDelete: number
@@ -60,13 +60,13 @@ interface SiteData {
 }
 
 interface SiteRequest {
-  themeId: string | null
+  themeId: string
 
   /* Domain */
   domain: string
 
   /* Language ID */
-  languageId: string | null
+  languageId: string
 
   /* Site Name */
   siteName: string
@@ -86,8 +86,8 @@ interface SiteRequest {
   /* Status, 0 - Disabled , 1 - Enabled */
   status: boolean | number
 
-  logoFileVo?: FileData
-  faviconFileVo?: FileData
+  logoFileVo?: FileData & CommonField
+  faviconFileVo?: FileData & CommonField
 }
 
 interface SiteRemoveRequest {

@@ -1,21 +1,21 @@
 interface FileData {
-  id?: string
-  isDefault?: boolean
-  uid?: number
-  sort?: number
-  /* Remote Type, 1-Local, 2-Aliyun, 3-Amazon */
-  fileRemoteType?: number
+  /* File ID */
+  id: string
 
-  /* Bucket */
-  bucket?: string
+  /* Bucket Name */
+  bucketName: string
 
-  /* Original Path */
-  uploadPath: string
+  /* Etag */
+  etag: string
+
+  /* S3 Key */
+  s3Key: string
+
+  /* Is Public */
+  isPublic: boolean
 
   /* Original File Name */
   originalFileName: string
-
-  fileId?: string
 
   /* File Name */
   fileName: string
@@ -26,23 +26,35 @@ interface FileData {
   /* File Extension Name */
   fileExtensionName: string
 
-  /* File Width */
-  fileWidth?: number
-
-  /* File Height */
-  fileHeight?: number
-
-  /* Etag */
-  etag?: string
-
-  /* Bucket Key */
-  bucketKey?: string
+  /* Path */
+  path: string
 
   /* File Url */
   fileUrl: string
 
   /* sha256 */
   sha256: string
+
+  /* Soft Delete Flag */
+  isDelete: number
+
+  /* Remark */
+  remark: string
+
+  /* Record Version */
+  recordVersion: number
+
+  /* Record Create Name */
+  recordCreateName: string
+
+  /* Record Update Name */
+  recordUpdateName: string
+
+  /* Record Create Time */
+  recordCreateTime: string
+
+  /* Record Update Time */
+  recordUpdateTime: string
 }
 
 interface FileListParams {

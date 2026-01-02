@@ -97,6 +97,10 @@ const handleRedirectEdit = (val: SiteData & CommonField) => {
   router.push({ name: 'EditSite', params: { id: val.id } })
 }
 init()
+
+const handleView = (val: SiteData & CommonField) => {
+  window.open(val.domain, '_blank')
+}
 </script>
 
 <template>
@@ -107,7 +111,7 @@ init()
           <ElInput
             v-model="listQuery.siteName"
             clearable
-            placeholder="请输入内容名称"
+            placeholder="请输入网站名称"
             style="width: 200px"
             class="filter-item mr-5"
             @clear="getList"
@@ -138,9 +142,14 @@ init()
         @selection-change="selectedSiteItem"
       >
         <ElTableColumn type="selection" width="55" />
-        <ElTableColumn label="标题">
+        <ElTableColumn label="网站名称">
           <template #default="scope">
             <span>{{ scope.row.siteName }}</span>
+          </template>
+        </ElTableColumn>
+        <ElTableColumn label="域名">
+          <template #default="scope">
+            <span>{{ scope.row.domain }}</span>
           </template>
         </ElTableColumn>
         <ElTableColumn label="状态" width="120">
@@ -148,8 +157,14 @@ init()
             <span>{{ convertStatus(scope.row.status) }}</span>
           </template>
         </ElTableColumn>
-        <ElTableColumn label="操作" header-align="center" width="220" align="center" class-name="pl-15 fixed-width">
+        <ElTableColumn label="操作" header-align="center" width="240" align="center" class-name="pl-15 fixed-width">
           <template #default="scope">
+            <span class="mr-5">
+              <EBtn size="small" @click="handleView(scope.row)">
+                <Icon name="mdi:eye-outline" :size="4" class="mr-1" />
+                预览
+              </EBtn>
+            </span>
             <span class="mr-5">
               <EBtn type="primary" size="small" @click="handleRedirectEdit(scope.row)">编辑</EBtn>
             </span>

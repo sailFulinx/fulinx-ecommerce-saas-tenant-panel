@@ -1,7 +1,6 @@
 d
 <script setup lang="ts">
 import { useTagsViewStore } from '@/stores/tagsView'
-import { ElMessage } from 'element-plus'
 
 import Base from './Modules/Base.vue'
 
@@ -41,11 +40,6 @@ const save = async () => {
   if (activeName.value === 'checkout') {
     checkoutRef.value.save()
   }
-  ElMessage({
-    message: '保存成功',
-    type: 'success',
-    duration: 2000,
-  })
 }
 </script>
 
