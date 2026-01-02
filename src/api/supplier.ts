@@ -1,8 +1,8 @@
 import request from '@/utils/axios'
 
 /**
- * 新增品牌
- * @param {object} params 新增品牌请求参数
+ * 新增供应商
+ * @param {object} params 新增供应商请求参数
  * @param {string} params.languageId Language ID
  * @param {string} params.supplierName Supplier Name
  * @param {string} params.supplierDescription Supplier Description
@@ -26,8 +26,8 @@ export function createSupplierSlugApi(params: CreateSupplierSlugParams): Promise
 }
 
 /**
- * 删除品牌
- * @param {object} params 删除品牌请求参数
+ * 删除供应商
+ * @param {object} params 删除供应商请求参数
  * @param {Array} params.supplierIds Supplier Ids
  * @returns
  */
@@ -40,8 +40,8 @@ export function removeSupplierApi(params: RemoveSupplierParams): Promise<IRespon
 }
 
 /**
- * 新增品牌描述
- * @param {object} params 新增品牌请求参数
+ * 新增供应商描述
+ * @param {object} params 新增供应商请求参数
  * @param {string} params.languageId Language ID
  * @param {string} params.supplierName Supplier Name
  * @param {string} params.supplierDescription Supplier Description
@@ -57,8 +57,8 @@ export function createSupplierDetailApi(params: CreateSupplierDetailParams): Pro
 }
 
 /**
- * 删除品牌文件
- * @param {object} params 删除品牌文件请求参数
+ * 删除供应商文件
+ * @param {object} params 删除供应商文件请求参数
  * @param {string} params.supplierDetailId Supplier Detail ID
  * @returns
  */
@@ -71,8 +71,8 @@ export function removeSupplierFileApi(params: RemoveSupplierFileParams): Promise
 }
 
 /**
- * 更新品牌描述
- * @param {object} params 更新品牌描述请求参数
+ * 更新供应商描述
+ * @param {object} params 更新供应商描述请求参数
  * @param {string} params.supplierDetailId Supplier Detail ID
  * @param {string} params.supplierName Supplier Name
  * @param {string} params.supplierDescription Supplier Description
@@ -98,8 +98,8 @@ export function updateSupplierCodeApi(
 }
 
 /**
- * 更新品牌描述详情
- * @param {object} params 更新品牌描述详情请求参数
+ * 更新供应商描述详情
+ * @param {object} params 更新供应商描述详情请求参数
  * @param {string} params.supplierDetailId Supplier Detail ID
  * @param {string} params.supplierDescription Supplier Description
  * @returns
@@ -115,8 +115,8 @@ export function updateSupplierDetailDescriptionApi(
 }
 
 /**
- * 更新品牌描述文件
- * @param {object} params 更新品牌描述文件请求参数
+ * 更新供应商描述文件
+ * @param {object} params 更新供应商描述文件请求参数
  * @param {string} params.supplierDetailId Supplier Detail ID
  * @param {string} params.supplierFileId Supplier File ID
  * @returns
@@ -132,8 +132,8 @@ export function updateSupplierDetailFileApi(
 }
 
 /**
- * 更新品牌描述名称
- * @param {object} params 更新品牌描述品牌名称请求参数
+ * 更新供应商描述名称
+ * @param {object} params 更新供应商描述供应商名称请求参数
  * @param {string} params.supplierDetailId Supplier Detail ID
  * @param {string} params.supplierName Supplier Name
  * @returns
@@ -149,11 +149,11 @@ export function updateSupplierDetailSupplierNameApi(
 }
 
 /**
- * 品牌列表 - 不带分页
+ * 供应商列表 - 不带分页
  * @param {object} params 分类列表请求参数
  * @param {string} params.languageId Language ID
  * @param {string} params.supplierId Supplier Id
- * @param {string} params.supplierName 品牌标题
+ * @param {string} params.supplierName 供应商标题
  * @param {boolean} params.status Status, 0: Disabled 1: Enabled
  * @param {number} params.isDelete 删除标识
  * @returns
@@ -167,13 +167,13 @@ export function supplierListApi(params: SupplierListParams): Promise<IResponse<T
 }
 
 /**
- * 品牌列表 - 带分页
- * @param {object} params 品牌分页查询参数
+ * 供应商列表 - 带分页
+ * @param {object} params 供应商分页查询参数
  * @param {number} params.pageNumber
  * @param {number} params.pageSize
  * @param {string} params.languageId Language ID
  * @param {string} params.supplierId Supplier Id
- * @param {string} params.supplierName 品牌标题
+ * @param {string} params.supplierName 供应商标题
  * @param {boolean} params.status Status, 0: Disabled 1: Enabled
  * @param {number} params.isDelete 删除标识
  * @returns
@@ -189,8 +189,8 @@ export function supplierPaginationApi(
 }
 
 /**
- * 新增品牌SEO
- * @param {object} params 新增品牌SEO请求参数
+ * 新增供应商SEO
+ * @param {object} params 新增供应商SEO请求参数
  * @param {string} params.supplierId Supplier ID
  * @param {string} params.languageId Language ID
  * @param {string} params.metaTitle Supplier Meta Title
@@ -206,8 +206,8 @@ export function createSupplierSeoApi(params: CreateSupplierSeoParams): Promise<I
 }
 
 /**
- * 更新品牌SEO
- * @param {object} params 更新品牌SEO请求参数
+ * 更新供应商SEO
+ * @param {object} params 更新供应商SEO请求参数
  * @param {string} params.supplierSeoId Supplier SEO ID
  * @param {string} params.metaTitle Supplier Meta Title
  * @param {string} params.metaDescription Supplier Meta Description
@@ -222,8 +222,8 @@ export function updateSupplierSeoApi(params: UpdateSupplierSeoParams): Promise<I
 }
 
 /**
- * 更新品牌SEO-Meta Description
- * @param {object} params 更新品牌SEO元描述请求参数
+ * 更新供应商SEO-Meta Description
+ * @param {object} params 更新供应商SEO元描述请求参数
  * @param {string} params.supplierSeoId Supplier SEO ID
  * @param {string} params.metaDescription Supplier Meta Description
  * @returns
@@ -239,8 +239,8 @@ export function updateSupplierSeoMetaDescriptionApi(
 }
 
 /**
- * 更新品牌SEO-Meta Title
- * @param {object} params 更新品牌SEO元标题请求参数
+ * 更新供应商SEO-Meta Title
+ * @param {object} params 更新供应商SEO元标题请求参数
  * @param {string} params.supplierSeoId Supplier SEO ID
  * @param {string} params.metaTitle Supplier Meta Title
  * @returns
@@ -256,8 +256,8 @@ export function updateSupplierSeoMetaTitleApi(
 }
 
 /**
- * 查看品牌
- * @param {object} params 品牌详情请求参数
+ * 查看供应商
+ * @param {object} params 供应商详情请求参数
  * @param {string} params.supplierId Supplier Id
  * @param {string} params.languageId Language ID
  * @returns
@@ -271,8 +271,8 @@ export function showSupplierApi(params: ShowSupplierParams): Promise<IResponse<S
 }
 
 /**
- * 更新品牌是否自定义布局
- * @param {object} params 修改品牌是否自定义布局请求参数
+ * 更新供应商是否自定义布局
+ * @param {object} params 修改供应商是否自定义布局请求参数
  * @param {string} params.supplierId Supplier ID
  * @param {boolean} params.isCustomLayout Is Custom Layout
  * @param {string} params.layoutId Layout ID
@@ -288,8 +288,8 @@ export function updateSupplierLayoutApi(params: UpdateSupplierLayoutParams): Pro
 }
 
 /**
- * 更新品牌SLUG
- * @param {object} params 修改品牌SLUG请求参数
+ * 更新供应商SLUG
+ * @param {object} params 修改供应商SLUG请求参数
  * @param {string} params.slugId Slug ID
  * @param {string} params.languageId Language ID
  * @param {string} params.slug Slug

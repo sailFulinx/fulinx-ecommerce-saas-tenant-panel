@@ -41,11 +41,11 @@ interface CreateSupplierRes {
   /* Status, 0 - Disabled , 1 - Enabled */
   status: boolean
 
-  /* Is Custom Layout */
-  isCustomLayout: boolean
+  /* Is Top */
+  isTop: boolean
 
-  /* Layout ID */
-  layoutId: string
+  /* Sort */
+  sort: number
 }
 
 interface RemoveSupplierParams {
@@ -103,27 +103,93 @@ interface SupplierDetailListResultDo {
   supplierFileVo: FileData & CommonField
 }
 
-interface SupplierShow {
-  supplierCode: string
-  /* Status, 0 - Disabled , 1 - Enabled */
-  status: boolean
+interface SupplierDetailListResultDo {
+  /* Supplier ID */
+  supplierId: string
 
-  /* Is Custom Layout */
-  isCustomLayout: boolean
+  /* Language ID */
+  languageId: string
 
-  /* Layout ID */
-  layoutId: string
+  /* Supplier Name */
+  supplierName: string
+
+  /* Supplier Short Name */
+  supplierShortName: string
+
+  /* Supplier Description */
+  supplierDescription: string
+
+  /* Supplier Short Description */
+  supplierShortDescription: string
+
+  /* Supplier File ID */
+  supplierFileId: string
+
+  /* */
+  supplierFileVo: FileData & CommonField
+
+  /* Customs */
+  customs: string
+
+  /* Layout Type, 1: default, 2: devCustomized, 3: userDefined  */
+  layoutType: number
+
+  /* Dev Component Name */
+  devComponentName: string
+
+  /* Layout Content */
+  layoutContent: string
+}
+
+interface SupplierSeoListResultDo {
+
+  /* Supplier ID */
+  supplierId: string
+
+  /* Language ID */
+  languageId: string
+
+  /* Meta Title */
+  metaTitle: string
+
+  /* Meta Description */
+  metaDescription: string
+}
+
+interface SupplierAdminLocalizedViewDo {
+  /* Language ID */
+  languageId: string
+
+  /* Language Name */
+  languageName: string
+
+  /* Language Code */
+  languageCode: string
 
   /* */
   supplierDetailListResultDo: SupplierDetailListResultDo & CommonField
 
   /* */
   supplierSeoListResultDo: SupplierSeoListResultDo & CommonField
+}
+
+interface SupplierShow {
+  /* Status, 0 - Disabled , 1 - Enabled */
+  status: boolean
+
+  /* Is Top */
+  isTop: boolean
+
+  /* Sort */
+  sort: number
+
+  /* Supplier Admin Localized View Dos */
+  supplierAdminLocalizedViewDos: SupplierAdminLocalizedViewDo[]
 
   /* Slug ID */
   slugId: string
 
-  /* Slug */
+  /* Supplier Slug */
   slug: string
 }
 
