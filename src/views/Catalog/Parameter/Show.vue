@@ -12,7 +12,6 @@ import {
 import { getParameterTypeLabel, parameterTypes } from '@/data/parameter'
 import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
-import { ElAlert, ElCard, ElForm, ElInput, ElMessage, ElSwitch, ElTabPane } from 'element-plus'
 
 const { t: $t } = useLocale()
 
@@ -310,11 +309,11 @@ const editParameterType = async () => {
         <ElTabPane :label="$t('parameter.base')" name="base">
           <ElCard v-if="form.parameterDetailListResultDo" shadow="never" class="mb-5">
             <div class="w-full mt-0 pt-0">
-              <div class="w-full grid grid-cols-12 gap-8 p-4">
-                <div class="col-span-1 font-semibold fs-[14px] text-gray-700">
+              <div class="w-full flex items-center p-4">
+                <div class="w-[80px] font-semibold fs-[14px] text-gray-700 text-right mr-5">
                   {{ $t('parameter.parameterName') }} :
                 </div>
-                <div class="col-span-11 w-full flex items-center">
+                <div class="w-full flex items-center">
                   <div v-if="!inputParameterNameVisible" class="mr-2 flex">
                     <div class="mr-1">
                       {{ form.parameterDetailListResultDo.parameterName }}
@@ -340,11 +339,11 @@ const editParameterType = async () => {
                   </div>
                 </div>
               </div>
-              <div class="w-full grid grid-cols-12 gap-8 p-4 border-b border-gray-200">
-                <div class="col-span-1 font-semibold fs-[14px] text-gray-700">
+              <div class="w-full flex items-center p-4 border-b border-gray-200">
+                <div class="w-[80px] font-semibold fs-[14px] text-gray-700  text-right mr-5">
                   {{ $t('parameter.parameterType') }}:
                 </div>
-                <div class="col-span-11 w-full flex items-center">
+                <div class="w-full flex items-center">
                   <div v-if="!editParameterTypeVisible" class="mr-2 flex">
                     <div class="mr-1">
                       {{ getParameterTypeLabel(form.parameterType) }}

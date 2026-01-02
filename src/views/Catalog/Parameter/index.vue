@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import { VueDraggable } from 'vue-draggable-plus'
 import { parameterListApi, removeParameterApi, updateParameterSortApi } from '@/api/parameter'
 import { usePreferenceStore } from '@/stores/preference'
-import { ElMessage } from 'element-plus'
-import { VueDraggable } from 'vue-draggable-plus'
+
+const router = useRouter()
 
 const parameterDragging = ref(false)
 

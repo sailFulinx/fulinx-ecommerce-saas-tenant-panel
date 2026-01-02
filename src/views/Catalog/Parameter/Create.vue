@@ -1,17 +1,19 @@
 <script setup lang="ts">
+import { ElCard, ElInput, ElMessage } from 'element-plus'
 import { createParameterApi } from '@/api/parameter'
 import { parameterTypes } from '@/data/parameter'
 import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
 import { useTagsViewStore } from '@/stores/tagsView'
-import { ElCard, ElInput, ElMessage } from 'element-plus'
 
 const { t: $t } = useLocale()
 
+const router = useRouter()
+
 const rules = reactive({
-  parameterType: [{ required: true, type: 'number', message: '参数类型必填', trigger: 'change' }],
-  languageId: [{ required: true, type: 'number', message: '语言必须选择', trigger: 'change' }],
-  parameterName: [{ required: true, type: 'string', message: '参数名称必须填写', trigger: 'blur' }],
+  parameterType: [{ required: true, message: '参数类型必填', trigger: 'change' }],
+  languageId: [{ required: true, message: '语言必须选择', trigger: 'change' }],
+  parameterName: [{ required: true, message: '参数名称必须填写', trigger: 'blur' }],
 })
 
 const loading = reactive({
