@@ -83,6 +83,17 @@ const getArticleData = async () => {
   return data
 }
 
+const layoutTypeList = ref<any[]>([])
+
+const getLayoutTypeList = async () => {
+  const { data } = await fetchLayoutTypeListApi({ layoutTypeCode: null }).catch(error => {
+    throw error
+  })
+  layoutTypeList.value = data.list
+}
+
+getLayoutTypeList()
+
 const resetFormData = async (val: ArticleShowData) => {
   await nextTick(() => {
     categoryNames.value = []
@@ -341,6 +352,7 @@ const handleGetRemoveFile = (_indexValue: number) => {
                 :article-id="id"
                 :language-id="item.languageId"
                 :list-layout-data="listLayoutData"
+                :layout-type-list="layoutTypeList"
                 @edit-article-layout="handleEditArticleLayout"
                 @refresh-data="initFormData"
               />

@@ -80,6 +80,17 @@ const getCategoryData = async () => {
   return data
 }
 
+const layoutTypeList = ref<any[]>([])
+
+const getLayoutTypeList = async () => {
+  const { data } = await fetchLayoutTypeListApi({ layoutTypeCode: null }).catch(error => {
+    throw error
+  })
+  layoutTypeList.value = data.list
+}
+
+getLayoutTypeList()
+
 const resetFormData = async (val: CategoryShowData) => {
   Object.assign(form, $clone(val))
   if (form?.parentIds[0] !== '0') {
@@ -213,7 +224,7 @@ provide(categoryKey, {
               <CategorySeoInfo :current-item="item" />
             </div>
             <div v-show="activeName === 'layout'">
-              <CategoryLayoutInfo :current-item="item" />
+              <CategoryLayoutInfo :current-item="item" :layout-type-list="layoutTypeList" />
             </div>
             <div v-show="activeName === 'slug'">
               <CategorySlugInfo :current-item="item" />

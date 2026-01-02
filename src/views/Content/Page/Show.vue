@@ -63,6 +63,17 @@ const getPageData = async () => {
   return data
 }
 
+const layoutTypeList = ref<any[]>([])
+
+const getLayoutTypeList = async () => {
+  const { data } = await fetchLayoutTypeListApi({ layoutTypeCode: null }).catch(error => {
+    throw error
+  })
+  layoutTypeList.value = data.list
+}
+
+getLayoutTypeList()
+
 const resetFormData = async (val: PageShowData) => {
   await nextTick(() => {
     categoryNames.value = ''
@@ -210,10 +221,10 @@ const handleGetRemoveFile = (_indexValue: number) => {
           <div v-show="languageId === item.languageId">
             <div v-show="activeName === 'base'">
               <PageBaseInfo
+                v-model:page-admin-localized-view-dos="form.pageAdminLocalizedViewDos"
                 :page-detail="item"
                 :language-id="item.languageId"
                 :page-id="id"
-                v-model:page-admin-localized-view-dos="form.pageAdminLocalizedViewDos"
                 @refresh-data="initFormData"
                 @cancel-update-page-file="handleCancelUpdatePageFile"
                 @get-remove-file="handleGetRemoveFile"
@@ -233,6 +244,7 @@ const handleGetRemoveFile = (_indexValue: number) => {
                 :page-id="id"
                 :language-id="item.languageId"
                 :list-layout-data="listLayoutData"
+                :layout-type-list="layoutTypeList"
                 @edit-page-layout="handleEditPageLayout"
                 @refresh-data="initFormData"
               />

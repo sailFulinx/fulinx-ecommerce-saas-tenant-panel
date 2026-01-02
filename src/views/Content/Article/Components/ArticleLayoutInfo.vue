@@ -4,6 +4,7 @@ interface Props {
   articleDetail?: ArticleDetailListResultDo & CommonField
   articleId: string
   languageId: string
+  layoutTypeList: any[]
 }
 
 const props = defineProps<Props>()
@@ -18,17 +19,6 @@ const { t: $t } = useLocale()
 const currentLayoutType = ref(1)
 
 const devComponentName = ref('')
-
-const layoutTypeList = ref<any[]>([])
-
-const getLayoutTypeList = async () => {
-  const { data } = await fetchLayoutTypeListApi({ layoutTypeCode: null }).catch(error => {
-    throw error
-  })
-  layoutTypeList.value = data.list
-}
-
-getLayoutTypeList()
 
 const simplifiedComponentLayoutRef = ref()
 
