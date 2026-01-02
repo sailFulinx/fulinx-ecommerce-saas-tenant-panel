@@ -2,7 +2,7 @@ import request from '@/utils/axios'
 
 export function updateSupplierDetailCustomApi(
   params: UpdateSupplierDetailCustomParams,
-): Promise<IResponse<SupplierShow & CommonField>> {
+): Promise<IResponse<SupplierShowData & CommonField>> {
   return request.post({
     url: 'system/supplier/update/detail/customs',
     data: params,
@@ -19,7 +19,7 @@ export function updateSupplierDetailCustomApi(
  */
 export function updateSupplierDetailDescriptionApi(
   params: UpdateSupplierDetailDescriptionParams,
-): Promise<IResponse<SupplierShow & CommonField>> {
+): Promise<IResponse<SupplierShowData & CommonField>> {
   return request.post({
     url: 'system/supplier/update/detail/description',
     data: params,
@@ -36,7 +36,7 @@ export function updateSupplierDetailDescriptionApi(
  */
 export function updateSupplierDetailFileApi(
   params: UpdateSupplierDetailFileParams,
-): Promise<IResponse<SupplierShow & CommonField>> {
+): Promise<IResponse<SupplierShowData & CommonField>> {
   return request.post({
     url: 'system/supplier/update/detail/file',
     data: params,
@@ -46,7 +46,7 @@ export function updateSupplierDetailFileApi(
 
 export function updateSupplierDetailLayoutApi(
   params: UpdateSupplierDetailLayoutParams,
-): Promise<IResponse<SupplierShow & CommonField>> {
+): Promise<IResponse<SupplierShowData & CommonField>> {
   return request.post({
     url: 'system/supplier/update/detail/layout',
     data: params,
@@ -63,7 +63,7 @@ export function updateSupplierDetailLayoutApi(
  */
 export function updateSupplierDetailSupplierNameApi(
   params: UpdateSupplierDetailSupplierNameParams,
-): Promise<IResponse<SupplierShow & CommonField>> {
+): Promise<IResponse<SupplierShowData & CommonField>> {
   return request.post({
     url: 'system/supplier/update/detail/name',
     data: params,
@@ -73,7 +73,7 @@ export function updateSupplierDetailSupplierNameApi(
 
 export function updateSupplierDetailSupplierShortDescriptionApi(
   params: UpdateSupplierDetailSupplierShortDescriptionParams,
-): Promise<IResponse<SupplierShow & CommonField>> {
+): Promise<IResponse<SupplierShowData & CommonField>> {
   return request.post({
     url: 'system/supplier/update/detail/short/description',
     data: params,
@@ -83,7 +83,7 @@ export function updateSupplierDetailSupplierShortDescriptionApi(
 
 export function updateSupplierDetailSupplierShortNameApi(
   params: UpdateSupplierDetailSupplierShortNameParams,
-): Promise<IResponse<SupplierShow & CommonField>> {
+): Promise<IResponse<SupplierShowData & CommonField>> {
   return request.post({
     url: 'system/supplier/update/detail/short/name',
     data: params,
@@ -91,7 +91,7 @@ export function updateSupplierDetailSupplierShortNameApi(
   })
 }
 
-export function updateSupplierIsTopApi(params: UpdateSupplierIsTopParams): Promise<IResponse<SupplierShow & CommonField>> {
+export function updateSupplierIsTopApi(params: UpdateSupplierIsTopParams): Promise<IResponse<SupplierShowData & CommonField>> {
   return request.post({
     url: 'system/supplier/update/is/top',
     data: params,
@@ -107,7 +107,7 @@ export function updateSupplierIsTopApi(params: UpdateSupplierIsTopParams): Promi
  * @param {string} params.metaDescription Supplier Meta Description
  * @returns
  */
-export function updateSupplierSeoApi(params: UpdateSupplierSeoParams): Promise<IResponse<SupplierShow & CommonField>> {
+export function updateSupplierSeoApi(params: UpdateSupplierSeoParams): Promise<IResponse<SupplierShowData & CommonField>> {
   return request.post({
     url: 'system/supplier/update/seo',
     data: params,
@@ -123,7 +123,7 @@ export function updateSupplierSeoApi(params: UpdateSupplierSeoParams): Promise<I
  * @param {string} params.slug Slug
  * @returns
  */
-export function updateSupplierSlugApi(params: UpdateSupplierSlugParams): Promise<IResponse<SupplierShow & CommonField>> {
+export function updateSupplierSlugApi(params: UpdateSupplierSlugParams): Promise<IResponse<SupplierShowData & CommonField>> {
   return request.post({
     url: 'system/supplier/update/slug',
     data: params,
@@ -133,7 +133,7 @@ export function updateSupplierSlugApi(params: UpdateSupplierSlugParams): Promise
 
 export function updateSupplierSortApi(
   params: UpdateSupplierSortParams,
-): Promise<IResponse<SupplierShow & CommonField>> {
+): Promise<IResponse<SupplierShowData & CommonField>> {
   return request.post({
     url: 'system/supplier/update/sort',
     data: params,
@@ -141,7 +141,7 @@ export function updateSupplierSortApi(
   })
 }
 
-export function updateSupplierStatusApi(params: UpdateSupplierStatusParams): Promise<IResponse<SupplierShow & CommonField>> {
+export function updateSupplierStatusApi(params: UpdateSupplierStatusParams): Promise<IResponse<SupplierShowData & CommonField>> {
   return request.post({
     url: 'system/supplier/update/status',
     data: params,

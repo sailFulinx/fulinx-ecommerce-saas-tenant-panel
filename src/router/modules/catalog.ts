@@ -118,8 +118,8 @@ const catalogRouter: AppRouteRecordRaw = {
         hidden: true,
         canTo: true,
         activeMenu: '/product/supplier',
-        props: true,
       },
+      props: true,
     },
     {
       path: 'file',

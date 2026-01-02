@@ -16,10 +16,26 @@ export function categoryDescriptionEditApi(data: CategoryDescriptionParams): Pro
   })
 }
 
+export function categoryShortDescriptionEditApi(data: CategoryShortDescriptionParams): Promise<IResponse<CategoryShowData>> {
+  return request.post({
+    url: 'system/category/update/categoryShortDescription',
+    data,
+    token: true,
+  })
+}
+
 // 更新分类名称
 export function categoryNameEditApi(data: CategoryNameParams): Promise<IResponse<CategoryShowData>> {
   return request.post({
     url: 'system/category/update/categoryName',
+    data,
+    token: true,
+  })
+}
+
+export function categoryShortNameEditApi(data: CategoryShortNameParams): Promise<IResponse<CategoryShowData>> {
+  return request.post({
+    url: 'system/category/update/categoryShortName',
     data,
     token: true,
   })

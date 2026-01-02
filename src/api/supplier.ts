@@ -61,7 +61,7 @@ export function supplierPaginationApi(
  * @param {string} params.languageId Language ID
  * @returns
  */
-export function showSupplierApi(params: ShowSupplierParams): Promise<IResponse<SupplierShow & CommonField>> {
+export function showSupplierApi(params: ShowSupplierParams): Promise<IResponse<SupplierShowData & CommonField>> {
   return request.post({
     url: 'system/supplier/show',
     data: params,

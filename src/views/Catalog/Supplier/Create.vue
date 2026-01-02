@@ -1,24 +1,21 @@
 <script setup lang="ts">
-import { ElCard, ElInput, ElMessage } from 'element-plus'
-import { layoutListApi } from '@/api/layout'
-import { createSupplierApi } from '@/api/supplier'
-import { supplierCodes } from '@/data/supplier'
+import { ElMessage } from 'element-plus'
 import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
 import { useTagsViewStore } from '@/stores/tagsView'
 
-const router = useRouter()
-
 const { t: $t } = useLocale()
+
+const router = useRouter()
 
 const uploadRef = ref()
 
 const rules = reactive({
-  supplierType: [{ required: true, type: 'number', message: '内容类型必填', trigger: 'change' }],
-  languageId: [{ required: true, type: 'number', message: '语言必须选择', trigger: 'change' }],
-  status: [{ required: true, type: 'boolean', message: '状态必填', trigger: 'change' }],
-  supplierCode: [{ required: true, type: 'string', message: '识别码必须填写', trigger: 'blur' }],
-  supplierName: [{ required: true, type: 'string', message: '内容名称必须填写', trigger: 'blur' }],
+  languageId: [{ required: true, message: '语言必须选择', trigger: 'change' }],
+  status: [{ required: true, message: '状态必填', trigger: 'change' }],
+  supplierName: [{ required: true, message: '供应商名称必须填写', trigger: 'blur' }],
+  metaTitle: [{ required: true, message: 'Meta标题必须填写', trigger: 'blur' }],
+  metaDescription: [{ required: true, message: 'Meta描述必须填写', trigger: 'blur' }],
 })
 
 const loading = reactive({
@@ -28,34 +25,6 @@ const loading = reactive({
 
 const pageTitle = $t('supplier.add')
 
-const listLayoutPayload = reactive<LayoutListParams>({
-  layoutName: null,
-})
-
-const listLayoutData = ref<TableResponse<LayoutData & CommonField>>({
-  list: [],
-  total: 0,
-})
-
-const getLayoutList = async () => {
-  loading.init = true
-  if (listLayoutPayload.layoutName === '') {
-    listLayoutPayload.layoutName = null
-  }
-  if (listLayoutPayload.layoutName && listLayoutPayload.layoutName?.length <= 1) {
-    loading.init = false
-    return
-  }
-  const { data } = await layoutListApi(listLayoutPayload).catch(error => {
-    loading.init = false
-    throw error
-  })
-  listLayoutData.value = data
-  loading.init = false
-}
-
-getLayoutList()
-
 const supplierFormRef = ref()
 
 const editorRef = ref()
@@ -63,7 +32,6 @@ const editorRef = ref()
 const createSupplierForm = (): CreateSupplierParams => {
   return {
     languageId: '',
-    supplierCode: '',
     supplierName: '',
     supplierDescription: '',
     supplierFileId: '',
@@ -131,34 +99,51 @@ const save = async () => {
       </div>
     </div>
     <div class="view-main theme-card">
-      <ElCard shadow="never">
-        <ElForm ref="supplierFormRef" :model="supplierForm" :rules="rules" label-width="120px">
-          <ElFormItem :label="$t('supplier.supplierCode')" prop="supplierCode">
-            <ElSelect v-model="supplierForm.supplierCode" filterable clearable style="width: 300px" class="mr-2">
-              <ElOption
-                v-for="item in supplierCodes"
-                :key="item"
-                :label="item"
-                :value="item"
-              />
-            </ElSelect>
-          </ElFormItem>
-          <ElFormItem :label="$t('supplier.supplierName')" prop="supplierName">
-            <ElInput
-              v-model="supplierForm.supplierName"
-              minlength="1"
-              maxlength="120"
-              :placeholder="$t('supplier.placeholder.supplierName')"
-            />
-          </ElFormItem>
-          <ElFormItem :label="$t('supplier.supplierDescription')" prop="supplierDescription">
-            <Editor ref="editorRef" v-model="supplierForm.supplierDescription" :height="300" />
-          </ElFormItem>
-          <ElFormItem :label="$t('supplier.supplierLogo')">
-            <UploadSingleImage ref="uploadRef" />
-          </ElFormItem>
-        </ElForm>
-      </ElCard>
+      <ElForm ref="supplierFormRef" :model="supplierForm" :rules="rules" label-width="120px">
+        <!-- 基础信息 -->
+        <ElCard shadow="never" class="mb-5">
+          <template #header>
+            <div class="card-header">
+              <span>{{ $t('supplier.base') }}</span>
+            </div>
+          </template>
+        </ElCard>
+
+        <ElCard shadow="never" class="mb-5 theme-card">
+          <template #header>
+            <div class="flex justify-between">
+              <div>{{ $t('supplier.content') }}</div>
+            </div>
+          </template>
+          <div>
+            <div class="grid grid-cols-3 gap-5">
+              <div class="col-span-2">
+                <ElCard shadow="never" class="w-full mb-5">
+                  <template #header>
+                    <div class="card-header">
+                      <span>{{ $t('supplier.base') }}</span>
+                    </div>
+                  </template>
+                  <ElFormItem :label="$t('supplier.supplierName')" prop="supplierName">
+                    <ElInput
+                      v-model="supplierForm.supplierName"
+                      minlength="1"
+                      maxlength="120"
+                      :placeholder="$t('supplier.placeholder.supplierName')"
+                    />
+                  </ElFormItem>
+                  <ElFormItem :label="$t('supplier.supplierDescription')" prop="supplierDescription">
+                    <Editor ref="editorRef" v-model="supplierForm.supplierDescription" :height="300" />
+                  </ElFormItem>
+                  <ElFormItem :label="$t('supplier.supplierLogo')">
+                    <UploadSingleImage ref="uploadRef" />
+                  </ElFormItem>
+                </ElCard>
+              </div>
+            </div>
+          </div>
+        </ElCard>
+      </ElForm>
     </div>
   </div>
 </template>

@@ -49,7 +49,6 @@ const createFormData = (): ShowProduct & CommonField => {
     parameterGroupId: '',
     supplierShowResultDo: {
       id: '',
-      supplierCode: '',
       status: true,
       isCustomLayout: true,
       layoutId: '',

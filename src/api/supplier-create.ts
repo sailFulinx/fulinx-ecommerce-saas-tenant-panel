@@ -17,7 +17,7 @@ export function createSupplierApi(params: CreateSupplierParams): Promise<IRespon
   })
 }
 
-export function createSupplierNameApi(params: CreateSupplierNameParams): Promise<IResponse<SupplierShow & CommonField>> {
+export function createSupplierNameApi(params: CreateSupplierNameParams): Promise<IResponse<SupplierShowData & CommonField>> {
   return request.post({
     url: 'system/supplier/create/name',
     data: params,
@@ -27,7 +27,7 @@ export function createSupplierNameApi(params: CreateSupplierNameParams): Promise
 
 export function createSupplierSeoApi(
   params: CreateSupplierSeoParams,
-): Promise<IResponse<SupplierShow & CommonField>> {
+): Promise<IResponse<SupplierShowData & CommonField>> {
   return request.post({
     url: 'system/supplier/create/seo',
     data: params,
@@ -35,7 +35,7 @@ export function createSupplierSeoApi(
   })
 }
 
-export function createSupplierSlugApi(params: CreateSupplierSlugParams): Promise<IResponse<SupplierShow & CommonField>> {
+export function createSupplierSlugApi(params: CreateSupplierSlugParams): Promise<IResponse<SupplierShowData & CommonField>> {
   return request.post({
     url: 'system/supplier/slug',
     data: params,

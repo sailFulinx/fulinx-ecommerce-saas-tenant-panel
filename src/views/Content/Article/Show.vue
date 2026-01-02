@@ -305,11 +305,11 @@ const handleGetRemoveFile = (_indexValue: number) => {
           <div v-show="languageId === item.languageId">
             <div v-show="activeName === 'base'">
               <ArticleBaseInfo
+                v-model:article-admin-localized-view-dos="form.articleAdminLocalizedViewDos"
                 :article-data="form"
                 :article-detail="item"
                 :language-id="item.languageId"
                 :article-id="id"
-                v-model:article-admin-localized-view-dos="form.articleAdminLocalizedViewDos"
                 @refresh-data="initFormData"
                 @remove-tag="handleRemoveTag"
                 @show-input-tag="showInputTag"

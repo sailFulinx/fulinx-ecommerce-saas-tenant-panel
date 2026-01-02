@@ -2,9 +2,6 @@ interface CreateSupplierParams {
   /* Language ID */
   languageId: string
 
-  /* Supplier Code */
-  supplierCode: string
-
   /* Supplier Name */
   supplierName: string
 
@@ -85,25 +82,6 @@ interface SupplierDetailListResultDo {
   /* Supplier Name */
   supplierName: string
 
-  supplierDescription: string
-
-  /* Supplier File ID */
-  supplierFileId: string
-
-  /* */
-  supplierFileVo: FileData & CommonField
-}
-
-interface SupplierDetailListResultDo {
-  /* Supplier ID */
-  supplierId: string
-
-  /* Language ID */
-  languageId: string
-
-  /* Supplier Name */
-  supplierName: string
-
   /* Supplier Short Name */
   supplierShortName: string
 
@@ -122,8 +100,12 @@ interface SupplierDetailListResultDo {
   /* Customs */
   customs: string
 
+  customList: CustomDataType[]
+
   /* Layout Type, 1: default, 2: devCustomized, 3: userDefined  */
   layoutType: number
+
+  layoutTypeLabel?: string
 
   /* Dev Component Name */
   devComponentName: string
@@ -158,13 +140,13 @@ interface SupplierAdminLocalizedViewDo {
   languageCode: string
 
   /* */
-  supplierDetailListResultDo: SupplierDetailListResultDo & CommonField
+  supplierDetailListResultDo: (SupplierDetailListResultDo & CommonField) | null
 
   /* */
-  supplierSeoListResultDo: SupplierSeoListResultDo & CommonField
+  supplierSeoListResultDo: (SupplierSeoListResultDo & CommonField) | null
 }
 
-interface SupplierShow {
+interface SupplierShowData {
   /* Status, 0 - Disabled , 1 - Enabled */
   status: boolean
 
@@ -257,7 +239,7 @@ interface UpdateSupplierDetailSupplierShortNameParams {
   supplierDetailId: string
 
   /* Supplier Name */
-  supplierName: string
+  supplierShortName: string
 }
 
 interface UpdateSupplierIsTopParams {

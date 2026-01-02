@@ -43,6 +43,8 @@ declare global {
   const categoryRemoveApi: typeof import('../api/category').categoryRemoveApi
   const categorySeoCreateApi: typeof import('../api/category-create').categorySeoCreateApi
   const categorySeoEditApi: typeof import('../api/category-edit').categorySeoEditApi
+  const categoryShortDescriptionEditApi: typeof import('../api/category-edit').categoryShortDescriptionEditApi
+  const categoryShortNameEditApi: typeof import('../api/category-edit').categoryShortNameEditApi
   const categoryShowApi: typeof import('../api/category').categoryShowApi
   const categorySlugCreateApi: typeof import('../api/category-create').categorySlugCreateApi
   const categorySlugEditApi: typeof import('../api/category-edit').categorySlugEditApi

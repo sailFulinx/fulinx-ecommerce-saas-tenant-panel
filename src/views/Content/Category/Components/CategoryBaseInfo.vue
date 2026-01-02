@@ -3,7 +3,7 @@
 import { categoryKey } from '../type/injectionKeys'
 import CustomsTable from './CustomsTable.vue'
 
-const { currentItem, categoryAdminLocalizedViewDos } = defineProps<{
+const { currentItem } = defineProps<{
   currentItem: CategoryShowListItem
   categoryAdminLocalizedViewDos: CategoryShowListItem[]
 }>()
@@ -185,36 +185,6 @@ const createCategoryName = async () => {
   currentCategoryName.value = ''
   await resetFormData(data)
   ElMessage.success($t('success.create'))
-}
-
-const copyLanguageCode = ref('')
-
-const fromLanguageId = ref('')
-
-const handleCopyCategory = async () => {
-  if (!copyLanguageCode.value) {
-    ElMessage.warning($t('category.error.copyLanguageCode'))
-    return
-  }
-  loading.init = true
-  categoryAdminLocalizedViewDos.forEach(item => {
-    if (item.categoryDetailListResultDo?.languageCode === copyLanguageCode.value) {
-      fromLanguageId.value = item.categoryDetailListResultDo.languageId
-    }
-  })
-  const { data } = await copyCategoryApi({
-    categoryId,
-    fromLanguageId: fromLanguageId.value,
-    toLanguageId: selectLanguage.value.id,
-  }).catch(error => {
-    loading.init = false
-    throw error
-  })
-  ElMessage.success($t('success.copy'))
-  copyLanguageCode.value = ''
-  fromLanguageId.value = ''
-  loading.init = false
-  await resetFormData(data)
 }
 </script>
 
@@ -423,22 +393,6 @@ const handleCopyCategory = async () => {
       <div class="flex-col justify-center items-center mb-5">
         <div class="w-full mb-5">
           <ElAlert :title="$t('category.warning.noDetailData')" type="warning" show-icon />
-        </div>
-        <div class="w-full bg-red-50 pa-3 flex justify-between">
-          <ElSelect v-model="copyLanguageCode" placeholder="请选择" style="width: 200px">
-            <ElOption
-              v-for="item in categoryAdminLocalizedViewDos.filter(i => i.languageCode !== currentItem.languageCode)"
-              :key="item.languageCode"
-              :value="item.languageCode"
-              :label="item.languageName"
-            >
-              {{ item.languageName }}
-            </ElOption>
-          </ElSelect>
-          <ElButton type="primary" class="ml-5" @click="handleCopyCategory">
-            <Icon icon="ant-design:save-outlined" :size="5" class="mr-1" />
-            {{ $t('common.save') }}
-          </ElButton>
         </div>
       </div>
       <div class="pa-3 flex justify-center items-center mb-5">

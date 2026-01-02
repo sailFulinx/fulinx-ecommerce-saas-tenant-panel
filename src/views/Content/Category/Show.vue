@@ -1,9 +1,9 @@
 <script setup name="CategoryDetail" lang="ts">
-import BasePane from './Components/BasePane.vue'
-import LayoutPane from './Components/LayoutPane.vue'
+import CategoryBaseInfo from './Components/CategoryBaseInfo.vue'
+import CategoryLayoutInfo from './Components/CategoryLayoutInfo.vue'
+import CategorySeoInfo from './Components/CategorySeoInfo.vue'
+import CategorySlugInfo from './Components/CategorySlugInfo.vue'
 import ParentCatalog from './Components/ParentCatalog.vue'
-import SeoPane from './Components/SeoPane.vue'
-import SlugPane from './Components/SlugPane.vue'
 import { categoryKey } from './type/injectionKeys'
 
 defineOptions({ name: 'ShowCategory' })
@@ -207,16 +207,16 @@ provide(categoryKey, {
         <div v-for="item in form.categoryAdminLocalizedViewDos" :key="item.languageCode">
           <div v-show="languageCode === item.languageCode">
             <div v-show="activeName === 'base'">
-              <BasePane :current-item="item" :category-admin-localized-view-dos="form.categoryAdminLocalizedViewDos" />
+              <CategoryBaseInfo :current-item="item" :category-admin-localized-view-dos="form.categoryAdminLocalizedViewDos" />
             </div>
             <div v-show="activeName === 'seo'">
-              <SeoPane :current-item="item" />
+              <CategorySeoInfo :current-item="item" />
             </div>
             <div v-show="activeName === 'layout'">
-              <LayoutPane :current-item="item" />
+              <CategoryLayoutInfo :current-item="item" />
             </div>
             <div v-show="activeName === 'slug'">
-              <SlugPane :current-item="item" />
+              <CategorySlugInfo :current-item="item" />
             </div>
           </div>
         </div>
