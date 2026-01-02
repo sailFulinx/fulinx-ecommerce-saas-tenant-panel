@@ -65,3 +65,26 @@ interface FileListParams {
 interface RemoveFileParams {
   ids: string[]
 }
+
+interface FileListData {
+  /* Original File Name */
+  originalFileName: string
+
+  /* File Name */
+  fileName: string
+
+  /* File Content Type */
+  fileContentType: string
+
+  /* File Extension Name */
+  fileExtensionName: string
+
+  /* Path */
+  path: string
+
+  /* File Url */
+  fileUrl: string
+
+  /* sha256 */
+  sha256: string
+}

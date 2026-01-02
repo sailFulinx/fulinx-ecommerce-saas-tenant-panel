@@ -1,11 +1,8 @@
 <script setup lang="ts">
 import { filePaginationApi, removeFileApi } from '@/api/file'
 import { formatTime } from '@/utils'
-import { ElEmpty, ElMessage } from 'element-plus'
 
-const sourceUrl = import.meta.env.VITE_RESOURCE_URL
-
-const listResult = ref<TableResponse<FileData & CommonField>>({
+const listResult = ref<TableResponse<FileListData & CommonField>>({
   list: [],
   total: 0,
 })
@@ -47,13 +44,13 @@ const pagination = (val: PaginationComponentDataType) => {
   getList()
 }
 
-const selectedFileItem = (val: (FileData & CommonField)[]) => {
+const _selectedFileItem = (val: (FileListData & CommonField)[]) => {
   selectedList.value = []
   val.forEach(item => {
     selectedList.value.push(item.id)
   })
 }
-const handleDelete = async (row: FileData & CommonField) => {
+const handleDelete = async (row: FileListData & CommonField) => {
   loading.list = true
   await removeFileApi({ ids: [row.id] }).catch(err => {
     loading.list = false
@@ -133,35 +130,34 @@ init()
       </div>
     </div>
     <div class="view-main">
-      <ElCard v-if="listResult.total > 0" shadow="hover" class="mb-5">
-        <div class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-6 gap-4">
-          <div
-            v-for="(item, index) in listResult.list"
-            :key="index"
-            class="flex-col items-center justify-center border-1 border-gray-300 pa-2"
-          >
-            <div class="w-full">
-              <SImg
-                :src="sourceUrl + item.fileUrl"
-                :alt="item.originalFileName"
-                fit="cover" lazy
-                placeholder
-                @click="handleDelete(item)"
-              />
-            </div>
-            <div class="mt-2">
-              {{ item.originalFileName }}
-            </div>
-            <div class="mt-2 flex items-center justify-between">
-              <div>{{ formatTime(item.recordCreateTime as string) }}</div>
-              <EBtn type="danger" text size="small" @click="handleDelete(item)">
-                <Icon icon="ep:delete" class="mr-1" />
-                {{ $t('common.delete') }}
-              </EBtn>
-            </div>
+      <div v-if="listResult.total > 0" class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-6 gap-4">
+        <div
+          v-for="(item, index) in listResult.list"
+          :key="index"
+          class="flex-col items-center justify-center border border-gray-100 pa-2"
+        >
+          <div class="w-full">
+            <ElImage
+              :src="item.fileUrl"
+              :alt="item.originalFileName"
+              fit="cover"
+              lazy
+              placeholder
+              @click="handleDelete(item)"
+            />
+          </div>
+          <div class="mt-2">
+            {{ item.originalFileName }}
+          </div>
+          <div class="mt-2 flex items-center justify-between">
+            <div>{{ formatTime(item.recordCreateTime as string) }}</div>
+            <EBtn type="danger" text size="small" @click="handleDelete(item)">
+              <Icon icon="ep:delete" class="mr-1" />
+              {{ $t('common.delete') }}
+            </EBtn>
           </div>
         </div>
-      </ElCard>
+      </div>
       <ElEmpty v-else description="暂无数据" />
       <Pagination
         v-show="listResult.total > 0"

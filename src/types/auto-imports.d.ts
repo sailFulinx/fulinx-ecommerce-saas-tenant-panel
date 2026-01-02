@@ -163,6 +163,7 @@ declare global {
   const fetchUserDetailApi: typeof import('../api/user').fetchUserDetailApi
   const fetchUserInfoApi: typeof import('../api/user').fetchUserInfoApi
   const fetchUserPaginationApi: typeof import('../api/user').fetchUserPaginationApi
+  const filePaginationApi: typeof import('../api/file').filePaginationApi
   const getActivePinia: typeof import('pinia').getActivePinia
   const getCurrentInstance: typeof import('vue').getCurrentInstance
   const getCurrentScope: typeof import('vue').getCurrentScope
@@ -254,6 +255,7 @@ declare global {
   const removeBrandFileApi: typeof import('../api/brand').removeBrandFileApi
   const removeCompApi: typeof import('../api/comp').removeCompApi
   const removeCouponApi: typeof import('../api/coupon').removeCouponApi
+  const removeFileApi: typeof import('../api/file').removeFileApi
   const removeLayoutApi: typeof import('../api/layout').removeLayoutApi
   const removeMessageApi: typeof import('../api/message').removeMessageApi
   const removePageApi: typeof import('../api/page').removePageApi
