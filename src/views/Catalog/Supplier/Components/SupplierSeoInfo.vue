@@ -1,20 +1,15 @@
 <script setup lang="ts">
-const { currentItem, supplierId, languageId } = defineProps<{
+import { supplierKey } from '../type/injectionKeys'
+
+const { currentItem, languageId } = defineProps<{
   currentItem: SupplierAdminLocalizedViewDo
   supplierAdminLocalizedViewDos: SupplierAdminLocalizedViewDo[]
-  supplierId: string
   languageId: string
 }>()
 
-const emit = defineEmits<{
-  refreshData: []
-}>()
+const { loading, id: supplierId, resetFormData } = inject(supplierKey)!
 
 const { t: $t } = useLocale()
-
-const loading = reactive({
-  init: false,
-})
 
 // 本地状态
 const inputSupplierMetaTitleVisible = ref(false)
@@ -36,7 +31,7 @@ const editSupplierMetaTitle = async (supplierSeoId: string) => {
     return
   }
   loading.init = true
-  await updateSupplierSeoApi({
+  const { data } = await updateSupplierSeoApi({
     supplierSeoId,
     metaTitle: currentSupplierMetaTitle.value,
   }).catch(error => {
@@ -45,7 +40,7 @@ const editSupplierMetaTitle = async (supplierSeoId: string) => {
   })
   loading.init = false
   currentSupplierMetaTitle.value = ''
-  emit('refreshData')
+  await resetFormData(data)
   inputSupplierMetaTitleVisible.value = false
   ElMessage.success($t('success.edit'))
 }
@@ -69,7 +64,7 @@ const editSupplierMetaDescription = async (supplierSeoId: string) => {
     return
   }
   loading.init = true
-  await updateSupplierSeoApi({
+  const { data } = await updateSupplierSeoApi({
     supplierSeoId,
     metaTitle: currentSupplierMetaTitle.value,
     metaDescription: currentSupplierMetaDescription.value,
@@ -79,19 +74,19 @@ const editSupplierMetaDescription = async (supplierSeoId: string) => {
   })
   loading.init = false
   currentSupplierMetaDescription.value = ''
-  emit('refreshData')
+  await resetFormData(data)
   inputSupplierMetaDescriptionVisible.value = false
   ElMessage.success($t('success.edit'))
 }
 
-// 创建分类SEO
+// 创建供应商SEO
 const createSupplierSeo = async () => {
   if (!currentSupplierMetaTitle.value) {
     ElMessage.warning($t('supplier.error.supplierMetaTitle'))
     return
   }
   loading.init = true
-  await createSupplierSeoApi({
+  const { data } = await createSupplierSeoApi({
     supplierId,
     languageId,
     metaTitle: currentSupplierMetaTitle.value,
@@ -101,7 +96,7 @@ const createSupplierSeo = async () => {
   })
   loading.init = false
   currentSupplierMetaTitle.value = ''
-  emit('refreshData')
+  await resetFormData(data)
   ElMessage.success($t('success.create'))
 }
 </script>
@@ -109,7 +104,7 @@ const createSupplierSeo = async () => {
 <template>
   <ElCard v-if="currentItem.supplierSeoListResultDo" shadow="never" class="mb-5">
     <div class="w-full mt-0 pt-0">
-      <!-- 分类元标题 -->
+      <!-- 供应商元标题 -->
       <div class="w-full grid grid-cols-12 gap-8 p-4 border-b border-gray-200">
         <div class="col-span-1 font-semibold text-gray-700">
           {{ $t('supplier.metaTitle') }}:
@@ -139,7 +134,7 @@ const createSupplierSeo = async () => {
           </ElButton>
         </div>
       </div>
-      <!-- 分类元描述 -->
+      <!-- 供应商元描述 -->
       <div class="w-full grid grid-cols-12 gap-8 p-4 border-b border-gray-200">
         <div class="col-span-1 font-semibold text-gray-700">
           {{ $t('supplier.metaDescription') }}:
@@ -163,9 +158,7 @@ const createSupplierSeo = async () => {
             v-if="!inputSupplierMetaDescriptionVisible"
             type="primary"
             text
-            @click="
-              handleClickUpdateSupplierMetaDescription(currentItem.supplierSeoListResultDo.metaDescription)
-            "
+            @click="handleClickUpdateSupplierMetaDescription(currentItem.supplierSeoListResultDo.metaDescription)"
           >
             <Icon icon="ep:edit" :size="5" class="mr-1" />
           </ElButton>

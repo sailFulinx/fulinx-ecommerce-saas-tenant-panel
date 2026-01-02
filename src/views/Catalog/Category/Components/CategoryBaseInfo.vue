@@ -9,6 +9,8 @@ const { currentItem } = defineProps<{
 }>()
 const { form, loading, selectLanguage, id: categoryId, resetFormData, handleClickUpdateParentId } = inject(categoryKey)!
 
+console.log(selectLanguage.value)
+
 const { t: $t } = useLocale()
 
 const currentData = ref<CategoryShowListItem>(currentItem)
@@ -172,6 +174,8 @@ const createCategoryName = async () => {
     ElMessage.warning($t('category.error.categoryName'))
     return
   }
+  console.log(selectLanguage.value)
+  return
   loading.init = true
   const { data } = await categoryNameCreateApi({
     categoryId,

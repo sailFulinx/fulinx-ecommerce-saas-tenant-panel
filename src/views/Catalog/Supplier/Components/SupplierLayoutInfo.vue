@@ -1,35 +1,20 @@
 <script setup lang="ts">
-const { currentItem } = defineProps<{
+import { supplierKey } from '../type/injectionKeys'
+
+const { currentItem, languageId } = defineProps<{
   currentItem: SupplierAdminLocalizedViewDo
   supplierAdminLocalizedViewDos: SupplierAdminLocalizedViewDo[]
-  supplierId: string
   languageId: string
+  layoutTypeList: any[]
 }>()
 
-const emit = defineEmits<{
-  refreshData: []
-}>()
-
-const loading = reactive({
-  init: false,
-})
+const { loading, resetFormData } = inject(supplierKey)!
 
 const { t: $t } = useLocale()
 
 const currentLayoutType = ref(1)
 
 const devComponentName = ref('')
-
-const layoutTypeList = ref<any[]>([])
-
-const getLayoutTypeList = async () => {
-  const { data } = await fetchLayoutTypeListApi({ layoutTypeCode: null }).catch(error => {
-    throw error
-  })
-  layoutTypeList.value = data.list
-}
-
-getLayoutTypeList()
 
 // 本地状态
 const isShowLayoutEdit = ref(false)
@@ -97,13 +82,13 @@ const handleSubmitSupplierLayout = async (val: SupplierAdminLocalizedViewDo) => 
     supplierDetailId: val.supplierDetailListResultDo.id,
     layoutType: currentLayoutType.value,
     devComponentName: devComponentName.value,
-    languageId: val.supplierDetailListResultDo.languageId,
+    languageId,
     layoutContent: JSON.stringify(rows.value),
   }
-  await updateSupplierDetailLayoutApi(payload).catch(error => {
+  const { data } = await updateSupplierDetailLayoutApi(payload).catch(error => {
     throw error
   })
-  emit('refreshData')
+  await resetFormData(data)
   loading.init = false
   isShowLayoutEdit.value = false
   ElMessage.success($t('success.edit'))

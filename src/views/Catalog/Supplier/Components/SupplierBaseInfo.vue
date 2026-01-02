@@ -1,24 +1,18 @@
 <script setup lang="ts">
+import { supplierKey } from '../type/injectionKeys'
 import CustomsTable from './CustomsTable.vue'
 
-const { currentItem, supplierId, languageId } = defineProps<{
+const { currentItem, languageId } = defineProps<{
   currentItem: SupplierAdminLocalizedViewDo
   supplierAdminLocalizedViewDos: SupplierAdminLocalizedViewDo[]
-  supplierId: string
   languageId: string
 }>()
 
-const emit = defineEmits<{
-  (e: 'refreshData', data?: SupplierShowData & CommonField): void
-}>()
+const { loading, id: supplierId, resetFormData } = inject(supplierKey)!
 
 const { t: $t } = useLocale()
 
 const currentData = ref<SupplierAdminLocalizedViewDo>(currentItem)
-
-const loading = reactive({
-  init: false,
-})
 
 // 本地状态
 const inputSupplierNameVisible = ref(false)
@@ -57,7 +51,7 @@ const editSupplierName = async (supplierDetailId: string) => {
   })
   loading.init = false
   currentSupplierName.value = ''
-  emit('refreshData', data)
+  await resetFormData(data)
   inputSupplierNameVisible.value = false
   ElMessage.success($t('success.edit'))
 }
@@ -75,7 +69,7 @@ const handleCancelUpdateSupplierShortName = () => {
 const editSupplierShortName = async (supplierDetailId: string) => {
   // 短名称可以为空
   loading.init = true
-  await updateSupplierDetailSupplierShortNameApi({
+  const { data } = await updateSupplierDetailSupplierShortNameApi({
     supplierDetailId,
     supplierShortName: currentSupplierShortName.value,
   }).catch(error => {
@@ -84,7 +78,7 @@ const editSupplierShortName = async (supplierDetailId: string) => {
   })
   loading.init = false
   currentSupplierShortName.value = ''
-  emit('refreshData')
+  await resetFormData(data)
   inputSupplierShortNameVisible.value = false
   ElMessage.success($t('success.edit'))
 }
@@ -97,14 +91,14 @@ const handleClickUpdateSupplierFile = async ({ fileData }: { fileData: FileData 
       fileId = fileData.id
     }
     loading.init = true
-    await updateSupplierDetailFileApi({
+    const { data } = await updateSupplierDetailFileApi({
       supplierDetailId: currentData.value.supplierDetailListResultDo.id,
       supplierFileId: fileId,
     }).catch(error => {
       loading.init = false
       throw error
     })
-    emit('refreshData')
+    await resetFormData(data)
     loading.init = false
     ElMessage.success($t('success.edit'))
   }
@@ -132,7 +126,7 @@ const editSupplierDescription = async (supplierDetailId: string) => {
   const editorInstance = editorRefs.value
   currentSupplierDescription.value = editorInstance?.getEditorContent()
   loading.init = true
-  await updateSupplierDetailDescriptionApi({
+  const { data } = await updateSupplierDetailDescriptionApi({
     supplierDetailId,
     supplierDescription: currentSupplierDescription.value,
   }).catch(error => {
@@ -141,7 +135,7 @@ const editSupplierDescription = async (supplierDetailId: string) => {
   })
   loading.init = false
   currentSupplierDescription.value = ''
-  emit('refreshData')
+  await resetFormData(data)
   inputSupplierDescriptionVisible.value = false
   ElMessage.success($t('success.edit'))
 }
@@ -159,7 +153,7 @@ const handleCancelUpdateSupplierShortDescription = () => {
 const editSupplierShortDescription = async (supplierDetailId: string) => {
   // 短描述可以为空
   loading.init = true
-  await updateSupplierDetailSupplierShortDescriptionApi({
+  const { data } = await updateSupplierDetailSupplierShortDescriptionApi({
     supplierDetailId,
     supplierShortDescription: currentSupplierShortDescription.value,
   }).catch(error => {
@@ -168,19 +162,19 @@ const editSupplierShortDescription = async (supplierDetailId: string) => {
   })
   loading.init = false
   currentSupplierShortDescription.value = ''
-  emit('refreshData')
+  await resetFormData(data)
   inputSupplierShortDescriptionVisible.value = false
   ElMessage.success($t('success.edit'))
 }
 
-// 创建分类名称
+// 创建供应商名称
 const createSupplierName = async () => {
   if (!currentSupplierName.value) {
     ElMessage.warning($t('supplier.error.supplierName'))
     return
   }
   loading.init = true
-  await createSupplierNameApi({
+  const { data } = await createSupplierNameApi({
     supplierId,
     languageId,
     supplierName: currentSupplierName.value,
@@ -190,7 +184,7 @@ const createSupplierName = async () => {
   })
   loading.init = false
   currentSupplierName.value = ''
-  emit('refreshData')
+  await resetFormData(data)
   ElMessage.success($t('success.create'))
 }
 </script>
@@ -199,7 +193,7 @@ const createSupplierName = async () => {
   <div v-if="currentData">
     <ElCard v-if="currentData.supplierDetailListResultDo" shadow="never" class="mb-5">
       <div class="w-full mt-0 pt-0">
-        <!-- 分类名称 -->
+        <!-- 供应商名称 -->
         <div class="w-full grid grid-cols-12 gap-8 p-4 border-b border-gray-200">
           <div class="col-span-1 font-semibold text-gray-700">
             {{ $t('supplier.supplierName') }}:
@@ -229,7 +223,7 @@ const createSupplierName = async () => {
             </ElButton>
           </div>
         </div>
-        <!-- 分类短名称 -->
+        <!-- 供应商短名称 -->
         <div class="w-full grid grid-cols-12 gap-8 p-4 border-b border-gray-200">
           <div class="col-span-1 font-semibold text-gray-700">
             {{ $t('supplier.supplierShortName') }}:

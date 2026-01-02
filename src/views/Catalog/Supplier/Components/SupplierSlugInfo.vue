@@ -1,19 +1,11 @@
 <script setup lang="ts">
-const { supplierId, languageId, form } = defineProps<{
-  currentItem: SupplierAdminLocalizedViewDo
-  supplierAdminLocalizedViewDos: SupplierAdminLocalizedViewDo[]
-  supplierId: string
+import { supplierKey } from '../type/injectionKeys'
+
+const { languageId } = defineProps<{
   languageId: string
-  form: SupplierShowData & CommonField
 }>()
 
-const emit = defineEmits<{
-  refreshData: []
-}>()
-
-const loading = reactive({
-  init: false,
-})
+const { loading, id: supplierId, form, resetFormData } = inject(supplierKey)!
 
 const { t: $t } = useLocale()
 
@@ -32,7 +24,7 @@ const handleClickCreateSupplierSlug = async () => {
     currentSlug.value = currentSlug.value.slice(0, -1)
   }
 
-  await createSupplierSlugApi({
+  const { data } = await createSupplierSlugApi({
     supplierId,
     languageId,
     slug: currentSlug.value,
@@ -41,7 +33,7 @@ const handleClickCreateSupplierSlug = async () => {
     throw error
   })
   loading.init = false
-  emit('refreshData')
+  await resetFormData(data)
   ElMessage.success($t('success.create'))
 }
 
@@ -68,7 +60,7 @@ const editSupplierSlug = async () => {
   if (currentSlug.value.endsWith('/')) {
     currentSlug.value = currentSlug.value.slice(0, -1)
   }
-  await updateSupplierSlugApi({
+  const { data } = await updateSupplierSlugApi({
     slugId: form.slugId,
     languageId,
     slug: currentSlug.value,
@@ -78,7 +70,7 @@ const editSupplierSlug = async () => {
   })
   loading.init = false
   currentSlug.value = ''
-  emit('refreshData')
+  await resetFormData(data)
   inputSupplierSlugVisible.value = false
   ElMessage.success($t('success.edit'))
 }

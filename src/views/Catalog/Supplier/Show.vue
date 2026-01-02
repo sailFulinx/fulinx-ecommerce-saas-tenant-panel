@@ -3,6 +3,7 @@ import SupplierBaseInfo from './Components/SupplierBaseInfo.vue'
 import SupplierLayoutInfo from './Components/SupplierLayoutInfo.vue'
 import SupplierSeoInfo from './Components/SupplierSeoInfo.vue'
 import SupplierSlugInfo from './Components/SupplierSlugInfo.vue'
+import { supplierKey } from './type/injectionKeys'
 
 const { id } = defineProps<{
   id: string
@@ -50,6 +51,17 @@ const createFormData = (): SupplierShowData & CommonField => {
   }
 }
 
+const layoutTypeList = ref<any[]>([])
+
+const getLayoutTypeList = async () => {
+  const { data } = await fetchLayoutTypeListApi({ layoutTypeCode: null }).catch(error => {
+    throw error
+  })
+  layoutTypeList.value = data.list
+}
+
+getLayoutTypeList()
+
 // form初始化
 const form = reactive<SupplierShowData & CommonField>(createFormData())
 
@@ -66,7 +78,7 @@ const showSupplierPayload = reactive<ShowSupplierParams>({
   languageId: selectLanguage.value.id,
 })
 
-// 获取分类数据
+// 获取供应商数据
 const getSupplierData = async () => {
   loading.init = true
   const { data } = await showSupplierApi(showSupplierPayload).catch(error => {
@@ -141,6 +153,16 @@ const handleChangeLanguageTab = () => {
   })
   selectLanguage.value = languageListByCode[languageCode.value]
 }
+
+provide(supplierKey, {
+  id,
+  paneName,
+  form, // 直接传递 reactive 对象
+  loading, // 直接传递 reactive 对象
+  activeName,
+  selectLanguage,
+  resetFormData,
+})
 </script>
 
 <template>
@@ -188,7 +210,6 @@ const handleChangeLanguageTab = () => {
                 :supplier-admin-localized-view-dos="form.supplierAdminLocalizedViewDos"
                 :language-id="item.languageId"
                 :supplier-id="id"
-                @refresh-data="resetFormData"
               />
             </div>
             <div v-show="activeName === 'seo'">
@@ -196,24 +217,20 @@ const handleChangeLanguageTab = () => {
                 :current-item="item" :supplier-admin-localized-view-dos="form.supplierAdminLocalizedViewDos"
                 :language-id="item.languageId"
                 :supplier-id="id"
-                @refresh-data="initFormData"
               />
             </div>
             <div v-show="activeName === 'layout'">
               <SupplierLayoutInfo
                 :current-item="item" :supplier-admin-localized-view-dos="form.supplierAdminLocalizedViewDos"
+                :layout-type-list="layoutTypeList"
                 :language-id="item.languageId"
                 :supplier-id="id"
-                @refresh-data="initFormData"
               />
             </div>
             <div v-show="activeName === 'slug'">
               <SupplierSlugInfo
-                :current-item="item" :supplier-admin-localized-view-dos="form.supplierAdminLocalizedViewDos"
                 :language-id="item.languageId"
-                :supplier-id="id"
                 :form="form"
-                @refresh-data="initFormData"
               />
             </div>
           </div>

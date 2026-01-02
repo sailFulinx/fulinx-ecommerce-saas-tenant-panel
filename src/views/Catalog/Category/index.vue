@@ -77,7 +77,7 @@ const handleCreateChildCategory = (item: CategoryData) => {
 }
 
 const handleShow = (val: CategoryData & CommonField) => {
-  router.push({ name: 'ShowCategory', params: { id: val.id } })
+  router.push({ name: 'ShowCatalogCategory', params: { id: val.id } })
 }
 
 let deleteIds: string[] = []

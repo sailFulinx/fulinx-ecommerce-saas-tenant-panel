@@ -71,7 +71,7 @@ export function categorySlugEditApi(data: CategorySlugParams): Promise<IResponse
 // 更新分类布局
 export function categoryLayoutEditApi(data: CategoryLayoutParams): Promise<IResponse<CategoryShowData>> {
   return request.post({
-    url: 'system/category/update/categoryLayout',
+    url: 'system/category/update/layout',
     data,
     token: true,
   })

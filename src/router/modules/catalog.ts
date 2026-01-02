@@ -143,7 +143,7 @@ const catalogRouter: AppRouteRecordRaw = {
     {
       path: 'category/show/:id(\\d+)',
       component: () => import('@/views/Catalog/Category/Show.vue'),
-      name: 'ShowCategory',
+      name: 'ShowCatalogCategory',
       meta: {
         title: `${$t('category.show')}`,
         noCache: true,

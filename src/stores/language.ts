@@ -21,6 +21,7 @@ export const useLanguageStore = defineStore('language', () => {
       return languages.value
     })
   }
+
   /**
    * 初始化语言
    */
@@ -47,7 +48,7 @@ export const useLanguageStore = defineStore('language', () => {
 
   // 通过languageCode获取languageId
   const getLanguageIdByCode = (languageCode: string) => {
-    return languages.value.find(item => item.languageCode === languageCode).id
+    return languages.value.find(item => item.languageCode === languageCode)?.id
   }
 
   const getLanguagesListByCode = () => {
