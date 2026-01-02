@@ -15,15 +15,23 @@ interface CreateSupplierParams {
   supplierFileId?: string
 }
 
-interface UpdateSupplierCodeParams {
+interface CreateSupplierNameParams {
   /* Supplier ID */
   supplierId: string
 
-  /* Supplier Code */
-  supplierCode: string
-
   /* Language ID */
   languageId: string
+
+  /* Supplier Name */
+  supplierName: string
+}
+
+interface UpdateSupplierDetailCustomParams {
+  /* Supplier Detail ID */
+  supplierDetailId: string
+
+  /* Customs */
+  customs?: string
 }
 
 interface CreateSupplierSlugParams {
@@ -51,23 +59,6 @@ interface CreateSupplierRes {
 interface RemoveSupplierParams {
   /* Supplier Ids */
   supplierIds: string[]
-}
-
-interface CreateSupplierDetailParams {
-  /* Supplier ID */
-  supplierId: string
-
-  /* Language ID */
-  languageId: string
-
-  /* Supplier Name */
-  supplierName: string
-
-  /* Supplier Description */
-  supplierDescription?: string
-
-  /* Supplier File ID */
-  supplierFileId?: string
 }
 
 interface SupplierSeoListResultDo {
@@ -225,7 +216,24 @@ interface UpdateSupplierDetailFileParams {
   supplierDetailId: string
 
   /* Supplier File ID */
-  supplierFileId: string
+  supplierFileId?: string
+}
+
+interface UpdateSupplierDetailLayoutParams {
+  /* Supplier Detail ID */
+  supplierDetailId: string
+
+  /* Language ID */
+  languageId: string
+
+  /* Layout Type */
+  layoutType?: number
+
+  /* Dev Component Name */
+  devComponentName?: string
+
+  /* Layout Content */
+  layoutContent?: string
 }
 
 interface UpdateSupplierDetailSupplierNameParams {
@@ -234,6 +242,33 @@ interface UpdateSupplierDetailSupplierNameParams {
 
   /* Supplier Name */
   supplierName: string
+}
+
+interface UpdateSupplierDetailSupplierShortDescriptionParams {
+  /* Supplier Detail ID */
+  supplierDetailId: string
+
+  /* Supplier Short Description */
+  supplierShortDescription?: string
+}
+
+interface UpdateSupplierDetailSupplierShortNameParams {
+  /* Supplier Detail ID */
+  supplierDetailId: string
+
+  /* Supplier Name */
+  supplierName: string
+}
+
+interface UpdateSupplierIsTopParams {
+  /* Supplier ID */
+  supplierId: string
+
+  /* Is Top */
+  isTop: boolean
+
+  /* Language ID */
+  languageId: string
 }
 
 interface SupplierListParams {
@@ -377,4 +412,15 @@ interface UpdateSupplierStatusParams {
 
   /* Language ID */
   languageId: string
+}
+
+interface UpdateSupplierSortParams {
+  /* Supplier ID */
+  supplierId: string
+
+  /* Language ID */
+  languageId: string
+
+  /* Sort */
+  sort?: number
 }
