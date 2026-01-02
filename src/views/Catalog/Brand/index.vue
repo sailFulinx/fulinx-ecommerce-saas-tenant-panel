@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { brandPaginationApi, removeBrandApi } from '@/api/brand'
-import avatar from '@/assets/imgs/avatar.jpg'
-import { usePreferenceStore } from '@/stores/preference'
-import { ElMessage } from 'element-plus'
+import { convertStatus } from '@/utils/status'
+
+const preferenceStore = usePreferenceStore()
+
+const router = useRouter()
 
 const sourceUrl = useFileRootUrl()
 
@@ -15,12 +16,18 @@ const loading = reactive({
   list: false,
   del: false,
 })
+
+// 修复：确保在 preference 为 null 时也能正确处理
+const preference = ref<PreferenceType | null>(null)
+const languageId = ref()
+
 const listQuery = reactive<BrandListParams & Pagination>({
-  languageId: usePreferenceStore().preference?.language.id,
+  languageId: languageId.value || undefined,
   brandName: '',
   pageSize: 20,
   pageNumber: 1,
 })
+
 const selectedList = ref<string[]>([])
 
 const getList = async () => {
@@ -36,9 +43,24 @@ const getList = async () => {
   loading.list = false
 }
 
+// 修复：确保在 preference 加载完成后再加载依赖它的数据
+const initPreferenceAndLoadData = async () => {
+  preference.value = await preferenceStore.getPreferences()
+  languageId.value = preference.value?.language?.id
+  listQuery.languageId = languageId.value || undefined
+
+  // preference加载完成后，再加载依赖它的数据
+  if (preference.value?.language?.id) {
+    await getList()
+  }
+}
+
+// 不要在这里使用 await，避免阻塞组件渲染
+initPreferenceAndLoadData()
+
 // watch preference language
 watch(
-  () => usePreferenceStore().preference?.language,
+  () => preferenceStore.getPreferences()?.language,
   val => {
     if (val) {
       listQuery.languageId = val.id
@@ -67,6 +89,7 @@ const selectedBrandItem = (val: BrandListData[]) => {
     selectedList.value.push(item.id)
   })
 }
+
 const handleDelete = async (row: BrandListData & CommonField) => {
   loading.list = true
   await removeBrandApi({ brandIds: [row.id] }).catch(err => {
@@ -80,6 +103,7 @@ const handleDelete = async (row: BrandListData & CommonField) => {
     duration: 2000,
   })
 }
+
 const handleMultiDelete = async () => {
   loading.list = true
   if (selectedList.value.length === 0) {
@@ -103,6 +127,7 @@ const handleMultiDelete = async () => {
     duration: 2000,
   })
 }
+
 const handleCreate = () => {
   router.push({ name: 'CreateBrand' })
 }
@@ -110,7 +135,8 @@ const handleCreate = () => {
 const handleRedirectEdit = (val: BrandListData & CommonField) => {
   router.push({ name: 'ShowBrand', params: { id: val.id } })
 }
-// init()
+
+init()
 </script>
 
 <template>
@@ -173,6 +199,11 @@ const handleRedirectEdit = (val: BrandListData & CommonField) => {
         <ElTableColumn :label="$t('brand.brandName')">
           <template #default="scope">
             <span>{{ scope.row.brandName }}</span>
+          </template>
+        </ElTableColumn>
+        <ElTableColumn :label="$t('common.status')" width="120">
+          <template #default="scope">
+            <span>{{ convertStatus(scope.row.status) }}</span>
           </template>
         </ElTableColumn>
         <ElTableColumn label="操作" header-align="center" width="220" align="center" class-name="pl-15 fixed-width">

@@ -73,10 +73,11 @@ declare global {
   const createArticleSeoApi: typeof import('../api/article').createArticleSeoApi
   const createArticleSlugApi: typeof import('../api/article').createArticleSlugApi
   const createArticleTagApi: typeof import('../api/article').createArticleTagApi
-  const createBrandApi: typeof import('../api/brand').createBrandApi
+  const createBrandApi: typeof import('../api/brand-create').createBrandApi
   const createBrandDetailApi: typeof import('../api/brand').createBrandDetailApi
-  const createBrandSeoApi: typeof import('../api/brand').createBrandSeoApi
-  const createBrandSlugApi: typeof import('../api/brand').createBrandSlugApi
+  const createBrandNameApi: typeof import('../api/brand-create').createBrandNameApi
+  const createBrandSeoApi: typeof import('../api/brand-create').createBrandSeoApi
+  const createBrandSlugApi: typeof import('../api/brand-create').createBrandSlugApi
   const createCompApi: typeof import('../api/comp').createCompApi
   const createCouponApi: typeof import('../api/coupon').createCouponApi
   const createEventHook: typeof import('@vueuse/core').createEventHook
@@ -362,15 +363,21 @@ declare global {
   const updateArticleStatusApi: typeof import('../api/article').updateArticleStatusApi
   const updateArticleTypeApi: typeof import('../api/article').updateArticleTypeApi
   const updateBrandDetailApi: typeof import('../api/brand').updateBrandDetailApi
-  const updateBrandDetailBrandNameApi: typeof import('../api/brand').updateBrandDetailBrandNameApi
-  const updateBrandDetailDescriptionApi: typeof import('../api/brand').updateBrandDetailDescriptionApi
-  const updateBrandDetailFileApi: typeof import('../api/brand').updateBrandDetailFileApi
+  const updateBrandDetailBrandNameApi: typeof import('../api/brand-update').updateBrandDetailBrandNameApi
+  const updateBrandDetailBrandShortDescriptionApi: typeof import('../api/brand-update').updateBrandDetailBrandShortDescriptionApi
+  const updateBrandDetailBrandShortNameApi: typeof import('../api/brand-update').updateBrandDetailBrandShortNameApi
+  const updateBrandDetailCustomApi: typeof import('../api/brand-update').updateBrandDetailCustomApi
+  const updateBrandDetailDescriptionApi: typeof import('../api/brand-update').updateBrandDetailDescriptionApi
+  const updateBrandDetailFileApi: typeof import('../api/brand-update').updateBrandDetailFileApi
+  const updateBrandDetailLayoutApi: typeof import('../api/brand-update').updateBrandDetailLayoutApi
+  const updateBrandIsTopApi: typeof import('../api/brand-update').updateBrandIsTopApi
   const updateBrandLayoutApi: typeof import('../api/brand').updateBrandLayoutApi
-  const updateBrandSeoApi: typeof import('../api/brand').updateBrandSeoApi
+  const updateBrandSeoApi: typeof import('../api/brand-update').updateBrandSeoApi
   const updateBrandSeoMetaDescriptionApi: typeof import('../api/brand').updateBrandSeoMetaDescriptionApi
   const updateBrandSeoMetaTitleApi: typeof import('../api/brand').updateBrandSeoMetaTitleApi
-  const updateBrandSlugApi: typeof import('../api/brand').updateBrandSlugApi
-  const updateBrandStatusApi: typeof import('../api/brand').updateBrandStatusApi
+  const updateBrandSlugApi: typeof import('../api/brand-update').updateBrandSlugApi
+  const updateBrandSortApi: typeof import('../api/brand-update').updateBrandSortApi
+  const updateBrandStatusApi: typeof import('../api/brand-update').updateBrandStatusApi
   const updateCouponDescriptionApi: typeof import('../api/coupon').updateCouponDescriptionApi
   const updateCouponEndedTimeApi: typeof import('../api/coupon').updateCouponEndedTimeApi
   const updateCouponIssueCountApi: typeof import('../api/coupon').updateCouponIssueCountApi

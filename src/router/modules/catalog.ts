@@ -87,6 +87,41 @@ const catalogRouter: AppRouteRecordRaw = {
       },
     },
     {
+      path: 'brand',
+      component: () => import('@/views/Catalog/Brand/index.vue'),
+      name: 'BrandList',
+      meta: {
+        title: $t('router.brand'),
+        icon: 'tabler:brand-airtable',
+      },
+    },
+    {
+      path: 'brand/create',
+      component: () => import('@/views/Catalog/Brand/Create.vue'),
+      name: 'CreateBrand',
+      meta: {
+        title: $t('brand.add'),
+        noCache: true,
+        hidden: true,
+        canTo: true,
+        activeMenu: '/product/brand',
+        props: false,
+      },
+    },
+    {
+      path: 'brand/show/:id',
+      component: () => import('@/views/Catalog/Brand/Show.vue'),
+      name: 'ShowBrand',
+      meta: {
+        title: $t('brand.show'),
+        noCache: true,
+        hidden: true,
+        canTo: true,
+        activeMenu: '/product/brand',
+      },
+      props: true,
+    },
+    {
       path: 'supplier',
       component: () => import('@/views/Catalog/Supplier/index.vue'),
       name: 'SupplierList',

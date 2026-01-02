@@ -12,12 +12,31 @@ interface CreateBrandParams {
   brandFileId?: string
 }
 
-interface CreateBrandSlugParams {
+interface CreateBrandNameParams {
+  /* Brand ID */
+  brandId: string
+
   /* Language ID */
   languageId: string
 
+  /* Brand Name */
+  brandName: string
+}
+
+interface UpdateBrandDetailCustomParams {
+  /* Brand Detail ID */
+  brandDetailId: string
+
+  /* Customs */
+  customs?: string
+}
+
+interface CreateBrandSlugParams {
   /* Brand ID */
   brandId: string
+
+  /* Language ID */
+  languageId: string
 
   /* Slug */
   slug: string
@@ -27,33 +46,16 @@ interface CreateBrandRes {
   /* Status, 0 - Disabled , 1 - Enabled */
   status: boolean
 
-  /* Is Custom Layout */
-  isCustomLayout: boolean
+  /* Is Top */
+  isTop: boolean
 
-  /* Layout ID */
-  layoutId: string
+  /* Sort */
+  sort: number
 }
 
 interface RemoveBrandParams {
   /* Brand Ids */
   brandIds: string[]
-}
-
-interface CreateBrandDetailParams {
-  /* Brand ID */
-  brandId: string
-
-  /* Language ID */
-  languageId: string
-
-  /* Brand Name */
-  brandName: string
-
-  /* Brand Description */
-  brandDescription?: string
-
-  /* Brand File ID */
-  brandFileId?: string
 }
 
 interface BrandSeoListResultDo {
@@ -71,7 +73,6 @@ interface BrandSeoListResultDo {
 }
 
 interface BrandDetailListResultDo {
-
   /* Brand ID */
   brandId: string
 
@@ -81,35 +82,87 @@ interface BrandDetailListResultDo {
   /* Brand Name */
   brandName: string
 
+  /* Brand Short Name */
+  brandShortName: string
+
+  /* Brand Description */
   brandDescription: string
+
+  /* Brand Short Description */
+  brandShortDescription: string
 
   /* Brand File ID */
   brandFileId: string
 
   /* */
-  brandFileVo: { id: string } & FileData & CommonField
+  brandFileVo: FileData & CommonField
+
+  /* Customs */
+  customs: string
+
+  customList: CustomDataType[]
+
+  /* Layout Type, 1: default, 2: devCustomized, 3: userDefined  */
+  layoutType: number
+
+  layoutTypeLabel?: string
+
+  /* Dev Component Name */
+  devComponentName: string
+
+  /* Layout Content */
+  layoutContent: string
 }
 
-interface BrandShow {
+interface BrandSeoListResultDo {
+
+  /* Brand ID */
+  brandId: string
+
+  /* Language ID */
+  languageId: string
+
+  /* Meta Title */
+  metaTitle: string
+
+  /* Meta Description */
+  metaDescription: string
+}
+
+interface BrandAdminLocalizedViewDo {
+  /* Language ID */
+  languageId: string
+
+  /* Language Name */
+  languageName: string
+
+  /* Language Code */
+  languageCode: string
+
+  /* */
+  brandDetailListResultDo: (BrandDetailListResultDo & CommonField) | null
+
+  /* */
+  brandSeoListResultDo: (BrandSeoListResultDo & CommonField) | null
+}
+
+interface BrandShowData {
   /* Status, 0 - Disabled , 1 - Enabled */
   status: boolean
 
-  /* Is Custom Layout */
-  isCustomLayout: boolean
+  /* Is Top */
+  isTop: boolean
 
-  /* Layout ID */
-  layoutId: string | null
+  /* Sort */
+  sort: number
 
-  /* */
-  brandDetailListResultDo: BrandDetailListResultDo & CommonField
-
-  /* */
-  brandSeoListResultDo: BrandSeoListResultDo & CommonField
+  /* Brand Admin Localized View Dos */
+  brandAdminLocalizedViewDos: BrandAdminLocalizedViewDo[]
 
   /* Slug ID */
   slugId: string
 
-  /* Slug */
+  /* Brand Slug */
   slug: string
 }
 
@@ -145,7 +198,24 @@ interface UpdateBrandDetailFileParams {
   brandDetailId: string
 
   /* Brand File ID */
-  brandFileId: string
+  brandFileId?: string
+}
+
+interface UpdateBrandDetailLayoutParams {
+  /* Brand Detail ID */
+  brandDetailId: string
+
+  /* Language ID */
+  languageId: string
+
+  /* Layout Type */
+  layoutType?: number
+
+  /* Dev Component Name */
+  devComponentName?: string
+
+  /* Layout Content */
+  layoutContent?: string
 }
 
 interface UpdateBrandDetailBrandNameParams {
@@ -156,12 +226,39 @@ interface UpdateBrandDetailBrandNameParams {
   brandName: string
 }
 
+interface UpdateBrandDetailBrandShortDescriptionParams {
+  /* Brand Detail ID */
+  brandDetailId: string
+
+  /* Brand Short Description */
+  brandShortDescription?: string
+}
+
+interface UpdateBrandDetailBrandShortNameParams {
+  /* Brand Detail ID */
+  brandDetailId: string
+
+  /* Brand Name */
+  brandShortName: string
+}
+
+interface UpdateBrandIsTopParams {
+  /* Brand ID */
+  brandId: string
+
+  /* Is Top */
+  isTop: boolean
+
+  /* Language ID */
+  languageId: string
+}
+
 interface BrandListParams {
   /* Language ID */
   languageId: string
 
   /* Brand Id */
-  brandId?: string | null
+  brandId?: string
 
   /* 品牌标题 */
   brandName?: string | null
@@ -297,4 +394,15 @@ interface UpdateBrandStatusParams {
 
   /* Language ID */
   languageId: string
+}
+
+interface UpdateBrandSortParams {
+  /* Brand ID */
+  brandId: string
+
+  /* Language ID */
+  languageId: string
+
+  /* Sort */
+  sort?: number
 }

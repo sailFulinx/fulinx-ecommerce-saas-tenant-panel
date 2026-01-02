@@ -19,6 +19,8 @@ export default {
   supplierSeo: '供应商SEO',
   metaTitle: '元标题',
   metaDescription: '元描述',
+  content: '内容',
+  supplierDescription: '供应商描述',
   placeholder: {
     supplierName: '请输入供应商名称',
     slug: '请输入自定义URL',
