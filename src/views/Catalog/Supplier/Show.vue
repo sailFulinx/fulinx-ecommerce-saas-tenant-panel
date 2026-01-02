@@ -77,7 +77,7 @@ const getSupplierData = async () => {
   return data
 }
 
-const resetFormData = async (val: SupplierShowData) => {
+const resetFormData = async (val: SupplierShowData & CommonField) => {
   Object.assign(form, $clone(val))
   if (!form?.supplierAdminLocalizedViewDos) {
     return

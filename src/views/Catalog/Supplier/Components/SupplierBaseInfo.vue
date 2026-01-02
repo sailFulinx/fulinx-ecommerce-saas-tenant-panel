@@ -9,7 +9,7 @@ const { currentItem, supplierId, languageId } = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  refreshData: SupplierShowData
+  (e: 'refreshData', data?: SupplierShowData & CommonField): void
 }>()
 
 const { t: $t } = useLocale()
