@@ -1,13 +1,9 @@
-<script setup name="ProductDetail" lang="ts">
+<script setup name="CreateAttributeValueDialog" lang="ts">
 import type { FormRules } from 'element-plus'
+import { attributeKey } from '../type/injectionKeys'
 
-const emit = defineEmits(['getList'])
+const { resetFormData } = inject(attributeKey)!
 const { t: $t } = useLocale()
-
-const preferenceStore = usePreferenceStore()
-// 修复：使用 getPreferences() 方法确保 preference 被正确初始化
-const preference = preferenceStore.getPreferences()
-const preferenceLanguage = computed(() => preference?.language)
 
 const dialogVisible = ref(false)
 
@@ -27,24 +23,27 @@ const form = reactive<CreateAttributeValueBatchParams>({
 const resetForm = () => {
   form.attributeId = ''
   form.languageId = ''
-  form.languageId = preferenceLanguage.value?.id || ''
+  form.attributeValueContents = []
+  attributeValueContentString.value = ''
 }
 
 const openDialog = async (attributeId: string, languageId: string) => {
+  resetForm()
   form.languageId = languageId
   form.attributeId = attributeId
-  resetForm()
+  console.log(form)
   dialogVisible.value = true
 }
 
 const createAttributeValue = async () => {
   loading.init = true
-  const payload = $clone(form)
-  // delete payload.parentIds
-  await createAttributeValueApi(payload).catch(error => {
+  try {
+    const payload = $clone(form)
+    const { data } = await createAttributeValueApi(payload)
+    return data
+  } finally {
     loading.init = false
-    throw error
-  })
+  }
 }
 
 const formRef = useTemplateRef('formRef')
@@ -57,23 +56,47 @@ const onSave = () => {
     }
 
     // 解析多行输入
-    const attributeValueContents = attributeValueContentString.value.split('\n').filter(item => item.trim() !== '')
+    const attributeValueContents = attributeValueContentString.value
+      .split('\n')
+      .map(item => item.trim())
+      .filter(item => item.trim() !== '')
+
+    if (attributeValueContents.length === 0) {
+      ElMessage.error($t('common.warning.enterAtLeastOneValue'))
+      return
+    }
 
     // 批量创建
-    form.attributeValueContents = attributeValueContents.map(item => {
-      return item.trim()
-    })
-    await createAttributeValue()
+    form.attributeValueContents = attributeValueContents
+    const res = await createAttributeValue()
+    await resetFormData(res)
 
     ElMessage.success($t('success.create'))
-    loading.init = false
-    emit('getList')
+
     dialogVisible.value = false
   })
 }
 
 const rules: FormRules = {
-  attributeValueContents: [{ required: true, message: '请输入至少一个属性值', trigger: 'blur' }],
+  // 修复：验证用户实际输入的字段
+  attributeValueContentString: [
+    {
+      required: true,
+      validator: (rule: any, value: any, callback: any) => {
+        const values = attributeValueContentString.value
+          .split('\n')
+          .map(item => item.trim())
+          .filter(item => item.trim() !== '')
+
+        if (values.length === 0) {
+          callback(new Error($t('common.warning.enterAtLeastOneValue')))
+        } else {
+          callback()
+        }
+      },
+      trigger: 'blur',
+    },
+  ],
 }
 
 defineExpose({
@@ -84,24 +107,24 @@ defineExpose({
 <template>
   <ElDrawer v-model="dialogVisible" :title="$t('attribute.add')" size="50%">
     <ElForm ref="formRef" :model="form" :rules="rules" label-width="120px">
-      <ElFormItem :label="$t('attribute.attributeValueContents')" prop="attributeValueContents">
+      <ElFormItem :label="$t('attribute.attributeValue')" prop="attributeValueContentString">
         <ElInput
           v-model="attributeValueContentString"
           class="input-line"
           type="textarea"
           :rows="6"
           clearable
-          :placeholder="`${$t('attribute.placeholder.attributeValueContents')}（每行一个属性值）`"
+          :placeholder="`${$t('attribute.placeholder.attributeValue')}（${$t('common.perLine')}）`"
         />
       </ElFormItem>
     </ElForm>
     <template #footer>
       <div class="dialog-footer">
         <ElButton @click="dialogVisible = false">
-          取消
+          {{ $t('common.cancel') }}
         </ElButton>
         <ElButton type="primary" :loading="loading.init" @click="onSave">
-          提交
+          {{ $t('common.submit') }}
         </ElButton>
       </div>
     </template>

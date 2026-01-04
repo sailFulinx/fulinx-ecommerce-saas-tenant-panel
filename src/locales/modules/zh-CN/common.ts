@@ -96,10 +96,14 @@ export default {
   enabled: '启用',
   disabled: '禁用',
   isTop: '是否置顶',
+  perLine: '每行一个',
   placeholder: {
     language: '语言必须选择',
     layoutType: '布局类型必须选择',
     devComponentName: '请输入定制组件名称',
+  },
+  warning: {
+    enterAtLeastOneValue: '请至少输入一个值',
   },
   layoutType: '布局类型',
 }

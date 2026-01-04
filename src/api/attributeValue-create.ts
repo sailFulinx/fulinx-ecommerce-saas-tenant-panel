@@ -8,7 +8,9 @@ import request from '@/utils/axios'
  * @param {Array} params.attributeValueContents Attribute Value Contents
  * @returns
  */
-export function createAttributeValueApi(params: CreateAttributeValueBatchParams): Promise<IResponse<boolean>> {
+export function createAttributeValueApi(
+  params: CreateAttributeValueBatchParams,
+): Promise<IResponse<AttributeShowData & CommonField>> {
   return request.post({
     url: 'system/attribute/value',
     data: params,

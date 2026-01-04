@@ -14,6 +14,7 @@ export default {
     attributeName: '请输入属性名称',
     attributeDescription: '请输入属性描述',
     attributeDetail: '请输入属性详情',
+    attributeValue: '请输入属性值',
   },
   warning: {
   },
