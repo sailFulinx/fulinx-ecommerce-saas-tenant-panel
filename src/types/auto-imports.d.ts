@@ -28,6 +28,8 @@ declare global {
   const asyncComputed: typeof import('@vueuse/core').asyncComputed
   const attributeListApi: typeof import('../api/attribute').attributeListApi
   const attributePaginationApi: typeof import('../api/attribute').attributePaginationApi
+  const attributeValueListApi: typeof import('../api/attributeValue').attributeValueListApi
+  const attributeValuePaginationApi: typeof import('../api/attributeValue').attributeValuePaginationApi
   const autoResetRef: typeof import('@vueuse/core').autoResetRef
   const brandListApi: typeof import('../api/brand').brandListApi
   const brandPaginationApi: typeof import('../api/brand').brandPaginationApi
@@ -77,6 +79,8 @@ declare global {
   const createArticleTagApi: typeof import('../api/article').createArticleTagApi
   const createAttributeApi: typeof import('../api/attribute-create').createAttributeApi
   const createAttributeNameApi: typeof import('../api/attribute-create').createAttributeNameApi
+  const createAttributeValueApi: typeof import('../api/attributeValue-create').createAttributeValueApi
+  const createAttributeValueContentApi: typeof import('../api/attributeValue-create').createAttributeValueContentApi
   const createBrandApi: typeof import('../api/brand-create').createBrandApi
   const createBrandDetailApi: typeof import('../api/brand').createBrandDetailApi
   const createBrandNameApi: typeof import('../api/brand-create').createBrandNameApi
@@ -256,6 +260,7 @@ declare global {
   const removeArticleFileApi: typeof import('../api/article').removeArticleFileApi
   const removeArticleTagApi: typeof import('../api/article').removeArticleTagApi
   const removeAttributeApi: typeof import('../api/attribute').removeAttributeApi
+  const removeAttributeValueApi: typeof import('../api/attributeValue').removeAttributeValueApi
   const removeBrandApi: typeof import('../api/brand').removeBrandApi
   const removeBrandFileApi: typeof import('../api/brand').removeBrandFileApi
   const removeCompApi: typeof import('../api/comp').removeCompApi
@@ -373,6 +378,9 @@ declare global {
   const updateAttributeNameApi: typeof import('../api/attribute-update').updateAttributeNameApi
   const updateAttributeSortApi: typeof import('../api/attribute-update').updateAttributeSortApi
   const updateAttributeStatusApi: typeof import('../api/attribute-update').updateAttributeStatusApi
+  const updateAttributeValueContentApi: typeof import('../api/attributeValue-update').updateAttributeValueContentApi
+  const updateAttributeValueSortApi: typeof import('../api/attributeValue-update').updateAttributeValueSortApi
+  const updateAttributeValueStatusApi: typeof import('../api/attributeValue-update').updateAttributeValueStatusApi
   const updateBrandDetailApi: typeof import('../api/brand').updateBrandDetailApi
   const updateBrandDetailBrandNameApi: typeof import('../api/brand-update').updateBrandDetailBrandNameApi
   const updateBrandDetailBrandShortDescriptionApi: typeof import('../api/brand-update').updateBrandDetailBrandShortDescriptionApi
