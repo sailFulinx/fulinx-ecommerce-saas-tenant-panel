@@ -175,6 +175,18 @@ const handleSortChange = async (row: AttributeValueResultDo & CommonField, value
     throw err
   }
 }
+
+const handleUpdateAttributeValueStatus = async (row: AttributeValueResultDo & CommonField, value: boolean) => {
+  loading.init = true
+  const { data } = await updateAttributeValueStatusApi({
+    attributeValueId: row.id,
+    languageId,
+    status: value,
+  })
+  await resetFormData(data)
+  loading.init = false
+  ElMessage.success($t('success.edit'))
+}
 </script>
 
 <template>
@@ -237,7 +249,13 @@ const handleSortChange = async (row: AttributeValueResultDo & CommonField, value
         </ElTableColumn>
         <ElTableColumn :label="$t('common.status')" width="120">
           <template #default="scope">
-            <span>{{ convertStatus(scope.row.status) }}</span>
+            <ElSwitch
+              v-model="scope.row.status"
+              inline-prompt
+              :active-text="$t('common.yes')"
+              :inactive-text="$t('common.no')"
+              @change="handleUpdateAttributeValueStatus(scope.row, Boolean($event))"
+            />
           </template>
         </ElTableColumn>
         <ElTableColumn label="操作" header-align="center" width="220" align="center" class-name="pl-15 fixed-width">
