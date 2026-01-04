@@ -1,6 +1,6 @@
 interface CreateAttributeParams {
   /* Attribute Type, 1-Select, 2-Input, 3-Boolean */
-  attributeType: number
+  attributeType: number | null
 
   /* Language ID */
   languageId: string

@@ -8,14 +8,10 @@ const { t: $t } = useLocale()
 
 const router = useRouter()
 
-const uploadRef = ref()
-
 const rules = reactive({
   languageId: [{ required: true, message: '语言必须选择', trigger: 'change' }],
   status: [{ required: true, message: '状态必填', trigger: 'change' }],
   attributeName: [{ required: true, message: '属性名称必须填写', trigger: 'blur' }],
-  metaTitle: [{ required: true, message: 'Meta标题必须填写', trigger: 'blur' }],
-  metaDescription: [{ required: true, message: 'Meta描述必须填写', trigger: 'blur' }],
 })
 
 const loading = reactive({
@@ -27,14 +23,11 @@ const pageTitle = $t('attribute.add')
 
 const attributeFormRef = ref()
 
-const editorRef = ref()
-
 const createAttributeForm = (): CreateAttributeParams => {
   return {
+    attributeType: null,
     languageId: '',
     attributeName: '',
-    attributeDescription: '',
-    attributeFileId: '',
   }
 }
 
@@ -54,9 +47,6 @@ const deleteTagView = (refresh: boolean) => {
 
 const save = async () => {
   attributeForm.languageId = usePreferenceStore().preference.language.id
-  attributeForm.attributeDescription = editorRef.value.getEditorContent()
-  const file = uploadRef.value.getFileData()
-  attributeForm.attributeFileId = file.fileData.id
   const valid = await attributeFormRef.value.validate((valid: boolean) => {
     if (!valid) {
       return false
@@ -131,12 +121,6 @@ const save = async () => {
                       maxlength="120"
                       :placeholder="$t('attribute.placeholder.attributeName')"
                     />
-                  </ElFormItem>
-                  <ElFormItem :label="$t('attribute.attributeDescription')" prop="attributeDescription">
-                    <Editor ref="editorRef" v-model="attributeForm.attributeDescription" :height="300" />
-                  </ElFormItem>
-                  <ElFormItem :label="$t('attribute.attributeLogo')">
-                    <UploadSingleImage ref="uploadRef" />
                   </ElFormItem>
                 </ElCard>
               </div>
