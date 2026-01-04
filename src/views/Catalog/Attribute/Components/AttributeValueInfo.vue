@@ -146,6 +146,35 @@ const createAttributeValueRef = useTemplateRef('createAttributeValueRef')
 const handleAddAttributeValue = async () => {
   createAttributeValueRef.value?.openDialog(attributeId, languageId)
 }
+
+// 处理排序变更
+const handleSortChange = async (row: AttributeValueResultDo & CommonField, value: number | undefined) => {
+  // 如果值为 undefined，不执行更新操作
+  if (value === undefined) {
+    return
+  }
+
+  try {
+    const { data } = await updateAttributeValueSortApi({
+      attributeValueId: row.id,
+      languageId,
+      sort: value,
+    })
+    ElMessage({
+      message: '排序更新成功',
+      type: 'success',
+      duration: 2000,
+    })
+    await resetFormData(data)
+  } catch (err) {
+    ElMessage({
+      message: '排序更新失败',
+      type: 'error',
+      duration: 2000,
+    })
+    throw err
+  }
+}
 </script>
 
 <template>
@@ -192,6 +221,18 @@ const handleAddAttributeValue = async () => {
                 @keyup.enter="editAttributeValueContent(scope.row)"
               />
             </div>
+          </template>
+        </ElTableColumn>
+        <ElTableColumn :label="$t('common.sort')" width="200">
+          <template #default="scope">
+            <ElInputNumber
+              v-model="scope.row.sort"
+              :min="0"
+              controls-position="right"
+              size="small"
+              @change="handleSortChange(scope.row, $event)"
+              @keyup.enter="handleSortChange(scope.row, $event)"
+            />
           </template>
         </ElTableColumn>
         <ElTableColumn :label="$t('common.status')" width="120">
