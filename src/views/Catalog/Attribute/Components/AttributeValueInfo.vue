@@ -83,7 +83,6 @@ const selectedAttributeValueItem = (val: (AttributeValueResultDo & CommonField)[
 }
 
 const handleDelete = async (val: AttributeValueResultDo & CommonField) => {
-  console.log(val)
   loading.init = true
   const { data } = await removeAttributeValueApi({ attributeId, languageId, attributeValueIds: [val.id] }).catch(err => {
     loading.init = false
