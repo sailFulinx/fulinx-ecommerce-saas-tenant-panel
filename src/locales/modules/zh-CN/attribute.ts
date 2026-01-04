@@ -17,5 +17,6 @@ export default {
     attributeValue: '请输入属性值',
   },
   warning: {
+    noDetailData: '检测到您没有添加过此语言的属性名称，请添加',
   },
 }
