@@ -73,7 +73,7 @@ const onSave = () => {
 }
 
 const rules: FormRules = {
-  attributeValueContents: [{ required: true, message: '请输入至少一个属性名称', trigger: 'blur' }],
+  attributeValueContents: [{ required: true, message: '请输入至少一个属性值', trigger: 'blur' }],
 }
 
 defineExpose({
@@ -91,14 +91,18 @@ defineExpose({
           type="textarea"
           :rows="6"
           clearable
-          :placeholder="`${$t('attribute.placeholder.attributeValueContents')}（每行一个属性名称）`"
+          :placeholder="`${$t('attribute.placeholder.attributeValueContents')}（每行一个属性值）`"
         />
       </ElFormItem>
     </ElForm>
     <template #footer>
       <div class="dialog-footer">
-        <ElButton @click="dialogVisible = false">取消</ElButton>
-        <ElButton type="primary" :loading="loading.init" @click="onSave">提交</ElButton>
+        <ElButton @click="dialogVisible = false">
+          取消
+        </ElButton>
+        <ElButton type="primary" :loading="loading.init" @click="onSave">
+          提交
+        </ElButton>
       </div>
     </template>
   </ElDrawer>
