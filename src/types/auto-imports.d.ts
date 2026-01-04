@@ -26,6 +26,8 @@ declare global {
   const articleListApi: typeof import('../api/article').articleListApi
   const articlePaginationApi: typeof import('../api/article').articlePaginationApi
   const asyncComputed: typeof import('@vueuse/core').asyncComputed
+  const attributeListApi: typeof import('../api/attribute').attributeListApi
+  const attributePaginationApi: typeof import('../api/attribute').attributePaginationApi
   const autoResetRef: typeof import('@vueuse/core').autoResetRef
   const brandListApi: typeof import('../api/brand').brandListApi
   const brandPaginationApi: typeof import('../api/brand').brandPaginationApi
@@ -73,6 +75,8 @@ declare global {
   const createArticleSeoApi: typeof import('../api/article').createArticleSeoApi
   const createArticleSlugApi: typeof import('../api/article').createArticleSlugApi
   const createArticleTagApi: typeof import('../api/article').createArticleTagApi
+  const createAttributeApi: typeof import('../api/attribute-create').createAttributeApi
+  const createAttributeNameApi: typeof import('../api/attribute-create').createAttributeNameApi
   const createBrandApi: typeof import('../api/brand-create').createBrandApi
   const createBrandDetailApi: typeof import('../api/brand').createBrandDetailApi
   const createBrandNameApi: typeof import('../api/brand-create').createBrandNameApi
@@ -251,6 +255,7 @@ declare global {
   const removeArticleApi: typeof import('../api/article').removeArticleApi
   const removeArticleFileApi: typeof import('../api/article').removeArticleFileApi
   const removeArticleTagApi: typeof import('../api/article').removeArticleTagApi
+  const removeAttributeApi: typeof import('../api/attribute').removeAttributeApi
   const removeBrandApi: typeof import('../api/brand').removeBrandApi
   const removeBrandFileApi: typeof import('../api/brand').removeBrandFileApi
   const removeCompApi: typeof import('../api/comp').removeCompApi
@@ -293,6 +298,7 @@ declare global {
   const shippingCompanyTemplateListApi: typeof import('../api/shipping').shippingCompanyTemplateListApi
   const shippingCompanyTemplatePaginationApi: typeof import('../api/shipping').shippingCompanyTemplatePaginationApi
   const showArticleApi: typeof import('../api/article').showArticleApi
+  const showAttributeApi: typeof import('../api/attribute').showAttributeApi
   const showBrandApi: typeof import('../api/brand').showBrandApi
   const showCompApi: typeof import('../api/comp').showCompApi
   const showCouponApi: typeof import('../api/coupon').showCouponApi
@@ -364,6 +370,9 @@ declare global {
   const updateArticleSortApi: typeof import('../api/article').updateArticleSortApi
   const updateArticleStatusApi: typeof import('../api/article').updateArticleStatusApi
   const updateArticleTypeApi: typeof import('../api/article').updateArticleTypeApi
+  const updateAttributeNameApi: typeof import('../api/attribute-update').updateAttributeNameApi
+  const updateAttributeSortApi: typeof import('../api/attribute-update').updateAttributeSortApi
+  const updateAttributeStatusApi: typeof import('../api/attribute-update').updateAttributeStatusApi
   const updateBrandDetailApi: typeof import('../api/brand').updateBrandDetailApi
   const updateBrandDetailBrandNameApi: typeof import('../api/brand-update').updateBrandDetailBrandNameApi
   const updateBrandDetailBrandShortDescriptionApi: typeof import('../api/brand-update').updateBrandDetailBrandShortDescriptionApi
