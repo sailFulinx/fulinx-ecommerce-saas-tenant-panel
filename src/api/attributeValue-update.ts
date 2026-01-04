@@ -11,7 +11,7 @@ export function updateAttributeValueContentApi(
   params: UpdateAttributeValueContentParams,
 ): Promise<IResponse<AttributeShowData & CommonField>> {
   return request.post({
-    url: 'system/attribute/update/detail/attribute/value/content',
+    url: 'system/attribute/value/update/detail/attribute/value/content',
     data: params,
     token: true,
   })

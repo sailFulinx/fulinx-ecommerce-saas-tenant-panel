@@ -22,7 +22,7 @@ export function createAttributeValueContentApi(
   params: CreateAttributeValueContentParams,
 ): Promise<IResponse<AttributeShowData & CommonField>> {
   return request.post({
-    url: 'system/attribute/create/attribute/value/content',
+    url: 'system/attribute/value/create/attribute/value/content',
     data: params,
     token: true,
   })

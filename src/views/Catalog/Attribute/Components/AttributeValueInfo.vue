@@ -20,58 +20,71 @@ const currentData = computed(() => {
 })
 
 // 本地状态
-const inputAttributeNameVisible = ref(false)
-const currentAttributeName = ref('')
+const inputAttributeValueContentsVisible = ref(false)
+const currentAttributeValueContent = ref('')
 
 // 更新名称
-const _handleClickUpdateAttributeName = (attributeName: string) => {
-  currentAttributeName.value = attributeName
-  inputAttributeNameVisible.value = true
+const handleClickUpdateAttributeValueContent = (val: AttributeValueResultDo & CommonField) => {
+  currentAttributeValueContent.value = val.attributeValueDetailVo.attributeValueContent
+  inputAttributeValueContentsVisible.value = true
 }
 
-const _handleCancelUpdateAttributeName = () => {
-  inputAttributeNameVisible.value = false
+const _handleCancelUpdateAttributeValueContent = () => {
+  inputAttributeValueContentsVisible.value = false
 }
 
-const _editAttributeName = async (attributeDetailId: string) => {
-  if (!currentAttributeName.value) {
-    ElMessage.warning($t('attribute.error.attributeName'))
+const editAttributeValueContent = async (val: AttributeValueResultDo & CommonField) => {
+  if (!currentAttributeValueContent.value) {
+    ElMessage.warning($t('attribute.error.attributeValueContents'))
     return
   }
   loading.init = true
-  const { data } = await updateAttributeNameApi({
-    attributeDetailId,
-    attributeName: currentAttributeName.value,
-  }).catch(error => {
-    loading.init = false
-    throw error
-  })
+  if (val.attributeValueDetailVo.id) {
+    const { data } = await updateAttributeValueContentApi({
+      attributeValueDetailId: val.attributeValueDetailVo.id,
+      attributeValueContent: currentAttributeValueContent.value,
+    }).catch(error => {
+      loading.init = false
+      throw error
+    })
+    await resetFormData(data)
+  } else {
+    const { data } = await createAttributeValueContentApi({
+      attributeValueId: val.attributeValueDetailVo.attributeValueId,
+      languageId,
+      attributeValueContent: currentAttributeValueContent.value,
+    }).catch(error => {
+      loading.init = false
+      throw error
+    })
+    await resetFormData(data)
+  }
+
   loading.init = false
-  currentAttributeName.value = ''
-  await resetFormData(data)
-  inputAttributeNameVisible.value = false
+  currentAttributeValueContent.value = ''
+  inputAttributeValueContentsVisible.value = false
   ElMessage.success($t('success.edit'))
 }
 // 创建属性名称
-const _createAttributeValueContent = async () => {
-  if (!currentAttributeName.value) {
-    ElMessage.warning($t('attribute.error.attributeName'))
-    return
-  }
-  loading.init = true
-  const { data } = await createAttributeNameApi({
-    attributeId,
-    languageId,
-    attributeName: currentAttributeName.value,
-  }).catch(error => {
-    loading.init = false
-    throw error
-  })
-  loading.init = false
-  currentAttributeName.value = ''
-  await resetFormData(data)
-  ElMessage.success($t('success.create'))
-}
+// const _createAttributeValueContent = async () => {
+//   if (!currentAttributeValueContent.value) {
+//     ElMessage.warning($t('attribute.error.attributeValueContents'))
+//     return
+//   }
+//   loading.init = true
+//   const { data } = await createAttributeValueContentsApi({
+//     attributeId,
+//     languageId,
+//     attributeValueContents: currentAttributeValueContents.value,
+//   }).catch(error => {
+//     loading.init = false
+//     throw error
+//   })
+//   loading.init = false
+//   currentAttributeValueContents.value = ''
+//   await resetFormData(data)
+//   ElMessage.success($t('success.create'))
+// }
 
 const selectedList = ref<string[]>([])
 
@@ -84,10 +97,12 @@ const selectedAttributeValueItem = (val: (AttributeValueResultDo & CommonField)[
 
 const handleDelete = async (val: AttributeValueResultDo & CommonField) => {
   loading.init = true
-  const { data } = await removeAttributeValueApi({ attributeId, languageId, attributeValueIds: [val.id] }).catch(err => {
-    loading.init = false
-    throw err
-  })
+  const { data } = await removeAttributeValueApi({ attributeId, languageId, attributeValueIds: [val.id] }).catch(
+    err => {
+      loading.init = false
+      throw err
+    },
+  )
   loading.init = false
   await resetFormData(data)
   ElMessage({
@@ -108,7 +123,11 @@ const handleMultiDelete = async () => {
     loading.init = false
     return
   }
-  const { data } = await removeAttributeValueApi({ attributeId, languageId, attributeValueIds: selectedList.value }).catch(err => {
+  const { data } = await removeAttributeValueApi({
+    attributeId,
+    languageId,
+    attributeValueIds: selectedList.value,
+  }).catch(err => {
     loading.init = false
     throw err
   })
@@ -160,7 +179,19 @@ const handleAddAttributeValue = async () => {
         </ElTableColumn>
         <ElTableColumn :label="$t('attribute.attributeValue')">
           <template #default="scope">
-            <span>{{ scope.row.attributeValueDetailVo?.attributeValueContent || '' }}</span>
+            <div v-if="!inputAttributeValueContentsVisible">
+              {{ scope.row.attributeValueDetailVo?.attributeValueContent || '' }}
+            </div>
+            <div>
+              <ElInput
+                v-if="inputAttributeValueContentsVisible && scope.row.id === currentData.attributeValueResultDos[0].id"
+                v-model="currentAttributeValueContent"
+                placeholder="请输入属性值"
+                clearable
+                @blur="editAttributeValueContent(scope.row)"
+                @keyup.enter="editAttributeValueContent(scope.row)"
+              />
+            </div>
           </template>
         </ElTableColumn>
         <ElTableColumn :label="$t('common.status')" width="120">
@@ -171,9 +202,9 @@ const handleAddAttributeValue = async () => {
         <ElTableColumn label="操作" header-align="center" width="220" align="center" class-name="pl-15 fixed-width">
           <template #default="scope">
             <span class="mr-5">
-              <EBtn size="small">
+              <EBtn size="small" @click="handleClickUpdateAttributeValueContent(scope.row)">
                 <Icon icon="ep:edit" class="mr-1" />
-                {{ $t('common.view') }}
+                {{ $t('common.edit') }}
               </EBtn>
             </span>
             <span>
