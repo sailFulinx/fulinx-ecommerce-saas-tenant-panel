@@ -84,7 +84,11 @@ const getAttributeData = async () => {
 }
 
 const resetFormData = async (val: AttributeShowData & CommonField) => {
+  // 使用完整的替换方式，而不是 Object.assign
   Object.assign(form, $clone(val))
+  if (val.attributeAdminLocalizedViewDos) {
+    form.attributeAdminLocalizedViewDos = $clone(val.attributeAdminLocalizedViewDos)
+  }
 }
 
 const initFormData = async () => {

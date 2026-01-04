@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { convertStatus } from '@/utils/status'
 import { attributeKey } from '../type/injectionKeys'
 import CreateAttributeValueDialog from './CreateAttributeValueDialog.vue'
@@ -9,11 +10,14 @@ const { currentItem, languageId } = defineProps<{
   languageId: string
 }>()
 
-const { loading, id: attributeId, resetFormData } = inject(attributeKey)!
+const { loading, id: attributeId, resetFormData, form } = inject(attributeKey)!
 
 const { t: $t } = useLocale()
 
-const currentData = ref<AttributeAdminLocalizedViewDo>(currentItem)
+// 使用计算属性来响应父组件数据的变化
+const currentData = computed(() => {
+  return form.attributeAdminLocalizedViewDos.find(item => item.languageId === currentItem.languageId) || currentItem
+})
 
 // 本地状态
 const inputAttributeNameVisible = ref(false)
@@ -78,9 +82,7 @@ const selectedAttributeValueItem = (val: (AttributeValueDetailVo & CommonField)[
   })
 }
 
-const handleDelete = async (_row: AttributeValueDetailVo & CommonField) => {
-
-}
+const handleDelete = async (_row: AttributeValueDetailVo & CommonField) => {}
 
 const createAttributeValueRef = useTemplateRef('createAttributeValueRef')
 
@@ -144,3 +146,5 @@ const handleAddAttributeValue = async () => {
     <CreateAttributeValueDialog ref="createAttributeValueRef" />
   </div>
 </template>
+
+```
