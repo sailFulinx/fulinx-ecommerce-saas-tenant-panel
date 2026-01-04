@@ -54,6 +54,12 @@ interface AttributeValueDetailVo {
 
   /* Attribute Value Content */
   attributeValueContent: string
+
+  /* Is Default */
+  isDefault: boolean
+
+  /* Default Attribute Value Content */
+  defaultAttributeValueContent: string
 }
 
 interface AttributeValueResultDo {

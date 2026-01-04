@@ -1,4 +1,10 @@
 interface RemoveAttributeValueParams {
+  /* Attribute ID */
+  attributeId: string
+
+  /* Language ID */
+  languageId: string
+
   /* Attribute Value Ids */
   attributeValueIds: string[]
 }

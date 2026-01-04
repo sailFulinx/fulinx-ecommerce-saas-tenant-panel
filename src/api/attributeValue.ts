@@ -6,7 +6,9 @@ import request from '@/utils/axios'
  * @param {Array} params.attributeValueIds Attribute Value Ids
  * @returns
  */
-export function removeAttributeValueApi(params: RemoveAttributeValueParams): Promise<IResponse<boolean>> {
+export function removeAttributeValueApi(
+  params: RemoveAttributeValueParams,
+): Promise<IResponse<AttributeShowData & CommonField>> {
   return request.delete({
     url: 'system/attribute/value',
     data: params,

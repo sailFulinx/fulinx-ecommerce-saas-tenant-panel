@@ -75,14 +75,28 @@ const _createAttributeValueContent = async () => {
 
 const selectedList = ref<string[]>([])
 
-const selectedAttributeValueItem = (val: (AttributeValueDetailVo & CommonField)[]) => {
+const selectedAttributeValueItem = (val: (AttributeValueResultDo & CommonField)[]) => {
   selectedList.value = []
   val.forEach(item => {
     selectedList.value.push(item.id)
   })
 }
 
-const handleDelete = async (_row: AttributeValueDetailVo & CommonField) => {}
+const handleDelete = async (val: AttributeValueResultDo & CommonField) => {
+  console.log(val)
+  loading.init = true
+  const { data } = await removeAttributeValueApi({ attributeId, languageId, attributeValueIds: [val.id] }).catch(err => {
+    loading.init = false
+    throw err
+  })
+  loading.init = false
+  await resetFormData(data)
+  ElMessage({
+    message: '删除成功',
+    type: 'success',
+    duration: 2000,
+  })
+}
 
 const createAttributeValueRef = useTemplateRef('createAttributeValueRef')
 
