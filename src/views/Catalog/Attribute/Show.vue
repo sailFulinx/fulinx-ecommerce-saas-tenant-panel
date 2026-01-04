@@ -1,5 +1,6 @@
 <script setup name="AttributeDetail" lang="ts">
 import AttributeBaseInfo from './Components/AttributeBaseInfo.vue'
+import AttributeValueInfo from './Components/AttributeValueInfo.vue'
 import { attributeKey } from './type/injectionKeys'
 
 const { id } = defineProps<{
@@ -16,9 +17,7 @@ const languageCode = ref('')
 
 const paneName = readonly({
   Base: 'base',
-  Seo: 'seo',
-  Layout: 'layout',
-  Slug: 'slug',
+  AttributeValue: 'attributeValue',
 })
 
 const activeName = ref(paneName.Base)
@@ -182,6 +181,14 @@ provide(attributeKey, {
           <div v-show="languageCode === item.languageCode">
             <div v-show="activeName === 'base'">
               <AttributeBaseInfo
+                :current-item="item"
+                :attribute-admin-localized-view-dos="form.attributeAdminLocalizedViewDos"
+                :language-id="item.languageId"
+                :attribute-id="id"
+              />
+            </div>
+            <div v-show="activeName === 'attributeValue'">
+              <AttributeValueInfo
                 :current-item="item"
                 :attribute-admin-localized-view-dos="form.attributeAdminLocalizedViewDos"
                 :language-id="item.languageId"

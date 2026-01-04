@@ -9,9 +9,7 @@ export interface AttributeContext {
   activeName: Ref<string>
   paneName: Readonly<{
     Base: string
-    Seo: string
-    Layout: string
-    Slug: string
+    AttributeValue: string
   }>
   resetFormData: (val: AttributeShowData) => Promise<void>
   id: string
