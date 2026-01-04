@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { convertStatus } from '@/utils/status'
 import CreateAttributeDialog from './Components/CreateAttributeDialog.vue'
+
+const { t: $t } = useLocale()
 
 const preferenceStore = usePreferenceStore()
 
@@ -134,6 +135,47 @@ const handleCreate = () => {
 const handleRedirectEdit = (val: AttributeListData & CommonField) => {
   router.push({ name: 'ShowAttribute', params: { id: val.id } })
 }
+
+// 处理排序变更
+const handleSortChange = async (row: AttributeListData & CommonField, value: number | undefined) => {
+  // 如果值为 undefined，不执行更新操作
+  if (value === undefined) {
+    return
+  }
+
+  try {
+    await updateAttributeSortApi({
+      attributeId: row.id,
+      languageId: languageId.value,
+      sort: value,
+    })
+    ElMessage({
+      message: '排序更新成功',
+      type: 'success',
+      duration: 2000,
+    })
+    await getList()
+  } catch (err) {
+    ElMessage({
+      message: '排序更新失败',
+      type: 'error',
+      duration: 2000,
+    })
+    throw err
+  }
+}
+
+const handleUpdateAttributeStatus = async (row: AttributeListData & CommonField, value: boolean) => {
+  loading.list = true
+  await updateAttributeStatusApi({
+    attributeId: row.id,
+    languageId: languageId.value,
+    status: value,
+  })
+  await getList()
+  loading.list = false
+  ElMessage.success($t('success.edit'))
+}
 </script>
 
 <template>
@@ -186,9 +228,27 @@ const handleRedirectEdit = (val: AttributeListData & CommonField) => {
             <span>{{ scope.row.attributeName }}</span>
           </template>
         </ElTableColumn>
+        <ElTableColumn :label="$t('common.sort')" width="200">
+          <template #default="scope">
+            <ElInputNumber
+              v-model="scope.row.sort"
+              :min="0"
+              controls-position="right"
+              size="small"
+              @change="handleSortChange(scope.row, $event)"
+              @keyup.enter="handleSortChange(scope.row, $event)"
+            />
+          </template>
+        </ElTableColumn>
         <ElTableColumn :label="$t('common.status')" width="120">
           <template #default="scope">
-            <span>{{ convertStatus(scope.row.status) }}</span>
+            <ElSwitch
+              v-model="scope.row.status"
+              inline-prompt
+              :active-text="$t('common.yes')"
+              :inactive-text="$t('common.no')"
+              @change="handleUpdateAttributeStatus(scope.row, Boolean($event))"
+            />
           </template>
         </ElTableColumn>
         <ElTableColumn label="操作" header-align="center" width="220" align="center" class-name="pl-15 fixed-width">
