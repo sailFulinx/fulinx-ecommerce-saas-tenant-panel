@@ -106,6 +106,7 @@ const handleAddAttributeValue = async () => {
     </div>
     <div v-if="currentData.attributeValueResultDos" class="w-full mt-3 pt-0">
       <ElTable
+        :loading="loading.init"
         :data="currentData.attributeValueResultDos"
         row-key="id"
         tooltip-effect="dark"
@@ -115,9 +116,14 @@ const handleAddAttributeValue = async () => {
         @selection-change="selectedAttributeValueItem"
       >
         <ElTableColumn type="selection" width="55" />
+        <ElTableColumn :label="$t('attribute.defaultAttributeValue')">
+          <template #default="scope">
+            <span>{{ scope.row.attributeValueDetailVo?.defaultAttributeValueContent || '' }}</span>
+          </template>
+        </ElTableColumn>
         <ElTableColumn :label="$t('attribute.attributeValue')">
           <template #default="scope">
-            <span>{{ scope.row.attributeValueDetailVo.attributeValueContent }}</span>
+            <span>{{ scope.row.attributeValueDetailVo?.attributeValueContent || '' }}</span>
           </template>
         </ElTableColumn>
         <ElTableColumn :label="$t('common.status')" width="120">
@@ -134,7 +140,7 @@ const handleAddAttributeValue = async () => {
               </EBtn>
             </span>
             <span>
-              <EBtn size="small" type="danger" :loading="loading" @click="handleDelete(scope.row)">
+              <EBtn size="small" type="danger" :loading="loading.init" @click="handleDelete(scope.row)">
                 <Icon icon="ep:delete" class="mr-1" />
                 {{ $t('common.remove') }}
               </EBtn>
