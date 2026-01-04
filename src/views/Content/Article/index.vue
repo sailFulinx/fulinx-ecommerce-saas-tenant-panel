@@ -40,6 +40,7 @@ const preferenceStore = usePreferenceStore()
 // 修复：确保在 preference 为 null 时也能正确处理
 const preference = ref<PreferenceType | null>(null)
 const languageId = ref()
+let isInitialLoad = true // 添加标志以避免初始化时重复请求
 
 // 初始化 preference 数据
 const initPreference = async () => {
@@ -105,6 +106,7 @@ const initPreferenceAndLoadData = async () => {
   // preference加载完成后，再加载依赖它的数据
   if (preference.value?.language?.id) {
     listQuery.languageId = preference.value.language.id
+    isInitialLoad = false // 设置标志，表示已完成初始加载
     await Promise.all([
       getCategories(),
       getList(),
@@ -128,7 +130,8 @@ const selectedList = ref<string[]>([])
 watch(
   () => preferenceStore.getPreferences()?.language,
   val => {
-    if (val) {
+    if (val && val.id !== languageId.value && !isInitialLoad) { // 避免首次加载时重复请求
+      languageId.value = val.id
       listQuery.languageId = val.id
       // 重新获取分类列表
       getCategories()

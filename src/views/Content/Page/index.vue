@@ -17,6 +17,7 @@ const loading = reactive({
 // 修复：确保在 preference 为 null 时也能正确处理
 const preference = ref<PreferenceType | null>(null)
 const languageId = ref()
+let isInitialLoad = true // 添加标志以避免初始化时重复请求
 
 const listQuery = reactive<PageListParams & Pagination>({
   languageId: languageId.value || undefined,
@@ -49,6 +50,7 @@ const initPreferenceAndLoadData = async () => {
 
   // preference加载完成后，再加载依赖它的数据
   if (preference.value?.language?.id) {
+    isInitialLoad = false // 设置标志，表示已完成初始加载
     await getList()
   }
 }
@@ -60,18 +62,14 @@ initPreferenceAndLoadData()
 watch(
   () => preferenceStore.getPreferences()?.language,
   val => {
-    if (val) {
+    if (val && val.id !== languageId.value && !isInitialLoad) { // 避免首次加载时重复请求
+      languageId.value = val.id
       listQuery.languageId = val.id
       getList()
     }
   },
   { immediate: true },
 )
-
-const init = async () => {
-  loading.list = true
-  await getList()
-}
 
 const pagination = (val: PaginationComponentDataType) => {
   if (val) {
@@ -130,7 +128,6 @@ const handleCreate = () => {
 const handleRedirectEdit = (val: PageListData & CommonField) => {
   router.push({ name: 'ShowPage', params: { id: val.id } })
 }
-init()
 </script>
 
 <template>
