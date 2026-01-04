@@ -19,22 +19,23 @@ const currentData = computed(() => {
   return form.attributeAdminLocalizedViewDos.find(item => item.languageId === currentItem.languageId) || currentItem
 })
 
-// 本地状态
-const inputAttributeValueContentsVisible = ref(false)
-const currentAttributeValueContent = ref('')
+// 本地状态 - 使用对象来跟踪每行的编辑状态
+const editingStates = ref<Record<string, boolean>>({})
+const editingContent = ref<Record<string, string>>({})
 
 // 更新名称
 const handleClickUpdateAttributeValueContent = (val: AttributeValueResultDo & CommonField) => {
-  currentAttributeValueContent.value = val.attributeValueDetailVo.attributeValueContent
-  inputAttributeValueContentsVisible.value = true
+  editingContent.value[val.id] = val.attributeValueDetailVo.attributeValueContent
+  editingStates.value[val.id] = true
 }
 
-const _handleCancelUpdateAttributeValueContent = () => {
-  inputAttributeValueContentsVisible.value = false
+const _handleCancelUpdateAttributeValueContent = (val: AttributeValueResultDo & CommonField) => {
+  editingStates.value[val.id] = false
 }
 
 const editAttributeValueContent = async (val: AttributeValueResultDo & CommonField) => {
-  if (!currentAttributeValueContent.value) {
+  const content = editingContent.value[val.id]
+  if (!content) {
     ElMessage.warning($t('attribute.error.attributeValueContents'))
     return
   }
@@ -42,7 +43,7 @@ const editAttributeValueContent = async (val: AttributeValueResultDo & CommonFie
   if (val.attributeValueDetailVo.id) {
     const { data } = await updateAttributeValueContentApi({
       attributeValueDetailId: val.attributeValueDetailVo.id,
-      attributeValueContent: currentAttributeValueContent.value,
+      attributeValueContent: content,
     }).catch(error => {
       loading.init = false
       throw error
@@ -52,7 +53,7 @@ const editAttributeValueContent = async (val: AttributeValueResultDo & CommonFie
     const { data } = await createAttributeValueContentApi({
       attributeValueId: val.attributeValueDetailVo.attributeValueId,
       languageId,
-      attributeValueContent: currentAttributeValueContent.value,
+      attributeValueContent: content,
     }).catch(error => {
       loading.init = false
       throw error
@@ -61,8 +62,8 @@ const editAttributeValueContent = async (val: AttributeValueResultDo & CommonFie
   }
 
   loading.init = false
-  currentAttributeValueContent.value = ''
-  inputAttributeValueContentsVisible.value = false
+  editingStates.value[val.id] = false
+  delete editingContent.value[val.id]
   ElMessage.success($t('success.edit'))
 }
 // 创建属性名称
@@ -179,14 +180,13 @@ const handleAddAttributeValue = async () => {
         </ElTableColumn>
         <ElTableColumn :label="$t('attribute.attributeValue')">
           <template #default="scope">
-            <div v-if="!inputAttributeValueContentsVisible">
+            <div v-if="!editingStates[scope.row.id]">
               {{ scope.row.attributeValueDetailVo?.attributeValueContent || '' }}
             </div>
-            <div>
+            <div v-else>
               <ElInput
-                v-if="inputAttributeValueContentsVisible && scope.row.id === currentData.attributeValueResultDos[0].id"
-                v-model="currentAttributeValueContent"
-                placeholder="请输入属性值"
+                v-model="editingContent[scope.row.id]"
+                :placeholder="$t('attribute.placeholder.attributeValue')"
                 clearable
                 @blur="editAttributeValueContent(scope.row)"
                 @keyup.enter="editAttributeValueContent(scope.row)"
