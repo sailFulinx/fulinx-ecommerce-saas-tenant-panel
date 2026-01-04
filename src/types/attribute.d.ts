@@ -53,12 +53,12 @@ interface AttributeAdminLocalizedViewDo {
   languageCode: string
 
   /* */
-  attributeDetailListResultDo: AttributeDetailListResultDo & CommonField
+  attributeDetailListResultDo: (AttributeDetailListResultDo & CommonField) | null
 }
 
 interface AttributeShowData {
   /* Attribute Type, 1-Select, 2-Input, 3-Boolean */
-  attributeType: number
+  attributeType: number | null
 
   /* Sort */
   sort: number

@@ -50,6 +50,41 @@ const catalogRouter: AppRouteRecordRaw = {
         props: true,
       },
     },
+    {
+      path: 'attribute',
+      component: () => import('@/views/Catalog/Attribute/index.vue'),
+      name: 'AttributeList',
+      meta: {
+        title: $t('router.attribute'),
+        icon: 'carbon:attribute-definition',
+      },
+    },
+    {
+      path: 'attribute/create',
+      component: () => import('@/views/Catalog/Attribute/Create.vue'),
+      name: 'CreateAttribute',
+      meta: {
+        title: $t('attribute.add'),
+        noCache: true,
+        hidden: true,
+        canTo: true,
+        activeMenu: '/product/attribute',
+        props: false,
+      },
+    },
+    {
+      path: 'attribute/show/:id',
+      component: () => import('@/views/Catalog/Attribute/Show.vue'),
+      name: 'ShowAttribute',
+      meta: {
+        title: $t('attribute.show'),
+        noCache: true,
+        hidden: true,
+        canTo: true,
+        activeMenu: '/product/attribute',
+      },
+      props: true,
+    },
 
     {
       path: 'parameter',

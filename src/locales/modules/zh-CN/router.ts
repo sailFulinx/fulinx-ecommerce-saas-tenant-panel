@@ -1,3 +1,4 @@
+import { at } from 'lodash-es'
 import coupon from './coupon'
 import shipping from './shipping'
 
@@ -12,6 +13,7 @@ export default {
   page: '页面管理',
   analysis: '看板',
   product: '产品管理',
+  attribute: '属性管理',
   parameter: '参数管理',
   parameterGroup: '参数组管理',
   brand: '品牌管理',

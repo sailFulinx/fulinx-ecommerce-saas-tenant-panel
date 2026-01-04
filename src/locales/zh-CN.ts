@@ -1,5 +1,6 @@
 import analytics from './modules/zh-CN/analytics'
 import article from './modules/zh-CN/article'
+import attribute from './modules/zh-CN/attribute'
 import auth from './modules/zh-CN/auth'
 import brand from './modules/zh-CN/brand'
 import category from './modules/zh-CN/category'
@@ -37,6 +38,7 @@ import warning from './modules/zh-CN/warning'
 export default {
   analytics,
   article,
+  attribute,
   brand,
   category,
   common,
