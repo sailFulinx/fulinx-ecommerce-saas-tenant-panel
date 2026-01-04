@@ -172,9 +172,7 @@ provide(attributeKey, {
           >
             <ElTabs v-model="activeName" class="demo-tabs">
               <ElTabPane :label="$t('attribute.base')" name="base" />
-              <ElTabPane :label="$t('attribute.seo')" name="seo" />
-              <ElTabPane :label="$t('attribute.layout')" name="layout" />
-              <ElTabPane :label="$t('attribute.slug')" name="slug" />
+              <ElTabPane :label="$t('attribute.attributeValue')" name="attributeValue" />
             </ElTabs>
           </ElTabPane>
         </ElTabs>

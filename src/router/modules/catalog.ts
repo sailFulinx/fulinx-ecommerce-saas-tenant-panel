@@ -60,19 +60,6 @@ const catalogRouter: AppRouteRecordRaw = {
       },
     },
     {
-      path: 'attribute/create',
-      component: () => import('@/views/Catalog/Attribute/Create.vue'),
-      name: 'CreateAttribute',
-      meta: {
-        title: $t('attribute.add'),
-        noCache: true,
-        hidden: true,
-        canTo: true,
-        activeMenu: '/product/attribute',
-        props: false,
-      },
-    },
-    {
       path: 'attribute/show/:id',
       component: () => import('@/views/Catalog/Attribute/Show.vue'),
       name: 'ShowAttribute',

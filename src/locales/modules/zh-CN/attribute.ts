@@ -4,6 +4,7 @@ export default {
   status: '状态',
   add: '添加属性',
   base: '基础信息',
+  attributeValue: '属性值',
   attributeName: '属性名称',
   description: '属性描述',
   attributeDetail: '属性详情',

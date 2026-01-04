@@ -85,6 +85,8 @@ interface CategoryData {
   /* Category ID */
   id: string
 
+  disabled?: boolean
+
   /* Category Type, 1: Product, 2: Article */
   categoryType: number
 

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { convertStatus } from '@/utils/status'
+import CreateDialog from './Components/CreateDialog.vue'
 
 const preferenceStore = usePreferenceStore()
 
@@ -124,8 +125,10 @@ const handleMultiDelete = async () => {
   })
 }
 
+const createAttributeRef = useTemplateRef('createAttributeRef')
+
 const handleCreate = () => {
-  router.push({ name: 'CreateAttribute' })
+  createAttributeRef.value?.openDialog()
 }
 
 const handleRedirectEdit = (val: AttributeListData & CommonField) => {
@@ -213,5 +216,6 @@ const handleRedirectEdit = (val: AttributeListData & CommonField) => {
         @pagination="pagination"
       />
     </div>
+    <CreateDialog ref="createAttributeRef" @get-list="getList" />
   </div>
 </template>
