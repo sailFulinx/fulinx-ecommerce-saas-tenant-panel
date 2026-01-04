@@ -5,8 +5,6 @@ const preferenceStore = usePreferenceStore()
 
 const router = useRouter()
 
-const sourceUrl = useFileRootUrl()
-
 const listResult = ref<TableResponse<AttributeListData & CommonField>>({
   list: [],
   total: 0,
@@ -83,7 +81,7 @@ const pagination = (val: PaginationComponentDataType) => {
   getList()
 }
 
-const selectedAttributeItem = (val: AttributeListData[]) => {
+const selectedAttributeItem = (val: (AttributeListData & CommonField)[]) => {
   selectedList.value = []
   val.forEach(item => {
     selectedList.value.push(item.id)
@@ -184,18 +182,6 @@ init()
         @selection-change="selectedAttributeItem"
       >
         <ElTableColumn type="selection" width="55" />
-        <ElTableColumn :label="$t('attribute.attributeLogo')">
-          <template #default="scope">
-            <SImg v-if="scope.row.attributeFileVo?.fileUrl" :src="sourceUrl + scope.row.attributeFileVo?.fileUrl" :alt="scope.row.attributeName" fit="cover" lazy width="120px" placeholder />
-            <div v-else>
-              <div class="flex flex-col items-left">
-                <div class="flex items-center">
-                  <Icon icon="ant-design:picture-outlined" :size="24" color="#c0c4cc" /><span class="text-center">No Logo</span>
-                </div>
-              </div>
-            </div>
-          </template>
-        </ElTableColumn>
         <ElTableColumn :label="$t('attribute.attributeName')">
           <template #default="scope">
             <span>{{ scope.row.attributeName }}</span>

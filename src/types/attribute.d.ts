@@ -80,10 +80,12 @@ interface AttributeListParams {
   languageId: string
 
   /* Attribute Id */
-  attributeId?: string
+  attributeId?: string | null
 
   /* 属性标题 */
-  attributeName?: string
+  attributeName?: string | null
+
+  attributeType?: number | null
 
   /* Status, 0: Disabled 1: Enabled */
   status?: boolean
