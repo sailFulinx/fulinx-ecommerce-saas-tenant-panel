@@ -64,6 +64,7 @@ const currentForm = reactive<AttributeAdminLocalizedViewDo>({
   languageCode: '',
   languageName: '',
   attributeDetailListResultDo: null,
+  attributeValueResultDos: [],
 })
 
 const showAttributePayload = reactive<ShowAttributeParams>({

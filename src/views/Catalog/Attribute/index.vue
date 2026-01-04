@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { convertStatus } from '@/utils/status'
-import CreateDialog from './Components/CreateDialog.vue'
+import CreateAttributeDialog from './Components/CreateAttributeDialog.vue'
 
 const preferenceStore = usePreferenceStore()
 
@@ -216,6 +216,6 @@ const handleRedirectEdit = (val: AttributeListData & CommonField) => {
         @pagination="pagination"
       />
     </div>
-    <CreateDialog ref="createAttributeRef" @get-list="getList" />
+    <CreateAttributeDialog ref="createAttributeRef" @get-list="getList" />
   </div>
 </template>

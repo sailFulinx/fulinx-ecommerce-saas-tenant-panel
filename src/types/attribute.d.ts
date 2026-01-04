@@ -42,6 +42,31 @@ interface AttributeDetailListResultDo {
   attributeName: string
 }
 
+interface AttributeValueDetailVo {
+  /* Attribute Value ID */
+  attributeValueId: string
+
+  /* Attribute ID */
+  attributeId: string
+
+  /* Language ID */
+  languageId: string
+
+  /* Attribute Value Content */
+  attributeValueContent: string
+}
+
+interface AttributeValueResultDo {
+  /* Sort */
+  sort: number
+
+  /* Status, 0 - Disabled , 1 - Enabled */
+  status: boolean
+
+  /* */
+  attributeValueDetailVo: AttributeValueDetailVo & CommonField
+}
+
 interface AttributeAdminLocalizedViewDo {
   /* Language ID */
   languageId: string
@@ -54,6 +79,9 @@ interface AttributeAdminLocalizedViewDo {
 
   /* */
   attributeDetailListResultDo: (AttributeDetailListResultDo & CommonField) | null
+
+  /* Attribute Value Result Dos */
+  attributeValueResultDos: (AttributeValueResultDo & CommonField)[]
 }
 
 interface AttributeShowData {
