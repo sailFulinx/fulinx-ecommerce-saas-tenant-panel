@@ -97,6 +97,30 @@ const handleDelete = async (val: AttributeValueResultDo & CommonField) => {
   })
 }
 
+const handleMultiDelete = async () => {
+  loading.init = true
+  if (selectedList.value.length === 0) {
+    ElMessage({
+      message: '您没有选择哦',
+      type: 'error',
+      duration: 2000,
+    })
+    loading.init = false
+    return
+  }
+  const { data } = await removeAttributeValueApi({ attributeId, languageId, attributeValueIds: selectedList.value }).catch(err => {
+    loading.init = false
+    throw err
+  })
+  loading.init = false
+  await resetFormData(data)
+  ElMessage({
+    message: '删除成功',
+    type: 'success',
+    duration: 2000,
+  })
+}
+
 const createAttributeValueRef = useTemplateRef('createAttributeValueRef')
 
 const handleAddAttributeValue = async () => {
@@ -109,7 +133,7 @@ const handleAddAttributeValue = async () => {
     <div class="w-full flex items-center justify-between mt-0 pt-0">
       <div>属性值列表</div>
       <div class="flex items-center">
-        <EBtn type="danger">
+        <EBtn type="danger" :loading="loading.init" @click="handleMultiDelete">
           {{ $t('common.delete') }}
         </EBtn>
         <EBtn type="primary" @click="handleAddAttributeValue">
