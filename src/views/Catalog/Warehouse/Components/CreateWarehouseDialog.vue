@@ -19,7 +19,6 @@ const countryList = ref<(RegionCountryListData & CommonField)[]>([])
 const countryPayload = reactive<RegionCountryListParams>({
   id: null,
   countryName: null,
-  iso2: null,
 })
 
 const getCountryList = async () => {
@@ -95,8 +94,13 @@ const resetForm = () => {
 }
 
 const openDialog = async (val?: WarehouseData) => {
-  form.warehouseName = val?.warehouseName || ''
-  resetForm()
+  countryPayload.countryName = null
+  countryPayload.id = null
+  if (!val) {
+    resetForm()
+  } else {
+    form = Object.assign(form, val)
+  }
   await getCountryList()
   dialogVisible.value = true
 }
@@ -119,9 +123,7 @@ const onSave = () => {
     if (!valid) {
       return false
     }
-
-    createWarehouse()
-
+    await createWarehouse()
     ElMessage.success($t('success.create'))
     loading.init = false
     emit('getList')

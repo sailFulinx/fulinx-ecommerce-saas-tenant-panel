@@ -172,6 +172,7 @@ const catalogRouter: AppRouteRecordRaw = {
       meta: {
         title: $t('router.warehouse'),
         icon: 'ph:warehouse-light',
+        noCache: true,
       },
     },
     {
