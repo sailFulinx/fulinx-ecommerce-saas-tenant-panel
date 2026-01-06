@@ -50,55 +50,54 @@ const getStateList = async () => {
   loading.state = false
 }
 
-const cityList = ref<(RegionCityListData & CommonField)[]>([])
+// const cityList = ref<(RegionCityListData & CommonField)[]>([])
 
-const cityPayload = reactive<RegionCityListParams>({
-  id: null,
-  countryId: null,
-  stateId: null,
-  cityName: null,
-})
+// const cityPayload = reactive<RegionCityListParams>({
+//   id: null,
+//   countryId: null,
+//   stateId: null,
+//   cityName: null,
+// })
 
-const getCityList = async () => {
-  loading.city = true
-  const { data } = await regionCityListApi(cityPayload).catch(error => {
-    loading.city = false
-    throw error
+// const getCityList = async () => {
+//   loading.city = true
+//   const { data } = await regionCityListApi(cityPayload).catch(error => {
+//     loading.city = false
+//     throw error
+//   })
+//   cityList.value = data.list
+//   loading.city = false
+// }
+
+const handleChangeCountry = async (val: string) => {
+  statePayload.countryId = val
+  await getStateList()
+}
+
+const createForm = () =>
+  reactive<CreateWarehouseParams>({
+    warehouseName: '',
+    firstName: '',
+    lastName: '',
+    regionCountryId: '',
+    regionStateId: '',
+    regionCityName: '',
+    address1: '',
+    address2: '',
+    telephone: '',
+    postcode: '',
   })
-  cityList.value = data.list
-  loading.city = false
-}
 
-const init = async () => {
-  await Promise.all([getCountryList(), getStateList(), getCityList()])
-}
-
-const form = reactive<CreateWarehouseParams>({
-  warehouseName: '',
-  firstName: '',
-  lastName: '',
-  regionCountryId: '',
-  regionCountryName: '',
-  regionStateId: '',
-  regionStateName: '',
-  regionCityId: '',
-  regionCityName: '',
-  address1: '',
-  address2: '',
-  telephone: '',
-  postcode: '',
-  warehouseType: 0,
-  sort: 0,
-})
+let form = reactive(createForm())
 
 const resetForm = () => {
-  form.warehouseName = ''
+  form = createForm()
 }
 
 const openDialog = async (val?: WarehouseData) => {
   form.warehouseName = val?.warehouseName || ''
   resetForm()
-  await init()
+  await getCountryList()
   dialogVisible.value = true
 }
 
@@ -131,7 +130,15 @@ const onSave = () => {
 }
 
 const rules: FormRules = {
-  warehouseName: [{ required: true, message: '请输入至少一个属性名称', trigger: 'blur' }],
+  warehouseName: [{ required: true, message: '请输入仓库名称', trigger: 'blur' }],
+  firstName: [{ required: true, message: $t('common.placeholder.firstName'), trigger: 'blur' }],
+  lastName: [{ required: true, message: $t('common.placeholder.lastName'), trigger: 'blur' }],
+  telephone: [{ required: true, message: $t('common.placeholder.telephone'), trigger: 'blur' }],
+  regionCountryId: [{ required: true, message: $t('common.placeholder.regionCountry'), trigger: 'change' }],
+  regionStateId: [{ required: true, message: $t('common.placeholder.regionState'), trigger: 'change' }],
+  regionCityName: [{ required: true, message: $t('common.placeholder.regionCity'), trigger: 'change' }],
+  address1: [{ required: true, message: $t('common.placeholder.address1'), trigger: 'blur' }],
+  postcode: [{ required: true, message: $t('common.placeholder.postcode'), trigger: 'blur' }],
 }
 
 defineExpose({
@@ -151,81 +158,94 @@ defineExpose({
           :placeholder="`${$t('warehouse.placeholder.warehouseName')}`"
         />
       </ElFormItem>
-      <ElFormItem :label="$t('warehouse.firstName')" prop="firstName">
+      <ElFormItem :label="$t('common.firstName')" prop="firstName">
         <ElInput
           v-model="form.firstName"
           class="input-line"
           type="text"
           clearable
-          :placeholder="`${$t('warehouse.placeholder.firstName')}`"
+          :placeholder="`${$t('common.placeholder.firstName')}`"
         />
       </ElFormItem>
 
-      <ElFormItem :label="$t('warehouse.lastName')" prop="lastName">
+      <ElFormItem :label="$t('common.lastName')" prop="lastName">
         <ElInput
           v-model="form.lastName"
           class="input-line"
           type="text"
           clearable
-          :placeholder="`${$t('warehouse.placeholder.lastName')}`"
+          :placeholder="`${$t('common.placeholder.lastName')}`"
         />
       </ElFormItem>
 
-      <ElFormItem :label="$t('warehouse.telephone')" prop="telephone">
+      <ElFormItem :label="$t('common.telephone')" prop="telephone">
         <ElInput
           v-model="form.telephone"
           class="input-line"
           type="text"
           clearable
-          :placeholder="`${$t('warehouse.placeholder.telephone')}`"
+          :placeholder="`${$t('common.placeholder.telephone')}`"
         />
       </ElFormItem>
 
-      <ElFormItem :label="$t('warehouse.regionCountry')" prop="regionCountry">
-        <ElSelect v-model="form.regionCountryId" clearable filterable :placeholder="$t('warehouse.placeholder.regionCountry')">
+      <ElFormItem :label="$t('common.regionCountry')" prop="regionCountryId">
+        <ElSelect
+          v-model="form.regionCountryId"
+          clearable
+          filterable
+          :placeholder="$t('common.placeholder.regionCountry')"
+          @change="handleChangeCountry"
+        >
           <ElOption v-for="item in countryList" :key="item.id" :value="item.id" :label="item.countryName" />
         </ElSelect>
       </ElFormItem>
 
-      <ElFormItem :label="$t('warehouse.regionState')" prop="regionState">
-        <ElSelect v-model="form.regionStateId" clearable filterable :placeholder="$t('warehouse.placeholder.regionState')">
+      <ElFormItem :label="$t('common.regionState')" prop="regionStateId">
+        <ElSelect v-model="form.regionStateId" clearable filterable :placeholder="$t('common.placeholder.regionState')">
           <ElOption v-for="item in stateList" :key="item.id" :value="item.id" :label="item.stateName" />
         </ElSelect>
       </ElFormItem>
 
-      <ElFormItem :label="$t('warehouse.regionCity')" prop="regionCity">
-        <ElSelect v-model="form.regionCityId" clearable filterable :placeholder="$t('warehouse.placeholder.regionCity')">
+      <ElFormItem :label="$t('common.regionCity')" prop="regionCityName">
+        <!-- <ElSelect v-model="form.regionCityId" clearable filterable :placeholder="$t('common.placeholder.regionCity')">
           <ElOption v-for="item in cityList" :key="item.id" :value="item.id" :label="item.cityName" />
-        </ElSelect>
+        </ElSelect> -->
+        <ElInput
+          v-model="form.regionCityName"
+          class="input-line"
+          type="text"
+          clearable
+          :placeholder="`${$t('common.placeholder.regionCity')}`"
+        />
       </ElFormItem>
 
-      <ElFormItem :label="$t('warehouse.address1')" prop="address1">
+      <ElFormItem :label="$t('common.address1')" prop="address1">
         <ElInput
           v-model="form.address1"
           class="input-line"
           type="text"
           clearable
-          :placeholder="`${$t('warehouse.placeholder.address1')}`"
+          :placeholder="`${$t('common.placeholder.address1')}`"
         />
       </ElFormItem>
 
-      <ElFormItem :label="$t('warehouse.address2')" prop="address2">
+      <ElFormItem :label="$t('common.address2')" prop="address2">
         <ElInput
           v-model="form.address2"
           class="input-line"
           type="text"
           clearable
-          :placeholder="`${$t('warehouse.placeholder.address2')}`"
+          :placeholder="`${$t('common.placeholder.address2')}`"
         />
       </ElFormItem>
 
-      <ElFormItem :label="$t('warehouse.postcode')" prop="postcode">
+      <ElFormItem :label="$t('common.postcode')" prop="postcode">
         <ElInput
           v-model="form.postcode"
           class="input-line"
           type="text"
           clearable
-          :placeholder="`${$t('warehouse.placeholder.postcode')}`"
+          :placeholder="`${$t('common.placeholder.postcode')}`"
         />
       </ElFormItem>
     </ElForm>
