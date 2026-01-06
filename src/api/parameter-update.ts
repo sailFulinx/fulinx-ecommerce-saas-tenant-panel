@@ -52,3 +52,13 @@ export function updateParameterStatusApi(
     token: true,
   })
 }
+
+export function updateParameterTypeApi(
+  params: UpdateParameterTypeParams,
+): Promise<IResponse<ParameterShowData & CommonField>> {
+  return request.post({
+    url: 'system/parameter/update/parameter/type',
+    data: params,
+    token: true,
+  })
+}

@@ -199,3 +199,14 @@ interface UpdateParameterStatusParams {
   /* Language ID */
   languageId: string
 }
+
+interface UpdateParameterTypeParams {
+  /* Parameter ID */
+  parameterId: string
+
+  /* Parameter Type, 1-Select, 2-Input, 3-Boolean */
+  parameterType: number
+
+  /* Language ID */
+  languageId: string
+}

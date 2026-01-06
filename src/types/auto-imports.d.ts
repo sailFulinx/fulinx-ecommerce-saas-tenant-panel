@@ -425,7 +425,7 @@ declare global {
   const updateParameterNameApi: typeof import('../api/parameter-update').updateParameterNameApi
   const updateParameterSortApi: typeof import('../api/parameter-update').updateParameterSortApi
   const updateParameterStatusApi: typeof import('../api/parameter-update').updateParameterStatusApi
-  const updateParameterTypeApi: typeof import('../api/parameter').updateParameterTypeApi
+  const updateParameterTypeApi: typeof import('../api/parameter-update').updateParameterTypeApi
   const updateParameterValueContentApi: typeof import('../api/parameterValue-update').updateParameterValueContentApi
   const updateParameterValueDetailParameterValueContentApi: typeof import('../api/parameter').updateParameterValueDetailParameterValueContentApi
   const updateParameterValueSortApi: typeof import('../api/parameterValue-update').updateParameterValueSortApi
