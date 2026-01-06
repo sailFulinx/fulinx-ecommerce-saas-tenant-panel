@@ -9,11 +9,6 @@ export const parameterTypes = [
     label: '输入框',
     value: 'input',
   },
-  {
-    id: 3,
-    label: '布尔值',
-    value: 'boolean',
-  },
 ]
 
 // 根据id返回Label

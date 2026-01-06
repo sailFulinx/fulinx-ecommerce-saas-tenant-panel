@@ -176,7 +176,11 @@ provide(parameterKey, {
           >
             <ElTabs v-model="activeName" class="demo-tabs">
               <ElTabPane :label="$t('parameter.base')" name="base" />
-              <ElTabPane :label="$t('parameter.parameterValueList')" name="parameterValue" />
+              <ElTabPane
+                v-if="form.parameterType === 1 "
+                :label="$t('parameter.parameterValueList')"
+                name="parameterValue"
+              />
             </ElTabs>
           </ElTabPane>
         </ElTabs>
