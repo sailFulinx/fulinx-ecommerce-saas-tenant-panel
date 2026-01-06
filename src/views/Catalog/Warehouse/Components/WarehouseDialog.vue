@@ -101,8 +101,8 @@ const resetForm = () => {
 }
 
 const openDialog = async (val?: WarehouseData & CommonField) => {
-  dialogVisible.value = true
   loading.init = true
+  dialogVisible.value = true
   countryPayload.countryName = null
   countryPayload.id = null
   isEdit.value = false
@@ -172,108 +172,110 @@ defineExpose({
 </script>
 
 <template>
-  <ElDrawer v-model="dialogVisible" :loading="loading.init" :title="dialogTitle" size="50%">
-    <ElForm ref="formRef" :model="form" :rules="rules" label-width="120px">
-      <ElFormItem :label="$t('warehouse.warehouseName')" prop="warehouseName">
-        <ElInput
-          v-model="form.warehouseName"
-          class="input-line"
-          type="text"
-          clearable
-          :placeholder="`${$t('warehouse.placeholder.warehouseName')}`"
-        />
-      </ElFormItem>
-      <ElFormItem :label="$t('common.firstName')" prop="firstName">
-        <ElInput
-          v-model="form.firstName"
-          class="input-line"
-          type="text"
-          clearable
-          :placeholder="`${$t('common.placeholder.firstName')}`"
-        />
-      </ElFormItem>
+  <ElDrawer v-model="dialogVisible" :title="dialogTitle" size="50%">
+    <div v-loading="loading.init">
+      <ElForm ref="formRef" :model="form" :rules="rules" label-width="120px">
+        <ElFormItem :label="$t('warehouse.warehouseName')" prop="warehouseName">
+          <ElInput
+            v-model="form.warehouseName"
+            class="input-line"
+            type="text"
+            clearable
+            :placeholder="`${$t('warehouse.placeholder.warehouseName')}`"
+          />
+        </ElFormItem>
+        <ElFormItem :label="$t('common.firstName')" prop="firstName">
+          <ElInput
+            v-model="form.firstName"
+            class="input-line"
+            type="text"
+            clearable
+            :placeholder="`${$t('common.placeholder.firstName')}`"
+          />
+        </ElFormItem>
 
-      <ElFormItem :label="$t('common.lastName')" prop="lastName">
-        <ElInput
-          v-model="form.lastName"
-          class="input-line"
-          type="text"
-          clearable
-          :placeholder="`${$t('common.placeholder.lastName')}`"
-        />
-      </ElFormItem>
+        <ElFormItem :label="$t('common.lastName')" prop="lastName">
+          <ElInput
+            v-model="form.lastName"
+            class="input-line"
+            type="text"
+            clearable
+            :placeholder="`${$t('common.placeholder.lastName')}`"
+          />
+        </ElFormItem>
 
-      <ElFormItem :label="$t('common.telephone')" prop="telephone">
-        <ElInput
-          v-model="form.telephone"
-          class="input-line"
-          type="text"
-          clearable
-          :placeholder="`${$t('common.placeholder.telephone')}`"
-        />
-      </ElFormItem>
+        <ElFormItem :label="$t('common.telephone')" prop="telephone">
+          <ElInput
+            v-model="form.telephone"
+            class="input-line"
+            type="text"
+            clearable
+            :placeholder="`${$t('common.placeholder.telephone')}`"
+          />
+        </ElFormItem>
 
-      <ElFormItem :label="$t('common.regionCountry')" prop="regionCountryId">
-        <ElSelect
-          v-model="form.regionCountryId"
-          clearable
-          filterable
-          :placeholder="$t('common.placeholder.regionCountry')"
-          @change="handleChangeCountry"
-        >
-          <ElOption v-for="item in countryList" :key="item.id" :value="item.id" :label="item.countryName" />
-        </ElSelect>
-      </ElFormItem>
+        <ElFormItem :label="$t('common.regionCountry')" prop="regionCountryId">
+          <ElSelect
+            v-model="form.regionCountryId"
+            clearable
+            filterable
+            :placeholder="$t('common.placeholder.regionCountry')"
+            @change="handleChangeCountry"
+          >
+            <ElOption v-for="item in countryList" :key="item.id" :value="item.id" :label="item.countryName" />
+          </ElSelect>
+        </ElFormItem>
 
-      <ElFormItem :label="$t('common.regionState')" prop="regionStateId">
-        <ElSelect v-model="form.regionStateId" clearable filterable :placeholder="$t('common.placeholder.regionState')">
-          <ElOption v-for="item in stateList" :key="item.id" :value="item.id" :label="item.stateName" />
-        </ElSelect>
-      </ElFormItem>
+        <ElFormItem :label="$t('common.regionState')" prop="regionStateId">
+          <ElSelect v-model="form.regionStateId" clearable filterable :placeholder="$t('common.placeholder.regionState')">
+            <ElOption v-for="item in stateList" :key="item.id" :value="item.id" :label="item.stateName" />
+          </ElSelect>
+        </ElFormItem>
 
-      <ElFormItem :label="$t('common.regionCity')" prop="regionCityName">
-        <!-- <ElSelect v-model="form.regionCityId" clearable filterable :placeholder="$t('common.placeholder.regionCity')">
-          <ElOption v-for="item in cityList" :key="item.id" :value="item.id" :label="item.cityName" />
-        </ElSelect> -->
-        <ElInput
-          v-model="form.regionCityName"
-          class="input-line"
-          type="text"
-          clearable
-          :placeholder="`${$t('common.placeholder.regionCity')}`"
-        />
-      </ElFormItem>
+        <ElFormItem :label="$t('common.regionCity')" prop="regionCityName">
+          <!-- <ElSelect v-model="form.regionCityId" clearable filterable :placeholder="$t('common.placeholder.regionCity')">
+            <ElOption v-for="item in cityList" :key="item.id" :value="item.id" :label="item.cityName" />
+          </ElSelect> -->
+          <ElInput
+            v-model="form.regionCityName"
+            class="input-line"
+            type="text"
+            clearable
+            :placeholder="`${$t('common.placeholder.regionCity')}`"
+          />
+        </ElFormItem>
 
-      <ElFormItem :label="$t('common.address1')" prop="address1">
-        <ElInput
-          v-model="form.address1"
-          class="input-line"
-          type="text"
-          clearable
-          :placeholder="`${$t('common.placeholder.address1')}`"
-        />
-      </ElFormItem>
+        <ElFormItem :label="$t('common.address1')" prop="address1">
+          <ElInput
+            v-model="form.address1"
+            class="input-line"
+            type="text"
+            clearable
+            :placeholder="`${$t('common.placeholder.address1')}`"
+          />
+        </ElFormItem>
 
-      <ElFormItem :label="$t('common.address2')" prop="address2">
-        <ElInput
-          v-model="form.address2"
-          class="input-line"
-          type="text"
-          clearable
-          :placeholder="`${$t('common.placeholder.address2')}`"
-        />
-      </ElFormItem>
+        <ElFormItem :label="$t('common.address2')" prop="address2">
+          <ElInput
+            v-model="form.address2"
+            class="input-line"
+            type="text"
+            clearable
+            :placeholder="`${$t('common.placeholder.address2')}`"
+          />
+        </ElFormItem>
 
-      <ElFormItem :label="$t('common.postcode')" prop="postcode">
-        <ElInput
-          v-model="form.postcode"
-          class="input-line"
-          type="text"
-          clearable
-          :placeholder="`${$t('common.placeholder.postcode')}`"
-        />
-      </ElFormItem>
-    </ElForm>
+        <ElFormItem :label="$t('common.postcode')" prop="postcode">
+          <ElInput
+            v-model="form.postcode"
+            class="input-line"
+            type="text"
+            clearable
+            :placeholder="`${$t('common.placeholder.postcode')}`"
+          />
+        </ElFormItem>
+      </ElForm>
+    </div>
     <template #footer>
       <div class="dialog-footer">
         <ElButton @click="dialogVisible = false">
