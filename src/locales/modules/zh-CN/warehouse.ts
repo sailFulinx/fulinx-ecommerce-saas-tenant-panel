@@ -3,6 +3,7 @@ export default {
   show: '仓库详情',
   status: '状态',
   add: '添加仓库',
+  edit: '修改仓库',
   base: '基础信息',
   warehouseName: '仓库名称',
   description: '仓库描述',

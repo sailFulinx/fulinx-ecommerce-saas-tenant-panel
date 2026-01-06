@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import CreateWarehouseDialog from './Components/CreateWarehouseDialog.vue'
+import WarehouseDialog from './Components/WarehouseDialog.vue'
 
 const { t: $t } = useLocale()
-
-const router = useRouter()
 
 const listResult = ref<TableResponse<WarehouseData & CommonField>>({
   list: [],
@@ -91,14 +89,14 @@ const handleMultiDelete = async () => {
   })
 }
 
-const createWarehouseRef = useTemplateRef('createWarehouseRef')
+const warehouseDialogRef = useTemplateRef('warehouseDialogRef')
 
 const handleCreate = () => {
-  createWarehouseRef.value?.openDialog()
+  warehouseDialogRef.value?.openDialog()
 }
 
-const handleRedirectEdit = (val: WarehouseData & CommonField) => {
-  router.push({ name: 'ShowWarehouse', params: { id: val.id } })
+const handleEdit = (val: WarehouseData & CommonField) => {
+  warehouseDialogRef.value?.openDialog(val)
 }
 
 const handleUpdateWarehouseStatus = async (row: WarehouseData & CommonField) => {
@@ -176,9 +174,9 @@ const handleUpdateWarehouseStatus = async (row: WarehouseData & CommonField) => 
         <ElTableColumn label="操作" header-align="center" width="220" align="center" class-name="pl-15 fixed-width">
           <template #default="scope">
             <span class="mr-5">
-              <EBtn size="small" @click="handleRedirectEdit(scope.row)">
+              <EBtn size="small" @click="handleEdit(scope.row)">
                 <Icon icon="ep:edit" class="mr-1" />
-                {{ $t('common.view') }}
+                {{ $t('common.edit') }}
               </EBtn>
             </span>
             <span>
@@ -198,6 +196,6 @@ const handleUpdateWarehouseStatus = async (row: WarehouseData & CommonField) => 
         @pagination="pagination"
       />
     </div>
-    <CreateWarehouseDialog ref="createWarehouseRef" @get-list="getList" />
+    <WarehouseDialog ref="warehouseDialogRef" @get-list="getList" />
   </div>
 </template>

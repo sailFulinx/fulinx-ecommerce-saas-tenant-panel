@@ -176,19 +176,6 @@ const catalogRouter: AppRouteRecordRaw = {
       },
     },
     {
-      path: 'warehouse/show/:id',
-      component: () => import('@/views/Catalog/Warehouse/Show.vue'),
-      name: 'ShowWarehouse',
-      meta: {
-        title: $t('warehouse.show'),
-        noCache: true,
-        hidden: true,
-        canTo: true,
-        activeMenu: '/product/warehouse',
-      },
-      props: true,
-    },
-    {
       path: 'file',
       component: () => import('@/views/Catalog/File/index.vue'),
       name: 'FileList',

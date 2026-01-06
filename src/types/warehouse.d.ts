@@ -132,9 +132,9 @@ interface WarehouseData {
   isDefault: boolean
 }
 
-interface UpdateWarehouseParams {
+interface WarehouseReqParams {
   /* Warehouse ID */
-  warehouseId: string
+  warehouseId?: string | null
 
   /* Warehouse Name */
   warehouseName: string
@@ -148,17 +148,8 @@ interface UpdateWarehouseParams {
   /* Region Country ID */
   regionCountryId: string
 
-  /* Region Country Name */
-  regionCountryName: string
-
   /* Region State ID */
   regionStateId: string
-
-  /* Region State Name */
-  regionStateName: string
-
-  /* Region City ID */
-  regionCityId: string
 
   /* Region City Name */
   regionCityName: string
@@ -174,12 +165,6 @@ interface UpdateWarehouseParams {
 
   /* Postcode */
   postcode: string
-
-  /* Warehouse Type, 1: System 2:custom */
-  warehouseType: number
-
-  /* Sort */
-  sort: number
 }
 
 interface WarehouseListParams {

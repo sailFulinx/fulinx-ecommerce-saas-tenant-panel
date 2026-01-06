@@ -6,6 +6,12 @@ const { t: $t } = useLocale()
 
 const dialogVisible = ref(false)
 
+const dialogTitle = ref($t('warehouse.add'))
+
+const isEdit = ref(false)
+
+const warehouseId = ref('')
+
 const loading = reactive({
   init: false,
   country: false,
@@ -74,7 +80,8 @@ const handleChangeCountry = async (val: string) => {
 }
 
 const createForm = () =>
-  reactive<CreateWarehouseParams>({
+  reactive<WarehouseReqParams>({
+    warehouseId: null,
     warehouseName: '',
     firstName: '',
     lastName: '',
@@ -93,22 +100,38 @@ const resetForm = () => {
   form = createForm()
 }
 
-const openDialog = async (val?: WarehouseData) => {
+const openDialog = async (val?: WarehouseData & CommonField) => {
+  dialogVisible.value = true
+  loading.init = true
   countryPayload.countryName = null
   countryPayload.id = null
+  isEdit.value = false
+  await getCountryList()
+  warehouseId.value = ''
   if (!val) {
     resetForm()
   } else {
     form = Object.assign(form, val)
+    isEdit.value = true
+    warehouseId.value = val.id
+    statePayload.countryId = val.regionCountryId
+    await getStateList()
+    dialogTitle.value = $t('warehouse.edit')
   }
-  await getCountryList()
-  dialogVisible.value = true
+  loading.init = false
 }
 
-const createWarehouse = async () => {
+const saveWarehouse = async () => {
   loading.init = true
   const payload = $clone(form)
-  // delete payload.parentIds
+  if (isEdit.value) {
+    payload.warehouseId = warehouseId.value
+    await editWarehouseApi(payload).catch(error => {
+      loading.init = false
+      throw error
+    })
+    return
+  }
   await createWarehouseApi(payload).catch(error => {
     loading.init = false
     throw error
@@ -123,7 +146,7 @@ const onSave = () => {
     if (!valid) {
       return false
     }
-    await createWarehouse()
+    await saveWarehouse()
     ElMessage.success($t('success.create'))
     loading.init = false
     emit('getList')
@@ -149,7 +172,7 @@ defineExpose({
 </script>
 
 <template>
-  <ElDrawer v-model="dialogVisible" :title="$t('warehouse.add')" size="50%">
+  <ElDrawer v-model="dialogVisible" :loading="loading.init" :title="dialogTitle" size="50%">
     <ElForm ref="formRef" :model="form" :rules="rules" label-width="120px">
       <ElFormItem :label="$t('warehouse.warehouseName')" prop="warehouseName">
         <ElInput

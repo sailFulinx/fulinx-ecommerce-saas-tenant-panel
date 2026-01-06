@@ -1,6 +1,6 @@
 import request from '@/utils/axios'
 
-export function createWarehouseApi(data: CreateWarehouseParams): Promise<IResponse<CreateWarehouseRes & CommonField>> {
+export function createWarehouseApi(data: WarehouseReqParams): Promise<IResponse<CreateWarehouseRes & CommonField>> {
   return request.post({
     url: 'system/warehouse',
     data,
@@ -16,9 +16,9 @@ export function removeWarehouseApi(data: RemoveWarehouseParams): Promise<IRespon
   })
 }
 
-export function editWarehouseApi(id: string, data: UpdateWarehouseParams): Promise<IResponse<WarehouseData & CommonField>> {
-  return request.put({
-    url: `system/warehouse/${id}`,
+export function editWarehouseApi(data: WarehouseReqParams): Promise<IResponse<WarehouseData & CommonField>> {
+  return request.post({
+    url: 'system/warehouse/update',
     data,
     token: true,
   })
