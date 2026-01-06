@@ -1,7 +1,3 @@
-import { at } from 'lodash-es'
-import coupon from './coupon'
-import shipping from './shipping'
-
 export default {
   login: '登录',
   system: '系统设置',
@@ -18,6 +14,7 @@ export default {
   parameterGroup: '参数组管理',
   brand: '品牌管理',
   supplier: '供应商管理',
+  warehouse: '仓库管理',
   category: '分类管理',
   article: '内容管理',
   layout: '布局管理',

@@ -33,6 +33,7 @@ import success from './modules/zh-CN/success'
 import supplier from './modules/zh-CN/supplier'
 import theme from './modules/zh-CN/theme'
 import user from './modules/zh-CN/user'
+import warehouse from './modules/zh-CN/warehouse'
 import warning from './modules/zh-CN/warning'
 
 export default {
@@ -72,4 +73,5 @@ export default {
   coupon,
   invoice,
   shipping,
+  warehouse,
 }

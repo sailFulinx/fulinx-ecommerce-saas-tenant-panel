@@ -129,6 +129,8 @@ declare global {
   const createTheme: typeof import('../api/theme').createTheme
   const createUnrefFn: typeof import('@vueuse/core').createUnrefFn
   const createUserApi: typeof import('../api/user').createUserApi
+  const createWarehouse: typeof import('../api/warehouse').createWarehouse
+  const createWarehouseApi: typeof import('../api/warehouse').createWarehouseApi
   const currencyListApi: typeof import('../api/currency').currencyListApi
   const customRef: typeof import('vue').customRef
   const customerInvoiceListApi: typeof import('../api/customer').customerInvoiceListApi
@@ -141,6 +143,7 @@ declare global {
   const defineAsyncComponent: typeof import('vue').defineAsyncComponent
   const defineComponent: typeof import('vue').defineComponent
   const defineStore: typeof import('pinia').defineStore
+  const deleteWarehouse: typeof import('../api/warehouse').deleteWarehouse
   const eagerComputed: typeof import('@vueuse/core').eagerComputed
   const editCompApi: typeof import('../api/comp').editCompApi
   const editLayoutApi: typeof import('../api/layout').editLayoutApi
@@ -150,6 +153,7 @@ declare global {
   const editThemeConfig: typeof import('../api/theme').editThemeConfig
   const editUserApi: typeof import('../api/user').editUserApi
   const editUserPasswordApi: typeof import('../api/user').editUserPasswordApi
+  const editWarehouseApi: typeof import('../api/warehouse').editWarehouseApi
   const effectScope: typeof import('vue').effectScope
   const extendRef: typeof import('@vueuse/core').extendRef
   const fetchArticleMissingStatistics: typeof import('../api/dashboard').fetchArticleMissingStatistics
@@ -180,6 +184,9 @@ declare global {
   const getCurrentWatcher: typeof import('vue').getCurrentWatcher
   const getParam: typeof import('../composables/general').getParam
   const getToken: typeof import('../composables/index').getToken
+  const getWarehouseDetail: typeof import('../api/warehouse').getWarehouseDetail
+  const getWarehouseList: typeof import('../api/warehouse').getWarehouseList
+  const getWarehouseOptions: typeof import('../api/warehouse').getWarehouseOptions
   const h: typeof import('vue').h
   const ignorableWatch: typeof import('@vueuse/core').ignorableWatch
   const inject: typeof import('vue').inject
@@ -287,6 +294,7 @@ declare global {
   const removeTheme: typeof import('../api/theme').removeTheme
   const removeToken: typeof import('../composables/index').removeToken
   const removeUserApi: typeof import('../api/user').removeUserApi
+  const removeWarehouseApi: typeof import('../api/warehouse').removeWarehouseApi
   const request: typeof import('../composables/index').request
   const resetPasswordApi: typeof import('../api/user').resetPasswordApi
   const resolveComponent: typeof import('vue').resolveComponent
@@ -295,6 +303,7 @@ declare global {
   const router: typeof import('../composables/index').router
   const saveSettingApi: typeof import('../api/system').saveSettingApi
   const setActivePinia: typeof import('pinia').setActivePinia
+  const setDefaultWarehouse: typeof import('../api/warehouse').setDefaultWarehouse
   const setMapStoreSuffix: typeof import('pinia').setMapStoreSuffix
   const setToken: typeof import('../composables/index').setToken
   const shallowReactive: typeof import('vue').shallowReactive
@@ -326,6 +335,7 @@ declare global {
   const showSupplierApi: typeof import('../api/supplier').showSupplierApi
   const showTenantStoreApi: typeof import('../api/tenant').showTenantStoreApi
   const showTheme: typeof import('../api/theme').showTheme
+  const showWarehouseApi: typeof import('../api/warehouse').showWarehouseApi
   const siteConfigCheckoutSetting: typeof import('../api/site').siteConfigCheckoutSetting
   const siteConfigMailSetting: typeof import('../api/site').siteConfigMailSetting
   const sitePagination: typeof import('../api/site').sitePagination
@@ -473,6 +483,9 @@ declare global {
   const updateSupplierStatusApi: typeof import('../api/supplier-update').updateSupplierStatusApi
   const updateTenantStoreApi: typeof import('../api/tenant').updateTenantStoreApi
   const updateUserStatus: typeof import('../api/user').updateUserStatus
+  const updateWarehouse: typeof import('../api/warehouse').updateWarehouse
+  const updateWarehouseIsDefaultApi: typeof import('../api/warehouse').updateWarehouseIsDefaultApi
+  const updateWarehouseStatusApi: typeof import('../api/warehouse').updateWarehouseStatusApi
   const uploadCustomerInvoiceApi: typeof import('../api/customer').uploadCustomerInvoiceApi
   const uploadFileApi: typeof import('../api/file').uploadFileApi
   const useActiveElement: typeof import('@vueuse/core').useActiveElement
@@ -672,6 +685,8 @@ declare global {
   const useWindowFocus: typeof import('@vueuse/core').useWindowFocus
   const useWindowScroll: typeof import('@vueuse/core').useWindowScroll
   const useWindowSize: typeof import('@vueuse/core').useWindowSize
+  const warehouseListApi: typeof import('../api/warehouse').warehouseListApi
+  const warehousePaginationApi: typeof import('../api/warehouse').warehousePaginationApi
   const watch: typeof import('vue').watch
   const watchArray: typeof import('@vueuse/core').watchArray
   const watchAtMost: typeof import('@vueuse/core').watchAtMost
