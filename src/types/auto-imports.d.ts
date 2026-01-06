@@ -265,6 +265,9 @@ declare global {
   const refDefault: typeof import('@vueuse/core').refDefault
   const refThrottled: typeof import('@vueuse/core').refThrottled
   const refWithControl: typeof import('@vueuse/core').refWithControl
+  const regionCityListApi: typeof import('../api/region').regionCityListApi
+  const regionCountryListApi: typeof import('../api/region').regionCountryListApi
+  const regionStateListApi: typeof import('../api/region').regionStateListApi
   const removeArticleApi: typeof import('../api/article').removeArticleApi
   const removeArticleFileApi: typeof import('../api/article').removeArticleFileApi
   const removeArticleTagApi: typeof import('../api/article').removeArticleTagApi
