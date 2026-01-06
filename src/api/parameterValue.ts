@@ -1,14 +1,16 @@
 import request from '@/utils/axios'
 
 /**
- * 删除属性
- * @param {object} params 删除属性请求参数
- * @param {Array} params.parameterIds Parameter Ids
+ * 删除属性值
+ * @param {object} params 删除属性值请求参数
+ * @param {Array} params.parameterValueIds Parameter Value Ids
  * @returns
  */
-export function removeParameterApi(params: RemoveParameterParams): Promise<IResponse<boolean>> {
+export function removeParameterValueApi(
+  params: RemoveParameterValueParams,
+): Promise<IResponse<ParameterShowData & CommonField>> {
   return request.delete({
-    url: 'system/parameter',
+    url: 'system/parameter/value',
     data: params,
     token: true,
   })
@@ -24,9 +26,11 @@ export function removeParameterApi(params: RemoveParameterParams): Promise<IResp
  * @param {number} params.isDelete 删除标识
  * @returns
  */
-export function parameterListApi(params: ParameterListParams): Promise<IResponse<TableResponse<ParameterListData & CommonField>>> {
+export function parameterValueListApi(
+  params: ParameterValueListParams,
+): Promise<IResponse<TableResponse<ParameterValueListData & CommonField>>> {
   return request.post({
-    url: 'system/parameter/list',
+    url: 'system/parameter/value/list',
     data: params,
     token: true,
   })
@@ -44,26 +48,11 @@ export function parameterListApi(params: ParameterListParams): Promise<IResponse
  * @param {number} params.isDelete 删除标识
  * @returns
  */
-export function parameterPaginationApi(
-  params: ParameterListParams & Pagination,
-): Promise<IResponse<TableResponse<ParameterListData & CommonField>>> {
+export function parameterValuePaginationApi(
+  params: ParameterValueListParams & Pagination,
+): Promise<IResponse<TableResponse<ParameterValueListData & CommonField>>> {
   return request.post({
-    url: 'system/parameter/pagination',
-    data: params,
-    token: true,
-  })
-}
-
-/**
- * 查看属性
- * @param {object} params 属性详情请求参数
- * @param {string} params.parameterId Parameter Id
- * @param {string} params.languageId Language ID
- * @returns
- */
-export function showParameterApi(params: ShowParameterParams): Promise<IResponse<ParameterShowData & CommonField>> {
-  return request.post({
-    url: 'system/parameter/show',
+    url: 'system/parameter/value/pagination',
     data: params,
     token: true,
   })

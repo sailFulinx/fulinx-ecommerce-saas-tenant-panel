@@ -83,19 +83,6 @@ const catalogRouter: AppRouteRecordRaw = {
       },
     },
     {
-      path: 'parameter/create',
-      component: () => import('@/views/Catalog/Parameter/Create.vue'),
-      name: 'CreateParameter',
-      meta: {
-        title: $t('parameter.add'),
-        noCache: true,
-        hidden: true,
-        canTo: true,
-        activeMenu: '/product/parameter',
-        props: false,
-      },
-    },
-    {
       path: 'parameter/show/:id',
       component: () => import('@/views/Catalog/Parameter/Show.vue'),
       name: 'ShowParameter',
@@ -105,8 +92,8 @@ const catalogRouter: AppRouteRecordRaw = {
         hidden: true,
         canTo: true,
         activeMenu: '/product/parameter',
-        props: true,
       },
+      props: true,
     },
     {
       path: 'brand',

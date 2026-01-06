@@ -97,12 +97,14 @@ declare global {
   const createPageNameApi: typeof import('../api/page').createPageNameApi
   const createPageSeoApi: typeof import('../api/page').createPageSeoApi
   const createPageSlugApi: typeof import('../api/page').createPageSlugApi
-  const createParameterApi: typeof import('../api/parameter').createParameterApi
+  const createParameterApi: typeof import('../api/parameter-create').createParameterApi
   const createParameterDetailApi: typeof import('../api/parameter').createParameterDetailApi
   const createParameterGroupApi: typeof import('../api/parameter').createParameterGroupApi
   const createParameterGroupDetailApi: typeof import('../api/parameter').createParameterGroupDetailApi
   const createParameterGroupParameterRelationApi: typeof import('../api/parameter').createParameterGroupParameterRelationApi
-  const createParameterValueApi: typeof import('../api/parameter').createParameterValueApi
+  const createParameterNameApi: typeof import('../api/parameter-create').createParameterNameApi
+  const createParameterValueApi: typeof import('../api/parameterValue-create').createParameterValueApi
+  const createParameterValueContentApi: typeof import('../api/parameterValue-create').createParameterValueContentApi
   const createParameterValueDetailApi: typeof import('../api/parameter').createParameterValueDetailApi
   const createPinia: typeof import('pinia').createPinia
   const createProductApi: typeof import('../api/product').createProductApi
@@ -235,8 +237,8 @@ declare global {
   const parameterGroupParameterRelationPaginationApi: typeof import('../api/parameter').parameterGroupParameterRelationPaginationApi
   const parameterListApi: typeof import('../api/parameter').parameterListApi
   const parameterPaginationApi: typeof import('../api/parameter').parameterPaginationApi
-  const parameterValueListApi: typeof import('../api/parameter').parameterValueListApi
-  const parameterValuePaginationApi: typeof import('../api/parameter').parameterValuePaginationApi
+  const parameterValueListApi: typeof import('../api/parameterValue').parameterValueListApi
+  const parameterValuePaginationApi: typeof import('../api/parameterValue').parameterValuePaginationApi
   const pausableWatch: typeof import('@vueuse/core').pausableWatch
   const productExportListApi: typeof import('../api/product').productExportListApi
   const productListApi: typeof import('../api/product').productListApi
@@ -272,7 +274,7 @@ declare global {
   const removeParameterApi: typeof import('../api/parameter').removeParameterApi
   const removeParameterGroupApi: typeof import('../api/parameter').removeParameterGroupApi
   const removeParameterGroupParameterRelationApi: typeof import('../api/parameter').removeParameterGroupParameterRelationApi
-  const removeParameterValueApi: typeof import('../api/parameter').removeParameterValueApi
+  const removeParameterValueApi: typeof import('../api/parameterValue').removeParameterValueApi
   const removeProductApi: typeof import('../api/product').removeProductApi
   const removeRoleApi: typeof import('../api/role').removeRoleApi
   const removeShippingCompanyApi: typeof import('../api/shipping').removeShippingCompanyApi
@@ -420,9 +422,14 @@ declare global {
   const updateParameterDetailParameterNameApi: typeof import('../api/parameter').updateParameterDetailParameterNameApi
   const updateParameterGroupDetailParameterGroupNameApi: typeof import('../api/parameter').updateParameterGroupDetailParameterGroupNameApi
   const updateParameterGroupStatusApi: typeof import('../api/parameter').updateParameterGroupStatusApi
-  const updateParameterSortApi: typeof import('../api/parameter').updateParameterSortApi
+  const updateParameterNameApi: typeof import('../api/parameter-update').updateParameterNameApi
+  const updateParameterSortApi: typeof import('../api/parameter-update').updateParameterSortApi
+  const updateParameterStatusApi: typeof import('../api/parameter-update').updateParameterStatusApi
   const updateParameterTypeApi: typeof import('../api/parameter').updateParameterTypeApi
+  const updateParameterValueContentApi: typeof import('../api/parameterValue-update').updateParameterValueContentApi
   const updateParameterValueDetailParameterValueContentApi: typeof import('../api/parameter').updateParameterValueDetailParameterValueContentApi
+  const updateParameterValueSortApi: typeof import('../api/parameterValue-update').updateParameterValueSortApi
+  const updateParameterValueStatusApi: typeof import('../api/parameterValue-update').updateParameterValueStatusApi
   const updateProductCategoryApi: typeof import('../api/product').updateProductCategoryApi
   const updateProductDescriptionApi: typeof import('../api/product').updateProductDescriptionApi
   const updateProductImageApi: typeof import('../api/product').updateProductImageApi
