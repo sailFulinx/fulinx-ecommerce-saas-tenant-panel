@@ -437,6 +437,690 @@ interface ShowProductParams {
   languageId: string
 }
 
+interface ProductCategoryRelationListResultDo {
+  /* Product Category Relation ID */
+  id: string
+
+  /* Product ID */
+  productId: string
+
+  /* Category ID */
+  categoryId: string
+
+  /* Category Name */
+  categoryName: string
+
+  /* Soft Delete Flag */
+  isDelete: number
+
+  /* Remark */
+  remark: string
+
+  /* Record Version */
+  recordVersion: number
+
+  /* Record Create Name */
+  recordCreateName: string
+
+  /* Record Update Name */
+  recordUpdateName: string
+
+  /* Record Create Time */
+  recordCreateTime: string
+
+  /* Record Update Time */
+  recordUpdateTime: string
+}
+
+interface ProductSystemCategoryRelationListResultDo {
+  /* Product System Category Relation ID */
+  id: string
+
+  /* Product ID */
+  productId: string
+
+  /* System Category ID */
+  systemCategoryId: string
+
+  /* System Category Name */
+  systemCategoryName: string
+
+  /* Soft Delete Flag */
+  isDelete: number
+
+  /* Remark */
+  remark: string
+
+  /* Record Version */
+  recordVersion: number
+
+  /* Record Create Name */
+  recordCreateName: string
+
+  /* Record Update Name */
+  recordUpdateName: string
+
+  /* Record Create Time */
+  recordCreateTime: string
+
+  /* Record Update Time */
+  recordUpdateTime: string
+}
+
+interface ProductDetailListResultDo {
+  /* Product Detail ID */
+  id: string
+
+  /* Product ID */
+  productId: string
+
+  /* Language ID */
+  languageId: string
+
+  /* Product Name */
+  productName: string
+
+  /* Product Short Name */
+  productShortName: string
+
+  /* Product Description */
+  productDescription: string
+
+  /* Product Short Description */
+  productShortDescription: string
+
+  /* Layout Type, 1: default, 2: devCustomized, 3: userDefined  */
+  layoutType: number
+
+  /* Layout Type Label  */
+  layoutTypeLabel: string
+
+  /* Dev Component Name */
+  devComponentName: string
+
+  /* Layout Content */
+  layoutContent: string
+
+  /* Soft Delete Flag */
+  isDelete: number
+
+  /* Remark */
+  remark: string
+
+  /* Record Version */
+  recordVersion: number
+
+  /* Record Create Name */
+  recordCreateName: string
+
+  /* Record Update Name */
+  recordUpdateName: string
+
+  /* Record Create Time */
+  recordCreateTime: string
+
+  /* Record Update Time */
+  recordUpdateTime: string
+}
+
+interface ProductParameterRelationListResultDo {
+  /* Product Parameter Relation ID */
+  id: string
+
+  /* Product ID */
+  productId: string
+
+  /* Language ID */
+  languageId: string
+
+  /* Parameter Group ID */
+  parameterGroupId: string
+
+  /* Parameter Group Name */
+  parameterGroupName: string
+
+  /* Parameter ID */
+  parameterId: string
+
+  /* Parameter Type */
+  parameterType: number
+
+  /* Parameter Name */
+  parameterName: string
+
+  /* Parameter Value ID */
+  parameterValueId: string
+
+  /* Parameter Value Content */
+  parameterValueContent: string
+
+  /* Sort */
+  sort: number
+
+  /* Soft Delete Flag */
+  isDelete: number
+
+  /* Remark */
+  remark: string
+
+  /* Record Version */
+  recordVersion: number
+
+  /* Record Create Name */
+  recordCreateName: string
+
+  /* Record Update Name */
+  recordUpdateName: string
+
+  /* Record Create Time */
+  recordCreateTime: string
+
+  /* Record Update Time */
+  recordUpdateTime: string
+}
+
+interface FileVo {
+  /* File ID */
+  id: string
+
+  /* Bucket Name */
+  bucketName: string
+
+  /* Etag */
+  etag: string
+
+  /* S3 Key */
+  s3Key: string
+
+  /* Is Public */
+  isPublic: boolean
+
+  /* Original File Name */
+  originalFileName: string
+
+  /* File Name */
+  fileName: string
+
+  /* File Content Type */
+  fileContentType: string
+
+  /* File Extension Name */
+  fileExtensionName: string
+
+  /* Path */
+  path: string
+
+  /* File Url */
+  fileUrl: string
+
+  /* sha256 */
+  sha256: string
+
+  /* Soft Delete Flag */
+  isDelete: number
+
+  /* Remark */
+  remark: string
+
+  /* Record Version */
+  recordVersion: number
+
+  /* Record Create Name */
+  recordCreateName: string
+
+  /* Record Update Name */
+  recordUpdateName: string
+
+  /* Record Create Time */
+  recordCreateTime: string
+
+  /* Record Update Time */
+  recordUpdateTime: string
+}
+
+interface ProductFileRelationListResultDo {
+  /* Product File Relation ID */
+  id: string
+
+  /* Product ID */
+  productId: string
+
+  /* Language ID */
+  languageId: string
+
+  /* Product File Type, 1-Image, 2-Video, 3-Pdf */
+  productFileType: number
+
+  /* File ID */
+  fileId: string
+
+  /* */
+  fileVo: FileVo
+
+  /* Is Default, 0 - No, 1 - Yes */
+  isDefault: boolean
+
+  /* Sort */
+  sort: number
+
+  /* Soft Delete Flag */
+  isDelete: number
+
+  /* Remark */
+  remark: string
+
+  /* Record Version */
+  recordVersion: number
+
+  /* Record Create Name */
+  recordCreateName: string
+
+  /* Record Update Name */
+  recordUpdateName: string
+
+  /* Record Create Time */
+  recordCreateTime: string
+
+  /* Record Update Time */
+  recordUpdateTime: string
+}
+
+interface ProductSeoListResultDo {
+  /* Product SEO ID */
+  id: string
+
+  /* Product ID */
+  productId: string
+
+  /* Language ID */
+  languageId: string
+
+  /* Meta Title */
+  metaTitle: string
+
+  /* Meta Description */
+  metaDescription: string
+
+  /* Soft Delete Flag */
+  isDelete: number
+
+  /* Remark */
+  remark: string
+
+  /* Record Version */
+  recordVersion: number
+
+  /* Record Create Name */
+  recordCreateName: string
+
+  /* Record Update Name */
+  recordUpdateName: string
+
+  /* Record Create Time */
+  recordCreateTime: string
+
+  /* Record Update Time */
+  recordUpdateTime: string
+}
+
+interface ProductTagListResultDo {
+  /* Product Tag ID */
+  id: string
+
+  /* Product ID */
+  productId: string
+
+  /* Language ID */
+  languageId: string
+
+  /* Tag Name */
+  tagName: string
+
+  /* Soft Delete Flag */
+  isDelete: number
+
+  /* Remark */
+  remark: string
+
+  /* Record Version */
+  recordVersion: number
+
+  /* Record Create Name */
+  recordCreateName: string
+
+  /* Record Update Name */
+  recordUpdateName: string
+
+  /* Record Create Time */
+  recordCreateTime: string
+
+  /* Record Update Time */
+  recordUpdateTime: string
+}
+
+interface ProductAdminLocalizedViewDo {
+  /* Language ID */
+  languageId: string
+
+  /* Language Code */
+  languageCode: string
+
+  /* Language Name */
+  languageName: string
+
+  /* Product Category List Result Dos */
+  productCategoryRelationListResultDos: ProductCategoryRelationListResultDo[]
+
+  /* Product System Category List Result Dos */
+  productSystemCategoryRelationListResultDos: ProductSystemCategoryRelationListResultDo[]
+
+  /* */
+  productDetailListResultDo: ProductDetailListResultDo
+
+  /* Product Parameter Relation List Result Dos */
+  productParameterRelationListResultDos: ProductParameterRelationListResultDo[]
+
+  /* Product File List Result Dos */
+  productFileRelationListResultDos: ProductFileRelationListResultDo[]
+
+  /* */
+  productSeoListResultDo: ProductSeoListResultDo
+
+  /* Product Tag List Result Dos */
+  productTagListResultDos: ProductTagListResultDo[]
+}
+
+interface ProductAttributeListResultDo {
+  /* Product Attribute ID */
+  id: string
+
+  /* Product ID */
+  productId: string
+
+  /* Attribute Summary */
+  attributeSummary: string
+
+  /* Search Index, e.g. -- 中英文混合索引，支持多语言搜索\n"color:red,blue;size:S,M,L;材质:棉,涤纶|颜色:红色,蓝色;尺码:S,M,L;material:cotton,polyester" */
+  searchIndex: string
+
+  /* Soft Delete Flag */
+  isDelete: number
+
+  /* Remark */
+  remark: string
+
+  /* Record Version */
+  recordVersion: number
+
+  /* Record Create Name */
+  recordCreateName: string
+
+  /* Record Update Name */
+  recordUpdateName: string
+
+  /* Record Create Time */
+  recordCreateTime: string
+
+  /* Record Update Time */
+  recordUpdateTime: string
+}
+
+interface ProductSkuAttributeListResultDo {
+  /* Product Sku Attribute ID */
+  id: string
+
+  /* Product Sku ID */
+  productSkuId: string
+
+  /* Attribute ID */
+  attributeId: string
+
+  /* Attribute Names */
+  attributeNames: string
+
+  /* Attribute Sort */
+  attributeSort: number
+
+  /* Attribute Value ID */
+  attributeValueId: string
+
+  /* Attribute Value Contents */
+  attributeValueContents: string
+
+  /* Attribute Value Sort */
+  attributeValueSort: number
+
+  /* Soft Delete Flag */
+  isDelete: number
+
+  /* Remark */
+  remark: string
+
+  /* Record Version */
+  recordVersion: number
+
+  /* Record Create Name */
+  recordCreateName: string
+
+  /* Record Update Name */
+  recordUpdateName: string
+
+  /* Record Create Time */
+  recordCreateTime: string
+
+  /* Record Update Time */
+  recordUpdateTime: string
+}
+
+interface ProductSkuInventoryListResultDo {
+  /* Product Sku Inventory ID */
+  id: string
+
+  /* Product Sku ID */
+  productSkuId: string
+
+  /* Warehouse ID */
+  warehouseId: string
+
+  /* Quantity */
+  quantity: number
+
+  /* Locked Quantity */
+  lockedQuantity: number
+
+  /* Soft Delete Flag */
+  isDelete: number
+
+  /* Remark */
+  remark: string
+
+  /* Record Version */
+  recordVersion: number
+
+  /* Record Create Name */
+  recordCreateName: string
+
+  /* Record Update Name */
+  recordUpdateName: string
+
+  /* Record Create Time */
+  recordCreateTime: string
+
+  /* Record Update Time */
+  recordUpdateTime: string
+}
+
+interface ProductSkuListResultDo {
+  /* Product Sku ID */
+  id: string
+
+  /* Product ID */
+  productId: string
+
+  /* SKU Image File ID */
+  skuImageFileId: string
+
+  /* SKU */
+  skuCode: string
+
+  /* Currency ID */
+  currencyId: string
+
+  /* Price */
+  price: number
+
+  /* Cost Price */
+  costPrice: number
+
+  /* Promotion Price */
+  promotionPrice: number
+
+  /* Sale Price Started At */
+  promotionStartedTime: string
+
+  /* Sale Price Ended At */
+  promotionEndedTime: string
+
+  /* Is Required Shipping */
+  isRequiredShipping: boolean
+
+  /* Weight */
+  weight: number
+
+  /* Weight Unit, 1: kg, 2: g, 3: pound */
+  weightUnit: number
+
+  /* Length */
+  length: number
+
+  /* Width */
+  width: number
+
+  /* Height */
+  height: number
+
+  /* Length Unit, 1: cm, 2:mm, 3: inch */
+  lengthUnit: number
+
+  /* MPN */
+  mpn: string
+
+  /* UPC */
+  upc: string
+
+  /* EAN */
+  ean: string
+
+  /* JAN */
+  jan: string
+
+  /* ISBN */
+  isbn: string
+
+  /* ISSN */
+  issn: string
+
+  /* Status, 0 - Disabled , 1 - Enabled */
+  status: boolean
+
+  /* Soft Delete Flag */
+  isDelete: number
+
+  /* Remark */
+  remark: string
+
+  /* Record Version */
+  recordVersion: number
+
+  /* Record Create Name */
+  recordCreateName: string
+
+  /* Record Update Name */
+  recordUpdateName: string
+
+  /* Record Create Time */
+  recordCreateTime: string
+
+  /* Record Update Time */
+  recordUpdateTime: string
+
+  /* Product Sku Attribute List Result Dos */
+  productSkuAttributeListResultDos: ProductSkuAttributeListResultDo[]
+
+  /* Product Sku Inventory List Result Dos */
+  productSkuInventoryListResultDos: ProductSkuInventoryListResultDo[]
+}
+
+interface ProductSupplierListResultDo {
+  /* Product Supplier ID */
+  id: string
+
+  /* Product ID */
+  productId: string
+
+  /* Supplier ID */
+  supplierId: string
+
+  /* Supplier Url */
+  supplierUrl: string
+
+  /* Soft Delete Flag */
+  isDelete: number
+
+  /* Remark */
+  remark: string
+
+  /* Record Version */
+  recordVersion: number
+
+  /* Record Create Name */
+  recordCreateName: string
+
+  /* Record Update Name */
+  recordUpdateName: string
+
+  /* Record Create Time */
+  recordCreateTime: string
+
+  /* Record Update Time */
+  recordUpdateTime: string
+}
+
+interface ProductRelatedListResultDo {
+  /* Product Related ID */
+  id: string
+
+  /* Product ID */
+  productId: string
+
+  /* Relation Product ID */
+  relatedProductId: string
+
+  /* Sort */
+  sort: number
+
+  /* Soft Delete Flag */
+  isDelete: number
+
+  /* Remark */
+  remark: string
+
+  /* Record Version */
+  recordVersion: number
+
+  /* Record Create Name */
+  recordCreateName: string
+
+  /* Record Update Name */
+  recordUpdateName: string
+
+  /* Record Create Time */
+  recordCreateTime: string
+
+  /* Record Update Time */
+  recordUpdateTime: string
+}
+
 interface ShowProduct {
   /* SPU */
   spu: string
@@ -487,673 +1171,19 @@ interface ShowProduct {
   systemCategoryIds: string[]
 
   /* Product Admin Localized View Dos */
-  productAdminLocalizedViewDos: {
-    /* Language ID */
-    languageId: string
-
-    /* Language Code */
-    languageCode: string
-
-    /* Language Name */
-    languageName: string
-
-    /* Product Category List Result Dos */
-    productCategoryRelationListResultDos: {
-      /* Product Category Relation ID */
-      id: string
-
-      /* Product ID */
-      productId: string
-
-      /* Category ID */
-      categoryId: string
-
-      /* Category Name */
-      categoryName: string
-
-      /* Soft Delete Flag */
-      isDelete: number
-
-      /* Remark */
-      remark: string
-
-      /* Record Version */
-      recordVersion: number
-
-      /* Record Create Name */
-      recordCreateName: string
-
-      /* Record Update Name */
-      recordUpdateName: string
-
-      /* Record Create Time */
-      recordCreateTime: string
-
-      /* Record Update Time */
-      recordUpdateTime: string
-    }[]
-
-    /* Product System Category List Result Dos */
-    productSystemCategoryRelationListResultDos: {
-      /* Product System Category Relation ID */
-      id: string
-
-      /* Product ID */
-      productId: string
-
-      /* System Category ID */
-      systemCategoryId: string
-
-      /* System Category Name */
-      systemCategoryName: string
-
-      /* Soft Delete Flag */
-      isDelete: number
-
-      /* Remark */
-      remark: string
-
-      /* Record Version */
-      recordVersion: number
-
-      /* Record Create Name */
-      recordCreateName: string
-
-      /* Record Update Name */
-      recordUpdateName: string
-
-      /* Record Create Time */
-      recordCreateTime: string
-
-      /* Record Update Time */
-      recordUpdateTime: string
-    }[]
-
-    /* */
-    productDetailListResultDo: {
-      /* Product Detail ID */
-      id: string
-
-      /* Product ID */
-      productId: string
-
-      /* Language ID */
-      languageId: string
-
-      /* Product Name */
-      productName: string
-
-      /* Product Short Name */
-      productShortName: string
-
-      /* Product Description */
-      productDescription: string
-
-      /* Product Short Description */
-      productShortDescription: string
-
-      /* Layout Type, 1: default, 2: devCustomized, 3: userDefined  */
-      layoutType: number
-
-      /* Layout Type Label  */
-      layoutTypeLabel: string
-
-      /* Dev Component Name */
-      devComponentName: string
-
-      /* Layout Content */
-      layoutContent: string
-
-      /* Soft Delete Flag */
-      isDelete: number
-
-      /* Remark */
-      remark: string
-
-      /* Record Version */
-      recordVersion: number
-
-      /* Record Create Name */
-      recordCreateName: string
-
-      /* Record Update Name */
-      recordUpdateName: string
-
-      /* Record Create Time */
-      recordCreateTime: string
-
-      /* Record Update Time */
-      recordUpdateTime: string
-    }
-
-    /* Product Parameter Relation List Result Dos */
-    productParameterRelationListResultDos: {
-      /* Product Parameter Relation ID */
-      id: string
-
-      /* Product ID */
-      productId: string
-
-      /* Language ID */
-      languageId: string
-
-      /* Parameter Group ID */
-      parameterGroupId: string
-
-      /* Parameter Group Name */
-      parameterGroupName: string
-
-      /* Parameter ID */
-      parameterId: string
-
-      /* Parameter Type */
-      parameterType: number
-
-      /* Parameter Name */
-      parameterName: string
-
-      /* Parameter Value ID */
-      parameterValueId: string
-
-      /* Parameter Value Content */
-      parameterValueContent: string
-
-      /* Sort */
-      sort: number
-
-      /* Soft Delete Flag */
-      isDelete: number
-
-      /* Remark */
-      remark: string
-
-      /* Record Version */
-      recordVersion: number
-
-      /* Record Create Name */
-      recordCreateName: string
-
-      /* Record Update Name */
-      recordUpdateName: string
-
-      /* Record Create Time */
-      recordCreateTime: string
-
-      /* Record Update Time */
-      recordUpdateTime: string
-    }[]
-
-    /* Product File List Result Dos */
-    productFileRelationListResultDos: {
-      /* Product File Relation ID */
-      id: string
-
-      /* Product ID */
-      productId: string
-
-      /* Language ID */
-      languageId: string
-
-      /* Product File Type, 1-Image, 2-Video, 3-Pdf */
-      productFileType: number
-
-      /* File ID */
-      fileId: string
-
-      /* */
-      fileVo: {
-        /* File ID */
-        id: string
-
-        /* Bucket Name */
-        bucketName: string
-
-        /* Etag */
-        etag: string
-
-        /* S3 Key */
-        s3Key: string
-
-        /* Is Public */
-        isPublic: boolean
-
-        /* Original File Name */
-        originalFileName: string
-
-        /* File Name */
-        fileName: string
-
-        /* File Content Type */
-        fileContentType: string
-
-        /* File Extension Name */
-        fileExtensionName: string
-
-        /* Path */
-        path: string
-
-        /* File Url */
-        fileUrl: string
-
-        /* sha256 */
-        sha256: string
-
-        /* Soft Delete Flag */
-        isDelete: number
-
-        /* Remark */
-        remark: string
-
-        /* Record Version */
-        recordVersion: number
-
-        /* Record Create Name */
-        recordCreateName: string
-
-        /* Record Update Name */
-        recordUpdateName: string
-
-        /* Record Create Time */
-        recordCreateTime: string
-
-        /* Record Update Time */
-        recordUpdateTime: string
-      }
-
-      /* Is Default, 0 - No, 1 - Yes */
-      isDefault: boolean
-
-      /* Sort */
-      sort: number
-
-      /* Soft Delete Flag */
-      isDelete: number
-
-      /* Remark */
-      remark: string
-
-      /* Record Version */
-      recordVersion: number
-
-      /* Record Create Name */
-      recordCreateName: string
-
-      /* Record Update Name */
-      recordUpdateName: string
-
-      /* Record Create Time */
-      recordCreateTime: string
-
-      /* Record Update Time */
-      recordUpdateTime: string
-    }[]
-
-    /* */
-    productSeoListResultDo: {
-      /* Product SEO ID */
-      id: string
-
-      /* Product ID */
-      productId: string
-
-      /* Language ID */
-      languageId: string
-
-      /* Meta Title */
-      metaTitle: string
-
-      /* Meta Description */
-      metaDescription: string
-
-      /* Soft Delete Flag */
-      isDelete: number
-
-      /* Remark */
-      remark: string
-
-      /* Record Version */
-      recordVersion: number
-
-      /* Record Create Name */
-      recordCreateName: string
-
-      /* Record Update Name */
-      recordUpdateName: string
-
-      /* Record Create Time */
-      recordCreateTime: string
-
-      /* Record Update Time */
-      recordUpdateTime: string
-    }
-
-    /* Product Tag List Result Dos */
-    productTagListResultDos: {
-      /* Product Tag ID */
-      id: string
-
-      /* Product ID */
-      productId: string
-
-      /* Language ID */
-      languageId: string
-
-      /* Tag Name */
-      tagName: string
-
-      /* Soft Delete Flag */
-      isDelete: number
-
-      /* Remark */
-      remark: string
-
-      /* Record Version */
-      recordVersion: number
-
-      /* Record Create Name */
-      recordCreateName: string
-
-      /* Record Update Name */
-      recordUpdateName: string
-
-      /* Record Create Time */
-      recordCreateTime: string
-
-      /* Record Update Time */
-      recordUpdateTime: string
-    }[]
-  }[]
+  productAdminLocalizedViewDos: ProductAdminLocalizedViewDo[]
 
   /* */
-  productAttributeListResultDo: {
-    /* Product Attribute ID */
-    id: string
-
-    /* Product ID */
-    productId: string
-
-    /* Attribute Summary */
-    attributeSummary: string
-
-    /* Search Index, e.g. -- 中英文混合索引，支持多语言搜索\n"color:red,blue;size:S,M,L;材质:棉,涤纶|颜色:红色,蓝色;尺码:S,M,L;material:cotton,polyester" */
-    searchIndex: string
-
-    /* Soft Delete Flag */
-    isDelete: number
-
-    /* Remark */
-    remark: string
-
-    /* Record Version */
-    recordVersion: number
-
-    /* Record Create Name */
-    recordCreateName: string
-
-    /* Record Update Name */
-    recordUpdateName: string
-
-    /* Record Create Time */
-    recordCreateTime: string
-
-    /* Record Update Time */
-    recordUpdateTime: string
-  }
+  productAttributeListResultDo: ProductAttributeListResultDo
 
   /* Product Sku List Result Dos */
-  productSkuListResultDos: {
-    /* Product Sku ID */
-    id: string
-
-    /* Product ID */
-    productId: string
-
-    /* SKU Image File ID */
-    skuImageFileId: string
-
-    /* SKU */
-    skuCode: string
-
-    /* Currency ID */
-    currencyId: string
-
-    /* Price */
-    price: number
-
-    /* Cost Price */
-    costPrice: number
-
-    /* Promotion Price */
-    promotionPrice: number
-
-    /* Sale Price Started At */
-    promotionStartedTime: string
-
-    /* Sale Price Ended At */
-    promotionEndedTime: string
-
-    /* Is Required Shipping */
-    isRequiredShipping: boolean
-
-    /* Weight */
-    weight: number
-
-    /* Weight Unit, 1: kg, 2: g, 3: pound */
-    weightUnit: number
-
-    /* Length */
-    length: number
-
-    /* Width */
-    width: number
-
-    /* Height */
-    height: number
-
-    /* Length Unit, 1: cm, 2:mm, 3: inch */
-    lengthUnit: number
-
-    /* MPN */
-    mpn: string
-
-    /* UPC */
-    upc: string
-
-    /* EAN */
-    ean: string
-
-    /* JAN */
-    jan: string
-
-    /* ISBN */
-    isbn: string
-
-    /* ISSN */
-    issn: string
-
-    /* Status, 0 - Disabled , 1 - Enabled */
-    status: boolean
-
-    /* Soft Delete Flag */
-    isDelete: number
-
-    /* Remark */
-    remark: string
-
-    /* Record Version */
-    recordVersion: number
-
-    /* Record Create Name */
-    recordCreateName: string
-
-    /* Record Update Name */
-    recordUpdateName: string
-
-    /* Record Create Time */
-    recordCreateTime: string
-
-    /* Record Update Time */
-    recordUpdateTime: string
-
-    /* Product Sku Attribute List Result Dos */
-    productSkuAttributeListResultDos: {
-      /* Product Sku Attribute ID */
-      id: string
-
-      /* Product Sku ID */
-      productSkuId: string
-
-      /* Attribute ID */
-      attributeId: string
-
-      /* Attribute Names */
-      attributeNames: string
-
-      /* Attribute Sort */
-      attributeSort: number
-
-      /* Attribute Value ID */
-      attributeValueId: string
-
-      /* Attribute Value Contents */
-      attributeValueContents: string
-
-      /* Attribute Value Sort */
-      attributeValueSort: number
-
-      /* Soft Delete Flag */
-      isDelete: number
-
-      /* Remark */
-      remark: string
-
-      /* Record Version */
-      recordVersion: number
-
-      /* Record Create Name */
-      recordCreateName: string
-
-      /* Record Update Name */
-      recordUpdateName: string
-
-      /* Record Create Time */
-      recordCreateTime: string
-
-      /* Record Update Time */
-      recordUpdateTime: string
-    }[]
-
-    /* Product Sku Inventory List Result Dos */
-    productSkuInventoryListResultDos: {
-      /* Product Sku Inventory ID */
-      id: string
-
-      /* Product Sku ID */
-      productSkuId: string
-
-      /* Warehouse ID */
-      warehouseId: string
-
-      /* Quantity */
-      quantity: number
-
-      /* Locked Quantity */
-      lockedQuantity: number
-
-      /* Soft Delete Flag */
-      isDelete: number
-
-      /* Remark */
-      remark: string
-
-      /* Record Version */
-      recordVersion: number
-
-      /* Record Create Name */
-      recordCreateName: string
-
-      /* Record Update Name */
-      recordUpdateName: string
-
-      /* Record Create Time */
-      recordCreateTime: string
-
-      /* Record Update Time */
-      recordUpdateTime: string
-    }[]
-  }[]
+  productSkuListResultDos: ProductSkuListResultDo[]
 
   /* Product Supplier List Result Dos */
-  productSupplierListResultDos: {
-    /* Product Supplier ID */
-    id: string
-
-    /* Product ID */
-    productId: string
-
-    /* Supplier ID */
-    supplierId: string
-
-    /* Supplier Url */
-    supplierUrl: string
-
-    /* Soft Delete Flag */
-    isDelete: number
-
-    /* Remark */
-    remark: string
-
-    /* Record Version */
-    recordVersion: number
-
-    /* Record Create Name */
-    recordCreateName: string
-
-    /* Record Update Name */
-    recordUpdateName: string
-
-    /* Record Create Time */
-    recordCreateTime: string
-
-    /* Record Update Time */
-    recordUpdateTime: string
-  }[]
+  productSupplierListResultDos: ProductSupplierListResultDo[]
 
   /* Product Related List Result Dos */
-  productRelatedListResultDos: {
-    /* Product Related ID */
-    id: string
-
-    /* Product ID */
-    productId: string
-
-    /* Relation Product ID */
-    relatedProductId: string
-
-    /* Sort */
-    sort: number
-
-    /* Soft Delete Flag */
-    isDelete: number
-
-    /* Remark */
-    remark: string
-
-    /* Record Version */
-    recordVersion: number
-
-    /* Record Create Name */
-    recordCreateName: string
-
-    /* Record Update Name */
-    recordUpdateName: string
-
-    /* Record Create Time */
-    recordCreateTime: string
-
-    /* Record Update Time */
-    recordUpdateTime: string
-  }[]
+  productRelatedListResultDos: ProductRelatedListResultDo[]
 
   /* Slug ID */
   slugId: string
