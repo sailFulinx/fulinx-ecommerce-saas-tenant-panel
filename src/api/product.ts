@@ -10,22 +10,12 @@ import request from '@/utils/axios'
  * @returns
  */
 export function productListApi(
-  params: ProductListParams
+  params: ProductListParams,
 ): Promise<IResponse<TableResponse<ProductListData & CommonField>>> {
   return request.post({
     url: 'system/product/list',
     data: params,
-    token: true
-  })
-}
-
-export function productExportListApi(
-  params: ProductListParams
-): Promise<IResponse<TableResponse<ProductExportListData & CommonField>>> {
-  return request.post({
-    url: 'system/product/export',
-    data: params,
-    token: true
+    token: true,
   })
 }
 
@@ -41,12 +31,12 @@ export function productExportListApi(
  * @returns
  */
 export function productPaginationApi(
-  params: ProductListParams
+  params: ProductListParams,
 ): Promise<IResponse<TableResponse<ProductListData & CommonField>>> {
   return request.post({
     url: 'system/product/pagination',
     data: params,
-    token: true
+    token: true,
   })
 }
 
@@ -61,6 +51,6 @@ export function showProductApi(params: ShowProductParams): Promise<IResponse<Sho
   return request.post({
     url: 'system/product/show',
     data: params,
-    token: true
+    token: true,
   })
 }
