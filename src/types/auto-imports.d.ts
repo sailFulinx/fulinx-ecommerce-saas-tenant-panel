@@ -492,6 +492,7 @@ declare global {
   const uploadCustomerInvoiceApi: typeof import('../api/customer').uploadCustomerInvoiceApi
   const uploadFileApi: typeof import('../api/file').uploadFileApi
   const useActiveElement: typeof import('@vueuse/core').useActiveElement
+  const useAnchorScroll: typeof import('../hooks/useAnchorScroll').useAnchorScroll
   const useAnimate: typeof import('@vueuse/core').useAnimate
   const useAppStore: typeof import('../stores/app').useAppStore
   const useArrayDifference: typeof import('@vueuse/core').useArrayDifference

@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import { onMounted, onUnmounted } from 'vue'
 import { VueDraggable } from 'vue-draggable-plus'
+import { useAnchorScroll } from '@/hooks/useAnchorScroll'
 import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
 import { useTagsViewStore } from '@/stores/tagsView'
@@ -8,12 +10,11 @@ const { t: $t } = useLocale()
 
 const containerRef = ref<HTMLElement | null>(null)
 
-// 添加响应式变量来跟踪当前激活的锚点
-const currentHref = ref('#productName')
-
-const handleClickAnchor = (e: Event) => {
-  e.preventDefault()
-}
+// 使用锚点滚动Hook
+const { currentHref, handleClickAnchor } = useAnchorScroll({
+  containerRef: containerRef.value,
+  sections: ['productName', 'productFile', 'productOption', 'productOther'],
+})
 
 const rules = reactive({
   languageId: [{ required: true, message: $t('common.placeholder.language'), trigger: 'change' }],
@@ -251,7 +252,7 @@ const save = async () => {
     <div class="view-main theme-card">
       <ElForm ref="productFormRef" :model="productForm" :rules="rules" label-width="140px">
         <div class="grid grid-cols-12 gap-4">
-          <div class="col-span-2">
+          <div class="col-span-2 bg-white border-r border-gray-200">
             <ElAnchor
               v-model:active-href="currentHref"
               :container="containerRef"
@@ -260,34 +261,15 @@ const save = async () => {
               :target-scroll="true"
               @click="handleClickAnchor"
             >
-              <ElAnchorLink
-                href="#productName"
-                :title="$t('product.productBasicInfo')"
-              />
-              <ElAnchorLink
-                href="#productFile"
-                :title="$t('product.imageVideo')"
-              />
-              <ElAnchorLink
-                href="#productOption"
-                :title="$t('product.specifications')"
-              />
-              <ElAnchorLink
-                href="#productOther"
-                :title="$t('product.otherInfo')"
-              />
+              <ElAnchorLink href="#productName" :title="$t('product.productBasicInfo')" />
+              <ElAnchorLink href="#productFile" :title="$t('product.imageVideo')" />
+              <ElAnchorLink href="#productOption" :title="$t('product.specifications')" />
+              <ElAnchorLink href="#productOther" :title="$t('product.otherInfo')" />
             </ElAnchor>
           </div>
-          <div ref="containerRef" class="col-span-10 container-custom">
+          <div ref="containerRef" class="bg-white col-span-10 container-custom">
             <!-- 基础 -->
-            <ElCard id="productName" shadow="never" class="mb-5">
-              <template #header>
-                <div class="flex items-center justify-between">
-                  <div class="text-base font-bold">
-                    {{ $t('product.base') }}
-                  </div>
-                </div>
-              </template>
+            <div id="productName" shadow="never" class="mb-5">
               <ElFormItem :label="$t('product.productName')" prop="productName">
                 <ElInput
                   v-model="productForm.productName"
@@ -316,40 +298,19 @@ const save = async () => {
               <ElFormItem :label="$t('product.productDescription')" prop="articleDescription">
                 <Editor ref="editorRef" v-model="productForm.productDescription" :height="300" />
               </ElFormItem>
-            </ElCard>
+            </div>
             <!-- 图片 -->
-            <ElCard id="productFile" shadow="never" class="mb-5">
-              <template #header>
-                <div class="flex items-center justify-between">
-                  <div class="text-base font-bold">
-                    {{ $t('product.image') }}
-                  </div>
-                </div>
-              </template>
+            <div id="productFile" shadow="never" class="mb-5 h-[800px]">
               <UploadMultiImage ref="imageUploadRef" />
-            </ElCard>
+            </div>
             <!-- 规格 -->
-            <ElCard id="productOption" shadow="never" class="mb-5">
-              <template #header>
-                <div class="flex items-center justify-between">
-                  <div class="text-base font-bold">
-                    {{ $t('product.image') }}
-                  </div>
-                </div>
-              </template>
+            <div id="productOption" shadow="never" class="mb-5 h-[800px]">
               规格
-            </ElCard>
+            </div>
             <!-- 其它 -->
-            <ElCard id="productOther" shadow="never" class="mb-5">
-              <template #header>
-                <div class="flex items-center justify-between">
-                  <div class="text-base font-bold">
-                    {{ $t('product.image') }}
-                  </div>
-                </div>
-              </template>
+            <div id="productOther" shadow="never" class="mb-5 h-[800px]">
               其它
-            </ElCard>
+            </div>
           </div>
         </div>
       </ElForm>
@@ -358,8 +319,22 @@ const save = async () => {
 </template>
 
 <style lang="scss" scoped>
-  .container-custom {
-    height: calc(100vh - 210px);
-    overflow-y: auto;
-  }
+.container-custom {
+  height: calc(100vh - 210px);
+  overflow-y: auto;
+}
+
+// 为锚点元素添加滚动边距，防止内容被固定头部遮挡
+#productName,
+#productFile,
+#productOption,
+#productOther {
+  scroll-margin-top: 120px;
+}
+:deep(.el-card__header) {
+  padding: 10px;
+}
+
+:deep(.el-anchor) {
+}
 </style>
