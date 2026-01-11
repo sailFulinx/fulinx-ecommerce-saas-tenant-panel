@@ -50,7 +50,7 @@ const createStore = async () => {
     <!-- 左侧内容 -->
     <div
       :class="`${collapse ? 'w-17' : 'w-64'}`"
-      class="fixed left-0 top-0 h-full border-r z-10 border-gray-950/5 dark:border-white/10"
+      class="fixed left-0 top-0 h-full bg-white border-r z-10 border-gray-950/5 dark:border-white/10"
     >
       <div class="flex items-center py-3 h-16 px-4 border-b border-gray-950/5 dark:border-white/10">
         <Logo />
@@ -66,7 +66,7 @@ const createStore = async () => {
 
     <!-- 右侧内容保持不变 -->
     <div :class="`${collapse ? 'ml-17' : 'ml-64'} flex-1 flex flex-col`">
-      <div class="sticky top-0 z-20 flex flex-col">
+      <div class="sticky top-0 z-20 flex flex-col bg-white">
         <div class="px-4 h-16 flex justify-between">
           <ToolHeader />
         </div>
@@ -77,7 +77,7 @@ const createStore = async () => {
       </div>
 
       <!-- main 内容区 -->
-      <main class="flex-1 relative overflow-hidden">
+      <main class="flex-1 relative overflow-hidden bg-white">
         <!-- 添加 overflow-hidden -->
         <ElScrollbar class="absolute inset-0">
           <div class="h-full">
