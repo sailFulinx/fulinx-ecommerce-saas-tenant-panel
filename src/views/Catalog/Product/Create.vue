@@ -1,13 +1,9 @@
 <script setup lang="ts">
-import { categoryListApi } from '@/api/category'
-import { parameterGroupListApi, parameterListApi } from '@/api/parameter'
-import { createProductApi } from '@/api/product'
-import { supplierPaginationApi } from '@/api/supplier'
+import { ElAnchor } from 'element-plus'
+import { VueDraggable } from 'vue-draggable-plus'
 import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
 import { useTagsViewStore } from '@/stores/tagsView'
-import { ElCard, ElInput, ElInputNumber, ElMessage, ElOption, ElSwitch } from 'element-plus'
-import { VueDraggable } from 'vue-draggable-plus'
 
 const { t: $t } = useLocale()
 
@@ -35,71 +31,15 @@ const loading = reactive({
   parameter: false,
 })
 
+const containerRef = ref<HTMLElement | null>(null)
+
+const handleClickAnchor = (e: MouseEvent) => {
+  e.preventDefault()
+}
+
 /**
  * 参数
  */
-
-const parameterDragging = ref(false)
-
-const selectedParameter = ref<(ParameterListData & CommonField) | null>()
-
-const selectedParameterList = ref<(ParameterListData & CommonField)[]>([])
-
-const addParameter = () => {
-  if (!selectedParameter.value || selectedParameter.value === null) {
-    ElMessage({
-      type: 'warning',
-      message: '请选择参数',
-    })
-    return
-  }
-  // 如果已经存在,不重复添加
-  if (selectedParameterList.value.find(item => item.id === selectedParameter.value?.id)) {
-    ElMessage({
-      type: 'warning',
-      message: '已存在该参数',
-    })
-    return
-  }
-  selectedParameterList.value.push(selectedParameter.value)
-}
-
-const removeParameter = (index: number) => {
-  selectedParameterList.value.splice(index, 1)
-}
-
-const handleChangeSort = () => {
-  selectedParameterList.value.forEach((item, index) => {
-    item.sort = index + 1
-  })
-}
-
-// const selectedParameterGroup = ref('')
-
-// const listParameterGroupResult = ref<TableResponse<ParameterGroupListData & CommonField>>({
-//   list: [],
-//   total: 0,
-// })
-
-// const listParameterGroupQuery = reactive<ParameterGroupListParams>({
-//   languageId: usePreferenceStore().preference?.language.id,
-//   parameterGroupName: '',
-// })
-
-// const getParameterGroupList = async () => {
-//   loading.parameterGroup = true
-//   if (listParameterGroupQuery.parameterGroupName === '') {
-//     listParameterGroupQuery.parameterGroupName = null
-//   }
-//   const { data } = await parameterGroupListApi(listParameterGroupQuery).catch(err => {
-//     loading.parameterGroup = false
-//     throw err
-//   })
-//   listParameterGroupResult.value = data
-//   loading.parameterGroup = false
-// }
-
-// getParameterGroupList()
 
 const listParameterResult = ref<TableResponse<ParameterListData & CommonField>>({
   list: [],
@@ -120,27 +60,7 @@ const getParameterList = async () => {
   loading.parameter = false
 }
 
-// const handleParameterGroupChange = (val: string) => {
-//   listParameterQuery.parameterGroupId = val
-//   getParameterList()
-// }
 getParameterList()
-
-const productParameterForm = ref<ProductParameterRelationRequest[]>([])
-
-const inputParameterForm = ref<string[]>([])
-
-const formatInputParameterValue = (index: number, value: ParameterListData & CommonField) => {
-  const parameterValueContent = inputParameterForm.value[index]
-  const parameterValue: ProductParameterRelationRequest = {
-    // parameterGroupId: selectedParameterGroup.value,
-    parameterId: value.id,
-    parameterValueContent,
-    parameterValueId: '',
-    sort: index + 1,
-  }
-  productParameterForm.value[index] = parameterValue
-}
 
 /**
  * 分类
@@ -173,7 +93,7 @@ const listCategoryPayload = reactive<CategoryListParams>({
   id: null,
 })
 
-const listCategoryData = ref<ListCategoryRes>({
+const listCategoryData = ref<TableResponse<CategoryData & CommonField>>({
   list: [],
   total: 0,
 })
@@ -218,14 +138,6 @@ const getSupplierList = async () => {
 }
 getSupplierList()
 
-const remoteQuerySupplier = async (query: string) => {
-  if (query.length < 3) {
-    return
-  }
-  listSupplierQuery.supplierName = query
-  await getSupplierList()
-}
-
 const pageTitle = $t('product.add')
 
 const productFormRef = ref()
@@ -237,41 +149,42 @@ const imageUploadRef = ref()
 const createProductForm = (): CreateProductParams => {
   return {
     languageId: usePreferenceStore().preference.language.id,
-    sku: '',
-    mpn: '',
-    isSettingOnlineTime: false,
+    spu: '',
+    productType: 0,
     onlineTime: '',
-    isSettingOfflineTime: false,
     offlineTime: '',
-    inStockQuantity: 0,
-    processingQuantity: 0,
-    processingDays: 0,
-    productionCycle: 0,
-    supplierId: '',
+    brandId: '',
+    productSourceType: 0,
+    isAdult: true,
+    ageGroupType: 0,
+    genderType: 0,
+    conditionType: 0,
+    systemCategoryId: '',
     productName: '',
-    currencyId: '',
-    parameterGroupId: '',
-    categoryIds: [],
-    productPriceCreateRequestDos: [],
-    productImageRequestDos: [],
-    productParameterRelationRequestDos: [],
+    productShortName: '',
     productDescription: '',
+    productShortDescription: '',
+    metaTitle: '',
+    metaDescription: '',
+    categoryIds: [],
+    productFileRequestDos: [],
+    currencyId: '',
+    productSkuRequestDo: {
+      productAttributeRequestDo: {
+        productAttributeSummaryDo: {
+          productAttributeSummaryAttributeDos: [],
+        },
+        searchIndex: '',
+      },
+      productSkuItemRequestDos: [],
+    },
+    productParameterRelationRequestDos: [],
+    productRelatedRequestDos: [],
+    productSupplierRequestDos: [],
   }
 }
 
 const productForm = reactive<CreateProductParams>(createProductForm())
-
-const handleAddPrice = () => {
-  productForm.productPriceCreateRequestDos.push({
-    orderQuantity: 1,
-    price: 1,
-    isSettingSalePrice: false,
-    salePrice: 1,
-    salePriceStartedAt: '',
-    isSettingSaleEndedTime: false,
-    salePriceEndedAt: '',
-  })
-}
 
 const closeViewTag = () => {}
 
@@ -291,32 +204,12 @@ const save = async () => {
   productForm.currencyId = usePreferenceStore().preference.currency.id
   // productForm.parameterGroupId = selectedParameterGroup.value
   const images = imageUploadRef.value.getFileData()
-  productForm.productImageRequestDos = images.fileDataList
-  productForm.productImageRequestDos?.map(item => {
+  productForm.productFileRequestDos = images.fileDataList
+  productForm.productFileRequestDos?.map(item => {
     item.productFileType = 1
     return item
   })
-  productParameterForm.value.map((item, index) => {
-    if (item?.id) {
-      const result: ProductParameterRelationRequest = {
-        // parameterGroupId: selectedParameterGroup.value,
-        parameterId: item.parameterId,
-        parameterValueId: item.id,
-        parameterValueContent: item.parameterValueContent,
-        sort: index + 1,
-      }
-      productForm.productParameterRelationRequestDos.push(result)
-    } else {
-      const result: ProductParameterRelationRequest = {
-        // parameterGroupId: selectedParameterGroup.value,
-        parameterId: item.parameterId,
-        parameterValueId: '',
-        parameterValueContent: item.parameterValueContent,
-        sort: index + 1,
-      }
-      productForm.productParameterRelationRequestDos.push(result)
-    }
-  })
+
   if (categoryIds.value && categoryIds.value.length > 0) {
     productForm.categoryIds = categoryIds.value
   }
@@ -364,9 +257,9 @@ const save = async () => {
     <div class="view-main theme-card">
       <ElForm ref="productFormRef" :model="productForm" :rules="rules" label-width="140px">
         <div class="grid grid-cols-12 gap-4">
-          <div class="col-span-8">
+          <div ref="containerRef" class="col-span-9">
             <!-- 基础 -->
-            <ElCard shadow="never" class="mb-5">
+            <ElCard id="productName" shadow="never" class="mb-5">
               <template #header>
                 <div class="flex items-center justify-between">
                   <div class="text-base font-bold">
@@ -382,48 +275,29 @@ const save = async () => {
                   :placeholder="$t('product.placeholder.productName')"
                 />
               </ElFormItem>
+              <!-- 产品分类 -->
+              <ElFormItem :label="$t('product.category')" prop="category">
+                <ElCascader
+                  v-model="productForm.categoryIds"
+                  :props="categoryProps"
+                  :options="listCategoryData.list"
+                  @change="handleChangeCategory"
+                />
+              </ElFormItem>
               <ElFormItem :label="$t('product.sku')" prop="sku">
                 <ElInput
-                  v-model="productForm.sku"
+                  v-model="productForm.spu"
                   minlength="1"
                   maxlength="120"
                   :placeholder="$t('product.placeholder.sku')"
                 />
               </ElFormItem>
-              <ElFormItem :label="$t('product.supplier')" prop="supplierId">
-                <ElSelect
-                  v-model="productForm.supplierId"
-                  filterable
-                  clearable
-                  remote
-                  reserve-keyword
-                  :remote-method="remoteQuerySupplier"
-                  :placeholder="$t('product.placeholder.supplier')"
-                  style="width: 200px"
-                >
-                  <ElOption
-                    v-for="item in listSupplierResult.list"
-                    :key="item.id"
-                    :value="item.id"
-                    :label="item.supplierName"
-                  />
-                </ElSelect>
-              </ElFormItem>
-              <ElFormItem :label="$t('product.mpn')" prop="mpn">
-                <ElInput
-                  v-model="productForm.mpn"
-                  minlength="1"
-                  maxlength="120"
-                  :placeholder="$t('product.placeholder.mpn')"
-                />
-              </ElFormItem>
-
               <ElFormItem :label="$t('product.productDescription')" prop="articleDescription">
                 <Editor ref="editorRef" v-model="productForm.productDescription" :height="300" />
               </ElFormItem>
             </ElCard>
             <!-- 图片 -->
-            <ElCard shadow="never" class="mb-5">
+            <ElCard id="productFile" shadow="never" class="mb-5">
               <template #header>
                 <div class="flex items-center justify-between">
                   <div class="text-base font-bold">
@@ -433,230 +307,42 @@ const save = async () => {
               </template>
               <UploadMultiImage ref="imageUploadRef" />
             </ElCard>
-            <!-- 参数 -->
-            <ElCard shadow="never" class="mb-5">
+            <!-- 规格 -->
+            <ElCard id="productOption" shadow="never" class="mb-5">
               <template #header>
                 <div class="flex items-center justify-between">
                   <div class="text-base font-bold">
-                    {{ $t('product.parameterInfo') }}
-                  </div>
-                  <div>
-                    <ElSelect
-                      v-model="selectedParameter"
-                      value-key="id"
-                      filterable
-                      clearable
-                      placeholder="请选择参数"
-                      style="width: 200px"
-                      class="mr-3"
-                    >
-                      <ElOption
-                        v-for="item in listParameterResult.list"
-                        :key="item.id"
-                        :label="item.parameterName"
-                        :value="item"
-                      />
-                    </ElSelect>
-
-                    <EBtn size="small" type="primary" @click="addParameter">
-                      <Icon icon="ant-design:plus-outlined" class="mr-1" />
-                      {{ $t('common.add') }}
-                    </EBtn>
+                    {{ $t('product.image') }}
                   </div>
                 </div>
               </template>
-              <div v-if="selectedParameterList && selectedParameterList.length > 0">
-                <VueDraggable
-                  v-model="selectedParameterList"
-                  item-key="id"
-                  @start="parameterDragging = true"
-                  @end="handleChangeSort"
-                >
-                  <div v-for="(item, index) in selectedParameterList" :key="item.id">
-                    <ElFormItem
-                      v-if="item.parameterType === 2"
-                      label-width="auto"
-                      :label="item.parameterName"
-                      class="flex justify-between"
-                    >
-                      <ElInput
-                        v-model="inputParameterForm[index]"
-                        style="width: 200px; margin-right: 10px"
-                        placeholder="请输入参数值"
-                        @input="formatInputParameterValue(index, item)"
-                      />
-                      <EBtn plain type="danger" @click="removeParameter(index)">
-                        <Icon icon="ant-design:delete-outlined" />
-                      </EBtn>
-                    </ElFormItem>
-                    <ElFormItem
-                      v-if="item.parameterType === 1"
-                      label-width="auto"
-                      :label="item.parameterName"
-                      class="flex justify-between"
-                    >
-                      <ElSelect
-                        v-model="productParameterForm[index]"
-                        value-key="id"
-                        style="width: 200px; margin-right: 10px"
-                        filterable
-                        clearable
-                        placeholder="请选择参数值"
-                      >
-                        <ElOption
-                          v-for="vItem in item.parameterValueListResultDos"
-                          :key="vItem.id"
-                          :label="vItem.parameterValueContent"
-                          :value="vItem"
-                        />
-                      </ElSelect>
-                      <EBtn plain type="danger" @click="removeParameter(index)">
-                        <Icon icon="ant-design:delete-outlined" />
-                      </EBtn>
-                    </ElFormItem>
+              规格
+            </ElCard>
+            <!-- 其它 -->
+            <ElCard id="productOther" shadow="never" class="mb-5">
+              <template #header>
+                <div class="flex items-center justify-between">
+                  <div class="text-base font-bold">
+                    {{ $t('product.image') }}
                   </div>
-                </VueDraggable>
-              </div>
+                </div>
+              </template>
+              其它
             </ElCard>
           </div>
-          <div class="col-span-4">
-            <!-- 产品分类 -->
-            <ElCard shadow="never" class="mb-5">
-              <template #header>
-                <div class="flex items-center justify-between">
-                  <div class="text-base font-bold">
-                    {{ $t('product.categoryInfo') }}
-                  </div>
-                </div>
-              </template>
-              <ElFormItem :label="$t('product.category')" prop="category">
-                <ElCascader
-                  v-model="productForm.categoryIds"
-                  :props="categoryProps"
-                  :options="listCategoryData.list"
-                  @change="handleChangeCategory"
-                />
-              </ElFormItem>
-            </ElCard>
-            <!-- 价格信息 -->
-            <ElCard shadow="never" class="mb-5">
-              <template #header>
-                <div class="flex items-center justify-between">
-                  <div class="text-base font-bold">
-                    {{ $t('product.price') }}
-                  </div>
-                  <EBtn type="primary" plain @click="handleAddPrice">
-                    <Icon icon="ep:plus" />
-                    {{ $t('product.addPrice') }}
-                  </EBtn>
-                </div>
-              </template>
-              <div class="w-full mt-5">
-                <ElTable :data="productForm.productPriceCreateRequestDos" style="width: 100%">
-                  <ElTableColumn prop="orderQuantity" :label="$t('product.orderQuantity')" width="180">
-                    <template #default="scope">
-                      <ElInputNumber
-                        v-model="scope.row.orderQuantity"
-                        :min="1"
-                        :max="999999999"
-                        :placeholder="$t('product.placeholder.orderQuantity')"
-                      />
-                    </template>
-                  </ElTableColumn>
-                  <ElTableColumn prop="price" :label="$t('product.price')">
-                    <template #default="scope">
-                      <ElInputNumber
-                        v-model="scope.row.price"
-                        :min="0.0001"
-                        :max="999999999.9999"
-                        :placeholder="$t('product.placeholder.productPrice')"
-                      />
-                    </template>
-                  </ElTableColumn>
-                </ElTable>
-              </div>
-            </ElCard>
-            <!-- 库存信息 -->
-            <ElCard shadow="never" class="mb-5">
-              <template #header>
-                <div class="flex items-center justify-between">
-                  <div class="text-base font-bold">
-                    {{ $t('product.stockInfo') }}
-                  </div>
-                </div>
-              </template>
-              <ElFormItem :label="$t('product.inStockQuantity')" prop="inStockQuantity">
-                <ElInputNumber
-                  v-model="productForm.inStockQuantity"
-                  :min="0"
-                  :max="9999999999"
-                  class="w-[200px]"
-                  :placeholder="$t('product.placeholder.inStockQuantity')"
-                />
-              </ElFormItem>
-              <ElFormItem :label="$t('product.processingQuantity')" prop="processingQuantity">
-                <ElInputNumber
-                  v-model="productForm.processingQuantity"
-                  :min="0"
-                  :max="9999999999"
-                  class="w-[200px]"
-                  :placeholder="$t('product.placeholder.processingQuantity')"
-                />
-              </ElFormItem>
-              <ElFormItem :label="$t('product.processingDays')" prop="processingDays">
-                <ElInputNumber
-                  v-model="productForm.processingDays"
-                  :min="0"
-                  :max="9999999999"
-                  class="w-[200px]"
-                  :placeholder="$t('product.placeholder.processingDays')"
-                />
-              </ElFormItem>
-              <ElFormItem :label="$t('product.productionCycle')" prop="productionCycle">
-                <ElInputNumber
-                  v-model="productForm.productionCycle"
-                  :min="0"
-                  :max="9999999999"
-                  class="w-[200px]"
-                  :placeholder="$t('product.placeholder.productionCycle')"
-                />
-                <span class="ml-2">(周)</span>
-              </ElFormItem>
-            </ElCard>
-            <!-- 其他信息 -->
-            <ElCard shadow="never">
-              <template #header>
-                <div class="flex items-center justify-between">
-                  <div class="text-base font-bold">
-                    {{ $t('product.other') }}
-                  </div>
-                </div>
-              </template>
-
-              <ElFormItem :label="$t('product.isSettingOnlineTime')" prop="isSettingOnlineTime">
-                <ElSwitch v-model="productForm.isSettingOnlineTime" />
-              </ElFormItem>
-
-              <ElFormItem v-if="productForm.isSettingOnlineTime" :label="$t('product.onlineTime')" prop="onlineTime">
-                <ElDatePicker
-                  v-model="productForm.onlineTime"
-                  type="datetime"
-                  :placeholder="$t('product.placeholder.onlineTime')"
-                />
-              </ElFormItem>
-
-              <ElFormItem :label="$t('product.isSettingOfflineTime')" prop="isSettingOfflineTime">
-                <ElSwitch v-model="productForm.isSettingOfflineTime" />
-              </ElFormItem>
-
-              <ElFormItem v-if="productForm.isSettingOfflineTime" :label="$t('product.offlineTime')" prop="offlineTime">
-                <ElDatePicker
-                  v-model="productForm.offlineTime"
-                  type="datetime"
-                  :placeholder="$t('product.placeholder.offlineTime')"
-                />
-              </ElFormItem>
-            </ElCard>
+          <div class="col-span-3 vp-raw">
+            <ElAnchor
+              :select-scroll-top="true"
+              :container="containerRef"
+              direction="vertical"
+              type="default"
+              @click="handleClickAnchor"
+            >
+              <ElAnchorLink href="#productName" title="产品名称" />
+              <ElAnchorLink href="#productFile" title="图片/视频" />
+              <ElAnchorLink href="#productOption" title="产品规格" />
+              <ElAnchorLink href="#productOther" title="其它信息" />
+            </ElAnchor>
           </div>
         </div>
       </ElForm>
