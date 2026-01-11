@@ -250,66 +250,88 @@ const save = async () => {
       </div>
     </div>
     <div class="view-main theme-card">
-      <ElForm ref="productFormRef" :model="productForm" :rules="rules" label-width="140px">
+      <ElForm ref="productFormRef" :model="productForm" :rules="rules" label-width="100px">
         <div class="grid grid-cols-12 gap-4">
-          <div class="col-span-2 bg-white border-r border-gray-200">
-            <ElAnchor
-              v-model:active-href="currentHref"
-              :container="containerRef"
-              direction="vertical"
-              type="default"
-              :target-scroll="true"
-              @click="handleClickAnchor"
-            >
-              <ElAnchorLink href="#productName" :title="$t('product.productBasicInfo')" />
-              <ElAnchorLink href="#productFile" :title="$t('product.imageVideo')" />
-              <ElAnchorLink href="#productOption" :title="$t('product.specifications')" />
-              <ElAnchorLink href="#productOther" :title="$t('product.otherInfo')" />
-            </ElAnchor>
+          <div class="col-span-3 bg-white pa-4">
+            AI生成
           </div>
-          <div ref="containerRef" class="bg-white col-span-10 container-custom">
-            <!-- 基础 -->
-            <div id="productName" shadow="never" class="mb-5">
-              <ElFormItem :label="$t('product.productName')" prop="productName">
-                <ElInput
-                  v-model="productForm.productName"
-                  minlength="1"
-                  maxlength="120"
-                  :placeholder="$t('product.placeholder.productName')"
-                />
-              </ElFormItem>
-              <!-- 产品分类 -->
-              <ElFormItem :label="$t('product.category')" prop="category">
-                <ElCascader
-                  v-model="productForm.categoryIds"
-                  :props="categoryProps"
-                  :options="listCategoryData.list"
-                  @change="handleChangeCategory"
-                />
-              </ElFormItem>
-              <ElFormItem :label="$t('product.sku')" prop="sku">
-                <ElInput
-                  v-model="productForm.spu"
-                  minlength="1"
-                  maxlength="120"
-                  :placeholder="$t('product.placeholder.sku')"
-                />
-              </ElFormItem>
-              <ElFormItem :label="$t('product.productDescription')" prop="articleDescription">
-                <Editor ref="editorRef" v-model="productForm.productDescription" :height="300" />
-              </ElFormItem>
+          <div class="col-span-9">
+            <div class="w-full mb-4">
+              <ElAnchor
+                v-model:active-href="currentHref"
+                :container="containerRef"
+                direction="horizontal"
+                type="default"
+                :target-scroll="true"
+                class="mb-5 pa-4"
+                @click="handleClickAnchor"
+              >
+                <ElAnchorLink href="#productName" title="基础信息" />
+                <ElAnchorLink href="#productFile" title="图文信息" />
+                <ElAnchorLink href="#productOption" title="价格库存" />
+                <ElAnchorLink href="#productOther" title="其他信息" />
+              </ElAnchor>
             </div>
-            <!-- 图片 -->
-            <div id="productFile" shadow="never" class="mb-5 h-[800px]">
-              <UploadMultiImage ref="imageUploadRef" />
-            </div>
-            <!-- 规格 -->
-            <div id="productOption" shadow="never" class="mb-5 h-[800px]">
-              规格
-            </div>
-            <!-- 其它 -->
-            <div id="productOther" shadow="never" class="mb-5 h-[800px]">
-              其它
+            <div ref="containerRef" class="w-full container-custom">
+              <!-- 基础 -->
+              <div id="productName" class="bg-white mb-5 pa-4">
+                <div class="w-full fs-16px font-bold mb-4">
+                  基础信息
+                </div>
+                <div class="w-full">
+                  <ElFormItem :label="$t('product.productName')" prop="productName">
+                    <ElInput
+                      v-model="productForm.productName"
+                      minlength="1"
+                      maxlength="120"
+                      :placeholder="$t('product.placeholder.productName')"
+                    />
+                  </ElFormItem>
+                  <!-- 产品分类 -->
+                  <ElFormItem :label="$t('product.category')" prop="category">
+                    <ElCascader
+                      v-model="productForm.categoryIds"
+                      :props="categoryProps"
+                      :options="listCategoryData.list"
+                      @change="handleChangeCategory"
+                    />
+                  </ElFormItem>
+                  <ElFormItem :label="$t('product.sku')" prop="sku">
+                    <ElInput
+                      v-model="productForm.spu"
+                      minlength="1"
+                      maxlength="120"
+                      :placeholder="$t('product.placeholder.sku')"
+                    />
+                  </ElFormItem>
+                  <ElFormItem :label="$t('product.productDescription')" prop="articleDescription">
+                    <Editor ref="editorRef" v-model="productForm.productDescription" :height="300" />
+                  </ElFormItem>
+                </div>
+              </div>
+              <!-- 图片 -->
+              <div id="productFile" class="bg-white mb-5 pa-4 h-[800px]">
+                <div class="w-full fs-16px font-bold mb-4">
+                  图文信息
+                </div>
+                <div class="w-full">
+                  <UploadMultiImage ref="imageUploadRef" />
+                </div>
+              </div>
+              <!-- 规格 -->
+              <div id="productOption" class="bg-white mb-5 pa-4 h-[800px]">
+                <div class="w-full fs-16px font-bold mb-4">
+                  价格库存
+                </div>
+                <div class="w-full" />
+              </div>
+              <!-- 其它 -->
+              <div id="productOther" class="bg-white mb-5 pa-4 h-[800px]">
+                <div class="w-full fs-16px font-bold mb-4">
+                  其他信息
+                </div>
+                <div class="w-full" />
+              </div>
             </div>
           </div>
         </div>
@@ -320,7 +342,7 @@ const save = async () => {
 
 <style lang="scss" scoped>
 .container-custom {
-  height: calc(100vh - 210px);
+  height: calc(100vh - 296px);
   overflow-y: auto;
 }
 
@@ -335,6 +357,11 @@ const save = async () => {
   padding: 10px;
 }
 
-:deep(.el-anchor) {
+:deep(.el-anchor__link) {
+  font-size: 16px;
+}
+:deep(.el-anchor__link.is-active) {
+  color: var(--el-color-primary);
+  font-weight: 500;
 }
 </style>
