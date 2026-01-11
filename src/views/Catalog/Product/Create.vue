@@ -8,7 +8,10 @@ const { t: $t } = useLocale()
 
 const containerRef = ref<HTMLElement | null>(null)
 
-const handleClickAnchor = (e: MouseEvent) => {
+// 添加响应式变量来跟踪当前激活的锚点
+const currentHref = ref('#productName')
+
+const handleClickAnchor = (e: Event) => {
   e.preventDefault()
 }
 
@@ -248,7 +251,7 @@ const save = async () => {
     <div class="view-main theme-card">
       <ElForm ref="productFormRef" :model="productForm" :rules="rules" label-width="140px">
         <div class="grid grid-cols-12 gap-4">
-          <div ref="containerRef" class="col-span-9">
+          <div ref="containerRef" class="col-span-9" style="height: 300px; overflow-y: auto">
             <!-- 基础 -->
             <ElCard id="productName" shadow="never" class="mb-5">
               <template #header>
@@ -323,6 +326,7 @@ const save = async () => {
           </div>
           <div class="col-span-3 vp-raw">
             <ElAnchor
+              v-model:active-href="currentHref"
               :offset="20"
               :container="containerRef"
               direction="vertical"
