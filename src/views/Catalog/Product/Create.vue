@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ElAnchor } from 'element-plus'
 import { VueDraggable } from 'vue-draggable-plus'
 import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
@@ -7,19 +6,17 @@ import { useTagsViewStore } from '@/stores/tagsView'
 
 const { t: $t } = useLocale()
 
+const containerRef = ref<HTMLElement | null>(null)
+
+const handleClickAnchor = (e: MouseEvent) => {
+  e.preventDefault()
+}
+
 const rules = reactive({
   languageId: [{ required: true, message: $t('common.placeholder.language'), trigger: 'change' }],
   productName: [{ required: true, message: $t('product.placeholder.productName'), trigger: 'blur' }],
   productType: [{ required: true, message: $t('product.placeholder.productType'), trigger: 'change' }],
-  productStockStatusType: [
-    { required: true, message: $t('product.placeholder.productStockStatusType'), trigger: 'change' },
-  ],
   sku: [{ required: true, message: $t('product.placeholder.sku'), trigger: 'blur' }],
-  productPrice: [{ required: true, message: $t('product.placeholder.productPrice'), trigger: 'blur' }],
-  inStockQuantity: [{ required: true, message: $t('product.placeholder.inStockQuantity'), trigger: 'blur' }],
-  processingQuantity: [{ required: false, message: $t('product.placeholder.processingQuantity'), trigger: 'blur' }],
-  processingDays: [{ required: false, message: $t('product.placeholder.processingDays'), trigger: 'blur' }],
-  productionCycle: [{ required: false, message: $t('product.placeholder.productionCycle'), trigger: 'blur' }],
 })
 
 const loading = reactive({
@@ -30,12 +27,6 @@ const loading = reactive({
   parameterGroup: false,
   parameter: false,
 })
-
-const containerRef = ref<HTMLElement | null>(null)
-
-const handleClickAnchor = (e: MouseEvent) => {
-  e.preventDefault()
-}
 
 /**
  * 参数
@@ -332,16 +323,29 @@ const save = async () => {
           </div>
           <div class="col-span-3 vp-raw">
             <ElAnchor
-              :select-scroll-top="true"
+              :offset="20"
               :container="containerRef"
               direction="vertical"
               type="default"
+              :target-scroll="true"
               @click="handleClickAnchor"
             >
-              <ElAnchorLink href="#productName" title="产品名称" />
-              <ElAnchorLink href="#productFile" title="图片/视频" />
-              <ElAnchorLink href="#productOption" title="产品规格" />
-              <ElAnchorLink href="#productOther" title="其它信息" />
+              <ElAnchorLink
+                href="#productName"
+                :title="$t('product.productBasicInfo')"
+              />
+              <ElAnchorLink
+                href="#productFile"
+                :title="$t('product.imageVideo')"
+              />
+              <ElAnchorLink
+                href="#productOption"
+                :title="$t('product.specifications')"
+              />
+              <ElAnchorLink
+                href="#productOther"
+                :title="$t('product.otherInfo')"
+              />
             </ElAnchor>
           </div>
         </div>
