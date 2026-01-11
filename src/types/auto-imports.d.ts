@@ -107,7 +107,7 @@ declare global {
   const createParameterValueContentApi: typeof import('../api/parameterValue-create').createParameterValueContentApi
   const createParameterValueDetailApi: typeof import('../api/parameter').createParameterValueDetailApi
   const createPinia: typeof import('pinia').createPinia
-  const createProductApi: typeof import('../api/product').createProductApi
+  const createProductApi: typeof import('../api/product-create').createProductApi
   const createProductDetailApi: typeof import('../api/product').createProductDetailApi
   const createProductSeoApi: typeof import('../api/product').createProductSeoApi
   const createReactiveFn: typeof import('@vueuse/core').createReactiveFn

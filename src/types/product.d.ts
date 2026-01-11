@@ -361,13 +361,16 @@ interface CreateProductRes {
 
 interface ProductListParams {
   /* Language ID */
-  languageId: string
+  languageId: string | null
 
   /* Product Id */
-  productId?: string
+  productId?: string | null
+
+  /* SPU */
+  spu?: string | null
 
   /* Product Name */
-  productName?: string
+  productName?: string | null
 
   /* 删除标识 */
   isDelete?: number

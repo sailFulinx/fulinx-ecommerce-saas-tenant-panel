@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { productExportListApi, productPaginationApi, removeProductApi } from '@/api/product'
 import { usePreferenceStore } from '@/stores/preference'
 import { formatTime } from '@/utils'
 
@@ -19,8 +18,6 @@ const loading = reactive({
 const listQuery = reactive<ProductListParams & Pagination>({
   languageId: usePreferenceStore().preference?.language.id,
   productName: '',
-  sku: '',
-  mpn: '',
   pageSize: 20,
   pageNumber: 1,
 })
@@ -30,12 +27,6 @@ const getList = async () => {
   loading.list = true
   if (listQuery.productName === '') {
     listQuery.productName = null
-  }
-  if (listQuery.sku === '') {
-    listQuery.sku = null
-  }
-  if (listQuery.mpn === '') {
-    listQuery.mpn = null
   }
   const { data } = await productPaginationApi(listQuery).catch(err => {
     loading.list = false
@@ -71,12 +62,12 @@ const selectedProductItem = (val: (ProductListData & CommonField)[]) => {
     selectedList.value.push(item.id)
   })
 }
-const handleDelete = async (row: ProductListData & CommonField) => {
+const handleDelete = async (_row: ProductListData & CommonField) => {
   loading.list = true
-  await removeProductApi({ productIds: [row.id] }).catch(err => {
-    loading.list = false
-    throw err
-  })
+  // await removeProductApi({ productIds: [row.id] }).catch(err => {
+  //   loading.list = false
+  //   throw err
+  // })
   getList()
   ElMessage({
     message: '删除成功',
@@ -95,10 +86,10 @@ const handleMultiDelete = async () => {
     loading.list = false
     return
   }
-  await removeProductApi({ productIds: selectedList.value }).catch(err => {
-    loading.list = false
-    throw err
-  })
+  // await removeProductApi({ productIds: selectedList.value }).catch(err => {
+  //   loading.list = false
+  //   throw err
+  // })
   loading.list = false
   getList()
   ElMessage({
@@ -122,13 +113,6 @@ const handleImport = () => {
   impDialogRef.value.handleOpen()
 }
 
-const handleExport = async () => {
-  const { data } = await productExportListApi({
-    languageId: usePreferenceStore().preference?.language.id,
-  }).catch(err => {
-    throw err
-  })
-}
 // init()
 </script>
 
@@ -149,30 +133,20 @@ const handleExport = async () => {
             @clear="getList"
           />
           <ElInput
-            v-model="listQuery.sku"
+            v-model="listQuery.spu"
             clearable
             :placeholder="$t('product.placeholder.skuQuery')"
             style="width: 200px"
             class="filter-item mr-5"
             @clear="getList"
           />
-          <ElInput
-            v-model="listQuery.mpn"
-            clearable
-            :placeholder="$t('product.placeholder.mpnQuery')"
-            style="width: 200px"
-            class="filter-item mr-5"
-            @clear="getList"
-          />
+
           <EBtn size="default" class="filter-item" plain type="primary" @click="getList">
             <Icon icon="ep:search" class="mr-1" />
             {{ $t('common.search') }}
           </EBtn>
         </div>
         <div>
-          <EBtn type="default" @click="handleExport">
-            导出
-          </EBtn>
           <EBtn type="default" @click="handleImport">
             {{ $t('imp.name') }}
           </EBtn>
