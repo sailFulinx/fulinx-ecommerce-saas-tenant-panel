@@ -41,31 +41,22 @@ const getAnchorsPosition = () => {
   for (const link of props.links) {
     const element = document.querySelector(link.href)
     if (element) {
-      const rect = element.getBoundingClientRect()
-      const containerRect = containerRef.value.getBoundingClientRect
-        ? containerRef.value.getBoundingClientRect()
-        : { top: 0, left: 0 }
-
-      // 计算相对于容器的位置
       let position
       if (containerRef.value === document.documentElement || containerRef.value === document.body) {
-        // 如果是页面滚动，使用元素距离页面顶部/左侧的位置
-        if (isVertical.value) {
-          const elementTop = element instanceof HTMLElement ? element.offsetTop : 0
-          position = elementTop
-        } else {
-          const elementLeft = element instanceof HTMLElement ? element.offsetLeft : 0
-          position = elementLeft
-        }
+        // 如果是页面滚动，直接使用元素的offsetTop
+        position = element instanceof HTMLElement ? element.offsetTop : 0
       } else {
-        // 如果是指定容器滚动，计算相对容器的位置
-        if (isVertical.value) {
-          const scrollTop = containerRef.value.scrollTop || 0
-          position = rect.top - containerRect.top + scrollTop
-        } else {
-          const scrollLeft = (containerRef.value as HTMLElement).scrollLeft || 0
-          position = rect.left - containerRect.left + scrollLeft
-        }
+        // 如果是指定容器滚动，计算元素相对于容器的位置
+        const elementRect = element.getBoundingClientRect()
+        const containerRect = containerRef.value.getBoundingClientRect
+          ? containerRef.value.getBoundingClientRect()
+          : { top: 0, left: 0 }
+
+        const scrollTop = containerRef.value.scrollTop || 0
+        const containerTop = containerRect.top
+
+        // 计算元素相对于容器顶部的实际位置
+        position = elementRect.top - containerTop + scrollTop
       }
 
       positions.push({
@@ -116,17 +107,16 @@ const handleScroll = () => {
   for (let i = 0; i < anchors.length; i++) {
     const currentAnchor = anchors[i]
     const nextAnchor = i < anchors.length - 1 ? anchors[i + 1] : null
-
-    // 如果是第一个锚点且滚动位置小于第一个锚点位置，或者
-    // 滚动位置在当前锚点和下一个锚点之间
-    if (i === 0 && adjustedScrollPosition < currentAnchor.position) {
-      // 如果还没滚动到第一个锚点位置，则保持第一个为激活状态
-      currentActive = currentAnchor.href
-      break
-    } else if (!nextAnchor || (adjustedScrollPosition >= currentAnchor.position && adjustedScrollPosition < nextAnchor.position)) {
+    // 如果滚动位置在当前锚点和下一个锚点之间，则激活当前锚点
+    if (!nextAnchor || (adjustedScrollPosition >= currentAnchor.position && adjustedScrollPosition < nextAnchor.position)) {
       currentActive = currentAnchor.href
       break
     }
+  }
+
+  // 如果滚动位置还没达到第一个锚点的位置，则激活第一个锚点
+  if (anchors.length > 0 && adjustedScrollPosition < anchors[0].position) {
+    currentActive = anchors[0].href
   }
 
   // 更新激活的href
@@ -150,9 +140,21 @@ const scrollToTarget = (href: string) => {
         behavior: 'smooth',
       })
     } else {
-      // 容器内滚动
+      // 容器内滚动 - 需要使用容器的scrollTop而不是元素的offsetTop
+      const elementRect = targetElement.getBoundingClientRect()
+      const containerRect = container.getBoundingClientRect()
+      let targetPosition
+
+      if (container === document.documentElement || container === document.body) {
+        targetPosition = targetElement.offsetTop - offsetTop
+      } else {
+        // 计算相对于容器的滚动位置
+        const scrollTop = container.scrollTop || 0
+        targetPosition = elementRect.top - containerRect.top + scrollTop - offsetTop
+      }
+
       ;(container as HTMLElement).scrollTo({
-        top: targetElement.offsetTop - offsetTop,
+        top: targetPosition,
         behavior: 'smooth',
       })
     }
