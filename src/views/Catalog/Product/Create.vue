@@ -9,7 +9,7 @@ const { t: $t } = useLocale()
 const containerRef = ref()
 
 // 直接使用useAnchorScroll返回的currentHref，避免手动声明
-const currentHref = ref('')
+const currentHref = ref('#productName')
 
 // 定义锚点链接
 const anchorLinks = [
@@ -18,6 +18,11 @@ const anchorLinks = [
   { href: '#productOption', title: $t('product.option') },
   { href: '#productOther', title: $t('product.other') },
 ]
+
+const handleUpdateActiveHref = (href: string) => {
+  console.log(href)
+  currentHref.value = href
+}
 
 const rules = reactive({
   languageId: [{ required: true, message: $t('common.placeholder.language'), trigger: 'change' }],
@@ -267,6 +272,7 @@ const save = async () => {
                 direction="horizontal"
                 :offset="100"
                 class="pa-4"
+                @update:active-href="handleUpdateActiveHref"
               />
             </div>
             <div ref="containerRef" class="w-full container-custom">

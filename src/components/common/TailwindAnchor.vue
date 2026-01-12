@@ -117,8 +117,13 @@ const handleScroll = () => {
     const currentAnchor = anchors[i]
     const nextAnchor = i < anchors.length - 1 ? anchors[i + 1] : null
 
-    // 如果是最后一个锚点，或者滚动位置在当前锚点和下一个锚点之间
-    if (!nextAnchor || adjustedScrollPosition < nextAnchor.position) {
+    // 如果是第一个锚点且滚动位置小于第一个锚点位置，或者
+    // 滚动位置在当前锚点和下一个锚点之间
+    if (i === 0 && adjustedScrollPosition < currentAnchor.position) {
+      // 如果还没滚动到第一个锚点位置，则保持第一个为激活状态
+      currentActive = currentAnchor.href
+      break
+    } else if (!nextAnchor || (adjustedScrollPosition >= currentAnchor.position && adjustedScrollPosition < nextAnchor.position)) {
       currentActive = currentAnchor.href
       break
     }
@@ -191,6 +196,7 @@ onMounted(() => {
   // 初始化时设置第一个为活跃项
   if (props.links.length > 0 && !activeHref.value) {
     activeHref.value = props.links[0].href
+    console.log('activeHref', activeHref.value)
     emit('update:active-href', activeHref.value)
   }
 
