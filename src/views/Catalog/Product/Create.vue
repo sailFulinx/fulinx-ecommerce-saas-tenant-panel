@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted } from 'vue'
 import { VueDraggable } from 'vue-draggable-plus'
-import { useAnchorScroll } from '@/hooks/useAnchorScroll'
 import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
 import { useTagsViewStore } from '@/stores/tagsView'
@@ -10,11 +8,9 @@ const { t: $t } = useLocale()
 
 const containerRef = ref<HTMLElement | null>(null)
 
-// 使用锚点滚动Hook
-const { currentHref, handleClickAnchor } = useAnchorScroll({
-  containerRef: containerRef.value,
-  sections: ['productName', 'productFile', 'productOption', 'productOther'],
-})
+const handleClickAnchor = (e: MouseEvent) => {
+  e.preventDefault()
+}
 
 const rules = reactive({
   languageId: [{ required: true, message: $t('common.placeholder.language'), trigger: 'change' }],
@@ -258,12 +254,12 @@ const save = async () => {
           <div class="col-span-9">
             <div class="w-full mb-4">
               <ElAnchor
-                v-model:active-href="currentHref"
+                :offset="10"
                 :container="containerRef"
                 direction="horizontal"
+                :select-scroll-top="true"
                 type="default"
-                :target-scroll="true"
-                class="mb-5 pa-4"
+                class="pa-4"
                 @click="handleClickAnchor"
               >
                 <ElAnchorLink href="#productName" title="基础信息" />
@@ -342,19 +338,8 @@ const save = async () => {
 
 <style lang="scss" scoped>
 .container-custom {
-  height: calc(100vh - 296px);
+  height: calc(100vh - 284px); // 调整高度计算，减少减去的值
   overflow-y: auto;
-}
-
-// 为锚点元素添加滚动边距，防止内容被固定头部遮挡
-#productName,
-#productFile,
-#productOption,
-#productOther {
-  scroll-margin-top: 120px;
-}
-:deep(.el-card__header) {
-  padding: 10px;
 }
 
 :deep(.el-anchor__link) {
