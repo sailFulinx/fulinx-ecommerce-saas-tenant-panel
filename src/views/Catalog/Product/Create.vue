@@ -6,10 +6,79 @@ import { useTagsViewStore } from '@/stores/tagsView'
 
 const { t: $t } = useLocale()
 
+// 当前激活的锚点链接
+const activeAnchor = ref('')
+
+// 你的滚动容器引用
 const containerRef = ref<HTMLElement | null>(null)
 
-const handleClickAnchor = (e: MouseEvent) => {
+// 处理滚动事件，动态更新激活的锚点
+const handleScroll = () => {
+  if (!containerRef.value) {
+    return
+  }
+
+  const scrollContainer = containerRef.value
+  const scrollTop = scrollContainer.scrollTop
+  const sections = [
+    { id: 'productName', offset: 0 }, // 可以根据实际情况设置偏移量
+    { id: 'productFile', offset: 0 },
+    { id: 'productOption', offset: 0 },
+    { id: 'productOther', offset: 0 },
+  ]
+
+  // 遍历各个区域，判断当前滚动位置处于哪个区域
+  for (let i = sections.length - 1; i >= 0; i--) {
+    const section = document.getElementById(sections[i].id)
+    if (!section) {
+      continue
+    }
+
+    // 计算区域相对于滚动容器顶部的位置
+    const sectionTop = section.offsetTop - sections[i].offset
+    if (scrollTop >= sectionTop - 10) { // 减去一个小阈值，使切换更平滑
+      activeAnchor.value = `#${sections[i].id}`
+      break
+    }
+  }
+}
+
+// 页面加载时，设置第一个锚点为默认激活状态
+onMounted(() => {
+  // 确保容器元素已正确挂载
+  if (containerRef.value) {
+    // 设置第一个锚点为默认激活项
+    activeAnchor.value = '#productName' // 对应第一个 <ElAnchorLink> 的 href
+
+    // 可选：添加滚动事件监听器，实现滚动时自动切换激活状态
+    containerRef.value.addEventListener('scroll', handleScroll)
+  }
+})
+
+// 组件卸载前移除事件监听
+onUnmounted(() => {
+  if (containerRef.value) {
+    containerRef.value.removeEventListener('scroll', handleScroll)
+  }
+})
+
+const handleClickAnchor = (e: MouseEvent, link: any) => {
   e.preventDefault()
+
+  // 如果是锚点点击，更新激活状态
+  if (link && link.href) {
+    const sectionId = link.href.replace('#', '')
+    activeAnchor.value = sectionId
+
+    // 平滑滚动到对应区域
+    const targetElement = document.getElementById(sectionId)
+    if (targetElement && containerRef.value) {
+      containerRef.value.scrollTo({
+        top: targetElement.offsetTop - 10, // 考虑offset偏移
+        behavior: 'smooth',
+      })
+    }
+  }
 }
 
 const rules = reactive({
@@ -254,10 +323,10 @@ const save = async () => {
           <div class="col-span-9">
             <div class="w-full mb-4">
               <ElAnchor
+                v-model="activeAnchor"
                 :offset="10"
                 :container="containerRef"
                 direction="horizontal"
-                :select-scroll-top="true"
                 type="default"
                 class="pa-4"
                 @click="handleClickAnchor"
