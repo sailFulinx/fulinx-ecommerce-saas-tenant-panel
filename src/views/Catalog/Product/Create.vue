@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { VueDraggable } from 'vue-draggable-plus'
 import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
@@ -6,7 +7,7 @@ import { useTagsViewStore } from '@/stores/tagsView'
 
 const { t: $t } = useLocale()
 
-const containerRef = ref()
+const containerRef = ref<HTMLElement>()
 
 // 直接使用useAnchorScroll返回的currentHref，避免手动声明
 const currentHref = ref('#productName')
