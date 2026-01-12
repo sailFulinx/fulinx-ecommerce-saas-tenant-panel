@@ -94,13 +94,13 @@ const handleScroll = () => {
   let scrollPosition
   if (containerRef.value === document.documentElement || containerRef.value === document.body) {
     if (isVertical.value) {
-      scrollPosition = window.scrollY || containerRef.value.scrollTop
+      scrollPosition = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop
     } else {
-      scrollPosition = window.scrollX || containerRef.value.scrollLeft
+      scrollPosition = window.scrollX || document.documentElement.scrollLeft || document.body.scrollLeft
     }
   } else {
     if (isVertical.value) {
-      scrollPosition = containerRef.value.scrollTop
+      scrollPosition = (containerRef.value as HTMLElement).scrollTop
     } else {
       scrollPosition = (containerRef.value as HTMLElement).scrollLeft
     }
@@ -114,9 +114,12 @@ const handleScroll = () => {
 
   // 寻找最接近当前位置的锚点
   for (let i = 0; i < anchors.length; i++) {
-    // 如果当前滚动位置小于下一个锚点位置，则当前锚点即为应激活的锚点
-    if (i === anchors.length - 1 || adjustedScrollPosition < anchors[i + 1].position) {
-      currentActive = anchors[i].href
+    const currentAnchor = anchors[i]
+    const nextAnchor = i < anchors.length - 1 ? anchors[i + 1] : null
+
+    // 如果是最后一个锚点，或者滚动位置在当前锚点和下一个锚点之间
+    if (!nextAnchor || adjustedScrollPosition < nextAnchor.position) {
+      currentActive = currentAnchor.href
       break
     }
   }
@@ -125,6 +128,39 @@ const handleScroll = () => {
   if (activeHref.value !== currentActive) {
     activeHref.value = currentActive
     emit('update:active-href', currentActive)
+  }
+}
+
+// 滚动到目标元素
+const scrollToTarget = (href: string) => {
+  const targetElement = document.querySelector(href) as HTMLElement
+  if (targetElement) {
+    const offsetTop = props.offset || 0
+    const container = containerRef.value
+
+    if (container === document.documentElement || container === document.body) {
+      // 页面滚动
+      window.scrollTo({
+        top: targetElement.offsetTop - offsetTop,
+        behavior: 'smooth',
+      })
+    } else {
+      // 容器内滚动
+      ;(container as HTMLElement).scrollTo({
+        top: targetElement.offsetTop - offsetTop,
+        behavior: 'smooth',
+      })
+    }
+
+    // 添加一个小延迟来确保滚动完成后再更新当前锚点状态
+    setTimeout(() => {
+      // 手动触发滚动更新，确保高亮状态正确
+      if (container === document.documentElement || container === document.body) {
+        window.dispatchEvent(new Event('scroll'))
+      } else {
+        ;(container as HTMLElement).dispatchEvent(new Event('scroll'))
+      }
+    }, 100)
   }
 }
 
@@ -137,23 +173,8 @@ const handleClick = (link: AnchorLink, event: MouseEvent) => {
   activeHref.value = link.href
   emit('update:active-href', link.href)
 
-  // 如果需要滚动到目标元素，可以手动实现滚动逻辑
-  const targetElement = document.querySelector(link.href)
-  if (targetElement instanceof HTMLElement) {
-    const offsetTop = props.offset || 0
-    const container = containerRef.value
-
-    if (container === document.documentElement || container === document.body) {
-      // 页面滚动
-      window.scrollTo({
-        top: targetElement.offsetTop - offsetTop,
-        behavior: 'smooth',
-      })
-    } else {
-      // 容器内滚动
-      container.scrollTop = targetElement.offsetTop - offsetTop
-    }
-  }
+  // 滚动到目标元素
+  scrollToTarget(link.href)
 }
 
 // 容器类

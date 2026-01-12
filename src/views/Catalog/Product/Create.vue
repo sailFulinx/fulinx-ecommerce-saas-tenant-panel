@@ -1,8 +1,5 @@
 <script setup lang="ts">
 import { VueDraggable } from 'vue-draggable-plus'
-// 导入新创建的 TailwindAnchor 组件
-import TailwindAnchor from '@/components/common/TailwindAnchor.vue'
-import { useAnchorScroll } from '@/hooks/useAnchorScroll'
 import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
 import { useTagsViewStore } from '@/stores/tagsView'
@@ -11,54 +8,8 @@ const { t: $t } = useLocale()
 
 const containerRef = ref()
 
-// 使用锚点滚动Hook - 等待containerRef被渲染后初始化
-const anchorScroll = computed(() => {
-  if (containerRef.value) {
-    return useAnchorScroll({
-      containerRef: containerRef.value,
-      sections: ['productName', 'productFile', 'productOption', 'productOther'],
-    })
-  }
-  return useAnchorScroll({
-    containerRef: null,
-    sections: ['productName', 'productFile', 'productOption', 'productOther'],
-  })
-})
-
 // 直接使用useAnchorScroll返回的currentHref，避免手动声明
-const { currentHref } = anchorScroll.value
-
-// 重新定义 handleClickAnchor 以兼容 TailwindAnchor 组件
-const handleAnchorClick = (e: MouseEvent, href: string) => {
-  e.preventDefault()
-  const targetElement = document.querySelector(href)
-  if (targetElement) {
-    if (containerRef.value) {
-      // 使用容器滚动
-      containerRef.value.scrollTo({
-        top: (targetElement as HTMLElement).offsetTop,
-        behavior: 'smooth',
-      })
-    } else {
-      // 使用页面滚动
-      window.scrollTo({
-        top: (targetElement as HTMLElement).offsetTop,
-        behavior: 'smooth',
-      })
-    }
-    // currentHref.value = href
-
-    // 添加一个小延迟来确保滚动完成后再更新当前锚点状态
-    setTimeout(() => {
-      // 触发滚动更新
-      if (containerRef.value) {
-        containerRef.value.dispatchEvent(new Event('scroll'))
-      } else {
-        window.dispatchEvent(new Event('scroll'))
-      }
-    }, 100)
-  }
-}
+const currentHref = ref('')
 
 // 定义锚点链接
 const anchorLinks = [
@@ -67,15 +18,6 @@ const anchorLinks = [
   { href: '#productOption', title: $t('product.option') },
   { href: '#productOther', title: $t('product.other') },
 ]
-
-// 处理 TailwindAnchor 点击事件
-const handleTailwindAnchorClick = (link: { href: string, title: string }) => {
-  const href = link.href
-  handleAnchorClick(new MouseEvent('click'), href)
-}
-
-// 添加调试信息
-console.log('currentHref value:', currentHref.value)
 
 const rules = reactive({
   languageId: [{ required: true, message: $t('common.placeholder.language'), trigger: 'change' }],
@@ -325,7 +267,6 @@ const save = async () => {
                 direction="horizontal"
                 :offset="100"
                 class="pa-4"
-                @click="handleTailwindAnchorClick"
               />
             </div>
             <div ref="containerRef" class="w-full container-custom">
