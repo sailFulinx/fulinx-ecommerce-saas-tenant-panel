@@ -7,6 +7,10 @@ import { useTagsViewStore } from '@/stores/tagsView'
 
 const { t: $t } = useLocale()
 
+const pageTitle = $t('product.add')
+
+const productFormRef = ref()
+
 const containerRef = ref<HTMLElement>()
 
 // 直接使用useAnchorScroll返回的currentHref，避免手动声明
@@ -17,7 +21,7 @@ const anchorLinks = [
   { href: '#productName', title: $t('product.base') },
   { href: '#productFile', title: $t('product.imageText') },
   { href: '#productOption', title: $t('product.option') },
-  { href: '#productOther', title: $t('product.other') },
+  { href: '#productOther', title: $t('product.other') }
 ]
 
 const handleUpdateActiveHref = (href: string) => {
@@ -26,9 +30,10 @@ const handleUpdateActiveHref = (href: string) => {
 
 const rules = reactive({
   languageId: [{ required: true, message: $t('common.placeholder.language'), trigger: 'change' }],
+  systemCategory: [{ required: true, message: $t('product.placeholder.systemCategory'), trigger: 'change' }],
   productName: [{ required: true, message: $t('product.placeholder.productName'), trigger: 'blur' }],
   productType: [{ required: true, message: $t('product.placeholder.productType'), trigger: 'change' }],
-  sku: [{ required: true, message: $t('product.placeholder.sku'), trigger: 'blur' }],
+  sku: [{ required: true, message: $t('product.placeholder.sku'), trigger: 'blur' }]
 })
 
 const loading = reactive({
@@ -37,42 +42,61 @@ const loading = reactive({
   supplier: false,
   category: false,
   parameterGroup: false,
-  parameter: false,
+  parameter: false
 })
 
 /**
  * 参数
  */
+const { loading: parameterLoading, listParameterResult, getParameterList } = useParameter()
 
-const listParameterResult = ref<TableResponse<ParameterListData & CommonField>>({
-  list: [],
-  total: 0,
+/**
+ * 系统分类
+ */
+const listSystemCategoryPayload = reactive<SystemCategoryListParams>({
+  languageId: usePreferenceStore().preference.language.id,
+  systemCategoryName: null
 })
 
-const listParameterQuery = reactive<ParameterListParams>({
-  languageId: usePreferenceStore().preference?.language.id,
-})
+const {
+  loading: systemCategoryLoading,
+  listSystemCategoryData,
+  getSystemCategoryList
+} = useSystemCategory(listSystemCategoryPayload)
 
-const getParameterList = async () => {
-  loading.parameter = true
-  const { data } = await parameterListApi(listParameterQuery).catch(err => {
-    loading.parameter = false
-    throw err
-  })
-  listParameterResult.value = data
-  loading.parameter = false
+const systemCategoryProps = {
+  value: 'id',
+  label: 'systemCategoryName'
 }
 
-getParameterList()
+const systemCategoryIds = ref<string[]>([])
+
+const handleChangeSystemCategory = (val: string[]) => {
+  if (val && val.length > 0) {
+    val.forEach(item => {
+      const lastElement = item.at(-1) // 获取最后一个元素
+      if (lastElement !== undefined) {
+        // 检查是否为undefined
+        systemCategoryIds.value.push(lastElement)
+      }
+    })
+  }
+}
 
 /**
  * 分类
  */
+const listCategoryPayload = reactive<CategoryListParams>({
+  languageId: usePreferenceStore().preference.language.id,
+  categoryName: null
+})
+
+const { loading: categoryLoading, listCategoryData, getCategoryList } = useCategory(listCategoryPayload)
 
 const categoryProps = {
   value: 'id',
   label: 'categoryName',
-  multiple: true,
+  multiple: true
 }
 
 const categoryIds = ref<string[]>([])
@@ -89,61 +113,16 @@ const handleChangeCategory = (val: string[]) => {
   }
 }
 
-const listCategoryPayload = reactive<CategoryListParams>({
-  languageId: usePreferenceStore().preference?.language.id,
-  categoryName: '',
-  categoryType: 1,
-  id: null,
-})
-
-const listCategoryData = ref<TableResponse<CategoryData & CommonField>>({
-  list: [],
-  total: 0,
-})
-
-const getCategoryList = async () => {
-  loading.category = true
-  const { data } = await categoryListApi(listCategoryPayload).catch(error => {
-    loading.category = true
-    throw error
-  })
-  listCategoryData.value = { ...data }
-  loading.category = false
-}
-getCategoryList()
-
 /**
  * 供应商
  */
-const listSupplierQuery = reactive<SupplierListParams & Pagination>({
-  languageId: usePreferenceStore().preference?.language.id,
-  supplierName: '',
+const listSupplierPayload = reactive<SupplierListParams & Pagination>({
+  languageId: usePreferenceStore().preference.language.id,
   pageSize: 20,
   pageNumber: 1,
+  supplierName: null
 })
-
-const listSupplierResult = ref<TableResponse<SupplierListData & CommonField>>({
-  list: [],
-  total: 0,
-})
-
-const getSupplierList = async () => {
-  loading.supplier = true
-  if (listSupplierQuery.supplierName === '') {
-    listSupplierQuery.supplierName = null
-  }
-  const { data } = await supplierPaginationApi(listSupplierQuery).catch(err => {
-    loading.supplier = false
-    throw err
-  })
-  listSupplierResult.value = data
-  loading.supplier = false
-}
-getSupplierList()
-
-const pageTitle = $t('product.add')
-
-const productFormRef = ref()
+const { loading: supplierLoading, listSupplierResult, getSupplierList } = useSupplier(listSupplierPayload)
 
 const editorRef = ref()
 
@@ -175,15 +154,15 @@ const createProductForm = (): CreateProductParams => {
     productSkuRequestDo: {
       productAttributeRequestDo: {
         productAttributeSummaryDo: {
-          productAttributeSummaryAttributeDos: [],
+          productAttributeSummaryAttributeDos: []
         },
-        searchIndex: '',
+        searchIndex: ''
       },
-      productSkuItemRequestDos: [],
+      productSkuItemRequestDos: []
     },
     productParameterRelationRequestDos: [],
     productRelatedRequestDos: [],
-    productSupplierRequestDos: [],
+    productSupplierRequestDos: []
   }
 }
 
@@ -233,7 +212,7 @@ const save = async () => {
   ElMessage({
     message: '保存成功',
     type: 'success',
-    duration: 2000,
+    duration: 2000
   })
 }
 </script>
@@ -260,9 +239,7 @@ const save = async () => {
     <div class="view-main theme-card">
       <ElForm ref="productFormRef" :model="productForm" :rules="rules" label-width="100px">
         <div class="grid grid-cols-12 gap-4">
-          <div class="col-span-3 bg-white pa-4">
-            AI
-          </div>
+          <div class="col-span-3 bg-white pa-4">AI</div>
           <div class="col-span-9">
             <div class="w-full mb-4 bg-white">
               <TailwindAnchor
@@ -278,10 +255,19 @@ const save = async () => {
             <div ref="containerRef" class="w-full container-custom">
               <!-- 基础 -->
               <div id="productName" class="bg-white mb-5 pa-4">
-                <div class="w-full fs-16px font-bold mb-4">
-                  基础信息
-                </div>
+                <div class="w-full fs-16px font-bold mb-4">基础信息</div>
                 <div class="w-full">
+                  <!-- 系统分类 -->
+                  <ElFormItem :label="$t('product.systemCategory')" prop="systemCategory">
+                    <ElCascader
+                      v-model="productForm.systemCategoryId"
+                      :placeholder="`${$t('product.placeholder.systemCategory')}`"
+                      :loading="systemCategoryLoading"
+                      :props="systemCategoryProps"
+                      :options="listSystemCategoryData.list"
+                      @change="handleChangeSystemCategory"
+                    />
+                  </ElFormItem>
                   <ElFormItem :label="$t('product.productName')" prop="productName">
                     <ElInput
                       v-model="productForm.productName"
@@ -294,6 +280,7 @@ const save = async () => {
                   <ElFormItem :label="$t('product.category')" prop="category">
                     <ElCascader
                       v-model="productForm.categoryIds"
+                      :loading="categoryLoading"
                       :props="categoryProps"
                       :options="listCategoryData.list"
                       @change="handleChangeCategory"
@@ -314,25 +301,19 @@ const save = async () => {
               </div>
               <!-- 图片 -->
               <div id="productFile" class="bg-white mb-5 pa-4 h-[800px]">
-                <div class="w-full fs-16px font-bold mb-4">
-                  图文信息
-                </div>
+                <div class="w-full fs-16px font-bold mb-4">图文信息</div>
                 <div class="w-full">
                   <UploadMultiImage ref="imageUploadRef" />
                 </div>
               </div>
               <!-- 规格 -->
               <div id="productOption" class="bg-white mb-5 pa-4 h-[800px]">
-                <div class="w-full fs-16px font-bold mb-4">
-                  价格库存
-                </div>
+                <div class="w-full fs-16px font-bold mb-4">价格库存</div>
                 <div class="w-full" />
               </div>
               <!-- 其它 -->
               <div id="productOther" class="bg-white mb-5 pa-4 h-[800px]">
-                <div class="w-full fs-16px font-bold mb-4">
-                  其他信息
-                </div>
+                <div class="w-full fs-16px font-bold mb-4">其他信息</div>
                 <div class="w-full" />
               </div>
             </div>

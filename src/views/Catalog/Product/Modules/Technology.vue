@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import { ElMessage, ElSwitch, ElTableColumn } from 'element-plus'
 import { updateProductImageApi } from '@/api/product'
 import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
-import { ElMessage, ElSwitch, ElTableColumn } from 'element-plus'
 
 const { form } = defineProps<{ form: ShowProduct & CommonField }>()
 
@@ -22,7 +22,7 @@ const productImageData = ref<UpdateProductImageParams>({
 
 const imageUploadRef = ref()
 
-const fileDataList = ref<(FileData & CommonField)[] >([])
+const fileDataList = ref<(FileData & CommonField)[]>([])
 
 watch(
   () => form,
@@ -92,8 +92,6 @@ const handleSave = async () => {
         </div>
       </div>
     </template>
-    <div class="w-full mt-5">
-      <UploadMultiPdf ref="imageUploadRef" @remove-file="handleRemoveImage" />
-    </div>
+    <div class="w-full mt-5" />
   </ElCard>
 </template>

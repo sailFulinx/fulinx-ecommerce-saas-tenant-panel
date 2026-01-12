@@ -312,6 +312,9 @@ declare global {
   const shallowReactive: typeof import('vue').shallowReactive
   const shallowReadonly: typeof import('vue').shallowReadonly
   const shallowRef: typeof import('vue').shallowRef
+  const shareSystemCategoryListApi: typeof import('../api/systemCategory').shareSystemCategoryListApi
+  const shareSystemCategoryPaginationApi: typeof import('../api/systemCategory').shareSystemCategoryPaginationApi
+  const shareSystemCategoryShowApi: typeof import('../api/systemCategory').shareSystemCategoryShowApi
   const shippingCompanyListApi: typeof import('../api/shipping').shippingCompanyListApi
   const shippingCompanyPaginationApi: typeof import('../api/shipping').shippingCompanyPaginationApi
   const shippingCompanyTemplateListApi: typeof import('../api/shipping').shippingCompanyTemplateListApi
@@ -347,6 +350,14 @@ declare global {
   const supplierPaginationApi: typeof import('../api/supplier').supplierPaginationApi
   const syncRef: typeof import('@vueuse/core').syncRef
   const syncRefs: typeof import('@vueuse/core').syncRefs
+  const systemCategoryListApi: typeof import('../api/systemCategory').systemCategoryListApi
+  const systemCategoryPaginationApi: typeof import('../api/systemCategory').systemCategoryPaginationApi
+  const systemCategoryRemoveApi: typeof import('../api/systemCategory').systemCategoryRemoveApi
+  const systemCategoryShowApi: typeof import('../api/systemCategory').systemCategoryShowApi
+  const systemSystemCategoryListApi: typeof import('../api/systemCategory').systemSystemCategoryListApi
+  const systemSystemCategoryPaginationApi: typeof import('../api/systemCategory').systemSystemCategoryPaginationApi
+  const systemSystemCategoryRemoveApi: typeof import('../api/systemCategory').systemSystemCategoryRemoveApi
+  const systemSystemCategoryShowApi: typeof import('../api/systemCategory').systemSystemCategoryShowApi
   const t: typeof import('../hooks/useLocale').t
   const templateRef: typeof import('@vueuse/core').templateRef
   const tenantForgetPasswordApi: typeof import('../api/auth').tenantForgetPasswordApi
@@ -518,6 +529,8 @@ declare global {
   const useBrowserLocation: typeof import('@vueuse/core').useBrowserLocation
   const useCached: typeof import('@vueuse/core').useCached
   const useCatch: typeof import('../composables/useCatch').useCatch
+  const useCategory: typeof import('../composables/api/useCategory').useCategory
+  const useCategoryList: typeof import('../composables/useCategoryList').useCategoryList
   const useClearStorage: typeof import('../composables/useStorage').useClearStorage
   const useClipboard: typeof import('@vueuse/core').useClipboard
   const useClipboardItems: typeof import('@vueuse/core').useClipboardItems
@@ -608,6 +621,7 @@ declare global {
   const useOnline: typeof import('@vueuse/core').useOnline
   const usePageLeave: typeof import('@vueuse/core').usePageLeave
   const useParallax: typeof import('@vueuse/core').useParallax
+  const useParameter: typeof import('../composables/api/useParameter').useParameter
   const useParentElement: typeof import('@vueuse/core').useParentElement
   const usePascalCase: typeof import('../composables/general').usePascalCase
   const usePerformanceObserver: typeof import('@vueuse/core').usePerformanceObserver
@@ -650,8 +664,11 @@ declare global {
   const useStorage: typeof import('@vueuse/core').useStorage
   const useStorageAsync: typeof import('@vueuse/core').useStorageAsync
   const useStyleTag: typeof import('@vueuse/core').useStyleTag
+  const useSupplier: typeof import('../composables/api/useSupplier').useSupplier
+  const useSupplierList: typeof import('../composables/useSupplier').useSupplierList
   const useSupported: typeof import('@vueuse/core').useSupported
   const useSwipe: typeof import('@vueuse/core').useSwipe
+  const useSystemCategory: typeof import('../composables/api/useSystemCategory').useSystemCategory
   const useTagsViewStore: typeof import('../stores/tagsView').useTagsViewStore
   const useTemplateRef: typeof import('vue').useTemplateRef
   const useTemplateRefsList: typeof import('@vueuse/core').useTemplateRefsList
@@ -713,6 +730,18 @@ declare global {
   // @ts-ignore
   export type { Component, Slot, Slots, ComponentPublicInstance, ComputedRef, DirectiveBinding, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, InjectionKey, PropType, Ref, ShallowRef, MaybeRef, MaybeRefOrGetter, VNode, WritableComputedRef } from 'vue'
   import('vue')
+  // @ts-ignore
+  export type { UseCategoryListOptions } from '../composables/api/useCategory'
+  import('../composables/api/useCategory')
+  // @ts-ignore
+  export type { UseParameterListOptions } from '../composables/api/useParameter'
+  import('../composables/api/useParameter')
+  // @ts-ignore
+  export type { UseSupplierListOptions } from '../composables/api/useSupplier'
+  import('../composables/api/useSupplier')
+  // @ts-ignore
+  export type { UseSystemCategoryListOptions } from '../composables/api/useSystemCategory'
+  import('../composables/api/useSystemCategory')
   // @ts-ignore
   export type { ScrollToParams } from '../hooks/useScrollTo'
   import('../hooks/useScrollTo')

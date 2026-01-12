@@ -1,19 +1,19 @@
-interface CategoryCreateParams {
-  /* Category Type, 1: Product, 2: Article */
-  categoryType: number
+interface SystemCategoryCreateParams {
+  /* SystemCategory Type, 1: Product, 2: Article */
+  systemCategoryType: number
   parentId: string
   /* Language Id */
   languageId: string
-  /* Category  Name */
-  categoryName: string
+  /* SystemCategory  Name */
+  systemCategoryName: string
   parentIds?: string[]
 }
 
-interface CategoryCreateRes {
+interface SystemCategoryCreateRes {
   id: string
 
-  /* Category Type, 1: Product, 2: Article */
-  categoryType: number
+  /* SystemCategory Type, 1: Product, 2: Article */
+  systemCategoryType: number
 
   /* Parent ID */
   parentId: string
@@ -24,11 +24,11 @@ interface CategoryCreateRes {
   /* Status, 0: Disabled 1: Enabled */
   status: boolean
 
-  /* Category  Detail List Result Dos */
-  categoryDetailListResultDo: CategoryDetail
+  /* SystemCategory  Detail List Result Dos */
+  systemCategoryDetailListResultDo: SystemCategoryDetail
 
-  /* Category  Seo List Result Dos */
-  categorySeoListResultDo: CategorySeoData
+  /* SystemCategory  Seo List Result Dos */
+  systemCategorySeoListResultDo: SystemCategorySeoData
 
   /* Slug ID */
   slugId: string
@@ -58,12 +58,12 @@ interface CategoryCreateRes {
   recordUpdateTime: string
 }
 
-interface CategoryListParams {
+interface SystemCategoryListParams {
   /* ID */
   id?: string | null
 
-  /* Category Type, 1: Product, 2: Article */
-  categoryType?: number | null
+  /* SystemCategory Type, 1: Product, 2: Article */
+  systemCategoryType?: number | null
 
   /* Language Id */
   languageId?: string
@@ -71,8 +71,8 @@ interface CategoryListParams {
   /* Language Code */
   languageCode?: string
 
-  /* Category  Name */
-  categoryName?: string | null
+  /* SystemCategory  Name */
+  systemCategoryName?: string | null
 
   /* Status, 0: Disabled 1: Enabled */
   status?: boolean
@@ -81,14 +81,14 @@ interface CategoryListParams {
   isDelete?: number
 }
 
-interface CategoryData {
-  /* Category ID */
+interface SystemCategoryData {
+  /* SystemCategory ID */
   id: string
 
   disabled?: boolean
 
-  /* Category Type, 1: Product, 2: Article */
-  categoryType: number
+  /* SystemCategory Type, 1: Product, 2: Article */
+  systemCategoryType: number
 
   /* Parent ID */
   parentId: string
@@ -102,8 +102,8 @@ interface CategoryData {
   /* Language Code */
   languageCode: string
 
-  /* Category Name */
-  categoryName: string
+  /* SystemCategory Name */
+  systemCategoryName: string
 
   /* Status, 0: Disabled 1: Enabled */
   status: boolean
@@ -120,20 +120,20 @@ interface CategoryData {
   /* Slug */
   slug: string
 
-  children: CategoryData[]
+  children: SystemCategoryData[]
 }
 
-interface CategoryListRes {
-  list: (CategoryData & CommonField)[]
+interface SystemCategoryListRes {
+  list: (SystemCategoryData & CommonField)[]
   total: number
 }
 
-interface CategoryDetail {
-  /* Category  Detail ID */
+interface SystemCategoryDetail {
+  /* SystemCategory  Detail ID */
   id: string
 
-  /* Category  ID */
-  categoryId: string
+  /* SystemCategory  ID */
+  systemCategoryId: string
 
   /* Language ID */
   languageId: string
@@ -144,21 +144,21 @@ interface CategoryDetail {
   /* Language Name */
   languageName: string
 
-  /* Category  Name */
-  categoryName: string
+  /* SystemCategory  Name */
+  systemCategoryName: string
 
-  categoryShortName: string
+  systemCategoryShortName: string
 
-  /* Parent Category  Names */
-  parentCategoryNames: string[]
+  /* Parent SystemCategory  Names */
+  parentSystemCategoryNames: string[]
 
-  /* Category  Description */
-  categoryDescription: string
+  /* SystemCategory  Description */
+  systemCategoryDescription: string
 
-  categoryShortDescription: string
+  systemCategoryShortDescription: string
 
-  /* Category  File Id */
-  categoryFileId: string
+  /* SystemCategory  File Id */
+  systemCategoryFileId: string
 
   /* */
   fileVo: FileData
@@ -204,12 +204,12 @@ interface CategoryDetail {
   recordUpdateTime: string
 }
 
-interface CategorySeoData {
-  /* Category  SEO ID */
+interface SystemCategorySeoData {
+  /* SystemCategory  SEO ID */
   id: string
 
-  /* Category  ID */
-  categoryId: string
+  /* SystemCategory  ID */
+  systemCategoryId: string
 
   /* Language ID */
   languageId: string
@@ -251,7 +251,7 @@ interface CategorySeoData {
   recordUpdateTime: string
 }
 
-interface CategoryShowListItem {
+interface SystemCategoryShowListItem {
   /* Language Code */
   languageCode: string
 
@@ -259,18 +259,18 @@ interface CategoryShowListItem {
   languageName: string
 
   /* */
-  categoryDetailListResultDo: CategoryDetail | null
+  systemCategoryDetailListResultDo: SystemCategoryDetail | null
 
   /* */
-  categorySeoListResultDo: CategorySeoData | null
+  systemCategorySeoListResultDo: SystemCategorySeoData | null
 }
 
-interface CategoryShowData {
-  /* Category  ID */
+interface SystemCategoryShowData {
+  /* SystemCategory  ID */
   id: string
 
-  /* Category Type, 1: Product, 2: Article */
-  categoryType: number
+  /* SystemCategory Type, 1: Product, 2: Article */
+  systemCategoryType: number
 
   /* Parent ID */
   parentId: string
@@ -287,8 +287,8 @@ interface CategoryShowData {
   /* Slug */
   slug: string
 
-  /* Category  Show List */
-  categoryAdminLocalizedViewDos: CategoryShowListItem[]
+  /* SystemCategory  Show List */
+  systemCategoryAdminLocalizedViewDos: SystemCategoryShowListItem[]
 
   /* Soft Delete Flag */
   isDelete: number
@@ -312,50 +312,50 @@ interface CategoryShowData {
   recordUpdateTime: string
 }
 
-interface CategoryShowParams {
-  /* Category  ID */
-  categoryId: string
+interface SystemCategoryShowParams {
+  /* SystemCategory  ID */
+  systemCategoryId: string
 
   /* Language ID */
   languageId: string
 }
 
-interface CategoryDescriptionParams {
-  /* Category  Detail Id */
-  categoryDetailId: string
+interface SystemCategoryDescriptionParams {
+  /* SystemCategory  Detail Id */
+  systemCategoryDetailId: string
 
-  /* Category  Description */
-  categoryDescription: string
+  /* SystemCategory  Description */
+  systemCategoryDescription: string
 }
 
-interface CategoryShortDescriptionParams {
-  /* Category  Detail Id */
-  categoryDetailId: string
+interface SystemCategoryShortDescriptionParams {
+  /* SystemCategory  Detail Id */
+  systemCategoryDetailId: string
 
-  /* Category  Description */
-  categoryShortDescription: string
+  /* SystemCategory  Description */
+  systemCategoryShortDescription: string
 }
 
-interface CategoryCustomParams {
-  /* Category  Detail Id */
-  categoryDetailId: string
+interface SystemCategoryCustomParams {
+  /* SystemCategory  Detail Id */
+  systemCategoryDetailId: string
 
   /* Customs */
   customs: string
 }
 
-interface CategorySortParams {
-  /* Category  Id */
-  categoryId: string
+interface SystemCategorySortParams {
+  /* SystemCategory  Id */
+  systemCategoryId: string
   /* Language ID */
   languageId: string
   /* Sort */
   sort: number
 }
 
-interface CategoryIsTopParams {
-  /* Category  Id */
-  categoryId: string
+interface SystemCategoryIsTopParams {
+  /* SystemCategory  Id */
+  systemCategoryId: string
 
   /* Language ID */
   languageId: string
@@ -364,33 +364,33 @@ interface CategoryIsTopParams {
   isTop: boolean
 }
 
-interface CategoryNameParams {
-  /* Category  Detail Id */
-  categoryDetailId: string
+interface SystemCategoryNameParams {
+  /* SystemCategory  Detail Id */
+  systemCategoryDetailId: string
 
-  /* Category  Name */
-  categoryName: string
+  /* SystemCategory  Name */
+  systemCategoryName: string
 }
 
-interface CategoryShortNameParams {
-  /* Category  Detail Id */
-  categoryDetailId: string
+interface SystemCategoryShortNameParams {
+  /* SystemCategory  Detail Id */
+  systemCategoryDetailId: string
 
-  /* Category  Name */
-  categoryShortName: string
+  /* SystemCategory  Name */
+  systemCategoryShortName: string
 }
 
-interface CategoryFileParams {
-  /* Category  Detail Id */
-  categoryDetailId: string
+interface SystemCategoryFileParams {
+  /* SystemCategory  Detail Id */
+  systemCategoryDetailId: string
 
-  /* Category  File Id */
-  categoryFileId?: string
+  /* SystemCategory  File Id */
+  systemCategoryFileId?: string
 }
 
-interface CategorySeoParams {
-  /* Category  Seo ID */
-  categorySeoId: string
+interface SystemCategorySeoParams {
+  /* SystemCategory  Seo ID */
+  systemCategorySeoId: string
 
   /* Meta Title */
   metaTitle?: string
@@ -399,7 +399,7 @@ interface CategorySeoParams {
   metaDescription?: string
 }
 
-interface CategorySlugParams {
+interface SystemCategorySlugParams {
   /* Slug ID */
   slugId: string
 
@@ -410,9 +410,9 @@ interface CategorySlugParams {
   slug: string
 }
 
-interface CategoryLayoutParams {
-  /* Category  Detail Id */
-  categoryDetailId: string
+interface SystemCategoryLayoutParams {
+  /* SystemCategory  Detail Id */
+  systemCategoryDetailId: string
 
   /* Language ID */
   languageId: string
@@ -427,9 +427,9 @@ interface CategoryLayoutParams {
   layoutContent?: string
 }
 
-interface CategoryParentParams {
-  /* Category  Id */
-  categoryId: string
+interface SystemCategoryParentParams {
+  /* SystemCategory  Id */
+  systemCategoryId: string
 
   /* Parent Id */
   parentId: string
@@ -438,9 +438,9 @@ interface CategoryParentParams {
   languageId: string
 }
 
-interface CategoryStatusParams {
-  /* Category  Id */
-  categoryId: string
+interface SystemCategoryStatusParams {
+  /* SystemCategory  Id */
+  systemCategoryId: string
 
   /* Status, 0: Disabled 1: Enabled */
   status: boolean
@@ -449,20 +449,20 @@ interface CategoryStatusParams {
   languageId: string
 }
 
-interface CategoryNameCreateParams {
-  /* Category  ID */
-  categoryId: string
+interface SystemCategoryNameCreateParams {
+  /* SystemCategory  ID */
+  systemCategoryId: string
 
   /* Language ID */
   languageId: string
 
-  /* Category  Name */
-  categoryName: string
+  /* SystemCategory  Name */
+  systemCategoryName: string
 }
 
-interface CategorySeoCreateParams {
-  /* Category  ID */
-  categoryId: string
+interface SystemCategorySeoCreateParams {
+  /* SystemCategory  ID */
+  systemCategoryId: string
 
   /* Language ID */
   languageId: string
@@ -474,9 +474,9 @@ interface CategorySeoCreateParams {
   metaDescription?: string
 }
 
-interface CategorySlugCreateParams {
-  /* Category  ID */
-  categoryId: string
+interface SystemCategorySlugCreateParams {
+  /* SystemCategory  ID */
+  systemCategoryId: string
 
   /* Language Id */
   languageId: string
@@ -485,14 +485,14 @@ interface CategorySlugCreateParams {
   slug: string
 }
 
-interface RemoveCategoryParams {
-  /* Category  Ids */
+interface RemoveSystemCategoryParams {
+  /* SystemCategory  Ids */
   ids: string[]
 }
 
-interface CopyCategoryParams {
-  /* Category  Id */
-  categoryId: string
+interface CopySystemCategoryParams {
+  /* SystemCategory  Id */
+  systemCategoryId: string
 
   /* From Language Id */
   fromLanguageId: string
