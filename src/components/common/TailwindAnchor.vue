@@ -110,10 +110,12 @@ const handleScroll = () => {
   const adjustedScrollPosition = scrollPosition + props.offset
 
   // 查找当前应该激活的锚点
-  let currentActive = props.links[0].href // 默认第一个
+  let currentActive = anchors[0].href // 默认第一个
 
-  for (let i = anchors.length - 1; i >= 0; i--) {
-    if (adjustedScrollPosition >= anchors[i].position) {
+  // 寻找最接近当前位置的锚点
+  for (let i = 0; i < anchors.length; i++) {
+    // 如果当前滚动位置小于下一个锚点位置，则当前锚点即为应激活的锚点
+    if (i === anchors.length - 1 || adjustedScrollPosition < anchors[i + 1].position) {
       currentActive = anchors[i].href
       break
     }
@@ -127,12 +129,31 @@ const handleScroll = () => {
 }
 
 // 处理点击事件
-const handleClick = (link: AnchorLink) => {
+const handleClick = (link: AnchorLink, event: MouseEvent) => {
+  event.preventDefault() // 阻止默认跳转行为
   emit('click', link)
 
   // 更新激活的href
   activeHref.value = link.href
   emit('update:active-href', link.href)
+
+  // 如果需要滚动到目标元素，可以手动实现滚动逻辑
+  const targetElement = document.querySelector(link.href)
+  if (targetElement instanceof HTMLElement) {
+    const offsetTop = props.offset || 0
+    const container = containerRef.value
+
+    if (container === document.documentElement || container === document.body) {
+      // 页面滚动
+      window.scrollTo({
+        top: targetElement.offsetTop - offsetTop,
+        behavior: 'smooth',
+      })
+    } else {
+      // 容器内滚动
+      container.scrollTop = targetElement.offsetTop - offsetTop
+    }
+  }
 }
 
 // 容器类
@@ -187,7 +208,7 @@ onUnmounted(() => {
               ? 'bg-blue-100 text-blue-700 font-medium'
               : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900',
           ]"
-          @click="handleClick(link)"
+          @click="handleClick(link, $event)"
         >
           {{ link.title }}
         </a>
