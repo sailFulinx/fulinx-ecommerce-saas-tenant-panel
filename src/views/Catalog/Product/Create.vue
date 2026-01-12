@@ -21,7 +21,6 @@ const anchorLinks = [
 ]
 
 const handleUpdateActiveHref = (href: string) => {
-  console.log(href)
   currentHref.value = href
 }
 
@@ -271,7 +270,7 @@ const save = async () => {
                 :links="anchorLinks"
                 :container="containerRef"
                 direction="horizontal"
-                :offset="100"
+                :offset="10"
                 class="pa-4"
                 @update:active-href="handleUpdateActiveHref"
               />
@@ -346,62 +345,11 @@ const save = async () => {
 
 <style lang="scss" scoped>
 .container-custom {
-  height: calc(100vh - 200px); // 调整高度计算，减少减去的值
+  height: calc(100vh - 286px); // 调整高度计算，减少减去的值
   overflow-y: auto;
-}
-
-// 为锚点元素添加滚动边距，防止内容被固定头部遮挡
-#productName,
-#productFile,
-#productOption,
-#productOther {
-  scroll-margin-top: 100px; // 调整滚动边距
 }
 
 :deep(.el-card__header) {
   padding: 10px;
-}
-
-// ant-design-vue Anchor 组件样式定制
-:deep(.ant-anchor) {
-  .ant-anchor-link {
-    padding: 8px 0;
-    margin: 4px 0;
-    transition: all 0.3s;
-
-    &:hover {
-      background-color: #f5f5f5;
-      border-radius: 4px;
-    }
-
-    &.ant-anchor-link-active {
-      background-color: #e6f7ff;
-      border-left: 3px solid #1890ff;
-      font-weight: 500;
-
-      .ant-anchor-link-title {
-        color: #1890ff;
-      }
-    }
-  }
-
-  .ant-anchor-link-title {
-    font-size: 14px;
-    padding-left: 8px;
-    color: #666;
-    transition: all 0.3s;
-
-    &:hover {
-      color: #1890ff;
-    }
-  }
-}
-
-:deep(.el-anchor__link) {
-  font-size: 16px;
-}
-:deep(.el-anchor__link.is-active) {
-  color: var(--el-color-primary);
-  font-weight: 500;
 }
 </style>

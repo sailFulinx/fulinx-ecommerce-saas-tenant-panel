@@ -85,7 +85,6 @@ const getAnchorsPosition = () => {
 
   // 按照位置排序
   positions.sort((a, b) => a.position - b.position)
-  console.log('锚点位置计算结果:', positions)
   return positions
 }
 
@@ -127,7 +126,6 @@ const handleScroll = () => {
   // 更新激活的href
   if (activeHref.value !== currentActive && currentActive) {
     activeHref.value = currentActive
-    console.log('当前激活的锚点:', currentActive, '滚动位置:', adjustedScrollPosition)
     emit('update:active-href', currentActive)
   }
 }
@@ -200,12 +198,11 @@ const listClass = computed(() => {
 
 const bindScrollListener = () => {
   const scrollContainer = containerRef.value
-  console.log('绑定滚动监听，容器:', scrollContainer)
 
   if (scrollContainer && scrollContainer instanceof HTMLElement) {
     // 检查容器是否可滚动
-    const canScroll = scrollContainer.scrollHeight > scrollContainer.clientHeight
-    console.log('容器可滚动状态:', canScroll)
+    // const canScroll = scrollContainer.scrollHeight > scrollContainer.clientHeight
+    // console.log('容器可滚动状态:', canScroll)
 
     scrollContainer.addEventListener('scroll', handleScroll, { passive: true })
   } else {
