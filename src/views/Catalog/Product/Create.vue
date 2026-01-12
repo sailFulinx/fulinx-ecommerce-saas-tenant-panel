@@ -1,85 +1,81 @@
 <script setup lang="ts">
 import { VueDraggable } from 'vue-draggable-plus'
+// 导入新创建的 TailwindAnchor 组件
+import TailwindAnchor from '@/components/common/TailwindAnchor.vue'
+import { useAnchorScroll } from '@/hooks/useAnchorScroll'
 import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
 import { useTagsViewStore } from '@/stores/tagsView'
 
 const { t: $t } = useLocale()
 
-// 当前激活的锚点链接
-const activeAnchor = ref('')
+const containerRef = ref()
 
-// 你的滚动容器引用
-const containerRef = ref<HTMLElement | null>(null)
-
-// 处理滚动事件，动态更新激活的锚点
-const handleScroll = () => {
-  if (!containerRef.value) {
-    return
-  }
-
-  const scrollContainer = containerRef.value
-  const scrollTop = scrollContainer.scrollTop
-  const sections = [
-    { id: 'productName', offset: 0 }, // 可以根据实际情况设置偏移量
-    { id: 'productFile', offset: 0 },
-    { id: 'productOption', offset: 0 },
-    { id: 'productOther', offset: 0 },
-  ]
-
-  // 遍历各个区域，判断当前滚动位置处于哪个区域
-  for (let i = sections.length - 1; i >= 0; i--) {
-    const section = document.getElementById(sections[i].id)
-    if (!section) {
-      continue
-    }
-
-    // 计算区域相对于滚动容器顶部的位置
-    const sectionTop = section.offsetTop - sections[i].offset
-    if (scrollTop >= sectionTop - 10) { // 减去一个小阈值，使切换更平滑
-      activeAnchor.value = `#${sections[i].id}`
-      break
-    }
-  }
-}
-
-// 页面加载时，设置第一个锚点为默认激活状态
-onMounted(() => {
-  // 确保容器元素已正确挂载
+// 使用锚点滚动Hook - 等待containerRef被渲染后初始化
+const anchorScroll = computed(() => {
   if (containerRef.value) {
-    // 设置第一个锚点为默认激活项
-    activeAnchor.value = '#productName' // 对应第一个 <ElAnchorLink> 的 href
-
-    // 可选：添加滚动事件监听器，实现滚动时自动切换激活状态
-    containerRef.value.addEventListener('scroll', handleScroll)
+    return useAnchorScroll({
+      containerRef: containerRef.value,
+      sections: ['productName', 'productFile', 'productOption', 'productOther'],
+    })
   }
+  return useAnchorScroll({
+    containerRef: null,
+    sections: ['productName', 'productFile', 'productOption', 'productOther'],
+  })
 })
 
-// 组件卸载前移除事件监听
-onUnmounted(() => {
-  if (containerRef.value) {
-    containerRef.value.removeEventListener('scroll', handleScroll)
-  }
-})
+// 直接使用useAnchorScroll返回的currentHref，避免手动声明
+const { currentHref } = anchorScroll.value
 
-const handleClickAnchor = (e: MouseEvent, link: any) => {
+// 重新定义 handleClickAnchor 以兼容 TailwindAnchor 组件
+const handleAnchorClick = (e: MouseEvent, href: string) => {
   e.preventDefault()
-
-  // 如果是锚点点击，更新激活状态
-  if (link && link.href) {
-    const sectionId = link.href.replace('#', '')
-    activeAnchor.value = sectionId
-
-    // 平滑滚动到对应区域
-    const targetElement = document.getElementById(sectionId)
-    if (targetElement && containerRef.value) {
+  const targetElement = document.querySelector(href)
+  if (targetElement) {
+    if (containerRef.value) {
+      // 使用容器滚动
       containerRef.value.scrollTo({
-        top: targetElement.offsetTop - 10, // 考虑offset偏移
+        top: (targetElement as HTMLElement).offsetTop,
+        behavior: 'smooth',
+      })
+    } else {
+      // 使用页面滚动
+      window.scrollTo({
+        top: (targetElement as HTMLElement).offsetTop,
         behavior: 'smooth',
       })
     }
+    // currentHref.value = href
+
+    // 添加一个小延迟来确保滚动完成后再更新当前锚点状态
+    setTimeout(() => {
+      // 触发滚动更新
+      if (containerRef.value) {
+        containerRef.value.dispatchEvent(new Event('scroll'))
+      } else {
+        window.dispatchEvent(new Event('scroll'))
+      }
+    }, 100)
   }
 }
+
+// 定义锚点链接
+const anchorLinks = [
+  { href: '#productName', title: $t('product.base') },
+  { href: '#productFile', title: $t('product.imageText') },
+  { href: '#productOption', title: $t('product.option') },
+  { href: '#productOther', title: $t('product.other') },
+]
+
+// 处理 TailwindAnchor 点击事件
+const handleTailwindAnchorClick = (link: { href: string, title: string }) => {
+  const href = link.href
+  handleAnchorClick(new MouseEvent('click'), href)
+}
+
+// 添加调试信息
+console.log('currentHref value:', currentHref.value)
 
 const rules = reactive({
   languageId: [{ required: true, message: $t('common.placeholder.language'), trigger: 'change' }],
@@ -318,24 +314,19 @@ const save = async () => {
       <ElForm ref="productFormRef" :model="productForm" :rules="rules" label-width="100px">
         <div class="grid grid-cols-12 gap-4">
           <div class="col-span-3 bg-white pa-4">
-            AI生成
+            AI
           </div>
           <div class="col-span-9">
-            <div class="w-full mb-4">
-              <ElAnchor
-                v-model="activeAnchor"
-                :offset="10"
+            <div class="w-full mb-4 bg-white">
+              <TailwindAnchor
+                v-model:active-href="currentHref"
+                :links="anchorLinks"
                 :container="containerRef"
                 direction="horizontal"
-                type="default"
+                :offset="100"
                 class="pa-4"
-                @click="handleClickAnchor"
-              >
-                <ElAnchorLink href="#productName" title="基础信息" />
-                <ElAnchorLink href="#productFile" title="图文信息" />
-                <ElAnchorLink href="#productOption" title="价格库存" />
-                <ElAnchorLink href="#productOther" title="其他信息" />
-              </ElAnchor>
+                @click="handleTailwindAnchorClick"
+              />
             </div>
             <div ref="containerRef" class="w-full container-custom">
               <!-- 基础 -->
@@ -407,8 +398,55 @@ const save = async () => {
 
 <style lang="scss" scoped>
 .container-custom {
-  height: calc(100vh - 284px); // 调整高度计算，减少减去的值
+  height: calc(100vh - 200px); // 调整高度计算，减少减去的值
   overflow-y: auto;
+}
+
+// 为锚点元素添加滚动边距，防止内容被固定头部遮挡
+#productName,
+#productFile,
+#productOption,
+#productOther {
+  scroll-margin-top: 100px; // 调整滚动边距
+}
+
+:deep(.el-card__header) {
+  padding: 10px;
+}
+
+// ant-design-vue Anchor 组件样式定制
+:deep(.ant-anchor) {
+  .ant-anchor-link {
+    padding: 8px 0;
+    margin: 4px 0;
+    transition: all 0.3s;
+
+    &:hover {
+      background-color: #f5f5f5;
+      border-radius: 4px;
+    }
+
+    &.ant-anchor-link-active {
+      background-color: #e6f7ff;
+      border-left: 3px solid #1890ff;
+      font-weight: 500;
+
+      .ant-anchor-link-title {
+        color: #1890ff;
+      }
+    }
+  }
+
+  .ant-anchor-link-title {
+    font-size: 14px;
+    padding-left: 8px;
+    color: #666;
+    transition: all 0.3s;
+
+    &:hover {
+      color: #1890ff;
+    }
+  }
 }
 
 :deep(.el-anchor__link) {

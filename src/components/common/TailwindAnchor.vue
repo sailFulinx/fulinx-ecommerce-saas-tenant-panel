@@ -1,0 +1,201 @@
+<script setup lang="ts">
+import { computed, onMounted, onUnmounted, ref } from 'vue'
+
+interface AnchorLink {
+  href: string
+  title: string
+}
+
+type Direction = 'vertical' | 'horizontal'
+
+interface Props {
+  links: AnchorLink[]
+  container?: HTMLElement | null
+  offset?: number
+  direction?: Direction
+}
+
+interface Emits {
+  (e: 'click', link: AnchorLink): void
+  (e: 'update:active-href', href: string): void
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  offset: 0,
+  direction: 'vertical',
+})
+
+const emit = defineEmits<Emits>()
+
+const activeHref = ref('')
+const containerRef = computed(() => props.container || document.documentElement || document.body)
+const isVertical = computed(() => props.direction === 'vertical')
+
+// 获取所有锚点元素及其位置
+const getAnchorsPosition = () => {
+  if (!containerRef.value) {
+    return []
+  }
+
+  const positions = []
+  for (const link of props.links) {
+    const element = document.querySelector(link.href)
+    if (element) {
+      const rect = element.getBoundingClientRect()
+      const containerRect = containerRef.value.getBoundingClientRect
+        ? containerRef.value.getBoundingClientRect()
+        : { top: 0, left: 0 }
+
+      // 计算相对于容器的位置
+      let position
+      if (containerRef.value === document.documentElement || containerRef.value === document.body) {
+        // 如果是页面滚动，使用元素距离页面顶部/左侧的位置
+        if (isVertical.value) {
+          const elementTop = element instanceof HTMLElement ? element.offsetTop : 0
+          position = elementTop
+        } else {
+          const elementLeft = element instanceof HTMLElement ? element.offsetLeft : 0
+          position = elementLeft
+        }
+      } else {
+        // 如果是指定容器滚动，计算相对容器的位置
+        if (isVertical.value) {
+          const scrollTop = containerRef.value.scrollTop || 0
+          position = rect.top - containerRect.top + scrollTop
+        } else {
+          const scrollLeft = (containerRef.value as HTMLElement).scrollLeft || 0
+          position = rect.left - containerRect.left + scrollLeft
+        }
+      }
+
+      positions.push({
+        href: link.href,
+        position: Math.round(position),
+      })
+    }
+  }
+
+  // 按照位置排序
+  positions.sort((a, b) => a.position - b.position)
+  return positions
+}
+
+// 监听滚动事件
+const handleScroll = () => {
+  if (props.links.length === 0) {
+    return
+  }
+
+  const anchors = getAnchorsPosition()
+  if (anchors.length === 0) {
+    return
+  }
+
+  let scrollPosition
+  if (containerRef.value === document.documentElement || containerRef.value === document.body) {
+    if (isVertical.value) {
+      scrollPosition = window.scrollY || containerRef.value.scrollTop
+    } else {
+      scrollPosition = window.scrollX || containerRef.value.scrollLeft
+    }
+  } else {
+    if (isVertical.value) {
+      scrollPosition = containerRef.value.scrollTop
+    } else {
+      scrollPosition = (containerRef.value as HTMLElement).scrollLeft
+    }
+  }
+
+  // 加上偏移量
+  const adjustedScrollPosition = scrollPosition + props.offset
+
+  // 查找当前应该激活的锚点
+  let currentActive = props.links[0].href // 默认第一个
+
+  for (let i = anchors.length - 1; i >= 0; i--) {
+    if (adjustedScrollPosition >= anchors[i].position) {
+      currentActive = anchors[i].href
+      break
+    }
+  }
+
+  // 更新激活的href
+  if (activeHref.value !== currentActive) {
+    activeHref.value = currentActive
+    emit('update:active-href', currentActive)
+  }
+}
+
+// 处理点击事件
+const handleClick = (link: AnchorLink) => {
+  emit('click', link)
+
+  // 更新激活的href
+  activeHref.value = link.href
+  emit('update:active-href', link.href)
+}
+
+// 容器类
+const containerClass = computed(() => {
+  return ['select-none']
+})
+
+// 列表类，根据方向变化
+const listClass = computed(() => {
+  return [isVertical.value ? 'space-y-1' : 'flex space-x-1']
+})
+
+onMounted(() => {
+  // 初始化时设置第一个为活跃项
+  if (props.links.length > 0 && !activeHref.value) {
+    activeHref.value = props.links[0].href
+    emit('update:active-href', activeHref.value)
+  }
+
+  // 添加滚动监听
+  const scrollContainer = containerRef.value
+  if (scrollContainer) {
+    // 监听滚动事件
+    scrollContainer.addEventListener('scroll', handleScroll, { passive: true })
+    // 初始时也触发一次滚动处理
+    setTimeout(handleScroll, 100)
+  }
+
+  // 监听页面滚动
+  window.addEventListener('scroll', handleScroll, { passive: true })
+})
+
+onUnmounted(() => {
+  const scrollContainer = containerRef.value
+  if (scrollContainer) {
+    scrollContainer.removeEventListener('scroll', handleScroll)
+  }
+  window.removeEventListener('scroll', handleScroll)
+})
+</script>
+
+<template>
+  <nav :class="containerClass">
+    <ul :class="listClass">
+      <li v-for="(link, index) in links" :key="index">
+        <a
+          :href="link.href"
+          class="text-sm transition-colors duration-200"
+          :class="[
+            isVertical ? 'block py-2 px-3' : 'block px-3 py-2',
+            activeHref === link.href
+              ? 'bg-blue-100 text-blue-700 font-medium'
+              : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900',
+          ]"
+          @click="handleClick(link)"
+        >
+          {{ link.title }}
+        </a>
+      </li>
+    </ul>
+  </nav>
+</template>
+
+<style scoped>
+/* 样式已在模板的:class中定义 */
+</style>
