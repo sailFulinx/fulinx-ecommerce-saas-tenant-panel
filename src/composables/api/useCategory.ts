@@ -1,48 +1,6 @@
-import { usePreferenceStore } from '@/stores/preference'
-
-export interface UseCategoryListOptions {
-  /**
-   * 是否在初始化时自动加载分类列表
-   * @default true
-   */
-  immediate?: boolean
-}
-
-export const useCategoryList = (payload?: Partial<CategoryListParams>, options: UseCategoryListOptions = {}) => {
-  const { immediate = true } = options
-
-  const loading = ref(false)
-
-  const listPayload = reactive<CategoryListParams>({
-    languageId: usePreferenceStore().preference?.language.id,
-    categoryType: payload?.categoryType || 1,
-    ...payload, // 合并外部传入的 payload
-  })
-
-  const listData = ref<TableResponse<CategoryData & CommonField>>({
-    list: [],
-    total: 0,
-  })
-
-  const getList = async () => {
-    loading.value = true
-    const { data } = await categoryListApi(listPayload).catch(error => {
-      loading.value = false
-      throw error
-    })
-    listData.value = { ...data }
-    loading.value = false
+export const useCategoryList = (payload?: Partial<CategoryListParams>, options: UseCommonOptions = {}) => {
+  if (payload && !payload.languageId) {
+    payload.languageId = usePreferenceStore().preference.languageId
   }
-
-  // 如果 immediate 为 true，在初始化时自动加载数据
-  if (immediate) {
-    getList()
-  }
-
-  return {
-    loading,
-    listPayload,
-    listData,
-    getList,
-  }
+  return useList<CategoryData, CategoryListParams>(categoryListApi, payload, options)
 }

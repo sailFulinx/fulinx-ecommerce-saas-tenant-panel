@@ -1,99 +1,13 @@
-import { usePreferenceStore } from '@/stores/preference'
-
-export interface UseSupplierListOptions {
-  /**
-   * 是否在初始化时自动加载供应商列表
-   * @default true
-   */
-  immediate?: boolean
+export const useSupplierPagination = (payload?: Partial<SupplierListParams & Pagination>, options: UseCommonOptions = {}) => {
+  if (payload && !payload.languageId) {
+    payload.languageId = usePreferenceStore().preference.languageId
+  }
+  return useList<SupplierListData, SupplierListParams>(supplierPaginationApi, payload, options)
 }
 
-export const useSupplierPagination = (
-  payload?: Partial<SupplierListParams & Pagination>,
-  options: UseSupplierListOptions = {},
-) => {
-  const { immediate = true } = options
-
-  const loading = ref(false)
-
-  const listPayload = reactive<SupplierListParams & Pagination>({
-    languageId: usePreferenceStore().preference?.language.id,
-    pageSize: payload?.pageSize ?? 20,
-    pageNumber: payload?.pageNumber ?? 1,
-    ...payload,
-  })
-
-  const listData = ref<TableResponse<SupplierListData & CommonField>>({
-    list: [],
-    total: 0,
-  })
-
-  const getList = async () => {
-    loading.value = true
-    if (listPayload.supplierName === '') {
-      listPayload.supplierName = null
-    }
-    const { data } = await supplierPaginationApi(listPayload).catch(err => {
-      loading.value = false
-      throw err
-    })
-    listData.value = data
-    loading.value = false
+export const useSupplierList = (payload?: Partial<SupplierListParams>, options: UseCommonOptions = {}) => {
+  if (payload && !payload.languageId) {
+    payload.languageId = usePreferenceStore().preference.languageId
   }
-
-  // 如果 immediate 为 true，在初始化时自动加载数据
-  if (immediate) {
-    getList()
-  }
-
-  return {
-    loading,
-    listPayload,
-    listData,
-    getList,
-  }
-}
-
-export const useSupplierList = (
-  payload?: Partial<SupplierListParams>,
-  options: UseSupplierListOptions = {},
-) => {
-  const { immediate = true } = options
-
-  const loading = ref(false)
-
-  const listPayload = reactive<SupplierListParams>({
-    languageId: usePreferenceStore().preference?.language.id,
-    ...payload,
-  })
-
-  const listData = ref<TableResponse<SupplierListData & CommonField>>({
-    list: [],
-    total: 0,
-  })
-
-  const getList = async () => {
-    loading.value = true
-    if (listPayload.supplierName === '') {
-      listPayload.supplierName = null
-    }
-    const { data } = await supplierListApi(listPayload).catch(err => {
-      loading.value = false
-      throw err
-    })
-    listData.value = data
-    loading.value = false
-  }
-
-  // 如果 immediate 为 true，在初始化时自动加载数据
-  if (immediate) {
-    getList()
-  }
-
-  return {
-    loading,
-    listPayload,
-    listData,
-    getList,
-  }
+  return useList<SupplierListData, SupplierListParams>(supplierListApi, payload, options)
 }

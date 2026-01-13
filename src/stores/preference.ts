@@ -5,7 +5,7 @@ interface PreferenceType {
 }
 
 export const usePreferenceStore = defineStore('preference', () => {
-  const { languages } = useInStore(useLanguageStore)
+  const { languages } = useLanguageStore()
   const preference = useStorage<PreferenceType>('preference', null, undefined, { serializer: StorageSerializers.object })
 
   const initPreference = () => {

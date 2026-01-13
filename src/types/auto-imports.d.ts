@@ -752,25 +752,7 @@ declare global {
   export type { Component, Slot, Slots, ComponentPublicInstance, ComputedRef, DirectiveBinding, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, InjectionKey, PropType, Ref, ShallowRef, MaybeRef, MaybeRefOrGetter, VNode, WritableComputedRef } from 'vue'
   import('vue')
   // @ts-ignore
-  export type { UseBrandListOptions } from '../composables/api/useBrand'
-  import('../composables/api/useBrand')
-  // @ts-ignore
-  export type { UseCategoryListOptions } from '../composables/api/useCategory'
-  import('../composables/api/useCategory')
-  // @ts-ignore
-  export type { UseCommonOptions } from '../composables/api/useCommon'
-  import('../composables/api/useCommon')
-  // @ts-ignore
-  export type { UseParameterListOptions } from '../composables/api/useParameter'
-  import('../composables/api/useParameter')
-  // @ts-ignore
-  export type { UseSupplierListOptions } from '../composables/api/useSupplier'
-  import('../composables/api/useSupplier')
-  // @ts-ignore
-  export type { UseSystemCategoryListOptions } from '../composables/api/useSystemCategory'
-  import('../composables/api/useSystemCategory')
-  // @ts-ignore
-  export type { TableResponse, UseListOptions } from '../composables/useApi'
+  export type { TableResponse, ListHookResult, UseCommonOptions } from '../composables/useApi'
   import('../composables/useApi')
   // @ts-ignore
   export type { ScrollToParams } from '../hooks/useScrollTo'

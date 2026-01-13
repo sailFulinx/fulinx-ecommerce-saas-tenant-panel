@@ -48,7 +48,11 @@ const loading = reactive({
 // 使用原有的自定义Hook，但现在可以访问返回的promise
 const { loading: productTypeloading, listData: productTypeListData, promise: productTypePromise } = useProductTypeList()
 
-const { loading: productSourceTypeLoading, listData: productSourceTypeListData, promise: productSourceTypePromise } = useProductSourceTypeList()
+const {
+  loading: productSourceTypeLoading,
+  listData: productSourceTypeListData,
+  promise: productSourceTypePromise,
+} = useProductSourceTypeList()
 
 const { loading: ageGroupLoading, listData: ageGroupTypeListData, promise: ageGroupPromise } = useAgeGroupTypeList()
 
@@ -56,37 +60,16 @@ const { loading: genderLoading, listData: genderTypeListData, promise: genderPro
 
 const { loading: conditionLoading, listData: conditionTypeListData, promise: conditionPromise } = useConditionTypeList()
 
+const { loading: brandLoading, listData: brandListData, promise: brandPromise } = useBrandList()
+
+const { loading: supplierLoading, listData: supplierListData, promise: supplierPromise } = useSupplierList()
+
+const { loading: parameterLoading, listData: parameterListData, promise: parameterPromise } = useParameterList()
+
 // 系统分类
 const listSystemCategoryPayload = reactive<SystemCategoryListParams>({
   languageId: usePreferenceStore().preference.language.id,
   systemCategoryName: null,
-})
-
-const {
-  loading: systemCategoryLoading,
-  listData: listSystemCategoryData,
-  promise: systemCategoryPromise,
-} = useSystemCategoryList(listSystemCategoryPayload)
-
-onMounted(async () => {
-  // 设置初始化加载状态
-  loading.init = true
-
-  try {
-    // 并行等待所有数据加载完成
-    await Promise.all([
-      productTypePromise,
-      productSourceTypePromise,
-      ageGroupPromise,
-      genderPromise,
-      conditionPromise,
-      systemCategoryPromise,
-    ])
-  } catch (error) {
-    console.error('加载数据失败:', error)
-  } finally {
-    loading.init = false
-  }
 })
 
 const systemCategoryProps = {
@@ -108,6 +91,12 @@ const handleChangeSystemCategory = (val: string[]) => {
   }
 }
 
+const {
+  loading: systemCategoryLoading,
+  listData: listSystemCategoryData,
+  promise: systemCategoryPromise,
+} = useSystemCategoryList(listSystemCategoryPayload)
+
 /**
  * 分类
  */
@@ -115,8 +104,6 @@ const listCategoryPayload = reactive<CategoryListParams>({
   languageId: usePreferenceStore().preference.language.id,
   categoryName: null,
 })
-
-const { loading: categoryLoading, listData: listCategoryData } = useCategoryList(listCategoryPayload)
 
 const categoryProps = {
   value: 'id',
@@ -138,22 +125,35 @@ const handleChangeCategory = (val: string[]) => {
   }
 }
 
-// 参数
-const { loading: parameterLoading, listData: listParameterData, getList: getParameterList } = useParameterList()
+const {
+  loading: categoryLoading,
+  listData: listCategoryData,
+  promise: categoryPromise,
+} = useCategoryList(listCategoryPayload)
 
-// 供应商
-const listSupplierPayload = reactive<SupplierListParams>({
-  languageId: usePreferenceStore().preference.language.id,
-  supplierName: null,
+onMounted(async () => {
+  // 设置初始化加载状态
+  loading.init = true
+  try {
+    // 并行等待所有数据加载完成
+    await Promise.all([
+      productTypePromise,
+      productSourceTypePromise,
+      ageGroupPromise,
+      genderPromise,
+      conditionPromise,
+      systemCategoryPromise,
+      categoryPromise,
+      brandPromise,
+      parameterPromise,
+      supplierPromise,
+    ])
+  } catch (error) {
+    console.error('加载数据失败:', error)
+  } finally {
+    loading.init = false
+  }
 })
-const { loading: supplierLoading, listData: listSupplierData, getList: getSupplierList } = useSupplierList(listSupplierPayload)
-
-// 品牌
-const listBrandPayload = reactive<BrandListParams>({
-  languageId: usePreferenceStore().preference.language.id,
-  brandName: null,
-})
-const { loading: brandLoading, listData: listBrandData, getList: getBrandList } = useBrandList(listBrandPayload)
 
 const editorRef = ref()
 
@@ -366,13 +366,43 @@ const save = async () => {
                       @change="handleChangeCategory"
                     />
                   </ElFormItem>
-                  <ElFormItem :label="$t('product.ageGroup')" prop="ageGroupType">
-                    <ElSelect v-model="productForm.ageGroupType" placeholder="请选择">
+                  <ElFormItem :label="$t('product.genderType')" prop="genderType">
+                    <ElSelect v-model="productForm.ageGroupType" v-loading="genderLoading" placeholder="请选择">
+                      <ElOption
+                        v-for="item in genderTypeListData?.list || []"
+                        :key="item.id"
+                        :value="item.id"
+                        :label="item.genderTypeName"
+                      />
+                    </ElSelect>
+                  </ElFormItem>
+                  <ElFormItem :label="$t('product.conditionType')" prop="conditionType">
+                    <ElSelect v-model="productForm.conditionType" v-loading="conditionLoading" placeholder="请选择">
+                      <ElOption
+                        v-for="item in conditionTypeListData?.list || []"
+                        :key="item.id"
+                        :value="item.id"
+                        :label="item.conditionTypeName"
+                      />
+                    </ElSelect>
+                  </ElFormItem>
+                  <ElFormItem :label="$t('product.ageGroupType')" prop="ageGroupType">
+                    <ElSelect v-model="productForm.ageGroupType" v-loading="ageGroupLoading" placeholder="请选择">
                       <ElOption
                         v-for="item in ageGroupTypeListData?.list || []"
                         :key="item.id"
                         :value="item.id"
-                        :label="item.name"
+                        :label="item.ageGroupTypeName"
+                      />
+                    </ElSelect>
+                  </ElFormItem>
+                  <ElFormItem :label="$t('product.productSourceType')" prop="productSourceType">
+                    <ElSelect v-model="productForm.productSourceType" v-loading="productSourceTypeLoading" placeholder="请选择">
+                      <ElOption
+                        v-for="item in productSourceTypeListData?.list || []"
+                        :key="item.id"
+                        :value="item.id"
+                        :label="item.productSourceTypeName"
                       />
                     </ElSelect>
                   </ElFormItem>
