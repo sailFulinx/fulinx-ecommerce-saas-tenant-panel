@@ -35,6 +35,8 @@ interface FileData {
   /* sha256 */
   sha256: string
 
+  sort?: number
+
   /* Soft Delete Flag */
   isDelete: number
 

@@ -28,6 +28,13 @@ const fileData = ref<FileData>({
   path: '',
   fileUrl: '',
   sha256: '',
+  isDelete: 0,
+  remark: '',
+  recordVersion: 0,
+  recordCreateName: '',
+  recordUpdateName: '',
+  recordCreateTime: '',
+  recordUpdateTime: '',
 })
 
 watch(
@@ -96,6 +103,13 @@ const handleDelete = () => {
     path: '',
     fileUrl: '',
     sha256: '',
+    isDelete: 0,
+    remark: '',
+    recordVersion: 0,
+    recordCreateName: '',
+    recordUpdateName: '',
+    recordCreateTime: '',
+    recordUpdateTime: '',
   }
   videoUrl.value = ''
   emit('getData', { fileData: fileData.value })
@@ -120,17 +134,17 @@ defineExpose({
 <template>
   <ElUpload
     v-loading="loading"
-    class="video-uploader"
     action=""
     accept=".mp4"
     :http-request="handleUpload"
     :show-file-list="false"
     :on-success="handleSuccess"
     :before-upload="beforeUpload"
+    class="flex items-center justify-center bg-white"
   >
-    <div class="w-48 h-48 border border-solid-1 border-gray-300 rounded p-2 flex items-center justify-center">
+    <div class="w-41 h-41 border border-solid-1 border-gray-300 rounded p-2 flex items-center justify-center">
       <div v-if="videoUrl" class="flex flex-col items-center justify-center relative">
-        <video class="w-full max-h-48 rounded object-cover mb-2" :src="videoUrl" controls />
+        <video class="w-full max-h-41 rounded object-cover mb-2" :src="videoUrl" controls />
         <EBtn text @click.stop="handleDelete">
           <Icon :size="4" icon="ep:delete" />
         </EBtn>

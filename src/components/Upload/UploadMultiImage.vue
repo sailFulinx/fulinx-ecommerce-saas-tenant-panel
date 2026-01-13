@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import type { UploadFile, UploadProps } from 'element-plus'
-import { ElMessage, ElUpload } from 'element-plus'
 import { VueDraggable } from 'vue-draggable-plus'
 import { uploadFileApi } from '@/api/file'
 

@@ -181,6 +181,8 @@ const editorRef = ref()
 
 const imageUploadRef = ref()
 
+const videoUploadRef = ref()
+
 const createProductForm = (): CreateProductParams => {
   return {
     languageId: usePreferenceStore().preference.language.id,
@@ -413,9 +415,12 @@ const save = async () => {
                 <div class="w-full fs-16px font-bold mb-4">
                   图文信息
                 </div>
-                <div class="w-full">
+                <ElFormItem :label="$t('product.productImage')" required>
                   <UploadMultiImage ref="imageUploadRef" />
-                </div>
+                </ElFormItem>
+                <ElFormItem :label="$t('product.video')" required>
+                  <UploadVideo ref="videoUploadRef" />
+                </ElFormItem>
                 <ElFormItem :label="$t('product.productShortDescription')" prop="productShortDescription">
                   <ElInput
                     v-model="productForm.productShortDescription"
