@@ -21,7 +21,7 @@ const anchorLinks = [
   { href: '#productName', title: $t('product.base') },
   { href: '#productFile', title: $t('product.imageText') },
   { href: '#productOption', title: $t('product.option') },
-  { href: '#productOther', title: $t('product.other') }
+  { href: '#productOther', title: $t('product.other') },
 ]
 
 const handleUpdateActiveHref = (href: string) => {
@@ -30,10 +30,10 @@ const handleUpdateActiveHref = (href: string) => {
 
 const rules = reactive({
   languageId: [{ required: true, message: $t('common.placeholder.language'), trigger: 'change' }],
-  systemCategory: [{ required: true, message: $t('product.placeholder.systemCategory'), trigger: 'change' }],
+  systemCategoryId: [{ required: true, message: $t('product.placeholder.systemCategory'), trigger: 'change' }],
   productName: [{ required: true, message: $t('product.placeholder.productName'), trigger: 'blur' }],
   productType: [{ required: true, message: $t('product.placeholder.productType'), trigger: 'change' }],
-  sku: [{ required: true, message: $t('product.placeholder.sku'), trigger: 'blur' }]
+  spu: [{ required: true, message: $t('product.placeholder.spu'), trigger: 'blur' }],
 })
 
 const loading = reactive({
@@ -42,7 +42,7 @@ const loading = reactive({
   supplier: false,
   category: false,
   parameterGroup: false,
-  parameter: false
+  parameter: false,
 })
 
 /**
@@ -55,18 +55,17 @@ const { loading: parameterLoading, listParameterResult, getParameterList } = use
  */
 const listSystemCategoryPayload = reactive<SystemCategoryListParams>({
   languageId: usePreferenceStore().preference.language.id,
-  systemCategoryName: null
+  systemCategoryName: null,
 })
 
 const {
   loading: systemCategoryLoading,
   listSystemCategoryData,
-  getSystemCategoryList
 } = useSystemCategory(listSystemCategoryPayload)
 
 const systemCategoryProps = {
   value: 'id',
-  label: 'systemCategoryName'
+  label: 'systemCategoryName',
 }
 
 const systemCategoryIds = ref<string[]>([])
@@ -88,15 +87,15 @@ const handleChangeSystemCategory = (val: string[]) => {
  */
 const listCategoryPayload = reactive<CategoryListParams>({
   languageId: usePreferenceStore().preference.language.id,
-  categoryName: null
+  categoryName: null,
 })
 
-const { loading: categoryLoading, listCategoryData, getCategoryList } = useCategory(listCategoryPayload)
+const { loading: categoryLoading, listCategoryData } = useCategory(listCategoryPayload)
 
 const categoryProps = {
   value: 'id',
   label: 'categoryName',
-  multiple: true
+  multiple: true,
 }
 
 const categoryIds = ref<string[]>([])
@@ -120,7 +119,7 @@ const listSupplierPayload = reactive<SupplierListParams & Pagination>({
   languageId: usePreferenceStore().preference.language.id,
   pageSize: 20,
   pageNumber: 1,
-  supplierName: null
+  supplierName: null,
 })
 const { loading: supplierLoading, listSupplierResult, getSupplierList } = useSupplier(listSupplierPayload)
 
@@ -154,15 +153,15 @@ const createProductForm = (): CreateProductParams => {
     productSkuRequestDo: {
       productAttributeRequestDo: {
         productAttributeSummaryDo: {
-          productAttributeSummaryAttributeDos: []
+          productAttributeSummaryAttributeDos: [],
         },
-        searchIndex: ''
+        searchIndex: '',
       },
-      productSkuItemRequestDos: []
+      productSkuItemRequestDos: [],
     },
     productParameterRelationRequestDos: [],
     productRelatedRequestDos: [],
-    productSupplierRequestDos: []
+    productSupplierRequestDos: [],
   }
 }
 
@@ -212,7 +211,7 @@ const save = async () => {
   ElMessage({
     message: '保存成功',
     type: 'success',
-    duration: 2000
+    duration: 2000,
   })
 }
 </script>
@@ -239,7 +238,9 @@ const save = async () => {
     <div class="view-main theme-card">
       <ElForm ref="productFormRef" :model="productForm" :rules="rules" label-width="100px">
         <div class="grid grid-cols-12 gap-4">
-          <div class="col-span-3 bg-white pa-4">AI</div>
+          <div class="col-span-3 bg-white pa-4">
+            AI
+          </div>
           <div class="col-span-9">
             <div class="w-full mb-4 bg-white">
               <TailwindAnchor
@@ -255,10 +256,12 @@ const save = async () => {
             <div ref="containerRef" class="w-full container-custom">
               <!-- 基础 -->
               <div id="productName" class="bg-white mb-5 pa-4">
-                <div class="w-full fs-16px font-bold mb-4">基础信息</div>
+                <div class="w-full fs-16px font-bold mb-4">
+                  基础信息
+                </div>
                 <div class="w-full">
                   <!-- 系统分类 -->
-                  <ElFormItem :label="$t('product.systemCategory')" prop="systemCategory">
+                  <ElFormItem :label="$t('product.systemCategory')" prop="systemCategoryId">
                     <ElCascader
                       v-model="productForm.systemCategoryId"
                       :placeholder="`${$t('product.placeholder.systemCategory')}`"
@@ -268,6 +271,7 @@ const save = async () => {
                       @change="handleChangeSystemCategory"
                     />
                   </ElFormItem>
+                  <!-- 产品名称 -->
                   <ElFormItem :label="$t('product.productName')" prop="productName">
                     <ElInput
                       v-model="productForm.productName"
@@ -275,6 +279,27 @@ const save = async () => {
                       maxlength="120"
                       :placeholder="$t('product.placeholder.productName')"
                     />
+                  </ElFormItem>
+                  <ElFormItem :label="$t('product.spu')" prop="spu">
+                    <ElInput
+                      v-model="productForm.spu"
+                      minlength="1"
+                      maxlength="120"
+                      :placeholder="$t('product.placeholder.spu')"
+                    />
+                  </ElFormItem>
+                  <!-- 产品短名称 -->
+                  <ElFormItem :label="$t('product.productShortName')" prop="productShortName">
+                    <ElInput
+                      v-model="productForm.productShortName"
+                      minlength="1"
+                      maxlength="120"
+                      :placeholder="$t('product.placeholder.productShortName')"
+                    />
+                  </ElFormItem>
+
+                  <ElFormItem :label="$t('product.productDescription')" prop="articleDescription">
+                    <Editor ref="editorRef" v-model="productForm.productDescription" />
                   </ElFormItem>
                   <!-- 产品分类 -->
                   <ElFormItem :label="$t('product.category')" prop="category">
@@ -286,34 +311,29 @@ const save = async () => {
                       @change="handleChangeCategory"
                     />
                   </ElFormItem>
-                  <ElFormItem :label="$t('product.sku')" prop="sku">
-                    <ElInput
-                      v-model="productForm.spu"
-                      minlength="1"
-                      maxlength="120"
-                      :placeholder="$t('product.placeholder.sku')"
-                    />
-                  </ElFormItem>
-                  <ElFormItem :label="$t('product.productDescription')" prop="articleDescription">
-                    <Editor ref="editorRef" v-model="productForm.productDescription" :height="300" />
-                  </ElFormItem>
                 </div>
               </div>
               <!-- 图片 -->
               <div id="productFile" class="bg-white mb-5 pa-4 h-[800px]">
-                <div class="w-full fs-16px font-bold mb-4">图文信息</div>
+                <div class="w-full fs-16px font-bold mb-4">
+                  图文信息
+                </div>
                 <div class="w-full">
                   <UploadMultiImage ref="imageUploadRef" />
                 </div>
               </div>
               <!-- 规格 -->
               <div id="productOption" class="bg-white mb-5 pa-4 h-[800px]">
-                <div class="w-full fs-16px font-bold mb-4">价格库存</div>
+                <div class="w-full fs-16px font-bold mb-4">
+                  价格库存
+                </div>
                 <div class="w-full" />
               </div>
               <!-- 其它 -->
               <div id="productOther" class="bg-white mb-5 pa-4 h-[800px]">
-                <div class="w-full fs-16px font-bold mb-4">其他信息</div>
+                <div class="w-full fs-16px font-bold mb-4">
+                  其他信息
+                </div>
                 <div class="w-full" />
               </div>
             </div>
