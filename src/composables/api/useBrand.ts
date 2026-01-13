@@ -1,6 +1,6 @@
 import { usePreferenceStore } from '@/stores/preference'
 
-export interface UseSupplierListOptions {
+export interface UseBrandListOptions {
   /**
    * 是否在初始化时自动加载供应商列表
    * @default true
@@ -8,32 +8,32 @@ export interface UseSupplierListOptions {
   immediate?: boolean
 }
 
-export const useSupplierPagination = (
-  payload?: Partial<SupplierListParams & Pagination>,
-  options: UseSupplierListOptions = {},
+export const useBrandPagination = (
+  payload?: Partial<BrandListParams & Pagination>,
+  options: UseBrandListOptions = {},
 ) => {
   const { immediate = true } = options
 
   const loading = ref(false)
 
-  const listPayload = reactive<SupplierListParams & Pagination>({
+  const listPayload = reactive<BrandListParams & Pagination>({
     languageId: usePreferenceStore().preference?.language.id,
     pageSize: payload?.pageSize ?? 20,
     pageNumber: payload?.pageNumber ?? 1,
     ...payload,
   })
 
-  const listData = ref<TableResponse<SupplierListData & CommonField>>({
+  const listData = ref<TableResponse<BrandListData & CommonField>>({
     list: [],
     total: 0,
   })
 
-  const getList = async () => {
+  const getBrandList = async () => {
     loading.value = true
-    if (listPayload.supplierName === '') {
-      listPayload.supplierName = null
+    if (listPayload.brandName === '') {
+      listPayload.brandName = null
     }
-    const { data } = await supplierPaginationApi(listPayload).catch(err => {
+    const { data } = await brandPaginationApi(listPayload).catch(err => {
       loading.value = false
       throw err
     })
@@ -43,41 +43,38 @@ export const useSupplierPagination = (
 
   // 如果 immediate 为 true，在初始化时自动加载数据
   if (immediate) {
-    getList()
+    getBrandList()
   }
 
   return {
     loading,
     listPayload,
     listData,
-    getList,
+    getBrandList,
   }
 }
 
-export const useSupplierList = (
-  payload?: Partial<SupplierListParams>,
-  options: UseSupplierListOptions = {},
-) => {
+export const useBrandList = (payload?: Partial<BrandListParams>, options: UseBrandListOptions = {}) => {
   const { immediate = true } = options
 
   const loading = ref(false)
 
-  const listPayload = reactive<SupplierListParams>({
+  const listPayload = reactive<BrandListParams>({
     languageId: usePreferenceStore().preference?.language.id,
     ...payload,
   })
 
-  const listData = ref<TableResponse<SupplierListData & CommonField>>({
+  const listData = ref<TableResponse<BrandListData & CommonField>>({
     list: [],
     total: 0,
   })
 
-  const getList = async () => {
+  const getBrandList = async () => {
     loading.value = true
-    if (listPayload.supplierName === '') {
-      listPayload.supplierName = null
+    if (listPayload.brandName === '') {
+      listPayload.brandName = null
     }
-    const { data } = await supplierListApi(listPayload).catch(err => {
+    const { data } = await brandListApi(listPayload).catch(err => {
       loading.value = false
       throw err
     })
@@ -87,13 +84,13 @@ export const useSupplierList = (
 
   // 如果 immediate 为 true，在初始化时自动加载数据
   if (immediate) {
-    getList()
+    getBrandList()
   }
 
   return {
     loading,
     listPayload,
     listData,
-    getList,
+    getBrandList,
   }
 }

@@ -1,3 +1,99 @@
+interface ProductTypeListParams {
+  /* Product Type */
+  productTypeCode?: string | null
+}
+
+interface ProductTypeData {
+  /* ID */
+  id: number
+
+  /* Code */
+  code: string
+
+  /* Product Type Name */
+  productTypeName: string
+}
+
+interface AgeGroupTypeListParams {
+  /* Age Group Type */
+  ageGroupTypeCode?: string | null
+}
+
+interface AgeGroupTypeData {
+  /* ID */
+  id: number
+
+  /* Code */
+  code: string
+
+  /* Age Group Type Name */
+  ageGroupTypeName: string
+}
+
+interface GenderTypeListParams {
+  /* Gender Type */
+  genderTypeCode?: string | null
+}
+
+interface GenderTypeData {
+  /* ID */
+  id: number
+
+  /* Code */
+  code: string
+
+  /* Gender Type Name */
+  genderTypeName: string
+}
+
+interface ConditionTypeListParams {
+  /* Condition Type */
+  conditionTypeCode?: string | null
+}
+
+interface ConditionTypeData {
+  /* ID */
+  id: number
+
+  /* Code */
+  code: string
+
+  /* Condition Type Name */
+  conditionTypeName: string
+}
+
+interface ProductSourceTypeListParams {
+  /* Product Source */
+  productSourceCode?: string | null
+}
+
+interface ProductSourceTypeData {
+  /* ID */
+  id: number
+
+  /* Code */
+  code: string
+
+  /* Product Source Type Name */
+  productSourceTypeName: string
+}
+
+interface WarehouseTypeListParams {
+  /* Warehouse Type */
+  warehouseTypeCode?: string | null
+}
+
+interface WarehouseTypeData {
+  /* ID */
+  id: number
+
+  /* Code */
+  code: string
+
+  /* Warehouse Type Name */
+  warehouseTypeName: string
+}
+
 interface ProductFileRequestDo {
   /* Product ID */
   productId?: string

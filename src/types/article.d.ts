@@ -707,7 +707,7 @@ interface UpdateArticleSlugParams {
 
 // 文章类型
 interface ArticleTypeListParams {
-  articleTypeCode: string | null
+  articleTypeCode?: string | null
 }
 
 // 文章类型数据

@@ -83,7 +83,14 @@ interface ListLayoutTypeParams {
 }
 
 interface LayoutTypeData {
+  /* Layout Type ID */
+  id: string
 
+  /* Layout Type Code */
+  code: string
+
+  /* Layout Type Name */
+  layoutTypeName: string
 }
 
 // 定义响应式数据，包含PC端、平板端和手机端的布局数据以及响应式数据

@@ -45,10 +45,18 @@ const loading = reactive({
   parameter: false,
 })
 
-/**
- * 参数
- */
-const { loading: parameterLoading, listParameterResult, getParameterList } = useParameter()
+const { loading: productTypeloading, listData: productTypeListData } = useProductTypeList()
+
+const { loading: productSourceTypeLoading, listData: productSourceTypeListData } = useProductSourceTypeList()
+
+const { loading: ageGroupLoading, listData: ageGroupTypeListData } = useAgeGroupTypeList()
+console.log(ageGroupTypeListData)
+
+console.log(ageGroupTypeListData.value)
+
+const { loading: genderLoading, listData: genderTypeListData } = useGenderTypeList()
+
+const { loading: conditionLoading, listData: conditionTypeListData } = useConditionTypeList()
 
 /**
  * 系统分类
@@ -60,8 +68,8 @@ const listSystemCategoryPayload = reactive<SystemCategoryListParams>({
 
 const {
   loading: systemCategoryLoading,
-  listSystemCategoryData,
-} = useSystemCategory(listSystemCategoryPayload)
+  listData: listSystemCategoryData,
+} = useSystemCategoryList(listSystemCategoryPayload)
 
 const systemCategoryProps = {
   value: 'id',
@@ -90,7 +98,7 @@ const listCategoryPayload = reactive<CategoryListParams>({
   categoryName: null,
 })
 
-const { loading: categoryLoading, listCategoryData } = useCategory(listCategoryPayload)
+const { loading: categoryLoading, listData: listCategoryData } = useCategoryList(listCategoryPayload)
 
 const categoryProps = {
   value: 'id',
@@ -112,16 +120,22 @@ const handleChangeCategory = (val: string[]) => {
   }
 }
 
-/**
- * 供应商
- */
-const listSupplierPayload = reactive<SupplierListParams & Pagination>({
+// 参数
+const { loading: parameterLoading, listData: listParameterData, getList: getParameterList } = useParameterList()
+
+// 供应商
+const listSupplierPayload = reactive<SupplierListParams>({
   languageId: usePreferenceStore().preference.language.id,
-  pageSize: 20,
-  pageNumber: 1,
   supplierName: null,
 })
-const { loading: supplierLoading, listSupplierResult, getSupplierList } = useSupplier(listSupplierPayload)
+const { loading: supplierLoading, listData: listSupplierData, getList: getSupplierList } = useSupplierList(listSupplierPayload)
+
+// 品牌
+const listBrandPayload = reactive<BrandListParams>({
+  languageId: usePreferenceStore().preference.language.id,
+  brandName: null,
+})
+const { loading: brandLoading, listData: listBrandData, getList: getBrandList } = useBrandList(listBrandPayload)
 
 const editorRef = ref()
 
@@ -297,20 +311,6 @@ const save = async () => {
                       :placeholder="$t('product.placeholder.productShortName')"
                     />
                   </ElFormItem>
-
-                  <ElFormItem :label="$t('product.productDescription')" prop="articleDescription">
-                    <Editor ref="editorRef" v-model="productForm.productDescription" />
-                  </ElFormItem>
-                  <!-- 产品分类 -->
-                  <ElFormItem :label="$t('product.category')" prop="category">
-                    <ElCascader
-                      v-model="productForm.categoryIds"
-                      :loading="categoryLoading"
-                      :props="categoryProps"
-                      :options="listCategoryData.list"
-                      @change="handleChangeCategory"
-                    />
-                  </ElFormItem>
                 </div>
               </div>
               <!-- 图片 -->
@@ -321,6 +321,9 @@ const save = async () => {
                 <div class="w-full">
                   <UploadMultiImage ref="imageUploadRef" />
                 </div>
+                <ElFormItem :label="$t('product.productDescription')" prop="articleDescription">
+                  <Editor ref="editorRef" v-model="productForm.productDescription" />
+                </ElFormItem>
               </div>
               <!-- 规格 -->
               <div id="productOption" class="bg-white mb-5 pa-4 h-[800px]">
@@ -334,7 +337,26 @@ const save = async () => {
                 <div class="w-full fs-16px font-bold mb-4">
                   其他信息
                 </div>
-                <div class="w-full" />
+                <div class="w-full">
+                  <!-- 产品分类 -->
+                  <ElFormItem :label="$t('product.category')" prop="category">
+                    <ElCascader
+                      v-model="productForm.categoryIds"
+                      :loading="categoryLoading"
+                      :props="categoryProps"
+                      :options="listCategoryData.list"
+                      @change="handleChangeCategory"
+                    />
+                  </ElFormItem>
+                  <ElFormItem :label="$t('product.ageGroup')" prop="ageGroupType">
+                    <ElSelect v-model="productForm.ageGroupType" placeholder="请选择">
+                      {{ ageGroupTypeListData }}
+                      <!-- <ElOption v-for="item in listAgeGroupData.list" :key="item.id" :value="item.id">
+                        {{ item.name }}
+                      </ElOption> -->
+                    </ElSelect>
+                  </ElFormItem>
+                </div>
               </div>
             </div>
           </div>

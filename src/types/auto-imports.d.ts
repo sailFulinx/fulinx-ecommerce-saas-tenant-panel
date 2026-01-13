@@ -156,18 +156,23 @@ declare global {
   const editWarehouseApi: typeof import('../api/warehouse').editWarehouseApi
   const effectScope: typeof import('vue').effectScope
   const extendRef: typeof import('@vueuse/core').extendRef
+  const fetchAgeGroupTypeListApi: typeof import('../api/common').fetchAgeGroupTypeListApi
   const fetchArticleMissingStatistics: typeof import('../api/dashboard').fetchArticleMissingStatistics
   const fetchArticleSeoCheckList: typeof import('../api/dashboard').fetchArticleSeoCheckList
   const fetchArticleTypeListApi: typeof import('../api/common').fetchArticleTypeListApi
   const fetchCaptchaApi: typeof import('../api/captcha').fetchCaptchaApi
   const fetchCategoryMissingStatistics: typeof import('../api/dashboard').fetchCategoryMissingStatistics
   const fetchCategorySeoCheckList: typeof import('../api/dashboard').fetchCategorySeoCheckList
+  const fetchConditionTypeListApi: typeof import('../api/common').fetchConditionTypeListApi
   const fetchDashboardAnalyticsApi: typeof import('../api/dashboard').fetchDashboardAnalyticsApi
+  const fetchGenderTypeListApi: typeof import('../api/common').fetchGenderTypeListApi
   const fetchImpDetailApi: typeof import('../api/imp').fetchImpDetailApi
   const fetchImpPaginationApi: typeof import('../api/imp').fetchImpPaginationApi
   const fetchLanguageListApi: typeof import('../api/language').fetchLanguageListApi
   const fetchLayoutTypeListApi: typeof import('../api/common').fetchLayoutTypeListApi
   const fetchPermissionListApi: typeof import('../api/permission').fetchPermissionListApi
+  const fetchProductSourceTypeListApi: typeof import('../api/common').fetchProductSourceTypeListApi
+  const fetchProductTypeListApi: typeof import('../api/common').fetchProductTypeListApi
   const fetchRoleDetailApi: typeof import('../api/role').fetchRoleDetailApi
   const fetchRoleListApi: typeof import('../api/role').fetchRoleListApi
   const fetchRolePaginationApi: typeof import('../api/role').fetchRolePaginationApi
@@ -177,6 +182,7 @@ declare global {
   const fetchUserDetailApi: typeof import('../api/user').fetchUserDetailApi
   const fetchUserInfoApi: typeof import('../api/user').fetchUserInfoApi
   const fetchUserPaginationApi: typeof import('../api/user').fetchUserPaginationApi
+  const fetchWarehouseTypeListApi: typeof import('../api/common').fetchWarehouseTypeListApi
   const filePaginationApi: typeof import('../api/file').filePaginationApi
   const getActivePinia: typeof import('pinia').getActivePinia
   const getCurrentInstance: typeof import('vue').getCurrentInstance
@@ -503,6 +509,7 @@ declare global {
   const uploadCustomerInvoiceApi: typeof import('../api/customer').uploadCustomerInvoiceApi
   const uploadFileApi: typeof import('../api/file').uploadFileApi
   const useActiveElement: typeof import('@vueuse/core').useActiveElement
+  const useAgeGroupTypeList: typeof import('../composables/api/useCommon').useAgeGroupTypeList
   const useAnchorScroll: typeof import('../hooks/useAnchorScroll').useAnchorScroll
   const useAnimate: typeof import('@vueuse/core').useAnimate
   const useAppStore: typeof import('../stores/app').useAppStore
@@ -518,25 +525,29 @@ declare global {
   const useArrayReduce: typeof import('@vueuse/core').useArrayReduce
   const useArraySome: typeof import('@vueuse/core').useArraySome
   const useArrayUnique: typeof import('@vueuse/core').useArrayUnique
+  const useArticleTypeList: typeof import('../composables/api/useCommon').useArticleTypeList
   const useAsyncQueue: typeof import('@vueuse/core').useAsyncQueue
   const useAsyncState: typeof import('@vueuse/core').useAsyncState
   const useAttrs: typeof import('vue').useAttrs
   const useBase64: typeof import('@vueuse/core').useBase64
   const useBattery: typeof import('@vueuse/core').useBattery
   const useBluetooth: typeof import('@vueuse/core').useBluetooth
+  const useBrandList: typeof import('../composables/api/useBrand').useBrandList
+  const useBrandPagination: typeof import('../composables/api/useBrand').useBrandPagination
   const useBreakpoints: typeof import('@vueuse/core').useBreakpoints
   const useBroadcastChannel: typeof import('@vueuse/core').useBroadcastChannel
   const useBrowserLocation: typeof import('@vueuse/core').useBrowserLocation
   const useCached: typeof import('@vueuse/core').useCached
   const useCatch: typeof import('../composables/useCatch').useCatch
   const useCategory: typeof import('../composables/api/useCategory').useCategory
-  const useCategoryList: typeof import('../composables/useCategoryList').useCategoryList
+  const useCategoryList: typeof import('../composables/api/useCategory').useCategoryList
   const useClearStorage: typeof import('../composables/useStorage').useClearStorage
   const useClipboard: typeof import('@vueuse/core').useClipboard
   const useClipboardItems: typeof import('@vueuse/core').useClipboardItems
   const useClone: typeof import('../composables/useClone').useClone
   const useCloned: typeof import('@vueuse/core').useCloned
   const useColorMode: typeof import('@vueuse/core').useColorMode
+  const useConditionTypeList: typeof import('../composables/api/useCommon').useConditionTypeList
   const useConfirmDialog: typeof import('@vueuse/core').useConfirmDialog
   const useCountdown: typeof import('@vueuse/core').useCountdown
   const useCounter: typeof import('@vueuse/core').useCounter
@@ -581,6 +592,7 @@ declare global {
   const useFps: typeof import('@vueuse/core').useFps
   const useFullscreen: typeof import('@vueuse/core').useFullscreen
   const useGamepad: typeof import('@vueuse/core').useGamepad
+  const useGenderTypeList: typeof import('../composables/api/useCommon').useGenderTypeList
   const useGeolocation: typeof import('@vueuse/core').useGeolocation
   const useGetCookie: typeof import('../composables/useCookie').useGetCookie
   const useGetPreference: typeof import('../hooks/usePreference').useGetPreference
@@ -598,6 +610,7 @@ declare global {
   const useKeyModifier: typeof import('@vueuse/core').useKeyModifier
   const useLanguageStore: typeof import('../stores/language').useLanguageStore
   const useLastChanged: typeof import('@vueuse/core').useLastChanged
+  const useLayoutTypeList: typeof import('../composables/api/useCommon').useLayoutTypeList
   const useLink: typeof import('vue-router').useLink
   const useLocalStorage: typeof import('@vueuse/core').useLocalStorage
   const useLocale: typeof import('../hooks/useLocale').useLocale
@@ -622,6 +635,7 @@ declare global {
   const usePageLeave: typeof import('@vueuse/core').usePageLeave
   const useParallax: typeof import('@vueuse/core').useParallax
   const useParameter: typeof import('../composables/api/useParameter').useParameter
+  const useParameterList: typeof import('../composables/api/useParameter').useParameterList
   const useParentElement: typeof import('@vueuse/core').useParentElement
   const usePascalCase: typeof import('../composables/general').usePascalCase
   const usePerformanceObserver: typeof import('@vueuse/core').usePerformanceObserver
@@ -638,6 +652,8 @@ declare global {
   const usePreferredReducedMotion: typeof import('@vueuse/core').usePreferredReducedMotion
   const usePreferredReducedTransparency: typeof import('@vueuse/core').usePreferredReducedTransparency
   const usePrevious: typeof import('@vueuse/core').usePrevious
+  const useProductSourceTypeList: typeof import('../composables/api/useCommon').useProductSourceTypeList
+  const useProductTypeList: typeof import('../composables/api/useCommon').useProductTypeList
   const useRafFn: typeof import('@vueuse/core').useRafFn
   const useRefHistory: typeof import('@vueuse/core').useRefHistory
   const useRemoveStorage: typeof import('../composables/useStorage').useRemoveStorage
@@ -665,10 +681,12 @@ declare global {
   const useStorageAsync: typeof import('@vueuse/core').useStorageAsync
   const useStyleTag: typeof import('@vueuse/core').useStyleTag
   const useSupplier: typeof import('../composables/api/useSupplier').useSupplier
-  const useSupplierList: typeof import('../composables/useSupplier').useSupplierList
+  const useSupplierList: typeof import('../composables/api/useSupplier').useSupplierList
+  const useSupplierPagination: typeof import('../composables/api/useSupplier').useSupplierPagination
   const useSupported: typeof import('@vueuse/core').useSupported
   const useSwipe: typeof import('@vueuse/core').useSwipe
   const useSystemCategory: typeof import('../composables/api/useSystemCategory').useSystemCategory
+  const useSystemCategoryList: typeof import('../composables/api/useSystemCategory').useSystemCategoryList
   const useTagsViewStore: typeof import('../stores/tagsView').useTagsViewStore
   const useTemplateRef: typeof import('vue').useTemplateRef
   const useTemplateRefsList: typeof import('@vueuse/core').useTemplateRefsList
@@ -699,6 +717,7 @@ declare global {
   const useVirtualList: typeof import('@vueuse/core').useVirtualList
   const useWaitRef: typeof import('../composables/sleep').useWaitRef
   const useWakeLock: typeof import('@vueuse/core').useWakeLock
+  const useWarehouseTypeList: typeof import('../composables/api/useCommon').useWarehouseTypeList
   const useWebNotification: typeof import('@vueuse/core').useWebNotification
   const useWebSocket: typeof import('@vueuse/core').useWebSocket
   const useWebWorker: typeof import('@vueuse/core').useWebWorker
@@ -731,8 +750,14 @@ declare global {
   export type { Component, Slot, Slots, ComponentPublicInstance, ComputedRef, DirectiveBinding, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, InjectionKey, PropType, Ref, ShallowRef, MaybeRef, MaybeRefOrGetter, VNode, WritableComputedRef } from 'vue'
   import('vue')
   // @ts-ignore
+  export type { UseBrandListOptions } from '../composables/api/useBrand'
+  import('../composables/api/useBrand')
+  // @ts-ignore
   export type { UseCategoryListOptions } from '../composables/api/useCategory'
   import('../composables/api/useCategory')
+  // @ts-ignore
+  export type { UseCommonOptions } from '../composables/api/useCommon'
+  import('../composables/api/useCommon')
   // @ts-ignore
   export type { UseParameterListOptions } from '../composables/api/useParameter'
   import('../composables/api/useParameter')
