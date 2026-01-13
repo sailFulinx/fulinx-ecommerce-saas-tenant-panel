@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import { VueDraggable } from 'vue-draggable-plus'
 import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
@@ -45,22 +45,18 @@ const loading = reactive({
   parameter: false,
 })
 
-const { loading: productTypeloading, listData: productTypeListData } = useProductTypeList()
+// 使用原有的自定义Hook，但现在可以访问返回的promise
+const { loading: productTypeloading, listData: productTypeListData, promise: productTypePromise } = useProductTypeList()
 
-const { loading: productSourceTypeLoading, listData: productSourceTypeListData } = useProductSourceTypeList()
+const { loading: productSourceTypeLoading, listData: productSourceTypeListData, promise: productSourceTypePromise } = useProductSourceTypeList()
 
-const { loading: ageGroupLoading, listData: ageGroupTypeListData } = useAgeGroupTypeList()
-console.log(ageGroupTypeListData)
+const { loading: ageGroupLoading, listData: ageGroupTypeListData, promise: ageGroupPromise } = useAgeGroupTypeList()
 
-console.log(ageGroupTypeListData.value)
+const { loading: genderLoading, listData: genderTypeListData, promise: genderPromise } = useGenderTypeList()
 
-const { loading: genderLoading, listData: genderTypeListData } = useGenderTypeList()
+const { loading: conditionLoading, listData: conditionTypeListData, promise: conditionPromise } = useConditionTypeList()
 
-const { loading: conditionLoading, listData: conditionTypeListData } = useConditionTypeList()
-
-/**
- * 系统分类
- */
+// 系统分类
 const listSystemCategoryPayload = reactive<SystemCategoryListParams>({
   languageId: usePreferenceStore().preference.language.id,
   systemCategoryName: null,
@@ -69,7 +65,29 @@ const listSystemCategoryPayload = reactive<SystemCategoryListParams>({
 const {
   loading: systemCategoryLoading,
   listData: listSystemCategoryData,
+  promise: systemCategoryPromise,
 } = useSystemCategoryList(listSystemCategoryPayload)
+
+onMounted(async () => {
+  // 设置初始化加载状态
+  loading.init = true
+
+  try {
+    // 并行等待所有数据加载完成
+    await Promise.all([
+      productTypePromise,
+      productSourceTypePromise,
+      ageGroupPromise,
+      genderPromise,
+      conditionPromise,
+      systemCategoryPromise,
+    ])
+  } catch (error) {
+    console.error('加载数据失败:', error)
+  } finally {
+    loading.init = false
+  }
+})
 
 const systemCategoryProps = {
   value: 'id',
@@ -350,10 +368,12 @@ const save = async () => {
                   </ElFormItem>
                   <ElFormItem :label="$t('product.ageGroup')" prop="ageGroupType">
                     <ElSelect v-model="productForm.ageGroupType" placeholder="请选择">
-                      {{ ageGroupTypeListData }}
-                      <!-- <ElOption v-for="item in listAgeGroupData.list" :key="item.id" :value="item.id">
-                        {{ item.name }}
-                      </ElOption> -->
+                      <ElOption
+                        v-for="item in ageGroupTypeListData?.list || []"
+                        :key="item.id"
+                        :value="item.id"
+                        :label="item.name"
+                      />
                     </ElSelect>
                   </ElFormItem>
                 </div>

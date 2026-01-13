@@ -509,6 +509,7 @@ declare global {
   const uploadCustomerInvoiceApi: typeof import('../api/customer').uploadCustomerInvoiceApi
   const uploadFileApi: typeof import('../api/file').uploadFileApi
   const useActiveElement: typeof import('@vueuse/core').useActiveElement
+  const useAdvancedList: typeof import('../composables/useApi').useAdvancedList
   const useAgeGroupTypeList: typeof import('../composables/api/useCommon').useAgeGroupTypeList
   const useAnchorScroll: typeof import('../hooks/useAnchorScroll').useAnchorScroll
   const useAnimate: typeof import('@vueuse/core').useAnimate
@@ -612,6 +613,7 @@ declare global {
   const useLastChanged: typeof import('@vueuse/core').useLastChanged
   const useLayoutTypeList: typeof import('../composables/api/useCommon').useLayoutTypeList
   const useLink: typeof import('vue-router').useLink
+  const useList: typeof import('../composables/useApi').useList
   const useLocalStorage: typeof import('@vueuse/core').useLocalStorage
   const useLocale: typeof import('../hooks/useLocale').useLocale
   const useMagicKeys: typeof import('@vueuse/core').useMagicKeys

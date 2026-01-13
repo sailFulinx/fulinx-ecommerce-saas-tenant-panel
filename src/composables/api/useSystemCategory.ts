@@ -32,11 +32,14 @@ export const useSystemCategoryList = (payload?: Partial<SystemCategoryListParams
     })
     listData.value = { ...data }
     loading.value = false
+    return listData.value
   }
 
-  // 如果 immediate 为 true，在初始化时自动加载数据
+  let promise: Promise<TableResponse<SystemCategoryData & CommonField>> | undefined
+
+  // 如果 immediate 为 true，在初始化时自动加载数据，并保存其返回的 Promise
   if (immediate) {
-    getList()
+    promise = getList()
   }
 
   return {
@@ -44,5 +47,6 @@ export const useSystemCategoryList = (payload?: Partial<SystemCategoryListParams
     listPayload,
     listData,
     getList,
+    promise,
   }
 }

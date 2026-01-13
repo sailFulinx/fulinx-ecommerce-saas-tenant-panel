@@ -1,5 +1,3 @@
-import { usePreferenceStore } from '@/stores/preference'
-
 export interface UseCommonOptions {
   /**
    * 是否在初始化时自动加载分类列表
@@ -7,44 +5,6 @@ export interface UseCommonOptions {
    */
   immediate?: boolean
 }
-
-export const useLayoutTypeList = (payload?: Partial<ListLayoutTypeParams>, options: UseCommonOptions = {}) => {
-  const { immediate = true } = options
-
-  const loading = ref(false)
-
-  const listPayload = reactive<ListLayoutTypeParams>({
-    ...payload,
-  })
-
-  const listData = ref<TableResponse<LayoutTypeData>>({
-    list: [],
-    total: 0,
-  })
-
-  const getList = async () => {
-    loading.value = true
-    const { data } = await fetchLayoutTypeListApi(listPayload).catch(error => {
-      loading.value = false
-      throw error
-    })
-    listData.value = { ...data }
-    loading.value = false
-  }
-
-  // 如果 immediate 为 true，在初始化时自动加载数据
-  if (immediate) {
-    getList()
-  }
-
-  return {
-    loading,
-    listPayload,
-    listData,
-    getList,
-  }
-}
-
 export const useArticleTypeList = (payload?: Partial<ArticleTypeListParams>, options: UseCommonOptions = {}) => {
   const { immediate = true } = options
 
@@ -66,15 +26,18 @@ export const useArticleTypeList = (payload?: Partial<ArticleTypeListParams>, opt
     })
     listData.value = { ...data }
     loading.value = false
+    return listData.value
   }
   if (immediate) {
     getList()
   }
+
   return {
     loading,
     listPayload,
     listData,
     getList,
+    promise: getList(), // 返回 getList Promise，以便外部可以 await
   }
 }
 
@@ -99,15 +62,18 @@ export const useProductTypeList = (payload?: Partial<ProductTypeListParams>, opt
     })
     listData.value = { ...data }
     loading.value = false
+    return listData.value
   }
   if (immediate) {
     getList()
   }
+
   return {
     loading,
     listPayload,
     listData,
     getList,
+    promise: getList(), // 返回 getList Promise，以便外部可以 await
   }
 }
 
@@ -135,15 +101,18 @@ export const useProductSourceTypeList = (
     })
     listData.value = { ...data }
     loading.value = false
+    return listData.value
   }
   if (immediate) {
     getList()
   }
+
   return {
     loading,
     listPayload,
     listData,
     getList,
+    promise: getList(), // 返回 getList Promise，以便外部可以 await
   }
 }
 
@@ -168,15 +137,18 @@ export const useAgeGroupTypeList = (payload?: Partial<AgeGroupTypeListParams>, o
     })
     listData.value = { ...data }
     loading.value = false
+    return listData.value
   }
   if (immediate) {
     getList()
   }
+
   return {
     loading,
     listPayload,
     listData,
     getList,
+    promise: getList(), // 返回 getList Promise，以便外部可以 await
   }
 }
 
@@ -201,15 +173,18 @@ export const useConditionTypeList = (payload?: Partial<ConditionTypeListParams>,
     })
     listData.value = { ...data }
     loading.value = false
+    return listData.value
   }
   if (immediate) {
     getList()
   }
+
   return {
     loading,
     listPayload,
     listData,
     getList,
+    promise: getList(), // 返回 getList Promise，以便外部可以 await
   }
 }
 
@@ -234,15 +209,18 @@ export const useGenderTypeList = (payload?: Partial<GenderTypeListParams>, optio
     })
     listData.value = { ...data }
     loading.value = false
+    return listData.value
   }
   if (immediate) {
     getList()
   }
+
   return {
     loading,
     listPayload,
     listData,
     getList,
+    promise: getList(), // 返回 getList Promise，以便外部可以 await
   }
 }
 
@@ -267,14 +245,17 @@ export const useWarehouseTypeList = (payload?: Partial<WarehouseTypeListParams>,
     })
     listData.value = { ...data }
     loading.value = false
+    return listData.value
   }
   if (immediate) {
     getList()
   }
+
   return {
     loading,
     listPayload,
     listData,
     getList,
+    promise: getList(), // 返回 getList Promise，以便外部可以 await
   }
 }
