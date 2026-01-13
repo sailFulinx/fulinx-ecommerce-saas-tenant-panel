@@ -1,16 +1,21 @@
 export const useBrandPagination = (payload?: Partial<BrandListParams & Pagination>, options: UseCommonOptions = {}) => {
-  if (payload && !payload.languageId) {
-    payload.languageId = usePreferenceStore().preference.languageId
+  const languageId = usePreferenceStore().preference.language.id
+  // 使用空值合并运算符简化逻辑
+  const finalPayload = {
+    languageId,
+    ...payload,
   }
-  return useList<BrandListData, BrandListParams>(brandPaginationApi, payload, options)
+  return useList<BrandListData, BrandListParams>(brandPaginationApi, finalPayload, options)
 }
 
 export const useBrandList = (payload?: Partial<BrandListParams>, options: UseCommonOptions = {}) => {
-  if (payload && !payload?.languageId) {
-    payload.languageId = usePreferenceStore().preference.languageId
+  const languageId = usePreferenceStore().preference.language.id
+
+  // 使用空值合并运算符简化逻辑
+  const finalPayload = {
+    languageId,
+    ...payload,
   }
-  if (!payload) {
-    payload.languageId = usePreferenceStore().preference.languageId
-  }
-  return useList<BrandListData, BrandListParams>(brandListApi, payload, options)
+
+  return useList<BrandListData, BrandListParams>(brandListApi, finalPayload, options)
 }

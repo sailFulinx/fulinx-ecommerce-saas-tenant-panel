@@ -1,5 +1,3 @@
-import placeholder from './placeholder'
-
 export default {
   show: '产品详情',
   add: '添加产品',
@@ -19,6 +17,7 @@ export default {
   parameterInfo: '参数',
   categoryInfo: '产品分类',
   image: '产品图片',
+  brand: '品牌',
   category: '产品分类',
   productName: '产品名称',
   productShortName: '产品短标题',
@@ -42,7 +41,13 @@ export default {
   mpn: '制造商产品编号',
   metaTitle: 'SEO标题',
   metaDescription: 'SEO描述',
-  technology: '技术资料',
+  genderType: '适用性别',
+  ageGroupType: '适用年龄段',
+  conditionType: '产品状态',
+  warehouseType: '仓库类型',
+  productSourceType: '产品来源',
+  supplierUrl: '供应商URL',
+  isAdult: '是否成人商品',
   placeholder: {
     systemCategory: '请选择系统分类',
     productNameQuery: '请输入产品名称查询',
@@ -73,5 +78,11 @@ export default {
     parameterGroup: '请选择参数组',
     metaTitle: '请输入SEO标题',
     metaDescription: '请输入SEO描述',
+    genderType: '请选择适用性别',
+    ageGroupType: '请选择适用年龄段',
+    conditionType: '请选择产品状态',
+    warehouseType: '请选择仓库类型',
+    productSourceType: '请选择产品来源',
+    supplierUrl: '请输入供应商URL',
   },
 }

@@ -1,6 +1,9 @@
 export const useParameterList = (payload?: Partial<BrandListParams>, options: UseCommonOptions = {}) => {
-  if (payload && !payload.languageId) {
-    payload.languageId = usePreferenceStore().preference.languageId
+  const languageId = usePreferenceStore().preference.language.id
+  // 使用空值合并运算符简化逻辑
+  const finalPayload = {
+    languageId,
+    ...payload,
   }
-  return useList<ParameterListData, ParameterListParams>(parameterListApi, payload, options)
+  return useList<ParameterListData, ParameterListParams>(parameterListApi, finalPayload, options)
 }

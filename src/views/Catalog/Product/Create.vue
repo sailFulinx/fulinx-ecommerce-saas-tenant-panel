@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
 import { VueDraggable } from 'vue-draggable-plus'
+import { datePickerShortcuts } from '@/data/date'
 import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
 import { useTagsViewStore } from '@/stores/tagsView'
@@ -163,15 +164,15 @@ const createProductForm = (): CreateProductParams => {
   return {
     languageId: usePreferenceStore().preference.language.id,
     spu: '',
-    productType: 0,
+    productType: undefined,
     onlineTime: '',
     offlineTime: '',
     brandId: '',
-    productSourceType: 0,
+    productSourceType: undefined,
     isAdult: true,
-    ageGroupType: 0,
-    genderType: 0,
-    conditionType: 0,
+    ageGroupType: undefined,
+    genderType: undefined,
+    conditionType: undefined,
     systemCategoryId: '',
     productName: '',
     productShortName: '',
@@ -199,6 +200,43 @@ const createProductForm = (): CreateProductParams => {
 
 const productForm = reactive<CreateProductParams>(createProductForm())
 
+// supplier
+const suppliers = ref<ProductSupplierRequestDo[]>([])
+
+const currentSupplier = ref<ProductSupplierRequestDo>({
+  supplierUrl: '',
+  supplierData: undefined,
+})
+
+const supplierInputVisible = ref(false)
+
+const handleAddSupplier = () => {
+  supplierInputVisible.value = true
+}
+
+const handleAddSupplierCancel = () => {
+  supplierInputVisible.value = false
+}
+
+const handleEditSupplier = (index: number) => {
+  currentSupplier.value = suppliers.value[index]
+  supplierInputVisible.value = true
+}
+
+const handleDeleteSupplier = (index: number) => {
+  suppliers.value.splice(index, 1)
+}
+
+const handleAddSupplierConfirm = () => {
+  suppliers.value.push(currentSupplier.value)
+  console.log(suppliers.value)
+  supplierInputVisible.value = false
+  currentSupplier.value = {
+    supplierUrl: '',
+    supplierData: undefined,
+  }
+}
+
 const closeViewTag = () => {}
 
 const tagsViewStore = useTagsViewStore()
@@ -225,6 +263,9 @@ const save = async () => {
 
   if (categoryIds.value && categoryIds.value.length > 0) {
     productForm.categoryIds = categoryIds.value
+  }
+  if (suppliers.value && suppliers.value.length > 0) {
+    productForm.productSupplierRequestDos = suppliers.value
   }
   const valid = await productFormRef.value.validate((valid: boolean) => {
     if (!valid) {
@@ -303,6 +344,16 @@ const save = async () => {
                       @change="handleChangeSystemCategory"
                     />
                   </ElFormItem>
+                  <ElFormItem :label="$t('product.productType')" prop="productType">
+                    <ElSelect v-model="productForm.productType" v-loading="productTypeloading" placeholder="请选择">
+                      <ElOption
+                        v-for="item in productTypeListData?.list || []"
+                        :key="item.id"
+                        :value="item.id"
+                        :label="item.productTypeName"
+                      />
+                    </ElSelect>
+                  </ElFormItem>
                   <!-- 产品名称 -->
                   <ElFormItem :label="$t('product.productName')" prop="productName">
                     <ElInput
@@ -339,6 +390,14 @@ const save = async () => {
                 <div class="w-full">
                   <UploadMultiImage ref="imageUploadRef" />
                 </div>
+                <ElFormItem :label="$t('product.productShortDescription')" prop="productShortDescription">
+                  <ElInput
+                    v-model="productForm.productShortDescription"
+                    minlength="1"
+                    maxlength="120"
+                    :placeholder="$t('product.placeholder.productShortDescription')"
+                  />
+                </ElFormItem>
                 <ElFormItem :label="$t('product.productDescription')" prop="articleDescription">
                   <Editor ref="editorRef" v-model="productForm.productDescription" />
                 </ElFormItem>
@@ -366,8 +425,130 @@ const save = async () => {
                       @change="handleChangeCategory"
                     />
                   </ElFormItem>
+                  <ElFormItem :label="$t('product.metaTitle')" prop="metaTitle">
+                    <ElInput
+                      v-model="productForm.metaTitle"
+                      minlength="1"
+                      maxlength="120"
+                      :placeholder="$t('product.placeholder.metaTitle')"
+                    />
+                  </ElFormItem>
+                  <ElFormItem :label="$t('product.metaDescription')" prop="metaDescription">
+                    <ElInput
+                      v-model="productForm.metaDescription"
+                      minlength="1"
+                      maxlength="120"
+                      :placeholder="$t('product.placeholder.metaDescription')"
+                    />
+                  </ElFormItem>
+                  <ElFormItem :label="$t('product.productShortDescription')" prop="productShortDescription">
+                    <ElInput
+                      v-model="productForm.productShortDescription"
+                      minlength="1"
+                      maxlength="120"
+                      :placeholder="$t('product.placeholder.productShortDescription')"
+                    />
+                  </ElFormItem>
+                  <ElFormItem :label="$t('product.onlineTime')" prop="onlineTime">
+                    <ElDatePicker
+                      v-model="productForm.onlineTime"
+                      type="datetime"
+                      :placeholder="`${$t('product.placeholder.onlineTime')}`"
+                      :shortcuts="datePickerShortcuts"
+                    />
+                  </ElFormItem>
+                  <ElFormItem :label="$t('product.offlineTime')" prop="offlineTime">
+                    <ElDatePicker
+                      v-model="productForm.offlineTime"
+                      type="datetime"
+                      :placeholder="`${$t('product.placeholder.offlineTime')}`"
+                      :shortcuts="datePickerShortcuts"
+                    />
+                  </ElFormItem>
+                  <ElFormItem :label="$t('product.brand')" prop="brandId">
+                    <ElSelect
+                      v-model="productForm.brandId"
+                      v-loading="brandLoading"
+                      :placeholder="`${$t('product.placeholder.brand')}`"
+                    >
+                      <ElOption
+                        v-for="item in brandListData?.list || []"
+                        :key="item.id"
+                        :value="item.id"
+                        :label="item.brandName"
+                      />
+                    </ElSelect>
+                  </ElFormItem>
+                  <ElFormItem :label="$t('product.supplier')" prop="supplierId">
+                    <div class="w-full" :class="supplierInputVisible ? 'mb-4' : ''">
+                      <EBtn plain type="primary" @click="handleAddSupplier">
+                        {{ $t('common.add') }}{{ $t('product.supplier') }}
+                      </EBtn>
+                    </div>
+                    <div v-for="(item, index) in suppliers" :key="index" class="w-full">
+                      <div class="w-full py-2 border-b border-gray-200 flex items-center justify-between">
+                        <div>
+                          <span class="text-gray-500 mr-2">{{ item.supplierData?.supplierName || '' }},</span>
+                          <span class="text-gray-500">{{ item.supplierUrl }}</span>
+                        </div>
+                        <div>
+                          <EBtn plain type="default" @click="handleEditSupplier(index)">
+                            {{ $t('common.edit') }}
+                          </EBtn>
+                          <EBtn plain type="danger" @click="handleDeleteSupplier(index)">
+                            {{ $t('common.delete') }}
+                          </EBtn>
+                        </div>
+                      </div>
+                    </div>
+                    <div v-if="supplierInputVisible" class="w-full border border-gray-200 p-4">
+                      <div class="w-full mb-4">
+                        {{ $t('common.add') }}{{ $t('product.supplier') }}
+                      </div>
+                      <div class="w-full flex items-center justify-between mb-4">
+                        <div class="w-[200px] mr-2">
+                          <ElSelect
+                            v-model="currentSupplier.supplierData"
+                            v-loading="supplierLoading"
+                            value-key="id"
+                            :placeholder="`${$t('product.placeholder.supplier')}`"
+                          >
+                            <ElOption
+                              v-for="item in supplierListData?.list || []"
+                              :key="item.id"
+                              :value="item"
+                              :label="item.supplierName"
+                            />
+                          </ElSelect>
+                        </div>
+                        <div class="flex-1">
+                          <ElInput
+                            v-model="currentSupplier.supplierUrl"
+                            minlength="1"
+                            maxlength="120"
+                            :placeholder="$t('product.placeholder.supplierUrl')"
+                          />
+                        </div>
+                      </div>
+                      <div class="w-full flex justify-center">
+                        <EBtn plain type="default" @click="handleAddSupplierCancel">
+                          {{ $t('common.cancel') }}
+                        </EBtn>
+                        <EBtn plain type="primary" @click="handleAddSupplierConfirm">
+                          {{ $t('common.save') }}
+                        </EBtn>
+                      </div>
+                    </div>
+                  </ElFormItem>
+                  <ElFormItem :label="$t('product.isAdult')" prop="isAdult">
+                    <ElSwitch v-model="productForm.isAdult" />
+                  </ElFormItem>
                   <ElFormItem :label="$t('product.genderType')" prop="genderType">
-                    <ElSelect v-model="productForm.ageGroupType" v-loading="genderLoading" placeholder="请选择">
+                    <ElSelect
+                      v-model="productForm.ageGroupType"
+                      v-loading="genderLoading"
+                      :placeholder="`${$t('product.placeholder.genderType')}`"
+                    >
                       <ElOption
                         v-for="item in genderTypeListData?.list || []"
                         :key="item.id"
@@ -397,7 +578,11 @@ const save = async () => {
                     </ElSelect>
                   </ElFormItem>
                   <ElFormItem :label="$t('product.productSourceType')" prop="productSourceType">
-                    <ElSelect v-model="productForm.productSourceType" v-loading="productSourceTypeLoading" placeholder="请选择">
+                    <ElSelect
+                      v-model="productForm.productSourceType"
+                      v-loading="productSourceTypeLoading"
+                      placeholder="请选择"
+                    >
                       <ElOption
                         v-for="item in productSourceTypeListData?.list || []"
                         :key="item.id"

@@ -322,8 +322,12 @@ interface ProductSupplierRequestDo {
   /* Supplier ID */
   supplierId?: string
 
+  supplierName?: string
+
   /* Supplier Url */
   supplierUrl?: string
+
+  supplierData?: (SupplierListData & CommonField) | undefined
 }
 
 interface ProductSkuRequestDo {
@@ -342,7 +346,7 @@ interface CreateProductParams {
   spu: string
 
   /* Product Type: 1-physical,2-Virtual */
-  productType: number
+  productType: number | undefined
 
   /* Online Time */
   onlineTime?: string
@@ -354,22 +358,22 @@ interface CreateProductParams {
   brandId?: string
 
   /* Product Source Type, 1-own, 2-oem, 3-agency, 4-drop, 5-other */
-  productSourceType?: number
+  productSourceType?: number | undefined
 
   /* Is Adult,  0 - No, 1 - Yes */
   isAdult?: boolean
 
   /* Age Group Type, 1-newborn,2-infant,3-toddler,4-kids,5-adult */
-  ageGroupType?: number
+  ageGroupType?: number | undefined
 
   /* Gender Type, 1-male,2-female,3-unisex */
-  genderType?: number
+  genderType?: number | undefined
 
   /* Condition Type, 1-new,2-refurbished,3-used */
-  conditionType?: number
+  conditionType?: number | undefined
 
   /* System Category ID */
-  systemCategoryId?: string
+  systemCategoryId?: string | undefined
 
   /* Product Name */
   productName: string

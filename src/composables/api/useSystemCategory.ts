@@ -1,6 +1,9 @@
 export const useSystemCategoryList = (payload?: Partial<SystemCategoryListParams>, options: UseCommonOptions = {}) => {
-  if (payload && !payload.languageId) {
-    payload.languageId = usePreferenceStore().preference.languageId
+  const languageId = usePreferenceStore().preference.language.id
+  // 使用空值合并运算符简化逻辑
+  const finalPayload = {
+    languageId,
+    ...payload,
   }
-  return useList<SystemCategoryData, SystemCategoryListParams>(systemCategoryListApi, payload, options)
+  return useList<SystemCategoryData, SystemCategoryListParams>(shareSystemCategoryListApi, finalPayload, options)
 }

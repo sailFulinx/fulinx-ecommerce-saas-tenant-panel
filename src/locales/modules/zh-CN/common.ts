@@ -62,6 +62,7 @@ export default {
   remove: '删除',
   required: '该项为必填项',
   reset: '重置',
+  confirm: '确认',
   save: '保存',
   selectText: '请选择',
   setting: '设置',
