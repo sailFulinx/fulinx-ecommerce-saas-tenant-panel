@@ -82,7 +82,7 @@ interface SystemCategoryListParams {
 }
 
 interface SystemCategoryData {
-  /* SystemCategory ID */
+  /* System Category ID */
   id: string
 
   disabled?: boolean

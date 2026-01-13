@@ -47,7 +47,7 @@ const loading = reactive({
 })
 
 // 使用原有的自定义Hook，但现在可以访问返回的promise
-const { loading: productTypeloading, listData: productTypeListData, promise: productTypePromise } = useProductTypeList()
+const { loading: productTypeLoading, listData: productTypeListData, promise: productTypePromise } = useProductTypeList()
 
 const {
   loading: productSourceTypeLoading,
@@ -65,7 +65,7 @@ const { loading: brandLoading, listData: brandListData, promise: brandPromise } 
 
 const { loading: supplierLoading, listData: supplierListData, promise: supplierPromise } = useSupplierList()
 
-const { loading: parameterLoading, listData: parameterListData, promise: parameterPromise } = useParameterList()
+const { loading: _parameterLoading, listData: _parameterListData, promise: parameterPromise } = useParameterList()
 
 // 系统分类
 const listSystemCategoryPayload = reactive<SystemCategoryListParams>({
@@ -76,6 +76,7 @@ const listSystemCategoryPayload = reactive<SystemCategoryListParams>({
 const systemCategoryProps = {
   value: 'id',
   label: 'systemCategoryName',
+  multiple: false,
 }
 
 const systemCategoryIds = ref<string[]>([])
@@ -131,6 +132,26 @@ const {
   listData: listCategoryData,
   promise: categoryPromise,
 } = useCategoryList(listCategoryPayload)
+
+// 类型转换函数，将 SystemCategoryData[] 转换为 CascaderOption[] 兼容格式
+const convertSystemCategoryToCascaderOptions = (categories: SystemCategoryData[]): any[] => {
+  return categories.map(category => ({
+    ...category,
+    value: category.id,
+    label: category.systemCategoryName,
+    children: category.children ? convertSystemCategoryToCascaderOptions(category.children) : undefined,
+  }))
+}
+
+// 类型转换函数，将 CategoryData[] 转换为 CascaderOption[] 兼容格式
+const convertCategoryToCascaderOptions = (categories: CategoryData[]): any[] => {
+  return categories.map(category => ({
+    ...category,
+    value: category.id,
+    label: category.categoryName,
+    children: category.children ? convertCategoryToCascaderOptions(category.children) : undefined,
+  }))
+}
 
 onMounted(async () => {
   // 设置初始化加载状态
@@ -337,15 +358,17 @@ const save = async () => {
                   <ElFormItem :label="$t('product.systemCategory')" prop="systemCategoryId">
                     <ElCascader
                       v-model="productForm.systemCategoryId"
+                      clearable
+                      filterable
                       :placeholder="`${$t('product.placeholder.systemCategory')}`"
                       :loading="systemCategoryLoading"
                       :props="systemCategoryProps"
-                      :options="listSystemCategoryData.list"
+                      :options="convertSystemCategoryToCascaderOptions(listSystemCategoryData.list)"
                       @change="handleChangeSystemCategory"
                     />
                   </ElFormItem>
                   <ElFormItem :label="$t('product.productType')" prop="productType">
-                    <ElSelect v-model="productForm.productType" v-loading="productTypeloading" placeholder="请选择">
+                    <ElSelect v-model="productForm.productType" v-loading="productTypeLoading" clearable filterable placeholder="请选择">
                       <ElOption
                         v-for="item in productTypeListData?.list || []"
                         :key="item.id"
@@ -358,6 +381,7 @@ const save = async () => {
                   <ElFormItem :label="$t('product.productName')" prop="productName">
                     <ElInput
                       v-model="productForm.productName"
+                      clearable
                       minlength="1"
                       maxlength="120"
                       :placeholder="$t('product.placeholder.productName')"
@@ -366,6 +390,7 @@ const save = async () => {
                   <ElFormItem :label="$t('product.spu')" prop="spu">
                     <ElInput
                       v-model="productForm.spu"
+                      clearable
                       minlength="1"
                       maxlength="120"
                       :placeholder="$t('product.placeholder.spu')"
@@ -375,6 +400,7 @@ const save = async () => {
                   <ElFormItem :label="$t('product.productShortName')" prop="productShortName">
                     <ElInput
                       v-model="productForm.productShortName"
+                      clearable
                       minlength="1"
                       maxlength="120"
                       :placeholder="$t('product.placeholder.productShortName')"
@@ -383,7 +409,7 @@ const save = async () => {
                 </div>
               </div>
               <!-- 图片 -->
-              <div id="productFile" class="bg-white mb-5 pa-4 h-[800px]">
+              <div id="productFile" class="bg-white mb-5 pa-4">
                 <div class="w-full fs-16px font-bold mb-4">
                   图文信息
                 </div>
@@ -393,6 +419,7 @@ const save = async () => {
                 <ElFormItem :label="$t('product.productShortDescription')" prop="productShortDescription">
                   <ElInput
                     v-model="productForm.productShortDescription"
+                    clearable
                     minlength="1"
                     maxlength="120"
                     :placeholder="$t('product.placeholder.productShortDescription')"
@@ -403,14 +430,14 @@ const save = async () => {
                 </ElFormItem>
               </div>
               <!-- 规格 -->
-              <div id="productOption" class="bg-white mb-5 pa-4 h-[800px]">
+              <div id="productOption" class="bg-white mb-5 pa-4">
                 <div class="w-full fs-16px font-bold mb-4">
                   价格库存
                 </div>
                 <div class="w-full" />
               </div>
               <!-- 其它 -->
-              <div id="productOther" class="bg-white mb-5 pa-4 h-[800px]">
+              <div id="productOther" class="bg-white mb-5 pa-4">
                 <div class="w-full fs-16px font-bold mb-4">
                   其他信息
                 </div>
@@ -419,15 +446,18 @@ const save = async () => {
                   <ElFormItem :label="$t('product.category')" prop="category">
                     <ElCascader
                       v-model="productForm.categoryIds"
+                      clearable
+                      filterable
                       :loading="categoryLoading"
                       :props="categoryProps"
-                      :options="listCategoryData.list"
+                      :options="convertCategoryToCascaderOptions(listCategoryData.list)"
                       @change="handleChangeCategory"
                     />
                   </ElFormItem>
                   <ElFormItem :label="$t('product.metaTitle')" prop="metaTitle">
                     <ElInput
                       v-model="productForm.metaTitle"
+                      clearable
                       minlength="1"
                       maxlength="120"
                       :placeholder="$t('product.placeholder.metaTitle')"
@@ -436,6 +466,7 @@ const save = async () => {
                   <ElFormItem :label="$t('product.metaDescription')" prop="metaDescription">
                     <ElInput
                       v-model="productForm.metaDescription"
+                      clearable
                       minlength="1"
                       maxlength="120"
                       :placeholder="$t('product.placeholder.metaDescription')"
@@ -444,6 +475,7 @@ const save = async () => {
                   <ElFormItem :label="$t('product.productShortDescription')" prop="productShortDescription">
                     <ElInput
                       v-model="productForm.productShortDescription"
+                      clearable
                       minlength="1"
                       maxlength="120"
                       :placeholder="$t('product.placeholder.productShortDescription')"
@@ -452,6 +484,7 @@ const save = async () => {
                   <ElFormItem :label="$t('product.onlineTime')" prop="onlineTime">
                     <ElDatePicker
                       v-model="productForm.onlineTime"
+                      clearable
                       type="datetime"
                       :placeholder="`${$t('product.placeholder.onlineTime')}`"
                       :shortcuts="datePickerShortcuts"
@@ -460,6 +493,7 @@ const save = async () => {
                   <ElFormItem :label="$t('product.offlineTime')" prop="offlineTime">
                     <ElDatePicker
                       v-model="productForm.offlineTime"
+                      clearable
                       type="datetime"
                       :placeholder="`${$t('product.placeholder.offlineTime')}`"
                       :shortcuts="datePickerShortcuts"
@@ -469,6 +503,8 @@ const save = async () => {
                     <ElSelect
                       v-model="productForm.brandId"
                       v-loading="brandLoading"
+                      clearable
+                      filterable
                       :placeholder="`${$t('product.placeholder.brand')}`"
                     >
                       <ElOption
@@ -510,6 +546,8 @@ const save = async () => {
                           <ElSelect
                             v-model="currentSupplier.supplierData"
                             v-loading="supplierLoading"
+                            clearable
+                            filterable
                             value-key="id"
                             :placeholder="`${$t('product.placeholder.supplier')}`"
                           >
@@ -524,6 +562,7 @@ const save = async () => {
                         <div class="flex-1">
                           <ElInput
                             v-model="currentSupplier.supplierUrl"
+                            clearable
                             minlength="1"
                             maxlength="120"
                             :placeholder="$t('product.placeholder.supplierUrl')"
@@ -547,6 +586,8 @@ const save = async () => {
                     <ElSelect
                       v-model="productForm.ageGroupType"
                       v-loading="genderLoading"
+                      clearable
+                      filterable
                       :placeholder="`${$t('product.placeholder.genderType')}`"
                     >
                       <ElOption
@@ -558,7 +599,7 @@ const save = async () => {
                     </ElSelect>
                   </ElFormItem>
                   <ElFormItem :label="$t('product.conditionType')" prop="conditionType">
-                    <ElSelect v-model="productForm.conditionType" v-loading="conditionLoading" placeholder="请选择">
+                    <ElSelect v-model="productForm.conditionType" v-loading="conditionLoading" clearable filterable placeholder="请选择">
                       <ElOption
                         v-for="item in conditionTypeListData?.list || []"
                         :key="item.id"
@@ -568,7 +609,7 @@ const save = async () => {
                     </ElSelect>
                   </ElFormItem>
                   <ElFormItem :label="$t('product.ageGroupType')" prop="ageGroupType">
-                    <ElSelect v-model="productForm.ageGroupType" v-loading="ageGroupLoading" placeholder="请选择">
+                    <ElSelect v-model="productForm.ageGroupType" v-loading="ageGroupLoading" clearable filterable placeholder="请选择">
                       <ElOption
                         v-for="item in ageGroupTypeListData?.list || []"
                         :key="item.id"
@@ -581,6 +622,8 @@ const save = async () => {
                     <ElSelect
                       v-model="productForm.productSourceType"
                       v-loading="productSourceTypeLoading"
+                      clearable
+                      filterable
                       placeholder="请选择"
                     >
                       <ElOption
