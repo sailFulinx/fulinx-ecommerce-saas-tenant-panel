@@ -770,6 +770,9 @@ declare global {
   export type { UseSystemCategoryListOptions } from '../composables/api/useSystemCategory'
   import('../composables/api/useSystemCategory')
   // @ts-ignore
+  export type { TableResponse, UseListOptions } from '../composables/useApi'
+  import('../composables/useApi')
+  // @ts-ignore
   export type { ScrollToParams } from '../hooks/useScrollTo'
   import('../hooks/useScrollTo')
 }
