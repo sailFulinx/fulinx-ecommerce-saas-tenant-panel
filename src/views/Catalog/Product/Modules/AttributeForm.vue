@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { VueDraggable } from 'vue-draggable-plus'
+import CreateAttributeDialog from '../../Attribute/Components/CreateAttributeDialog.vue'
+import CreateAttributeValueDialog from './CreateAttributeValueDialog.vue'
 
 const { t: $t } = useLocale()
 const loading = reactive({
@@ -19,6 +21,7 @@ const {
   loading: attributeLoading,
   listData: attributeListData,
   promise: attributePromise,
+  getList,
 } = useAttributeList(attributePayload)
 
 onMounted(async () => {
@@ -105,6 +108,26 @@ const handleAddAttributeSave = () => {
     attributeValueDos: [],
     attributeValueListResultDos: [],
   }
+}
+
+const createAttributeRef = ref()
+
+const createAttributeValueRef = ref()
+
+const handleCreateAttribute = () => {
+  createAttributeRef.value.openDialog()
+}
+
+const handleCreateAttributeValue = () => {
+  createAttributeValueRef.value.openDialog(currentAttribute.value.attributeId, currentAttribute.value.languageId)
+}
+
+const getAttributeList = async () => {
+  await getList()
+  if (!attributeListData.value.list || attributeListData.value.list.length === 0) {
+    return
+  }
+  currentAttribute.value.attributeValueListResultDos = attributeListData.value.list.find(item => item.id === currentAttribute.value.attributeId)?.attributeValueListResultDos
 }
 
 const setData = (data: ProductSkuRequestDo) => {
@@ -209,14 +232,14 @@ defineExpose({
         <div v-if="attributeFormVisible" class="w-full bg-[#F6F7FD] mt-4 border border-gray-200">
           <div class="w-full flex justify-between items-center border-b border-gray-200 p-2">
             <div>选择属性</div>
-            <div class="flex items-center cursor-pointer">
+            <div class="flex items-center cursor-pointer" @click="handleCreateAttribute">
               <Icon name="mynaui:plus" class="mr-1" />
               添加属性
             </div>
           </div>
           <div v-loading="attributeLoading" class="w-full flex justify-between items-center p-4">
             <div class="flex-1 flex items-center justify-between mr-2">
-              <div class="w-1/2 mr-2">
+              <div class="w-1/4 mr-2">
                 <ElSelect
                   v-model="currentAttribute.attributeId"
                   placeholder="请选择商品规格"
@@ -255,7 +278,7 @@ defineExpose({
                 </ElSelect>
               </div>
             </div>
-            <div class="flex items-center justify-end cursor-pointer">
+            <div class="flex items-center justify-end cursor-pointer" @click="handleCreateAttributeValue">
               <Icon name="mynaui:plus" class="mr-1" />
               添加属性值
             </div>
@@ -271,5 +294,7 @@ defineExpose({
         </div>
       </ElFormItem>
     </ElForm>
+    <CreateAttributeDialog ref="createAttributeRef" @get-list="getList" />
+    <CreateAttributeValueDialog ref="createAttributeValueRef" @get-list="getAttributeList" />
   </div>
 </template>
