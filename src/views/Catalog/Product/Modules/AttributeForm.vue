@@ -3,6 +3,14 @@ import { VueDraggable } from 'vue-draggable-plus'
 import CreateAttributeDialog from '../../Attribute/Components/CreateAttributeDialog.vue'
 import CreateAttributeValueDialog from './CreateAttributeValueDialog.vue'
 
+interface ProductCreateProvider {
+  productForm: CreateProductParams
+}
+
+const { productForm } = inject('ProductCreate') as ProductCreateProvider
+
+console.log(productForm)
+
 const { t: $t } = useLocale()
 const loading = reactive({
   init: false,
@@ -41,6 +49,7 @@ const formRef = ref()
 
 const productSkuRequestDo = ref<ProductSkuRequestDo>({
   stockStatus: 1,
+  spu: '',
   productAttributeRequestDo: {
     attributeSummaryDos: [],
     searchIndex: '',
@@ -51,8 +60,9 @@ const productSkuRequestDo = ref<ProductSkuRequestDo>({
 const rules = reactive({
   stockStatus: [{ required: true, message: $t('product.placeholder.stockStatus'), trigger: 'change' }],
   productAttributeRequestDo: [
-    { required: true, message: $t('product.placeholder.attributeSummaryDos'), trigger: 'change' },
+    { required: false, message: $t('product.placeholder.attributeSummaryDos'), trigger: 'change' },
   ],
+  spu: [{ required: true, message: $t('product.placeholder.spu'), trigger: 'blur' }],
 })
 
 const dragEnd = () => {
@@ -85,6 +95,10 @@ const handleDeleteAttribute = (index: number) => {
 }
 
 const handelAddAttribute = () => {
+  if (!productSkuRequestDo.value.spu) {
+    ElMessage.error($t('product.placeholder.spu'))
+    return
+  }
   attributeFormVisible.value = true
 }
 
@@ -169,6 +183,15 @@ defineExpose({
             预售
           </ElRadio>
         </ElRadioGroup>
+      </ElFormItem>
+      <ElFormItem :label="$t('product.spu')" prop="spu">
+        <ElInput
+          v-model="productSkuRequestDo.spu"
+          clearable
+          minlength="1"
+          maxlength="120"
+          :placeholder="$t('product.placeholder.spu')"
+        />
       </ElFormItem>
       <ElFormItem label="商品规格" prop="productAttributeRequestDo">
         <div class="w-full flex justify-between items-center">

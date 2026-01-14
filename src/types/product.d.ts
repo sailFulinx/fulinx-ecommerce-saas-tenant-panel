@@ -344,6 +344,7 @@ interface ProductSupplierRequestDo {
 
 interface ProductSkuRequestDo {
   stockStatus: number
+  spu: string
   /* Product Attribute Request Do */
   productAttributeRequestDo: ProductAttributeRequestDo
 

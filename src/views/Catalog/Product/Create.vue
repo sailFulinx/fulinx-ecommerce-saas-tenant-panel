@@ -37,7 +37,6 @@ const rules = reactive({
   systemCategoryId: [{ required: true, message: $t('product.placeholder.systemCategory'), trigger: 'change' }],
   productName: [{ required: true, message: $t('product.placeholder.productName'), trigger: 'blur' }],
   productType: [{ required: true, message: $t('product.placeholder.productType'), trigger: 'change' }],
-  spu: [{ required: true, message: $t('product.placeholder.spu'), trigger: 'blur' }],
 })
 
 const loading = reactive({
@@ -211,6 +210,7 @@ const createProductForm = (): CreateProductParams => {
     currencyId: '',
     productSkuRequestDo: {
       stockStatus: 1,
+      spu: '',
       productAttributeRequestDo: {
         attributeSummaryDos: [],
         searchIndex: '',
@@ -277,6 +277,8 @@ const save = async () => {
     duration: 2000,
   })
 }
+
+provide('ProductCreate', { productForm })
 </script>
 
 <template>
@@ -360,15 +362,6 @@ const save = async () => {
                       minlength="1"
                       maxlength="120"
                       :placeholder="$t('product.placeholder.productName')"
-                    />
-                  </ElFormItem>
-                  <ElFormItem :label="$t('product.spu')" prop="spu">
-                    <ElInput
-                      v-model="productForm.spu"
-                      clearable
-                      minlength="1"
-                      maxlength="120"
-                      :placeholder="$t('product.placeholder.spu')"
                     />
                   </ElFormItem>
                   <!-- 产品短名称 -->
