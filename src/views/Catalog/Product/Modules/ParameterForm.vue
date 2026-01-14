@@ -40,8 +40,16 @@ const currentParameter = ref<ProductParameterRelationRequestDo>({} as ProductPar
 
 const parameterFormVisible = ref(false)
 
+const editingIndex = ref<number | null>(null)
+
 const handleDeleteParameter = (index: number) => {
   productParameterRelationRequestDos.value.splice(index, 1)
+}
+
+const handleEditParameter = (index: number) => {
+  currentParameter.value = { ...productParameterRelationRequestDos.value[index] }
+  editingIndex.value = index
+  parameterFormVisible.value = true
 }
 
 const dragEnd = () => {
@@ -77,10 +85,20 @@ const handleAddParameter = () => {
 
 const handleAddParameterCancel = () => {
   parameterFormVisible.value = false
+  editingIndex.value = null
+  currentParameter.value = {} as ProductParameterRelationRequestDo
 }
 
 const handleAddParameterSave = () => {
-  productParameterRelationRequestDos.value.push(currentParameter.value)
+  // 检查是否正在编辑现有参数
+  if (editingIndex.value !== null && editingIndex.value >= 0) {
+    // 更新现有参数
+    productParameterRelationRequestDos.value[editingIndex.value] = currentParameter.value
+    editingIndex.value = null // 重置编辑索引
+  } else {
+    // 添加新参数
+    productParameterRelationRequestDos.value.push(currentParameter.value)
+  }
   parameterFormVisible.value = false
   currentParameter.value = {} as ProductParameterRelationRequestDo
 }
@@ -129,6 +147,11 @@ defineExpose({
                 <Icon icon="ant-design:holder-outlined" />
               </div>
               <div>{{ item.parameterName }}: {{ item.parameterValueContent }}</div>
+            </div>
+            <div class="flex justify-center">
+              <EBtn type="primary" link class="text-blue-500 hover:text-blue-700" @click="handleEditParameter(index)">
+                <Icon icon="circum:edit" :size="5" />
+              </EBtn>
             </div>
             <div class="absolute -top-4 -right-3">
               <EBtn type="danger" link class="text-red-500 hover:text-red-700" @click="handleDeleteParameter(index)">
