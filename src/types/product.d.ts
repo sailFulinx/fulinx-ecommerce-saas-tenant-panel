@@ -209,13 +209,15 @@ interface ProductSkuItemRequestDo {
   id?: string
 
   /* Product ID */
-  productId: string
+  productId?: string
 
   /* Sku Image File ID */
   skuImageFileId?: string
 
   /* Sku Code */
   skuCode: string
+
+  quantity: number
 
   /* Currency Id */
   currencyId: string

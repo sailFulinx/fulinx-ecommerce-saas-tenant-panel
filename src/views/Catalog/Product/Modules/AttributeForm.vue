@@ -33,19 +33,6 @@ const {
   getList,
 } = useAttributeList(attributePayload)
 
-onMounted(async () => {
-  // 设置初始化加载状态
-  loading.init = true
-  try {
-    // 并行等待所有数据加载完成
-    await Promise.all([attributePromise])
-  } catch (error) {
-    console.error('加载数据失败:', error)
-  } finally {
-    loading.init = false
-  }
-})
-
 const formRef = ref()
 
 const productSkuRequestDo = ref<ProductSkuRequestDo>({
@@ -71,11 +58,93 @@ const cartes = computed(() => {
       attributeName: attr.attributeName,
       attributeValue: av.attributeValueContent,
       attributeImageFileVo: av.attributeImageFileVo,
+      attributeId: attr.attributeId, // 添加 attributeId
+      attributeValueId: av.attributeValueId, // 添加 attributeValueId
     })),
   )
 
   // 计算笛卡尔积
   return cartesianProduct(attributeValues)
+})
+
+// 生成SKU函数
+const generateSkus = () => {
+  // 清空现有的SKU项
+  productSkuRequestDo.value.productSkuItemRequestDos = []
+
+  // 获取笛卡尔积结果
+  const combinations = cartes.value
+
+  // 为每个组合创建一个SKU项
+  combinations.forEach(combination => {
+    // 生成SKU编码，格式为 spu-组合值
+    const skuValues = combination.map(item => item.attributeValue)
+    const skuCode = `${productSkuRequestDo.value.spu}-${skuValues.join('-')}`
+
+    // 创建SKU属性数组
+    const productSkuAttributes = combination.map(item => {
+      return {
+        attributeValueContent: item.attributeValue,
+        attributeName: item.attributeName,
+        attributeImageFileVo: item.attributeImageFileVo || null,
+        attributeId: item.attributeId,
+        attributeValueId: item.attributeValueId,
+      }
+    })
+
+    // 创建SKU项
+    const skuItem: ProductSkuItemRequestDo = {
+      skuCode,
+      quantity: 0,
+      currencyId: '1', // 默认货币，实际应用中可能需要从其他地方获取
+      price: 0, // 默认价格，用户后续设置
+      productSkuAttributeRequestDos: productSkuAttributes.map(attr => {
+        return {
+          attributeName: attr.attributeName,
+          attributeValueContent: attr.attributeValueContent,
+          attributeImageFileVo: attr.attributeImageFileVo,
+          languageId: usePreferenceStore().preference.language.id,
+          attributeId: attr.attributeId,
+          attributeValueId: attr.attributeValueId,
+        }
+      }),
+      productSkuInventoryRequestDos: [], // 库存信息，可能在后续步骤中填写
+    }
+
+    // 将SKU项添加到数组中
+    productSkuRequestDo.value.productSkuItemRequestDos.push(skuItem)
+  })
+}
+
+// 监听spu变化，当spu改变时重新生成SKU
+watch(
+  () => productSkuRequestDo.value.spu,
+  () => {
+    generateSkus()
+  },
+  { deep: true },
+)
+
+// 监听属性值变化，重新生成SKU
+watch(
+  cartes,
+  () => {
+    generateSkus()
+  },
+  { deep: true },
+)
+
+onMounted(async () => {
+  // 设置初始化加载状态
+  loading.init = true
+  try {
+    // 并行等待所有数据加载完成
+    await Promise.all([attributePromise])
+  } catch (error) {
+    console.error('加载数据失败:', error)
+  } finally {
+    loading.init = false
+  }
 })
 
 const rules = reactive({
@@ -289,33 +358,218 @@ defineExpose({
           </VueDraggable>
         </div>
         <!-- 笛卡尔积表格展示 -->
-        <div class="mt-4">
+        <div class="bg-[#F6F7FD] mt-4 p-4 w-full overflow-x-auto">
           <div class="text-gray-700 font-medium mb-2">
             规格组合预览:
           </div>
           <ElTable
             v-if="cartes.length > 0 && productSkuRequestDo.productAttributeRequestDo.attributeSummaryDos.length > 0"
-            :data="cartes"
-            style="width: 100%"
+            :data="productSkuRequestDo.productSkuItemRequestDos"
             border
+            class="overflow-x-auto"
+            :header-cell-style="{ background: '#f5f7fa', color: '#606266' }"
           >
-            <ElTableColumn label="SKU">
+            <ElTableColumn label="SKU编码" width="150">
               <template #default="scope">
                 <div class="w-full flex items-center">
-                  {{ productSkuRequestDo.spu}}-{{ scope.row }}
+                  <ElInput v-model="scope.row.skuCode" clearable :placeholder="$t('product.placeholder.skuCode')" />
                 </div>
               </template>
             </ElTableColumn>
-            <ElTableColumn label="价格">
+            <ElTableColumn label="图片" width="120" />
+            <ElTableColumn label="库存" width="120">
               <template #default="scope">
                 <div class="w-full flex items-center">
                   <ElInput
-                    v-model="scope.row.price"
+                    v-model.number="scope.row.quantity"
+                    type="number"
+                    :min="0"
                     clearable
-                    minlength="1"
-                    maxlength="120"
+                    :placeholder="$t('product.placeholder.quantity')"
+                  />
+                </div>
+              </template>
+            </ElTableColumn>
+            <ElTableColumn label="价格" width="120">
+              <template #default="scope">
+                <div class="w-full flex items-center">
+                  <ElInput
+                    v-model.number="scope.row.price"
+                    type="number"
+                    :min="0"
+                    clearable
                     :placeholder="$t('product.placeholder.price')"
                   />
+                </div>
+              </template>
+            </ElTableColumn>
+            <ElTableColumn label="成本价" width="120">
+              <template #default="scope">
+                <div class="w-full flex items-center">
+                  <ElInput
+                    v-model.number="scope.row.costPrice"
+                    type="number"
+                    :min="0"
+                    clearable
+                    :placeholder="$t('product.placeholder.costPrice')"
+                  />
+                </div>
+              </template>
+            </ElTableColumn>
+            <ElTableColumn label="促销价格" width="120">
+              <template #default="scope">
+                <div class="w-full flex items-center">
+                  <ElInput
+                    v-model.number="scope.row.promotionPrice"
+                    type="number"
+                    :min="0"
+                    clearable
+                    :placeholder="$t('product.placeholder.promotionPrice')"
+                  />
+                </div>
+              </template>
+            </ElTableColumn>
+            <ElTableColumn label="促销开始时间" width="160">
+              <template #default="scope">
+                <div class="w-full flex items-center">
+                  <ElDatePicker
+                    v-model="scope.row.promotionStartedTime"
+                    type="datetime"
+                    format="YYYY-MM-DD HH:mm:ss"
+                    value-format="YYYY-MM-DD HH:mm:ss"
+                    :placeholder="$t('product.placeholder.promotionStartedTime')"
+                    clearable
+                  />
+                </div>
+              </template>
+            </ElTableColumn>
+            <ElTableColumn label="促销结束时间" width="160">
+              <template #default="scope">
+                <div class="w-full flex items-center">
+                  <ElDatePicker
+                    v-model="scope.row.promotionEndedTime"
+                    type="datetime"
+                    format="YYYY-MM-DD HH:mm:ss"
+                    value-format="YYYY-MM-DD HH:mm:ss"
+                    :placeholder="$t('product.placeholder.promotionEndedTime')"
+                    clearable
+                  />
+                </div>
+              </template>
+            </ElTableColumn>
+            <ElTableColumn label="重量" width="120">
+              <template #default="scope">
+                <div class="w-full flex items-center">
+                  <ElInput
+                    v-model.number="scope.row.weight"
+                    type="number"
+                    :min="0"
+                    clearable
+                    :placeholder="$t('product.placeholder.weight')"
+                  />
+                </div>
+              </template>
+            </ElTableColumn>
+            <ElTableColumn label="重量单位" width="120">
+              <template #default="scope">
+                <div class="w-full flex items-center">
+                  <ElInput
+                    v-model="scope.row.weightUnit"
+                    clearable
+                    :placeholder="$t('product.placeholder.weightUnit')"
+                  />
+                </div>
+              </template>
+            </ElTableColumn>
+            <ElTableColumn label="长度" width="120">
+              <template #default="scope">
+                <div class="w-full flex items-center">
+                  <ElInput
+                    v-model.number="scope.row.length"
+                    type="number"
+                    :min="0"
+                    clearable
+                    :placeholder="$t('product.placeholder.length')"
+                  />
+                </div>
+              </template>
+            </ElTableColumn>
+            <ElTableColumn label="宽度" width="120">
+              <template #default="scope">
+                <div class="w-full flex items-center">
+                  <ElInput
+                    v-model.number="scope.row.width"
+                    type="number"
+                    :min="0"
+                    clearable
+                    :placeholder="$t('product.placeholder.width')"
+                  />
+                </div>
+              </template>
+            </ElTableColumn>
+            <ElTableColumn label="高度" width="120">
+              <template #default="scope">
+                <div class="w-full flex items-center">
+                  <ElInput
+                    v-model.number="scope.row.height"
+                    type="number"
+                    :min="0"
+                    clearable
+                    :placeholder="$t('product.placeholder.height')"
+                  />
+                </div>
+              </template>
+            </ElTableColumn>
+            <ElTableColumn label="长度单位" width="120">
+              <template #default="scope">
+                <div class="w-full flex items-center">
+                  <ElInput
+                    v-model="scope.row.lengthUnit"
+                    clearable
+                    :placeholder="$t('product.placeholder.lengthUnit')"
+                  />
+                </div>
+              </template>
+            </ElTableColumn>
+            <ElTableColumn label="MPN" width="150">
+              <template #default="scope">
+                <div class="w-full flex items-center">
+                  <ElInput v-model="scope.row.mpn" clearable :placeholder="$t('product.placeholder.mpn')" />
+                </div>
+              </template>
+            </ElTableColumn>
+            <ElTableColumn label="UPC" width="150">
+              <template #default="scope">
+                <div class="w-full flex items-center">
+                  <ElInput v-model="scope.row.upc" clearable :placeholder="$t('product.placeholder.upc')" />
+                </div>
+              </template>
+            </ElTableColumn>
+            <ElTableColumn label="EAN" width="150">
+              <template #default="scope">
+                <div class="w-full flex items-center">
+                  <ElInput v-model="scope.row.ean" clearable :placeholder="$t('product.placeholder.ean')" />
+                </div>
+              </template>
+            </ElTableColumn>
+            <ElTableColumn label="JAN" width="150">
+              <template #default="scope">
+                <div class="w-full flex items-center">
+                  <ElInput v-model="scope.row.jan" clearable :placeholder="$t('product.placeholder.jan')" />
+                </div>
+              </template>
+            </ElTableColumn>
+            <ElTableColumn label="ISBN" width="150">
+              <template #default="scope">
+                <div class="w-full flex items-center">
+                  <ElInput v-model="scope.row.isbn" clearable :placeholder="$t('product.placeholder.isbn')" />
+                </div>
+              </template>
+            </ElTableColumn>
+            <ElTableColumn label="ISSN" width="150">
+              <template #default="scope">
+                <div class="w-full flex items-center">
+                  <ElInput v-model="scope.row.issn" clearable :placeholder="$t('product.placeholder.issn')" />
                 </div>
               </template>
             </ElTableColumn>

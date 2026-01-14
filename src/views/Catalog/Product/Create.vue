@@ -318,7 +318,7 @@ provide('ProductCreate', { productForm })
                 @update:active-href="handleUpdateActiveHref"
               />
             </div>
-            <div ref="containerRef" class="w-full container-custom">
+            <div ref="containerRef" class="w-full container-custom overflow-x-hidden">
               <!-- 基础 -->
               <div id="productName" class="bg-white mb-5 pa-4">
                 <div class="w-full fs-16px font-bold mb-4">
