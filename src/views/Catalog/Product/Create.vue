@@ -195,7 +195,7 @@ const createProductForm = (): CreateProductParams => {
     offlineTime: '',
     brandId: '',
     productSourceType: undefined,
-    isAdult: true,
+    isAdult: false,
     ageGroupType: undefined,
     genderType: undefined,
     conditionType: undefined,
