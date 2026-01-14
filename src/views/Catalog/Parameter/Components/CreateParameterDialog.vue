@@ -19,7 +19,7 @@ const loading = reactive({
 
 const form = reactive<CreateParameterParams>({
   languageId: preferenceLanguage.value?.id || '',
-  parameterType: null,
+  parameterType: 1,
   parameterName: '',
 })
 
@@ -79,7 +79,7 @@ defineExpose({
 </script>
 
 <template>
-  <ElDrawer v-model="dialogVisible" :title="$t('parameter.add')" size="50%">
+  <ElDrawer v-model="dialogVisible" :append-to-body="true" :title="$t('parameter.add')" size="50%">
     <ElForm ref="formRef" :model="form" :rules="rules" label-width="120px">
       <ElFormItem :label="$t('parameter.parameterType')" prop="parameterType">
         <ElSelect v-model="form.parameterType" placeholder="请选择参数类型" filterable clearable style="width: 300px">
@@ -111,8 +111,5 @@ defineExpose({
 </template>
 
 <style lang="scss" scoped>
-:deep(.el-drawer__header) {
-  padding: 20px !important;
-  margin-bottom: 0 !important;
-}
+
 </style>

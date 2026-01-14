@@ -1,8 +1,8 @@
 <script setup name="CreateParameterValueDialog" lang="ts">
 import type { FormRules } from 'element-plus'
-import { parameterKey } from '../type/injectionKeys'
 
-const { resetFormData } = inject(parameterKey)!
+const emit = defineEmits(['getList'])
+
 const { t: $t } = useLocale()
 
 const dialogVisible = ref(false)
@@ -67,8 +67,8 @@ const onSave = () => {
 
     // 批量创建
     form.parameterValueContents = parameterValueContents
-    const res = await createParameterValue()
-    await resetFormData(res)
+    await createParameterValue()
+    emit('getList')
 
     ElMessage.success($t('success.create'))
 

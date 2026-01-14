@@ -1,6 +1,6 @@
 interface CreateParameterParams {
   /* Parameter Type, 1-Select, 2-Input, 3-Boolean */
-  parameterType: number | null
+  parameterType: number
 
   /* Language ID */
   languageId: string
@@ -11,7 +11,7 @@ interface CreateParameterParams {
 
 interface CreateParameterRes {
   /* Parameter Type, 1-Select, 2-Input, 3-Boolean */
-  parameterType: number | null
+  parameterType: number
 
   /* Sort */
   sort: number

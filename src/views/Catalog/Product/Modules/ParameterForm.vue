@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ElBadge } from 'element-plus'
 import { VueDraggable } from 'vue-draggable-plus'
 import CreateParameterDialog from '../../Parameter/Components/CreateParameterDialog.vue'
+import CreateParameterValueDialog from './CreateParameterValueDialog.vue'
 
 const { t: $t } = useLocale()
 const loading = reactive({
@@ -111,6 +111,20 @@ const handleCreateParameter = () => {
   createParameterRef.value.openDialog()
 }
 
+const createParameterValueRef = ref()
+
+const handleCreateParameterValue = () => {
+  createParameterValueRef.value.openDialog(currentParameter.value.parameterId, currentParameter.value.languageId)
+}
+
+const getParameterValueList = async () => {
+  await getList()
+  if (!parameterListData.value.list || parameterListData.value.list.length === 0) {
+    return
+  }
+  currentParameter.value.parameterValueListResultDos = parameterListData.value.list.find(item => item.id === currentParameter.value.parameterId)?.parameterValueListResultDos
+}
+
 const setData = (data: ProductParameterRelationRequestDo[]) => {
   productParameterRelationRequestDos.value = data
 }
@@ -201,12 +215,13 @@ defineExpose({
             />
           </ElSelect>
         </div>
-        <div v-if="currentParameter?.parameterType === 1" class="flex-1">
+        <div v-if="currentParameter?.parameterType === 1" class="flex-1 flex items-center">
           <ElSelect
             v-model="currentParameter.parameterValueId"
             placeholder="请选择参数值"
             filterable
             clearable
+            class="flex-1 mr-2"
             @change="handleChangeParameterValue"
           >
             <ElOption
@@ -216,6 +231,10 @@ defineExpose({
               :value="item.id"
             />
           </ElSelect>
+          <div class="flex justify-end items-center cursor-pointer fs-[12px]" @click="handleCreateParameterValue">
+            <Icon name="mynaui:plus" class="mr-1" />
+            新增参数值
+          </div>
         </div>
         <div v-if="currentParameter?.parameterType === 2" class="flex-1">
           <ElInput v-model="currentParameter.parameterValueContent" clearable placeholder="请输入参数值" />
@@ -231,5 +250,6 @@ defineExpose({
       </div>
     </div>
     <CreateParameterDialog ref="createParameterRef" @get-list="getList" />
+    <CreateParameterValueDialog ref="createParameterValueRef" @get-list="getParameterValueList" />
   </div>
 </template>
