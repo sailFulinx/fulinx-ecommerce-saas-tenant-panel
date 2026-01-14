@@ -12,6 +12,14 @@ interface CreateSupplierParams {
   supplierFileId?: string
 }
 
+interface CreateSupplierBatchParams {
+  /* Language ID */
+  languageId: string
+
+  /* Supplier Names */
+  supplierNames: string[]
+}
+
 interface CreateSupplierNameParams {
   /* Supplier ID */
   supplierId: string

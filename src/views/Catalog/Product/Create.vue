@@ -6,6 +6,7 @@ import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
 import { useTagsViewStore } from '@/stores/tagsView'
 import ParameterForm from './Modules/ParameterForm.vue'
+import SupplierForm from './Modules/SupplierForm.vue'
 
 const { t: $t } = useLocale()
 
@@ -63,8 +64,6 @@ const { loading: genderLoading, listData: genderTypeListData, promise: genderPro
 const { loading: conditionLoading, listData: conditionTypeListData, promise: conditionPromise } = useConditionTypeList()
 
 const { loading: brandLoading, listData: brandListData, promise: brandPromise } = useBrandList()
-
-const { loading: supplierLoading, listData: supplierListData, promise: supplierPromise } = useSupplierList()
 
 const { loading: attributeLoading, listData: attributeListData, promise: attributePromise } = useAttributeList()
 
@@ -168,7 +167,6 @@ onMounted(async () => {
       systemCategoryPromise,
       categoryPromise,
       brandPromise,
-      supplierPromise,
       attributePromise,
     ])
   } catch (error) {
@@ -181,6 +179,8 @@ onMounted(async () => {
 const editorRef = ref()
 
 const parameterFormRef = ref()
+
+const supplierFormRef = ref()
 
 const imageUploadRef = ref()
 
@@ -226,43 +226,6 @@ const createProductForm = (): CreateProductParams => {
 
 const productForm = reactive<CreateProductParams>(createProductForm())
 
-// supplier
-const suppliers = ref<ProductSupplierRequestDo[]>([])
-
-const currentSupplier = ref<ProductSupplierRequestDo>({
-  supplierUrl: '',
-  supplierData: undefined,
-})
-
-const supplierInputVisible = ref(false)
-
-const handleAddSupplier = () => {
-  supplierInputVisible.value = true
-}
-
-const handleAddSupplierCancel = () => {
-  supplierInputVisible.value = false
-}
-
-const handleEditSupplier = (index: number) => {
-  currentSupplier.value = suppliers.value[index]
-  supplierInputVisible.value = true
-}
-
-const handleDeleteSupplier = (index: number) => {
-  suppliers.value.splice(index, 1)
-}
-
-const handleAddSupplierConfirm = () => {
-  suppliers.value.push(currentSupplier.value)
-  console.log(suppliers.value)
-  supplierInputVisible.value = false
-  currentSupplier.value = {
-    supplierUrl: '',
-    supplierData: undefined,
-  }
-}
-
 const closeViewTag = () => {}
 
 const tagsViewStore = useTagsViewStore()
@@ -290,9 +253,11 @@ const save = async () => {
   if (categoryIds.value && categoryIds.value.length > 0) {
     productForm.categoryIds = categoryIds.value
   }
-  if (suppliers.value && suppliers.value.length > 0) {
-    productForm.productSupplierRequestDos = suppliers.value
-  }
+
+  productForm.productParameterRelationRequestDos = parameterFormRef.value.getData
+
+  productForm.productSupplierRequestDos = supplierFormRef.value.getData
+
   const valid = await productFormRef.value.validate((valid: boolean) => {
     if (!valid) {
       return false
@@ -534,68 +499,7 @@ const save = async () => {
                     </ElSelect>
                   </ElFormItem>
                   <ElFormItem :label="$t('product.supplier')" prop="supplierId">
-                    <div class="w-full" :class="supplierInputVisible ? 'mb-4' : ''">
-                      <EBtn plain type="primary" @click="handleAddSupplier">
-                        {{ $t('common.add') }}{{ $t('product.supplier') }}
-                      </EBtn>
-                    </div>
-                    <div v-for="(item, index) in suppliers" :key="index" class="w-full">
-                      <div class="w-full py-2 border-b border-gray-200 flex items-center justify-between">
-                        <div>
-                          <span class="text-gray-500 mr-2">{{ item.supplierData?.supplierName || '' }},</span>
-                          <span class="text-gray-500">{{ item.supplierUrl }}</span>
-                        </div>
-                        <div>
-                          <EBtn plain type="default" @click="handleEditSupplier(index)">
-                            {{ $t('common.edit') }}
-                          </EBtn>
-                          <EBtn plain type="danger" @click="handleDeleteSupplier(index)">
-                            {{ $t('common.delete') }}
-                          </EBtn>
-                        </div>
-                      </div>
-                    </div>
-                    <div v-if="supplierInputVisible" class="w-full border border-gray-200 p-4">
-                      <div class="w-full mb-4">
-                        {{ $t('common.add') }}{{ $t('product.supplier') }}
-                      </div>
-                      <div class="w-full flex items-center justify-between mb-4">
-                        <div class="w-[200px] mr-2">
-                          <ElSelect
-                            v-model="currentSupplier.supplierData"
-                            v-loading="supplierLoading"
-                            clearable
-                            filterable
-                            value-key="id"
-                            :placeholder="`${$t('product.placeholder.supplier')}`"
-                          >
-                            <ElOption
-                              v-for="item in supplierListData?.list || []"
-                              :key="item.id"
-                              :value="item"
-                              :label="item.supplierName"
-                            />
-                          </ElSelect>
-                        </div>
-                        <div class="flex-1">
-                          <ElInput
-                            v-model="currentSupplier.supplierUrl"
-                            clearable
-                            minlength="1"
-                            maxlength="120"
-                            :placeholder="$t('product.placeholder.supplierUrl')"
-                          />
-                        </div>
-                      </div>
-                      <div class="w-full flex justify-center">
-                        <EBtn plain type="default" @click="handleAddSupplierCancel">
-                          {{ $t('common.cancel') }}
-                        </EBtn>
-                        <EBtn plain type="primary" @click="handleAddSupplierConfirm">
-                          {{ $t('common.save') }}
-                        </EBtn>
-                      </div>
-                    </div>
+                    <SupplierForm ref="supplierFormRef" />
                   </ElFormItem>
                   <ElFormItem :label="$t('product.isAdult')" prop="isAdult">
                     <ElSwitch v-model="productForm.isAdult" />
