@@ -504,17 +504,16 @@ defineExpose({
             </div>
           </VueDraggable>
         </div>
-
-        <div
-          v-if="cartes.length > 0 && productSkuRequestDo.productAttributeRequestDo.attributeSummaryDos.length > 0"
-          class="mt-4"
-        >
+        <!-- 变体属性 -->
+        <div class="mt-4 bg-[#F6F7FD] p-4">
           <div class="text-gray-700 font-medium mb-2">
             规格组合预览:
           </div>
-
           <!-- 批量更新功能 -->
-          <div class="mt-4 p-4 bg-gray-50 rounded border">
+          <div
+            v-if="productSkuRequestDo.productSkuItemRequestDos.length > 1"
+            class="mt-4 p-4 bg-gray-50 rounded border"
+          >
             <div class="text-gray-700 font-medium mb-3">
               批量更新:
             </div>
@@ -578,7 +577,6 @@ defineExpose({
                   :placeholder="getPlaceholder()"
                 />
               </div>
-
               <div class="col-span-3">
                 <ElButton type="primary" size="default" @click="applyBatchUpdate()">
                   批量更新所选字段
@@ -587,7 +585,7 @@ defineExpose({
             </div>
           </div>
           <ElTable
-            v-if="productSkuRequestDo.productSkuItemRequestDos.length > 0"
+            class="mt-4"
             :data="productSkuRequestDo.productSkuItemRequestDos"
             style="width: 100%"
             border
@@ -842,13 +840,8 @@ defineExpose({
               </template>
             </ElTableColumn>
           </ElTable>
-          <div v-else class="text-center py-4 text-gray-500 bg-gray-50 rounded">
-            暂无规格组合，请先添加商品规格
-          </div>
         </div>
-        <div v-else class="text-center py-4 text-gray-500 bg-gray-50 rounded">
-          暂无规格组合，请先添加商品规格
-        </div>
+
         <!-- 属性编辑区域 -->
         <div v-if="attributeFormVisible" class="w-full bg-[#F6F7FD] mt-4 border border-gray-200">
           <div class="w-full flex justify-between items-center border-b border-gray-200 p-2">
