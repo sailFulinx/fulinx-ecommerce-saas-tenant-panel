@@ -114,7 +114,7 @@ interface ProductFileRequestDo {
   sort?: number
 }
 
-interface ProductAttributeSummaryAttributeValueDo {
+interface AttributeValueDo {
   /* Attribute Value ID */
   attributeValueId: string
 
@@ -131,7 +131,7 @@ interface ProductAttributeSummaryAttributeValueDo {
   attributeImageFileVo?: string
 }
 
-interface ProductAttributeSummaryAttributeDo {
+interface AttributeSummaryDo {
   /* Attribute ID */
   attributeId: string
 
@@ -142,17 +142,12 @@ interface ProductAttributeSummaryAttributeDo {
   sort: number
 
   /* Product Attribute Summary Attribute Value Dos */
-  productAttributeSummaryAttributeValueDos: ProductAttributeSummaryAttributeValueDo[]
-}
-
-interface ProductAttributeSummaryDo {
-  /* Product Attribute Summary Attribute Dos */
-  productAttributeSummaryAttributeDos: ProductAttributeSummaryAttributeDo[]
+  attributeValueDos: AttributeValueDo[]
 }
 
 interface ProductAttributeRequestDo {
   /* Product Attribute Summary Do */
-  productAttributeSummaryDo?: ProductAttributeSummaryDo
+  attributeSummaryDos: AttributeSummaryDo[]
 
   /* Search Index, e.g. -- 中英文混合索引，支持多语言搜索\n"color:red,blue;size:S,M,L;材质:棉,涤纶|颜色:红色,蓝色;尺码:S,M,L;material:cotton,polyester" */
   searchIndex: string
@@ -337,6 +332,7 @@ interface ProductSupplierRequestDo {
 }
 
 interface ProductSkuRequestDo {
+  stockStatus: number
   /* Product Attribute Request Do */
   productAttributeRequestDo: ProductAttributeRequestDo
 

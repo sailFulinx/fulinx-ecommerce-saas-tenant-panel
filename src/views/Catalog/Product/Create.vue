@@ -5,6 +5,7 @@ import { datePickerShortcuts } from '@/data/date'
 import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
 import { useTagsViewStore } from '@/stores/tagsView'
+import AttributeForm from './Modules/AttributeForm.vue'
 import ParameterForm from './Modules/ParameterForm.vue'
 import SupplierForm from './Modules/SupplierForm.vue'
 
@@ -64,8 +65,6 @@ const { loading: genderLoading, listData: genderTypeListData, promise: genderPro
 const { loading: conditionLoading, listData: conditionTypeListData, promise: conditionPromise } = useConditionTypeList()
 
 const { loading: brandLoading, listData: brandListData, promise: brandPromise } = useBrandList()
-
-const { loading: attributeLoading, listData: attributeListData, promise: attributePromise } = useAttributeList()
 
 // 系统分类
 const listSystemCategoryPayload = reactive<SystemCategoryListParams>({
@@ -167,7 +166,6 @@ onMounted(async () => {
       systemCategoryPromise,
       categoryPromise,
       brandPromise,
-      attributePromise,
     ])
   } catch (error) {
     console.error('加载数据失败:', error)
@@ -177,6 +175,8 @@ onMounted(async () => {
 })
 
 const editorRef = ref()
+
+const attributeFormRef = ref()
 
 const parameterFormRef = ref()
 
@@ -210,10 +210,9 @@ const createProductForm = (): CreateProductParams => {
     productFileRequestDos: [],
     currencyId: '',
     productSkuRequestDo: {
+      stockStatus: 1,
       productAttributeRequestDo: {
-        productAttributeSummaryDo: {
-          productAttributeSummaryAttributeDos: [],
-        },
+        attributeSummaryDos: [],
         searchIndex: '',
       },
       productSkuItemRequestDos: [],
@@ -413,7 +412,7 @@ const save = async () => {
                 <div class="w-full fs-16px font-bold mb-4">
                   价格库存
                 </div>
-                <div class="w-full" />
+                <AttributeForm ref="attributeFormRef" />
               </div>
               <!-- 其它 -->
               <div id="productOther" class="bg-white mb-5 pa-4">
