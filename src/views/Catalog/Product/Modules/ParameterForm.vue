@@ -146,7 +146,9 @@ defineExpose({
               <div class="mr-1">
                 <Icon icon="ant-design:holder-outlined" />
               </div>
-              <div>{{ item.parameterName }}: {{ item.parameterValueContent }}</div>
+              <div class="param-item truncate">
+                {{ item.parameterName }}: {{ item.parameterValueContent }}
+              </div>
             </div>
             <div class="flex justify-center">
               <EBtn type="primary" link class="text-blue-500 hover:text-blue-700" @click="handleEditParameter(index)">

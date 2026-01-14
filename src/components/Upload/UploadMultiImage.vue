@@ -131,34 +131,34 @@ defineExpose({ getFileData, setFileData })
           </div>
         </div>
       </div>
-
-      <!-- 上传按钮 -->
-      <ElUpload
-        v-loading="loading"
-        class="w-full border border-gray-300 rounded p-2 flex items-center justify-center bg-white"
-        :multiple="true"
-        action=""
-        accept=".jpg,.jpeg,.png,.gif,.svg"
-        :file-list="beforeUploadFileDataList"
-        list-type="picture-card"
-        :http-request="handleUpload"
-        :show-file-list="false"
-        :before-upload="beforeUpload"
-        :on-exceed="handleExceed"
-        :on-success="handleSuccess"
-        :on-progress="handleProgress"
-        :limit="10"
-      >
-        <div>
-          <div class="w-full flex justify-center mb-5">
-            <Icon :size="8" icon="ep:upload" color="#999" />
-          </div>
-          <div class="w-full text-sm text-gray-500 flex justify-center text-center">
-            <span>只允许上传jpg, png, gif格式图片，最大不能超过50M</span>
-          </div>
-        </div>
-      </ElUpload>
     </VueDraggable>
+
+    <!-- 上传按钮 -->
+    <ElUpload
+      v-loading="loading"
+      class="w-full border border-gray-300 rounded p-2 flex items-center justify-center bg-white"
+      :multiple="true"
+      action=""
+      accept=".jpg,.jpeg,.png,.gif,.svg"
+      :file-list="beforeUploadFileDataList"
+      list-type="picture-card"
+      :http-request="handleUpload"
+      :show-file-list="false"
+      :before-upload="beforeUpload"
+      :on-exceed="handleExceed"
+      :on-success="handleSuccess"
+      :on-progress="handleProgress"
+      :limit="10"
+    >
+      <div>
+        <div class="w-full flex justify-center mb-5">
+          <Icon :size="8" icon="ep:upload" color="#999" />
+        </div>
+        <div class="w-full text-sm text-gray-500 flex justify-center text-center">
+          <span>只允许上传jpg, png, gif格式图片，最大不能超过50M</span>
+        </div>
+      </div>
+    </ElUpload>
   </div>
 </template>
 
