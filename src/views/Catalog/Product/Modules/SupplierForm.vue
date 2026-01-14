@@ -1,9 +1,13 @@
 <script setup lang="ts">
-const { loading: supplierLoading, listData: supplierListData, promise: supplierPromise } = useSupplierList()
+import CreateSupplierDialog from './CreateSupplierDialog.vue'
+
+const { loading: supplierLoading, listData: supplierListData, promise: supplierPromise, getList } = useSupplierList()
 
 const loading = reactive({
   init: false,
 })
+
+const createSupplierDialogRef = ref()
 
 onMounted(async () => {
   // 设置初始化加载状态
@@ -28,7 +32,7 @@ const currentSupplier = ref<ProductSupplierRequestDo>({
 const supplierInputVisible = ref(false)
 
 const handleCreateSupplier = () => {
-  supplierInputVisible.value = true
+  createSupplierDialogRef.value.openDialog(usePreferenceStore().preference.language.id)
 }
 
 const handleAddSupplier = () => {
@@ -143,5 +147,6 @@ defineExpose({
         {{ $t('common.save') }}
       </EBtn>
     </div>
+    <CreateSupplierDialog ref="createSupplierDialogRef" @get-list="getList" />
   </div>
 </template>

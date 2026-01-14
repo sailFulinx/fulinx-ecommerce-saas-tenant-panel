@@ -86,5 +86,6 @@ export default {
     warehouseType: '请选择仓库类型',
     productSourceType: '请选择产品来源',
     supplierUrl: '请输入供应商URL',
+    supplierInput: '请输入供应商名称',
   },
 }

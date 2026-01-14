@@ -33,20 +33,40 @@ const openDialog = async (languageId: string) => {
 
 const createSupplier = async () => {
   loading.init = true
-  const payloadForm = $clone(form)
-  payloadForm.supplierNames.forEach(async item => {
-    try {
-      const payload = {
-        languageId: payloadForm.languageId,
-        supplierName: item,
-      }
-      const { data } = await createSupplierApi(payload)
-      return data
-    } finally {
-      loading.init = false
+  try {
+    const payloadForm = $clone(form)
+
+    // 使用 Promise.all 等待所有请求完成
+    const results = await Promise.all(
+      payloadForm.supplierNames.map(async item => {
+        try {
+          const payload = {
+            languageId: payloadForm.languageId,
+            supplierName: item,
+          }
+          const { data } = await createSupplierApi(payload)
+          return { success: true, data, name: item }
+        } catch (error) {
+          return { success: false, error, name: item }
+        }
+      }),
+    )
+
+    // 检查是否有失败的请求
+    const failedResults = results.filter(result => !result.success)
+    const successCount = results.length - failedResults.length
+
+    if (failedResults.length > 0) {
+      console.error('部分供应商创建失败:', failedResults)
+      ElMessage.error(`成功创建 ${successCount} 个供应商，${failedResults.length} 个失败`)
+    } else {
+      ElMessage.success($t('success.create'))
     }
-  })
-  loading.init = false
+
+    return results
+  } finally {
+    loading.init = false
+  }
 }
 
 const formRef = useTemplateRef('formRef')
@@ -71,12 +91,14 @@ const onSave = () => {
 
     // 批量创建
     form.supplierNames = supplierNames
-    await createSupplier()
-    emit('getList')
+    const results = await createSupplier()
 
-    ElMessage.success($t('success.create'))
-
-    dialogVisible.value = false
+    // 检查是否至少有一个成功创建
+    const hasSuccess = results && results.some(r => r.success)
+    if (hasSuccess) {
+      emit('getList')
+      dialogVisible.value = false
+    }
   })
 }
 
@@ -110,14 +132,14 @@ defineExpose({
 <template>
   <ElDrawer v-model="dialogVisible" :title="$t('parameter.add')" size="50%">
     <ElForm ref="formRef" :model="form" :rules="rules" label-width="120px">
-      <ElFormItem :label="$t('parameter.supplier')" prop="supplierNameString">
+      <ElFormItem :label="$t('product.supplier')" prop="supplierNameString">
         <ElInput
           v-model="supplierNameString"
           class="input-line"
           type="textarea"
           :rows="6"
           clearable
-          :placeholder="`${$t('parameter.placeholder.supplier')}（${$t('common.perLine')}）`"
+          :placeholder="`${$t('product.placeholder.supplierInput')}（${$t('common.perLine')}）`"
         />
       </ElFormItem>
     </ElForm>
