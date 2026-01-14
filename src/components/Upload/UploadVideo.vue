@@ -142,7 +142,7 @@ defineExpose({
     :before-upload="beforeUpload"
     class="flex items-center justify-center bg-white"
   >
-    <div class="w-41 h-41 border border-solid-1 border-gray-300 rounded p-2 flex items-center justify-center">
+    <div class="w-42 h-42 border border-solid-1 border-gray-300 rounded p-2 flex items-center justify-center">
       <div v-if="videoUrl" class="flex flex-col items-center justify-center relative">
         <video class="w-full max-h-41 rounded object-cover mb-2" :src="videoUrl" controls />
         <EBtn text @click.stop="handleDelete">
