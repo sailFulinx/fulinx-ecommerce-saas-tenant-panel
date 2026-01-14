@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ElBadge } from 'element-plus'
 import { VueDraggable } from 'vue-draggable-plus'
+import CreateParameterDialog from '../../Parameter/Components/CreateParameterDialog.vue'
 
 const { t: $t } = useLocale()
 const loading = reactive({
@@ -20,6 +21,7 @@ const {
   loading: _parameterLoading,
   listData: parameterListData,
   promise: parameterPromise,
+  getList,
 } = useParameterList(parameterPayload)
 onMounted(async () => {
   // 设置初始化加载状态
@@ -54,7 +56,7 @@ const handleEditParameter = (index: number) => {
 
 const dragEnd = () => {
   dragging.value = false
-  productParameterRelationRequestDos.value.map((item, index) => item.sort = index + 1)
+  productParameterRelationRequestDos.value.map((item, index) => (item.sort = index + 1))
 }
 
 const handleChangeParameter = (val: string) => {
@@ -103,6 +105,12 @@ const handleAddParameterSave = () => {
   currentParameter.value = {} as ProductParameterRelationRequestDo
 }
 
+const createParameterRef = ref()
+
+const handleCreateParameter = () => {
+  createParameterRef.value.openDialog()
+}
+
 const setData = (data: ProductParameterRelationRequestDo[]) => {
   productParameterRelationRequestDos.value = data
 }
@@ -119,12 +127,15 @@ defineExpose({
 
 <template>
   <div class="w-full">
-    <div class="w-full mb-4">
+    <div class="w-full">
       <EBtn plain type="primary" @click="handleAddParameter">
         {{ $t('product.parameterAdd') }}
       </EBtn>
     </div>
-    <div class="w-full" :class="productParameterRelationRequestDos.length > 0 ? 'mb-4' : ''">
+    <div
+      class="w-full"
+      :class="productParameterRelationRequestDos.length > 0 ? 'bg-[#F6F7FD] mt-4 border border-gray-200 pa-4 ' : ''"
+    >
       <VueDraggable
         v-model="productParameterRelationRequestDos"
         item-key="parameterId"
@@ -136,12 +147,8 @@ defineExpose({
         @start="dragging = true"
         @end="dragEnd"
       >
-        <div
-          v-for="(item, index) in productParameterRelationRequestDos"
-          :key="index"
-          class="col-span-1"
-        >
-          <div class="relative border border-gray-200 p-2">
+        <div v-for="(item, index) in productParameterRelationRequestDos" :key="index" class="col-span-1">
+          <div class="relative border border-gray-300 p-2">
             <div class="flex items-center">
               <div class="mr-1">
                 <Icon icon="ant-design:holder-outlined" />
@@ -150,8 +157,13 @@ defineExpose({
                 {{ item.parameterName }}: {{ item.parameterValueContent }}
               </div>
             </div>
-            <div class="flex justify-center">
-              <EBtn type="primary" link class="text-blue-500 hover:text-blue-700" @click="handleEditParameter(index)">
+            <div class="flex justify-center my-2">
+              <EBtn
+                type="primary"
+                plain
+                class="w-full text-blue-500 hover:text-blue-700"
+                @click="handleEditParameter(index)"
+              >
                 <Icon icon="circum:edit" :size="5" />
               </EBtn>
             </div>
@@ -164,8 +176,15 @@ defineExpose({
         </div>
       </VueDraggable>
     </div>
-    <div v-if="parameterFormVisible" class="w-full border border-gray-200 p-4">
-      <div class="w-full flex justify-between items-center mb-4">
+    <div v-if="parameterFormVisible" class="mt-4 bg-[#F6F7FD] w-full border border-gray-200">
+      <div class="flex justify-between items-center border-b border-gray-200 px-4 py-2">
+        <div>选择参数</div>
+        <div class="flex justify-between items-center cursor-pointer" @click="handleCreateParameter">
+          <Icon name="mynaui:plus" class="mr-1" />
+          新增参数
+        </div>
+      </div>
+      <div class="w-full flex justify-between items-center p-4">
         <div class="w-[200px] mr-2">
           <ElSelect
             v-model="currentParameter.parameterId"
@@ -202,7 +221,7 @@ defineExpose({
           <ElInput v-model="currentParameter.parameterValueContent" clearable placeholder="请输入参数值" />
         </div>
       </div>
-      <div class="w-full">
+      <div class="w-full p-4">
         <EBtn type="default" @click="handleAddParameterCancel">
           {{ $t('common.cancel') }}
         </EBtn>
@@ -211,5 +230,6 @@ defineExpose({
         </EBtn>
       </div>
     </div>
+    <CreateParameterDialog ref="createParameterRef" @get-list="getList" />
   </div>
 </template>

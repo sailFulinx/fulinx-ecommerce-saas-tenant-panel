@@ -11,7 +11,7 @@ interface CreateParameterParams {
 
 interface CreateParameterRes {
   /* Parameter Type, 1-Select, 2-Input, 3-Boolean */
-  parameterType: number
+  parameterType: number | null
 
   /* Sort */
   sort: number

@@ -417,10 +417,6 @@ const save = async () => {
                       :placeholder="$t('product.placeholder.productShortName')"
                     />
                   </ElFormItem>
-                  <!-- 参数 -->
-                  <ElFormItem :label="$t('product.parameter')" prop="parameter">
-                    <ParameterForm ref="parameterFormRef" />
-                  </ElFormItem>
                 </div>
               </div>
               <!-- 图片 -->
@@ -471,6 +467,10 @@ const save = async () => {
                       :options="convertCategoryToCascaderOptions(listCategoryData.list)"
                       @change="handleChangeCategory"
                     />
+                  </ElFormItem>
+                  <!-- 参数 -->
+                  <ElFormItem :label="$t('product.parameter')" prop="parameter">
+                    <ParameterForm ref="parameterFormRef" />
                   </ElFormItem>
                   <ElFormItem :label="$t('product.metaTitle')" prop="metaTitle">
                     <ElInput

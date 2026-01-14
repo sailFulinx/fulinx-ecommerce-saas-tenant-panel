@@ -1,5 +1,6 @@
-<script setup name="ProductDetail" lang="ts">
+<script setup lang="ts">
 import type { FormRules } from 'element-plus'
+import { parameterTypes } from '@/data/parameter'
 
 const emit = defineEmits(['getList'])
 const { t: $t } = useLocale()
@@ -18,7 +19,7 @@ const loading = reactive({
 
 const form = reactive<CreateParameterParams>({
   languageId: preferenceLanguage.value?.id || '',
-  parameterType: 1,
+  parameterType: null,
   parameterName: '',
 })
 
@@ -69,6 +70,7 @@ const onSave = () => {
 
 const rules: FormRules = {
   parameterName: [{ required: true, message: '请输入至少一个参数名称', trigger: 'blur' }],
+  parameterType: [{ required: true, message: '请选择参数类型', trigger: 'change' }],
 }
 
 defineExpose({
@@ -79,6 +81,11 @@ defineExpose({
 <template>
   <ElDrawer v-model="dialogVisible" :title="$t('parameter.add')" size="50%">
     <ElForm ref="formRef" :model="form" :rules="rules" label-width="120px">
+      <ElFormItem :label="$t('parameter.parameterType')" prop="parameterType">
+        <ElSelect v-model="form.parameterType" placeholder="请选择参数类型" filterable clearable style="width: 300px">
+          <ElOption v-for="type in parameterTypes" :key="type.id" :label="type.label" :value="type.id" />
+        </ElSelect>
+      </ElFormItem>
       <ElFormItem :label="$t('parameter.parameterName')" prop="parameterName">
         <ElInput
           v-model="form.parameterName"
@@ -102,3 +109,10 @@ defineExpose({
     </template>
   </ElDrawer>
 </template>
+
+<style lang="scss" scoped>
+:deep(.el-drawer__header) {
+  padding: 20px !important;
+  margin-bottom: 0 !important;
+}
+</style>
