@@ -121,27 +121,21 @@ defineExpose({
         <div
           v-for="(item, index) in productParameterRelationRequestDos"
           :key="index"
-          class="col-span-1 border border-gray-200 p-2"
+          class="col-span-1"
         >
-          <ElBadge>
+          <div class="relative border border-gray-200 p-2">
             <div class="flex items-center">
               <div class="mr-1">
                 <Icon icon="ant-design:holder-outlined" />
               </div>
               <div>{{ item.parameterName }}: {{ item.parameterValueContent }}</div>
             </div>
-            <template #content="{ value }">
-              <div>
-                <Icon icon="ant-design:delete-outlined" :size="4" />
-              </div>
-            </template>
-          </ElBadge>
-
-          <!-- <div class="flex justify-center">
-            <EBtn type="danger" link @click="handleDeleteParameter(index)">
-              <Icon icon="ant-design:delete-outlined" :size="4" />
-            </EBtn>
-          </div> -->
+            <div class="absolute -top-4 -right-3">
+              <EBtn type="danger" link class="text-red-500 hover:text-red-700" @click="handleDeleteParameter(index)">
+                <Icon icon="typcn:delete" :size="6" />
+              </EBtn>
+            </div>
+          </div>
         </div>
       </VueDraggable>
     </div>
