@@ -169,6 +169,135 @@ const currentAttribute = ref<AttributeSummaryDo>({
   attributeValueListResultDos: [],
 })
 
+// 批量更新表单数据
+const batchUpdateForm = reactive({
+  field: '',
+  operation: 'set',
+  adjustmentValue: 0,
+})
+
+// 判断字段是否为文本类型
+const isTextField = (field: string) => {
+  const numericFields = ['price', 'costPrice', 'promotionPrice', 'weight', 'length', 'width', 'height']
+  return !numericFields.includes(field)
+}
+
+// 获取占位符文本
+const getPlaceholder = () => {
+  if (isTextField(batchUpdateForm.field)) {
+    return `请输入${batchUpdateForm.field}`
+  }
+  return '请输入数值'
+}
+
+// 批量更新方法
+const applyBatchUpdate = () => {
+  if (!batchUpdateForm.field) {
+    ElMessage.warning('请先选择要更新的字段')
+    return
+  }
+
+  // 获取调整值和操作类型
+  const adjustmentValue = batchUpdateForm.adjustmentValue
+  const operation = batchUpdateForm.operation
+  const field = batchUpdateForm.field as keyof ProductSkuItemRequestDo
+
+  // 对所有SKU项目应用批量更新
+  productSkuRequestDo.value.productSkuItemRequestDos.forEach(skuItem => {
+    let newValue: any = null
+
+    // 根据字段类型和操作类型计算新值
+    switch (operation) {
+      case 'set':
+        // 设置为固定值
+        newValue = adjustmentValue
+        break
+      case 'add':
+        // 增加固定值（仅对数值类型字段）
+        if (!isTextField(field)) {
+          newValue = ((skuItem[field] as number) || 0) + Number(adjustmentValue)
+        } else {
+          // 文本字段不支持此操作
+          ElMessage.warning(`${field} 字段不支持增加操作`)
+          return
+        }
+        break
+      case 'subtract':
+        // 减少固定值（仅对数值类型字段）
+        if (!isTextField(field)) {
+          newValue = ((skuItem[field] as number) || 0) - Number(adjustmentValue)
+        } else {
+          // 文本字段不支持此操作
+          ElMessage.warning(`${field} 字段不支持减少操作`)
+          return
+        }
+        break
+      case 'percent_add':
+        // 增加百分比（仅对数值类型字段）
+        if (!isTextField(field)) {
+          newValue = ((skuItem[field] as number) || 0) * (1 + Number(adjustmentValue) / 100)
+        } else {
+          // 文本字段不支持此操作
+          ElMessage.warning(`${field} 字段不支持百分比增加操作`)
+          return
+        }
+        break
+      case 'percent_subtract':
+        // 减少百分比（仅对数值类型字段）
+        if (!isTextField(field)) {
+          newValue = ((skuItem[field] as number) || 0) * (1 - Number(adjustmentValue) / 100)
+        } else {
+          // 文本字段不支持此操作
+          ElMessage.warning(`${field} 字段不支持百分比减少操作`)
+          return
+        }
+        break
+      default:
+        // 默认为设置为固定值
+        newValue = adjustmentValue
+    }
+
+    // 对数值类型字段确保值不为负数
+    if (!isTextField(field)) {
+      newValue = Math.max(0, Number(newValue))
+
+      // 保留适当的小数位数
+      if (['price', 'costPrice', 'promotionPrice', 'weight', 'length', 'width', 'height'].includes(field)) {
+        newValue = Number(newValue.toFixed(2))
+      } else {
+        newValue = Math.round(newValue)
+      }
+    }
+
+    // 更新字段值
+    ;(skuItem as any)[field] = newValue
+  })
+
+  // 显示操作成功消息
+  const fieldNameMap: Record<string, string> = {
+    price: '价格',
+    costPrice: '成本价',
+    promotionPrice: '促销价格',
+    skuImageFileId: 'SKU图片',
+    skuCode: 'SKU编码',
+    currencyId: '货币ID',
+    weight: '重量',
+    weightUnit: '重量单位',
+    length: '长度',
+    width: '宽度',
+    height: '高度',
+    lengthUnit: '长度单位',
+    mpn: 'MPN',
+    upc: 'UPC',
+    ean: 'EAN',
+    jan: 'JAN',
+    isbn: 'ISBN',
+    issn: 'ISSN',
+  }
+
+  ElMessage.success(`批量更新${fieldNameMap[field] || field}完成！`)
+}
+
 const attributeFormVisible = ref(false)
 
 const handleChangeAttribute = async (id: string) => {
@@ -357,18 +486,115 @@ defineExpose({
             </div>
           </VueDraggable>
         </div>
-        <!-- 笛卡尔积表格展示 -->
-        <div class="bg-[#F6F7FD] mt-4 p-4 w-full overflow-x-auto">
+
+        <div
+          v-if="cartes.length > 0 && productSkuRequestDo.productAttributeRequestDo.attributeSummaryDos.length > 0"
+          class="mt-4"
+        >
           <div class="text-gray-700 font-medium mb-2">
             规格组合预览:
           </div>
+
+          <!-- 批量更新功能 -->
+          <div class="mt-4 p-4 bg-gray-50 rounded border">
+            <div class="text-gray-700 font-medium mb-3">
+              批量更新:
+            </div>
+            <div class="grid grid-cols-3 gap-4">
+              <div class="flex items-center space-x-2">
+                <label class="text-sm text-gray-600 w-24">字段选择:</label>
+                <ElSelect v-model="batchUpdateForm.field" placeholder="选择字段" class="flex-1">
+                  <ElOption label="价格" value="price" />
+                  <ElOption label="成本价" value="costPrice" />
+                  <ElOption label="促销价格" value="promotionPrice" />
+                  <ElOption label="SKU图片" value="skuImageFileId" />
+                  <ElOption label="SKU编码" value="skuCode" />
+                  <ElOption label="货币ID" value="currencyId" />
+                  <ElOption label="重量" value="weight" />
+                  <ElOption label="重量单位" value="weightUnit" />
+                  <ElOption label="长度" value="length" />
+                  <ElOption label="宽度" value="width" />
+                  <ElOption label="高度" value="height" />
+                  <ElOption label="长度单位" value="lengthUnit" />
+                  <ElOption label="MPN" value="mpn" />
+                  <ElOption label="UPC" value="upc" />
+                  <ElOption label="EAN" value="ean" />
+                  <ElOption label="JAN" value="jan" />
+                  <ElOption label="ISBN" value="isbn" />
+                  <ElOption label="ISSN" value="issn" />
+                </ElSelect>
+              </div>
+              <div class="flex items-center space-x-2">
+                <label class="text-sm text-gray-600 w-24">操作类型:</label>
+                <ElSelect v-model="batchUpdateForm.operation" class="flex-1">
+                  <ElOption label="设置为固定值" value="set" />
+                  <ElOption label="增加固定值" value="add" />
+                  <ElOption label="减少固定值" value="subtract" />
+                  <ElOption label="增加百分比" value="percent_add" />
+                  <ElOption label="减少百分比" value="percent_subtract" />
+                </ElSelect>
+              </div>
+              <div class="flex items-center space-x-2">
+                <label class="text-sm text-gray-600 w-24">调整值:</label>
+                <ElInput
+                  v-if="isTextField(batchUpdateForm.field)"
+                  v-model="batchUpdateForm.adjustmentValue"
+                  class="flex-1"
+                  :placeholder="getPlaceholder()"
+                />
+                <ElInputNumber
+                  v-else
+                  v-model="batchUpdateForm.adjustmentValue"
+                  :precision="
+                    batchUpdateForm.field.includes('price')
+                      || batchUpdateForm.field === 'weight'
+                      || batchUpdateForm.field === 'length'
+                      || batchUpdateForm.field === 'width'
+                      || batchUpdateForm.field === 'height'
+                      ? 2
+                      : 0
+                  "
+                  :step="1"
+                  :min="batchUpdateForm.operation.includes('percent') ? -100 : -Infinity"
+                  class="flex-1"
+                  :placeholder="getPlaceholder()"
+                />
+              </div>
+
+              <div class="col-span-3">
+                <ElButton type="primary" size="default" @click="applyBatchUpdate()">
+                  批量更新所选字段
+                </ElButton>
+              </div>
+            </div>
+          </div>
           <ElTable
-            v-if="cartes.length > 0 && productSkuRequestDo.productAttributeRequestDo.attributeSummaryDos.length > 0"
             :data="productSkuRequestDo.productSkuItemRequestDos"
+            style="width: 100%"
             border
-            class="overflow-x-auto"
+            max-height="500"
             :header-cell-style="{ background: '#f5f7fa', color: '#606266' }"
           >
+            <ElTableColumn label="SKU" width="200">
+              <template #default="scope">
+                <div class="w-full flex items-center">
+                  {{ scope.row.skuCode }}
+                </div>
+              </template>
+            </ElTableColumn>
+
+            <ElTableColumn label="SKU图片" width="120">
+              <template #default="scope">
+                <div class="w-full flex items-center">
+                  <ElInput
+                    v-model="scope.row.skuImageFileId"
+                    clearable
+                    :placeholder="$t('product.placeholder.skuImageFileId')"
+                  />
+                </div>
+              </template>
+            </ElTableColumn>
+
             <ElTableColumn label="SKU编码" width="150">
               <template #default="scope">
                 <div class="w-full flex items-center">
@@ -376,20 +602,19 @@ defineExpose({
                 </div>
               </template>
             </ElTableColumn>
-            <ElTableColumn label="图片" width="120" />
-            <ElTableColumn label="库存" width="120">
+
+            <ElTableColumn label="货币ID" width="120">
               <template #default="scope">
                 <div class="w-full flex items-center">
                   <ElInput
-                    v-model.number="scope.row.quantity"
-                    type="number"
-                    :min="0"
+                    v-model="scope.row.currencyId"
                     clearable
-                    :placeholder="$t('product.placeholder.quantity')"
+                    :placeholder="$t('product.placeholder.currencyId')"
                   />
                 </div>
               </template>
             </ElTableColumn>
+
             <ElTableColumn label="价格" width="120">
               <template #default="scope">
                 <div class="w-full flex items-center">
@@ -403,6 +628,7 @@ defineExpose({
                 </div>
               </template>
             </ElTableColumn>
+
             <ElTableColumn label="成本价" width="120">
               <template #default="scope">
                 <div class="w-full flex items-center">
@@ -416,6 +642,7 @@ defineExpose({
                 </div>
               </template>
             </ElTableColumn>
+
             <ElTableColumn label="促销价格" width="120">
               <template #default="scope">
                 <div class="w-full flex items-center">
@@ -429,6 +656,7 @@ defineExpose({
                 </div>
               </template>
             </ElTableColumn>
+
             <ElTableColumn label="促销开始时间" width="160">
               <template #default="scope">
                 <div class="w-full flex items-center">
@@ -443,6 +671,7 @@ defineExpose({
                 </div>
               </template>
             </ElTableColumn>
+
             <ElTableColumn label="促销结束时间" width="160">
               <template #default="scope">
                 <div class="w-full flex items-center">
@@ -457,6 +686,15 @@ defineExpose({
                 </div>
               </template>
             </ElTableColumn>
+
+            <ElTableColumn label="是否需要运输" width="120">
+              <template #default="scope">
+                <div class="w-full flex items-center justify-center">
+                  <ElSwitch v-model="scope.row.isRequiredShipping" :active-value="true" :inactive-value="false" />
+                </div>
+              </template>
+            </ElTableColumn>
+
             <ElTableColumn label="重量" width="120">
               <template #default="scope">
                 <div class="w-full flex items-center">
@@ -470,6 +708,7 @@ defineExpose({
                 </div>
               </template>
             </ElTableColumn>
+
             <ElTableColumn label="重量单位" width="120">
               <template #default="scope">
                 <div class="w-full flex items-center">
@@ -481,6 +720,7 @@ defineExpose({
                 </div>
               </template>
             </ElTableColumn>
+
             <ElTableColumn label="长度" width="120">
               <template #default="scope">
                 <div class="w-full flex items-center">
@@ -494,6 +734,7 @@ defineExpose({
                 </div>
               </template>
             </ElTableColumn>
+
             <ElTableColumn label="宽度" width="120">
               <template #default="scope">
                 <div class="w-full flex items-center">
@@ -507,6 +748,7 @@ defineExpose({
                 </div>
               </template>
             </ElTableColumn>
+
             <ElTableColumn label="高度" width="120">
               <template #default="scope">
                 <div class="w-full flex items-center">
@@ -520,6 +762,7 @@ defineExpose({
                 </div>
               </template>
             </ElTableColumn>
+
             <ElTableColumn label="长度单位" width="120">
               <template #default="scope">
                 <div class="w-full flex items-center">
@@ -531,6 +774,7 @@ defineExpose({
                 </div>
               </template>
             </ElTableColumn>
+
             <ElTableColumn label="MPN" width="150">
               <template #default="scope">
                 <div class="w-full flex items-center">
@@ -538,6 +782,7 @@ defineExpose({
                 </div>
               </template>
             </ElTableColumn>
+
             <ElTableColumn label="UPC" width="150">
               <template #default="scope">
                 <div class="w-full flex items-center">
@@ -545,6 +790,7 @@ defineExpose({
                 </div>
               </template>
             </ElTableColumn>
+
             <ElTableColumn label="EAN" width="150">
               <template #default="scope">
                 <div class="w-full flex items-center">
@@ -552,6 +798,7 @@ defineExpose({
                 </div>
               </template>
             </ElTableColumn>
+
             <ElTableColumn label="JAN" width="150">
               <template #default="scope">
                 <div class="w-full flex items-center">
@@ -559,6 +806,7 @@ defineExpose({
                 </div>
               </template>
             </ElTableColumn>
+
             <ElTableColumn label="ISBN" width="150">
               <template #default="scope">
                 <div class="w-full flex items-center">
@@ -566,6 +814,7 @@ defineExpose({
                 </div>
               </template>
             </ElTableColumn>
+
             <ElTableColumn label="ISSN" width="150">
               <template #default="scope">
                 <div class="w-full flex items-center">
@@ -574,9 +823,9 @@ defineExpose({
               </template>
             </ElTableColumn>
           </ElTable>
-          <div v-else class="text-center py-4 text-gray-500 bg-gray-50 rounded">
-            暂无规格组合，请先添加商品规格
-          </div>
+        </div>
+        <div v-else class="text-center py-4 text-gray-500 bg-gray-50 rounded">
+          暂无规格组合，请先添加商品规格
         </div>
         <!-- 属性编辑区域 -->
         <div v-if="attributeFormVisible" class="w-full bg-[#F6F7FD] mt-4 border border-gray-200">
