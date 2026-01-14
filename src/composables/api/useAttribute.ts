@@ -17,5 +17,5 @@ export const useAttributeList = (payload?: Partial<AttributeListParams>, options
     ...payload,
   }
 
-  return useList<AttributeListData, AttributeListParams>(attributeListApi, finalPayload, options)
+  return useList<(AttributeListData & CommonField), AttributeListParams>(attributeListApi, finalPayload, options)
 }

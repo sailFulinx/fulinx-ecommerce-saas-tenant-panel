@@ -115,11 +115,14 @@ interface ProductFileRequestDo {
 }
 
 interface AttributeValueDo {
+  /* Language ID */
+  languageId: string
+
   /* Attribute Value ID */
   attributeValueId: string
 
-  /* Attribute Value Contents, key: 语言代码（zh-CN, en-US）, value: 对应语言的属性值 */
-  attributeValueContents: string
+  /* Attribute Value Content */
+  attributeValueContent: string
 
   /* Sort */
   sort: number
@@ -128,21 +131,26 @@ interface AttributeValueDo {
   attributeImageFileId?: string
 
   /* Attribute Image File Vo */
-  attributeImageFileVo?: string
+  attributeImageFileVo?: FileData & CommonField
 }
 
 interface AttributeSummaryDo {
+  /* Language ID */
+  languageId: string
+
   /* Attribute ID */
   attributeId: string
 
-  /* Attribute Names, key: 语言代码（zh-CN, en-US）, value: 对应语言的属性名称 */
-  attributeNames: string
+  /* Attribute Name */
+  attributeName: string
 
   /* Sort */
   sort: number
 
   /* Product Attribute Summary Attribute Value Dos */
   attributeValueDos: AttributeValueDo[]
+
+  attributeValueListResultDos?: (AttributeValueListData & CommonField)[]
 }
 
 interface ProductAttributeRequestDo {
@@ -160,17 +168,20 @@ interface ProductSkuAttributeRequestDo {
   /* Product Sku ID */
   productSkuId?: string
 
+  /* Language ID */
+  languageId: string
+
   /* Attribute ID */
   attributeId: string
 
-  /* Attribute Names */
-  attributeNames: string
+  /* Attribute Name */
+  attributeName: string
 
   /* Attribute Value ID */
   attributeValueId: string
 
-  /* Attribute Value Contents */
-  attributeValueContents: string
+  /* Attribute Value Content */
+  attributeValueContent: string
 }
 
 interface ProductSkuInventoryRequestDo {
@@ -977,11 +988,14 @@ interface ProductSkuAttributeListResultDo {
   /* Product Sku ID */
   productSkuId: string
 
+  /* Language ID */
+  languageId: string
+
   /* Attribute ID */
   attributeId: string
 
-  /* Attribute Names */
-  attributeNames: string
+  /* Attribute Name */
+  attributeName: string
 
   /* Attribute Sort */
   attributeSort: number
@@ -989,8 +1003,8 @@ interface ProductSkuAttributeListResultDo {
   /* Attribute Value ID */
   attributeValueId: string
 
-  /* Attribute Value Contents */
-  attributeValueContents: string
+  /* Attribute Value Content */
+  attributeValueContent: string
 
   /* Attribute Value Sort */
   attributeValueSort: number
