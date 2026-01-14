@@ -98,8 +98,18 @@ const handleAddAttributeCancel = () => {
 }
 
 const handleAddAttributeSave = () => {
-  productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos.push(currentAttribute.value)
-  attributeFormVisible.value = false
+  // 如果当前属性已存在，则修改，否则新增
+  if (!currentAttribute.value.attributeId) {
+    return
+  }
+  const index = productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos.findIndex(
+    item => item.attributeId === currentAttribute.value.attributeId,
+  )
+  if (index !== -1) {
+    productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos[index] = currentAttribute.value
+  } else {
+    productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos.push(currentAttribute.value)
+  }
   currentAttribute.value = {
     languageId: usePreferenceStore().preference.language.id,
     attributeId: '',
@@ -108,6 +118,7 @@ const handleAddAttributeSave = () => {
     attributeValueDos: [],
     attributeValueListResultDos: [],
   }
+  attributeFormVisible.value = false
 }
 
 const createAttributeRef = ref()
@@ -127,7 +138,9 @@ const getAttributeList = async () => {
   if (!attributeListData.value.list || attributeListData.value.list.length === 0) {
     return
   }
-  currentAttribute.value.attributeValueListResultDos = attributeListData.value.list.find(item => item.id === currentAttribute.value.attributeId)?.attributeValueListResultDos
+  currentAttribute.value.attributeValueListResultDos = attributeListData.value.list.find(
+    item => item.id === currentAttribute.value.attributeId,
+  )?.attributeValueListResultDos
 }
 
 const setData = (data: ProductSkuRequestDo) => {
@@ -171,7 +184,7 @@ defineExpose({
         </div>
         <div
           v-if="productSkuRequestDo.productAttributeRequestDo.attributeSummaryDos.length > 0"
-          class="w-full bg-[#F6F7Fd] flex-col items-center mt-4"
+          class="w-full flex-col items-center mt-4"
         >
           <VueDraggable
             v-model="productSkuRequestDo.productAttributeRequestDo.attributeSummaryDos"
@@ -187,7 +200,7 @@ defineExpose({
             <div
               v-for="(item, index) in productSkuRequestDo.productAttributeRequestDo.attributeSummaryDos"
               :key="index"
-              class="w-full border border-gray-200 p-2"
+              class="w-full bg-[#F6F7Fd] border border-gray-200 p-2 mb-4"
             >
               <div class="w-full flex justify-between items-center border-b border-gray-200 pb-2 mb-2">
                 <div class="flex items-center">
