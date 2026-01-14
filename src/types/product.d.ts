@@ -288,14 +288,20 @@ interface ProductParameterRelationRequestDo {
   /* Language ID */
   languageId: string
 
+  parameterType?: number
+
   /* Parameter ID */
   parameterId: string
+
+  parameterName?: string
 
   /* Parameter Value ID */
   parameterValueId?: string
 
   /* Parameter Value Content */
   parameterValueContent?: string
+
+  parameterValueListResultDos?: (ParameterValueListData & CommonField)[]
 
   /* Sort */
   sort: number

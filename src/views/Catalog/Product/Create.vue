@@ -5,6 +5,7 @@ import { datePickerShortcuts } from '@/data/date'
 import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
 import { useTagsViewStore } from '@/stores/tagsView'
+import ParameterForm from './Modules/ParameterForm.vue'
 
 const { t: $t } = useLocale()
 
@@ -65,7 +66,7 @@ const { loading: brandLoading, listData: brandListData, promise: brandPromise } 
 
 const { loading: supplierLoading, listData: supplierListData, promise: supplierPromise } = useSupplierList()
 
-const { loading: _parameterLoading, listData: _parameterListData, promise: parameterPromise } = useParameterList()
+const { loading: attributeLoading, listData: attributeListData, promise: attributePromise } = useAttributeList()
 
 // 系统分类
 const listSystemCategoryPayload = reactive<SystemCategoryListParams>({
@@ -167,8 +168,8 @@ onMounted(async () => {
       systemCategoryPromise,
       categoryPromise,
       brandPromise,
-      parameterPromise,
       supplierPromise,
+      attributePromise,
     ])
   } catch (error) {
     console.error('加载数据失败:', error)
@@ -178,6 +179,8 @@ onMounted(async () => {
 })
 
 const editorRef = ref()
+
+const parameterFormRef = ref()
 
 const imageUploadRef = ref()
 
@@ -370,7 +373,13 @@ const save = async () => {
                     />
                   </ElFormItem>
                   <ElFormItem :label="$t('product.productType')" prop="productType">
-                    <ElSelect v-model="productForm.productType" v-loading="productTypeLoading" clearable filterable placeholder="请选择">
+                    <ElSelect
+                      v-model="productForm.productType"
+                      v-loading="productTypeLoading"
+                      clearable
+                      filterable
+                      placeholder="请选择"
+                    >
                       <ElOption
                         v-for="item in productTypeListData?.list || []"
                         :key="item.id"
@@ -407,6 +416,10 @@ const save = async () => {
                       maxlength="120"
                       :placeholder="$t('product.placeholder.productShortName')"
                     />
+                  </ElFormItem>
+                  <!-- 参数 -->
+                  <ElFormItem :label="$t('product.parameter')" prop="parameter">
+                    <ParameterForm ref="parameterFormRef" />
                   </ElFormItem>
                 </div>
               </div>
@@ -604,7 +617,13 @@ const save = async () => {
                     </ElSelect>
                   </ElFormItem>
                   <ElFormItem :label="$t('product.conditionType')" prop="conditionType">
-                    <ElSelect v-model="productForm.conditionType" v-loading="conditionLoading" clearable filterable placeholder="请选择">
+                    <ElSelect
+                      v-model="productForm.conditionType"
+                      v-loading="conditionLoading"
+                      clearable
+                      filterable
+                      placeholder="请选择"
+                    >
                       <ElOption
                         v-for="item in conditionTypeListData?.list || []"
                         :key="item.id"
@@ -614,7 +633,13 @@ const save = async () => {
                     </ElSelect>
                   </ElFormItem>
                   <ElFormItem :label="$t('product.ageGroupType')" prop="ageGroupType">
-                    <ElSelect v-model="productForm.ageGroupType" v-loading="ageGroupLoading" clearable filterable placeholder="请选择">
+                    <ElSelect
+                      v-model="productForm.ageGroupType"
+                      v-loading="ageGroupLoading"
+                      clearable
+                      filterable
+                      placeholder="请选择"
+                    >
                       <ElOption
                         v-for="item in ageGroupTypeListData?.list || []"
                         :key="item.id"

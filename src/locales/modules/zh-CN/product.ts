@@ -49,6 +49,7 @@ export default {
   productSourceType: '产品来源',
   supplierUrl: '供应商URL',
   isAdult: '是否成人商品',
+  parameterAdd: '添加参数',
   placeholder: {
     systemCategory: '请选择系统分类',
     productNameQuery: '请输入产品名称查询',

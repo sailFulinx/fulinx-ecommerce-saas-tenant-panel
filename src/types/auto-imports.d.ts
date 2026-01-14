@@ -529,6 +529,8 @@ declare global {
   const useArticleTypeList: typeof import('../composables/api/useCommon').useArticleTypeList
   const useAsyncQueue: typeof import('@vueuse/core').useAsyncQueue
   const useAsyncState: typeof import('@vueuse/core').useAsyncState
+  const useAttributeList: typeof import('../composables/api/useAttribute').useAttributeList
+  const useAttributePagination: typeof import('../composables/api/useAttribute').useAttributePagination
   const useAttrs: typeof import('vue').useAttrs
   const useBase64: typeof import('@vueuse/core').useBase64
   const useBattery: typeof import('@vueuse/core').useBattery
