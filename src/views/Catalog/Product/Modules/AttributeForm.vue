@@ -76,50 +76,68 @@ const generateSkus = () => {
   const combinations = cartes.value
 
   // 为每个组合创建一个SKU项
-  combinations.forEach(combination => {
-    // 生成SKU编码，格式为 spu-组合值
-    const skuValues = combination.map(item => item.attributeValue)
-    const skuCode = `${productSkuRequestDo.value.spu}-${skuValues.join('-')}`
+  if (combinations.length > 0 && combinations[0].length > 0) {
+    combinations.forEach(combination => {
+      // 生成SKU编码，格式为 spu-组合值
+      const skuValues = combination.map(item => item.attributeValue)
+      const skuCode = `${productSkuRequestDo.value.spu}-${skuValues.join('-')}`
 
-    // 创建SKU属性数组
-    const productSkuAttributes = combination.map(item => {
-      return {
-        attributeValueContent: item.attributeValue,
-        attributeName: item.attributeName,
-        attributeImageFileVo: item.attributeImageFileVo || null,
-        attributeId: item.attributeId,
-        attributeValueId: item.attributeValueId,
-      }
-    })
-
-    // 创建SKU项
-    const skuItem: ProductSkuItemRequestDo = {
-      skuCode,
-      quantity: 0,
-      currencyId: '1', // 默认货币，实际应用中可能需要从其他地方获取
-      price: 0, // 默认价格，用户后续设置
-      productSkuAttributeRequestDos: productSkuAttributes.map(attr => {
+      // 创建SKU属性数组
+      const productSkuAttributes = combination.map(item => {
         return {
-          attributeName: attr.attributeName,
-          attributeValueContent: attr.attributeValueContent,
-          attributeImageFileVo: attr.attributeImageFileVo,
-          languageId: usePreferenceStore().preference.language.id,
-          attributeId: attr.attributeId,
-          attributeValueId: attr.attributeValueId,
+          attributeValueContent: item.attributeValue,
+          attributeName: item.attributeName,
+          attributeImageFileVo: item.attributeImageFileVo || null,
+          attributeId: item.attributeId,
+          attributeValueId: item.attributeValueId,
         }
-      }),
-      productSkuInventoryRequestDos: [], // 库存信息，可能在后续步骤中填写
-    }
+      })
 
-    // 将SKU项添加到数组中
-    productSkuRequestDo.value.productSkuItemRequestDos.push(skuItem)
-  })
+      // 创建SKU项
+      const skuItem: ProductSkuItemRequestDo = {
+        productId: '', // 通常在保存产品时填充
+        skuCode,
+        quantity: 0,
+        currencyId: '1', // 默认货币，实际应用中可能需要从其他地方获取
+        price: 0, // 默认价格，用户后续设置
+        productSkuAttributeRequestDos: productSkuAttributes.map(attr => {
+          return {
+            attributeName: attr.attributeName,
+            attributeValueContent: attr.attributeValueContent,
+            attributeImageFileVo: attr.attributeImageFileVo,
+            languageId: usePreferenceStore().preference.language.id,
+            attributeId: attr.attributeId,
+            attributeValueId: attr.attributeValueId,
+          }
+        }),
+        productSkuInventoryRequestDos: [], // 库存信息，可能在后续步骤中填写
+      }
+
+      // 将SKU项添加到数组中
+      productSkuRequestDo.value.productSkuItemRequestDos.push(skuItem)
+    })
+  } else {
+    // 如果没有规格组合，添加一个默认的SKU项，以SPU作为SKU编码
+    if (productSkuRequestDo.value.spu) {
+      const defaultSkuItem: ProductSkuItemRequestDo = {
+        productId: '',
+        skuCode: productSkuRequestDo.value.spu,
+        quantity: 0,
+        currencyId: '1',
+        price: 0,
+        productSkuAttributeRequestDos: [],
+        productSkuInventoryRequestDos: [],
+      }
+      productSkuRequestDo.value.productSkuItemRequestDos.push(defaultSkuItem)
+    }
+  }
 }
 
 // 监听spu变化，当spu改变时重新生成SKU
 watch(
   () => productSkuRequestDo.value.spu,
-  () => {
+  newSpu => {
+    console.log('spu changed:', newSpu)
     generateSkus()
   },
   { deep: true },
@@ -569,6 +587,7 @@ defineExpose({
             </div>
           </div>
           <ElTable
+            v-if="productSkuRequestDo.productSkuItemRequestDos.length > 0"
             :data="productSkuRequestDo.productSkuItemRequestDos"
             style="width: 100%"
             border
@@ -823,6 +842,9 @@ defineExpose({
               </template>
             </ElTableColumn>
           </ElTable>
+          <div v-else class="text-center py-4 text-gray-500 bg-gray-50 rounded">
+            暂无规格组合，请先添加商品规格
+          </div>
         </div>
         <div v-else class="text-center py-4 text-gray-500 bg-gray-50 rounded">
           暂无规格组合，请先添加商品规格
