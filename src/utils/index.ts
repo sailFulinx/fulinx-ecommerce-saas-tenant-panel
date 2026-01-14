@@ -1,5 +1,7 @@
 // import type { Plugin } from 'vue'
 import { differenceInDays, isAfter } from 'date-fns'
+import { cartesianProduct, cartesianProductToString } from './cartesianProduct'
+
 /**
  *
  * @param component 需要注册的组件
@@ -205,3 +207,5 @@ export function validateTimes(startTime: string, endTime: string, limitDay: numb
 
   return true
 }
+
+export { cartesianProduct, cartesianProductToString }

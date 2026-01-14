@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { VueDraggable } from 'vue-draggable-plus'
+import { cartesianProduct } from '@/utils/cartesianProduct'
 import CreateAttributeDialog from '../../Attribute/Components/CreateAttributeDialog.vue'
 import CreateAttributeValueDialog from './CreateAttributeValueDialog.vue'
 
@@ -55,6 +56,26 @@ const productSkuRequestDo = ref<ProductSkuRequestDo>({
     searchIndex: '',
   },
   productSkuItemRequestDos: [],
+})
+
+// 计算笛卡尔积
+const cartes = computed(() => {
+  const attributes = productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos
+  if (!attributes || attributes.length === 0) {
+    return [[]]
+  }
+
+  // 提取每个属性的所有值
+  const attributeValues = attributes.map(attr =>
+    attr.attributeValueDos.map(av => ({
+      attributeName: attr.attributeName,
+      attributeValue: av.attributeValueContent,
+      attributeImageFileVo: av.attributeImageFileVo,
+    })),
+  )
+
+  // 计算笛卡尔积
+  return cartesianProduct(attributeValues)
 })
 
 const rules = reactive({
@@ -194,6 +215,7 @@ defineExpose({
         />
       </ElFormItem>
       <ElFormItem label="商品规格" prop="productAttributeRequestDo">
+        <!-- 规格头部 -->
         <div class="w-full flex justify-between items-center">
           <div class="flex-1 text-gray-400 text-sm">
             发布规格图，优化商品展示效率
@@ -205,6 +227,7 @@ defineExpose({
             </EBtn>
           </div>
         </div>
+        <!-- 规格 -->
         <div
           v-if="productSkuRequestDo.productAttributeRequestDo.attributeSummaryDos.length > 0"
           class="w-full flex-col items-center mt-4"
@@ -265,6 +288,43 @@ defineExpose({
             </div>
           </VueDraggable>
         </div>
+        <!-- 笛卡尔积表格展示 -->
+        <div class="mt-4">
+          <div class="text-gray-700 font-medium mb-2">
+            规格组合预览:
+          </div>
+          <ElTable
+            v-if="cartes.length > 0 && productSkuRequestDo.productAttributeRequestDo.attributeSummaryDos.length > 0"
+            :data="cartes"
+            style="width: 100%"
+            border
+          >
+            <ElTableColumn label="SKU">
+              <template #default="scope">
+                <div class="w-full flex items-center">
+                  {{ productSkuRequestDo.spu}}-{{ scope.row }}
+                </div>
+              </template>
+            </ElTableColumn>
+            <ElTableColumn label="价格">
+              <template #default="scope">
+                <div class="w-full flex items-center">
+                  <ElInput
+                    v-model="scope.row.price"
+                    clearable
+                    minlength="1"
+                    maxlength="120"
+                    :placeholder="$t('product.placeholder.price')"
+                  />
+                </div>
+              </template>
+            </ElTableColumn>
+          </ElTable>
+          <div v-else class="text-center py-4 text-gray-500 bg-gray-50 rounded">
+            暂无规格组合，请先添加商品规格
+          </div>
+        </div>
+        <!-- 属性编辑区域 -->
         <div v-if="attributeFormVisible" class="w-full bg-[#F6F7FD] mt-4 border border-gray-200">
           <div class="w-full flex justify-between items-center border-b border-gray-200 p-2">
             <div>选择属性</div>
