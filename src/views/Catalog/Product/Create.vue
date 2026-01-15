@@ -211,6 +211,7 @@ const createProductForm = (): CreateProductParams => {
     productSkuRequestDo: {
       stockStatus: 1,
       spu: '',
+      currencyId: '',
       productAttributeRequestDo: {
         attributeSummaryDos: [],
         searchIndex: '',
@@ -241,7 +242,6 @@ const save = async () => {
   productForm.productParameterRelationRequestDos = []
   productForm.languageId = usePreferenceStore().preference.language.id
   productForm.currencyId = usePreferenceStore().preference.currency.id
-  // productForm.parameterGroupId = selectedParameterGroup.value
   const images = imageUploadRef.value.getFileData()
   productForm.productFileRequestDos = images.fileDataList
   productForm.productFileRequestDos?.map(item => {
