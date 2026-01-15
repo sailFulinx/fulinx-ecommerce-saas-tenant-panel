@@ -221,6 +221,7 @@ interface ProductSkuInventoryRequestDo {
 }
 
 interface ProductSkuItemRequestDo {
+  uid?: number
   /* Product Sku ID */
   id?: string
 
@@ -229,6 +230,9 @@ interface ProductSkuItemRequestDo {
 
   /* Sku Image File ID */
   skuImageFileId?: string
+
+  /* Sku Image File Vo */
+  skuImageFileVo?: FileData & CommonField
 
   /* Sku Code */
   skuCode: string
@@ -239,58 +243,58 @@ interface ProductSkuItemRequestDo {
   currencyId: string
 
   /* Price */
-  price: number
+  price: number | null
 
   /* Cost Price */
-  costPrice?: number
+  costPrice?: number | null
 
   /* Promotion Price */
-  promotionPrice?: number
+  promotionPrice?: number | null
 
   /* Promotion Started Time */
-  promotionStartedTime?: string
+  promotionStartedTime?: string | null
 
   /* Promotion Ended Time */
-  promotionEndedTime?: string
+  promotionEndedTime?: string | null
 
   /* Is Required Shipping */
   isRequiredShipping?: boolean
 
   /* Weight */
-  weight?: number
+  weight?: number | null
 
   /* Weight Unit */
-  weightUnit?: string
+  weightUnit?: string | undefined
 
   /* Length */
-  length?: number
+  length?: number | null
 
   /* Width */
-  width?: number
+  width?: number | null
 
   /* Height */
-  height?: number
+  height?: number | null
 
   /* Length Unit */
-  lengthUnit?: string
+  lengthUnit?: string | undefined
 
   /* Mpn */
-  mpn?: string
+  mpn?: string | undefined
 
   /* Upc */
-  upc?: string
+  upc?: string | undefined
 
   /* Ean */
-  ean?: string
+  ean?: string | undefined
 
   /* Jan */
-  jan?: string
+  jan?: string | undefined
 
   /* Isbn */
-  isbn?: string
+  isbn?: string | undefined
 
   /* Issn */
-  issn?: string
+  issn?: string | undefined
 
   /* Status, 0 - Disabled , 1 - Enabled */
   status?: boolean

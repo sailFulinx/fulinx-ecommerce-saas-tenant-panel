@@ -105,11 +105,13 @@ const generateSkus = () => {
 
       // 创建SKU项
       const skuItem: ProductSkuItemRequestDo = {
+        uid: productSkuRequestDo.value.productSkuItemRequestDos.length + 1,
         productId: '', // 通常在保存产品时填充
         skuCode,
         quantity: 0,
         currencyId: productSkuRequestDo.value.currencyId, // 默认货币，实际应用中可能需要从其他地方获取
         price: 0, // 默认价格，用户后续设置
+        status: true,
         productSkuAttributeRequestDos: productSkuAttributes.map(attr => {
           return {
             attributeName: attr.attributeName,
@@ -130,11 +132,13 @@ const generateSkus = () => {
     // 如果没有规格组合，添加一个默认的SKU项，以SPU作为SKU编码
     if (productSkuRequestDo.value.spu) {
       const defaultSkuItem: ProductSkuItemRequestDo = {
+        uid: 1,
         productId: '',
         skuCode: productSkuRequestDo.value.spu,
         quantity: 0,
         currencyId: productSkuRequestDo.value.currencyId,
         price: 0,
+        status: true,
         productSkuAttributeRequestDos: [],
         productSkuInventoryRequestDos: [],
       }
@@ -304,12 +308,10 @@ const applyBatchUpdate = () => {
 
   // 显示操作成功消息
   const fieldNameMap: Record<string, string> = {
+    quantity: '库存',
     price: '价格',
     costPrice: '成本价',
     promotionPrice: '促销价格',
-    skuImageFileId: 'SKU图片',
-    skuCode: 'SKU编码',
-    currencyId: '货币ID',
     weight: '重量',
     weightUnit: '重量单位',
     length: '长度',
@@ -327,7 +329,7 @@ const applyBatchUpdate = () => {
   ElMessage.success(`批量更新${fieldNameMap[field] || field}完成！`)
 }
 
-const attributeFormVisible = ref(false)
+const attributeFormVisible = ref(true)
 
 const handleChangeAttribute = async (id: string) => {
   attributeListData.value.list.find(item => {
@@ -360,8 +362,17 @@ const handleAddAttributeCancel = () => {
 }
 
 const handleAddAttributeSave = () => {
+  if (!productSkuRequestDo.value.spu) {
+    ElMessage.error($t('product.placeholder.spu'))
+    return
+  }
   // 如果当前属性已存在，则修改，否则新增
   if (!currentAttribute.value.attributeId) {
+    ElMessage.warning($t('product.placeholder.attributeId'))
+    return
+  }
+  if (!currentAttribute.value.attributeValueDos || currentAttribute.value.attributeValueDos.length === 0) {
+    ElMessage.warning($t('product.placeholder.attributeValueDos'))
     return
   }
   const index = productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos.findIndex(
@@ -431,7 +442,12 @@ defineExpose({
       </ElFormItem>
       <ElFormItem label="货币" prop="currencyId">
         <ElSelect v-model="productSkuRequestDo.currencyId" clearable filterable placeholder="请选择货币">
-          <ElOption v-for="item in currencies" :key="item.id" :value="item.id" :label="`${item.symbolLeft}${item.currencyCode} - ${item.currencyName}`">
+          <ElOption
+            v-for="item in currencies"
+            :key="item.id"
+            :value="item.id"
+            :label="`${item.symbolLeft}${item.currencyCode} - ${item.currencyName}`"
+          >
             {{ item.symbolLeft }} {{ item.currencyCode }} - {{ item.currencyName }}
           </ElOption>
         </ElSelect>
@@ -519,29 +535,90 @@ defineExpose({
             </div>
           </VueDraggable>
         </div>
-        <!-- 变体属性 -->
-        <div class="mt-4 bg-[#F6F7FD] p-4">
-          <div class="text-gray-700 font-medium mb-2">
-            规格组合预览:
-          </div>
-          <!-- 批量更新功能 -->
-          <div
-            v-if="productSkuRequestDo.productSkuItemRequestDos.length > 1"
-            class="mt-4 p-4 bg-gray-50 rounded border"
-          >
-            <div class="text-gray-700 font-medium mb-3">
-              批量更新:
+        <!-- 属性编辑区域 -->
+        <div v-if="attributeFormVisible" class="w-full bg-[#F6F7FD] mt-4 border border-gray-200">
+          <div class="w-full flex justify-between items-center border-b border-gray-200 p-2">
+            <div>选择属性</div>
+            <div class="flex items-center cursor-pointer" @click="handleCreateAttribute">
+              <Icon name="mynaui:plus" class="mr-1" />
+              添加属性
             </div>
-            <div class="grid grid-cols-3 gap-4">
+          </div>
+          <div v-loading="attributeLoading" class="w-full flex justify-between items-center p-4">
+            <div class="flex-1 flex items-center justify-between mr-2">
+              <div class="w-1/4 mr-2">
+                <ElSelect
+                  v-model="currentAttribute.attributeId"
+                  placeholder="请选择商品规格"
+                  filterable
+                  clearable
+                  class="mr-2"
+                  @change="handleChangeAttribute"
+                >
+                  <ElOption
+                    v-for="item in attributeListData.list"
+                    :key="item.id"
+                    :label="item.attributeName"
+                    :value="item.id"
+                  >
+                    {{ item.attributeName }}
+                  </ElOption>
+                </ElSelect>
+              </div>
+              <div class="flex-1">
+                <ElSelect
+                  v-model="currentAttribute.attributeValueDos"
+                  multiple
+                  value-key="id"
+                  filterable
+                  clearable
+                  placeholder="请选择属性值"
+                >
+                  <ElOption
+                    v-for="item in currentAttribute.attributeValueListResultDos"
+                    :key="item.id"
+                    :label="item.attributeValueContent"
+                    :value="item"
+                  >
+                    {{ item.attributeValueContent }}
+                  </ElOption>
+                </ElSelect>
+              </div>
+            </div>
+            <div class="flex items-center justify-end cursor-pointer" @click="handleCreateAttributeValue">
+              <Icon name="mynaui:plus" class="mr-1" />
+              添加属性值
+            </div>
+          </div>
+          <div class="w-full p-4">
+            <EBtn type="default" @click="handleAddAttributeCancel">
+              {{ $t('common.cancel') }}
+            </EBtn>
+            <EBtn type="primary" plain @click="handleAddAttributeSave">
+              {{ $t('common.save') }}
+            </EBtn>
+          </div>
+        </div>
+      </ElFormItem>
+      <ElFormItem label="价格库存" required>
+        <!-- 规格头部 -->
+        <div class="w-full flex justify-between items-center" style="margin-top: 6px">
+          <div class="flex-1 text-gray-400 text-sm">
+            填写商品价格库存信息
+          </div>
+        </div>
+        <!-- 变体属性 -->
+        <div class="w-full mt-4 bg-[#F6F7FD] p-4">
+          <!-- 批量更新功能 -->
+          <div v-if="productSkuRequestDo.productSkuItemRequestDos.length > 1" class="p-4 bg-white mb-4 border border-gray-200">
+            <div class="grid grid-cols-4 gap-4">
               <div class="flex items-center space-x-2">
-                <label class="text-sm text-gray-600 w-24">字段选择:</label>
+                <label class="text-sm text-gray-600 w-16">字段选择:</label>
                 <ElSelect v-model="batchUpdateForm.field" placeholder="选择字段" class="flex-1">
+                  <ElOption label="库存" value="quantity" />
                   <ElOption label="价格" value="price" />
                   <ElOption label="成本价" value="costPrice" />
                   <ElOption label="促销价格" value="promotionPrice" />
-                  <ElOption label="SKU图片" value="skuImageFileId" />
-                  <ElOption label="SKU编码" value="skuCode" />
-                  <ElOption label="货币ID" value="currencyId" />
                   <ElOption label="重量" value="weight" />
                   <ElOption label="重量单位" value="weightUnit" />
                   <ElOption label="长度" value="length" />
@@ -557,7 +634,7 @@ defineExpose({
                 </ElSelect>
               </div>
               <div class="flex items-center space-x-2">
-                <label class="text-sm text-gray-600 w-24">操作类型:</label>
+                <label class="text-sm text-gray-600 w-16">操作类型:</label>
                 <ElSelect v-model="batchUpdateForm.operation" class="flex-1">
                   <ElOption label="设置为固定值" value="set" />
                   <ElOption label="增加固定值" value="add" />
@@ -567,7 +644,7 @@ defineExpose({
                 </ElSelect>
               </div>
               <div class="flex items-center space-x-2">
-                <label class="text-sm text-gray-600 w-24">调整值:</label>
+                <label class="text-sm text-gray-600 w-12">调整值:</label>
                 <ElInput
                   v-if="isTextField(batchUpdateForm.field)"
                   v-model="batchUpdateForm.adjustmentValue"
@@ -579,6 +656,7 @@ defineExpose({
                   v-model="batchUpdateForm.adjustmentValue"
                   :precision="
                     batchUpdateForm.field.includes('price')
+                      || batchUpdateForm.field === 'quantity'
                       || batchUpdateForm.field === 'weight'
                       || batchUpdateForm.field === 'length'
                       || batchUpdateForm.field === 'width'
@@ -592,56 +670,59 @@ defineExpose({
                   :placeholder="getPlaceholder()"
                 />
               </div>
-              <div class="col-span-3">
-                <ElButton type="primary" size="default" @click="applyBatchUpdate()">
-                  批量更新所选字段
-                </ElButton>
+              <div class="flex items-center justify-end">
+                <EBtn type="primary" @click="applyBatchUpdate()">
+                  批量更新
+                </EBtn>
               </div>
             </div>
           </div>
           <ElTable
-            class="mt-4"
             :data="productSkuRequestDo.productSkuItemRequestDos"
             style="width: 100%"
+            row-key="uid"
+            highlight-current-row
             border
             max-height="500"
             :header-cell-style="{ background: '#f5f7fa', color: '#606266' }"
           >
-            <ElTableColumn label="SKU" width="200">
-              <template #default="scope">
-                <div class="w-full flex items-center">
-                  {{ scope.row.skuCode }}
-                </div>
-              </template>
-            </ElTableColumn>
-
-            <ElTableColumn label="SKU图片" width="120">
-              <template #default="scope">
-                <div class="w-full flex items-center">
-                  <ElInput
-                    v-model="scope.row.skuImageFileId"
-                    clearable
-                    :placeholder="$t('product.placeholder.skuImageFileId')"
-                  />
-                </div>
-              </template>
-            </ElTableColumn>
-
+            <ElTableColumn type="selection" width="55" />
             <ElTableColumn label="SKU编码" width="150">
               <template #default="scope">
                 <div class="w-full flex items-center">
-                  <ElInput v-model="scope.row.skuCode" clearable :placeholder="$t('product.placeholder.skuCode')" />
+                  <ElInput v-model="scope.row.skuCode" clearable :placeholder="$t('product.placeholder.sku')" />
                 </div>
               </template>
             </ElTableColumn>
 
-            <ElTableColumn label="货币ID" width="120">
+            <ElTableColumn label="SKU图片" width="90">
+              <template #default="scope">
+                <div class="w-full flex items-center">
+                  <Icon
+                    v-if="!scope.row.skuImageFileVo || !scope.row.skuImageFileVo.fileUrl"
+                    name="ri:image-line"
+                    :size="6"
+                    class="mr-1"
+                    color="gray"
+                  />
+                  <img
+                    v-if="scope.row.skuImageFileVo && scope.row.skuImageFileVo.fileUrl"
+                    :src="scope.row.skuImageFileVo.fileUrl"
+                    class="w-6 h-6 mr-1"
+                  >
+                </div>
+              </template>
+            </ElTableColumn>
+
+            <ElTableColumn label="库存" width="120">
               <template #default="scope">
                 <div class="w-full flex items-center">
                   <ElInput
-                    v-model="scope.row.currencyId"
+                    v-model.number="scope.row.quantity"
+                    type="number"
+                    :min="0"
                     clearable
-                    :placeholder="$t('product.placeholder.currencyId')"
+                    :placeholder="$t('product.placeholder.quantity')"
                   />
                 </div>
               </template>
@@ -715,14 +796,6 @@ defineExpose({
                     :placeholder="$t('product.placeholder.promotionEndedTime')"
                     clearable
                   />
-                </div>
-              </template>
-            </ElTableColumn>
-
-            <ElTableColumn label="是否需要运输" width="120">
-              <template #default="scope">
-                <div class="w-full flex items-center justify-center">
-                  <ElSwitch v-model="scope.row.isRequiredShipping" :active-value="true" :inactive-value="false" />
                 </div>
               </template>
             </ElTableColumn>
@@ -854,72 +927,12 @@ defineExpose({
                 </div>
               </template>
             </ElTableColumn>
+            <ElTableColumn fixed="right" label="状态" min-width="80">
+              <template #default="scope">
+                <ElSwitch v-model="scope.row.status" />
+              </template>
+            </ElTableColumn>
           </ElTable>
-        </div>
-
-        <!-- 属性编辑区域 -->
-        <div v-if="attributeFormVisible" class="w-full bg-[#F6F7FD] mt-4 border border-gray-200">
-          <div class="w-full flex justify-between items-center border-b border-gray-200 p-2">
-            <div>选择属性</div>
-            <div class="flex items-center cursor-pointer" @click="handleCreateAttribute">
-              <Icon name="mynaui:plus" class="mr-1" />
-              添加属性
-            </div>
-          </div>
-          <div v-loading="attributeLoading" class="w-full flex justify-between items-center p-4">
-            <div class="flex-1 flex items-center justify-between mr-2">
-              <div class="w-1/4 mr-2">
-                <ElSelect
-                  v-model="currentAttribute.attributeId"
-                  placeholder="请选择商品规格"
-                  filterable
-                  clearable
-                  class="mr-2"
-                  @change="handleChangeAttribute"
-                >
-                  <ElOption
-                    v-for="item in attributeListData.list"
-                    :key="item.id"
-                    :label="item.attributeName"
-                    :value="item.id"
-                  >
-                    {{ item.attributeName }}
-                  </ElOption>
-                </ElSelect>
-              </div>
-              <div class="flex-1">
-                <ElSelect
-                  v-model="currentAttribute.attributeValueDos"
-                  multiple
-                  value-key="id"
-                  filterable
-                  clearable
-                  placeholder="请选择属性值"
-                >
-                  <ElOption
-                    v-for="item in currentAttribute.attributeValueListResultDos"
-                    :key="item.id"
-                    :label="item.attributeValueContent"
-                    :value="item"
-                  >
-                    {{ item.attributeValueContent }}
-                  </ElOption>
-                </ElSelect>
-              </div>
-            </div>
-            <div class="flex items-center justify-end cursor-pointer" @click="handleCreateAttributeValue">
-              <Icon name="mynaui:plus" class="mr-1" />
-              添加属性值
-            </div>
-          </div>
-          <div class="w-full p-4">
-            <EBtn type="default" @click="handleAddAttributeCancel">
-              {{ $t('common.cancel') }}
-            </EBtn>
-            <EBtn type="primary" plain @click="handleAddAttributeSave">
-              {{ $t('common.save') }}
-            </EBtn>
-          </div>
         </div>
       </ElFormItem>
     </ElForm>
