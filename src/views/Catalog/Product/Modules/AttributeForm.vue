@@ -804,7 +804,7 @@ defineExpose({
           </div>
         </div>
         <!-- 变体属性 -->
-        <div class="w-full mt-4 bg-[#F6F7FD] p-4">
+        <div class="w-full mt-4 bg-[#F6F7FD] p-4 border border-gray-200">
           <!-- 批量更新功能 -->
           <div
             v-if="productSkuRequestDo.productSkuItemRequestDos.length > 1"
