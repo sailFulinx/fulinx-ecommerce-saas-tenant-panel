@@ -547,6 +547,35 @@ const setData = (data: ProductSkuRequestDo) => {
 }
 
 const getData = () => {
+  // 校验数据
+  if (!productSkuRequestDo.value.spu) {
+    ElMessage.error($t('product.placeholder.spu'))
+    return
+  }
+  // 校验skuCode是否有重复和校验skuCode是否为空
+  const skuItems = productSkuRequestDo.value.productSkuItemRequestDos
+  // 检查是否有空值（包括只有空白字符的情况）
+  if (skuItems.some(item => !item.skuCode || item.skuCode.trim() === '')) {
+    ElMessage.error($t('product.placeholder.skuCode'))
+    return
+  }
+  // 检查是否有重复的skuCode
+  const skuCodes = skuItems.map(item => item.skuCode.trim())
+  const uniqueSkuCodes = new Set(skuCodes)
+  if (uniqueSkuCodes.size !== skuCodes.length) {
+    ElMessage.error($t('product.error.duplicateSkuCode')) // 你需要添加对应的国际化词条
+    return
+  }
+  // 校验库存是否小于等于0
+  if (skuItems.some(item => item.quantity != null && item.quantity <= 0)) {
+    ElMessage.error($t('product.placeholder.quantity'))
+    return
+  }
+  // 校验所有的价格是否小于等于0
+  if (skuItems.some(item => item.price != null && item.price <= 0)) {
+    ElMessage.error($t('product.placeholder.price'))
+    return
+  }
   return productSkuRequestDo.value
 }
 
