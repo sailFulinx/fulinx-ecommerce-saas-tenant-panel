@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
-import { VueDraggable } from 'vue-draggable-plus'
 import { datePickerShortcuts } from '@/data/date'
 import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
@@ -192,8 +191,9 @@ const createProductForm = (): CreateProductParams => {
     productType: undefined,
     onlineTime: '',
     offlineTime: '',
-    brandId: '',
+    brandId: undefined,
     productSourceType: undefined,
+    stockStatus: undefined,
     isAdult: false,
     ageGroupType: undefined,
     genderType: undefined,
@@ -239,23 +239,39 @@ const deleteTagView = (refresh: boolean) => {
 }
 
 const save = async () => {
+  if (productForm.systemCategoryId && productForm.systemCategoryId?.length > 0) {
+    productForm.systemCategoryId = productForm.systemCategoryId[0]
+  }
   productForm.productParameterRelationRequestDos = []
   productForm.languageId = usePreferenceStore().preference.language.id
-  productForm.currencyId = usePreferenceStore().preference.currency.id
-  const images = imageUploadRef.value.getFileData()
-  productForm.productFileRequestDos = images.fileDataList
-  productForm.productFileRequestDos?.map(item => {
-    item.productFileType = 1
-    return item
-  })
-
+  const attributeForm = attributeFormRef.value.getData()
+  productForm.spu = attributeForm.spu
   if (categoryIds.value && categoryIds.value.length > 0) {
     productForm.categoryIds = categoryIds.value
   }
+  productForm.currencyId = attributeForm.currencyId
+  productForm.stockStatus = attributeForm.stockStatus
+  productForm.productSkuRequestDo = { ...attributeForm }
+  productForm.productParameterRelationRequestDos = parameterFormRef.value.getData()
+  productForm.productSupplierRequestDos = supplierFormRef.value.getData()
+  const images = imageUploadRef.value.getFileData()
+  productForm.productFileRequestDos = images.fileDataList
+  productForm.productFileRequestDos?.forEach((item, index) => {
+    item.productFileType = 1
+    item.fileId = item.id
+    item.languageId = usePreferenceStore().preference.language.id
+    if (index === 0) {
+      item.isDefault = true
+    } else {
+      item.isDefault = false
+    }
+  })
+  if (!productForm.metaTitle) {
+    productForm.metaTitle = productForm.productName
+  }
 
-  productForm.productParameterRelationRequestDos = parameterFormRef.value.getData
-
-  productForm.productSupplierRequestDos = supplierFormRef.value.getData
+  // const video = videoUploadRef.value.getFileData()
+  // productForm.productFileRequestDos = [...productForm.productFileRequestDos, ...video.fileData]
 
   const valid = await productFormRef.value.validate((valid: boolean) => {
     if (!valid) {

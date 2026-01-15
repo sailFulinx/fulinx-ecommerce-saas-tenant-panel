@@ -77,7 +77,7 @@ const productSkuRequestDo = ref<ProductSkuRequestDo>({
   currencyId: '',
   productAttributeRequestDo: {
     attributeSummaryDos: [],
-    searchIndex: '',
+    searchIndex: '22222', // TODO 待完善
   },
   productSkuItemRequestDos: [],
 })
@@ -523,6 +523,9 @@ const handleAddAttributeSave = () => {
     ElMessage.warning($t('product.placeholder.attributeValueDos'))
     return
   }
+  currentAttribute.value.attributeValueDos.map(item => {
+    item.attributeValueId = item.id
+  })
   const index = productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos.findIndex(
     item => item.attributeId === currentAttribute.value.attributeId,
   )

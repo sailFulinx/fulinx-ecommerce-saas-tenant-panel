@@ -111,6 +111,7 @@ interface WarehouseTypeData {
 }
 
 interface ProductFileRequestDo {
+  id: string
   /* Product ID */
   productId?: string
 
@@ -385,6 +386,8 @@ interface CreateProductParams {
   /* Product Type: 1-physical,2-Virtual */
   productType: number | undefined
 
+  stockStatus: number | undefined
+
   /* Online Time */
   onlineTime?: string
 
@@ -392,7 +395,7 @@ interface CreateProductParams {
   offlineTime?: string
 
   /* Brand ID */
-  brandId?: string
+  brandId?: string | undefined
 
   /* Product Source Type, 1-own, 2-oem, 3-agency, 4-drop, 5-other */
   productSourceType?: number | undefined
