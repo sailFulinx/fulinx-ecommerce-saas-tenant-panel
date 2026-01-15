@@ -123,7 +123,6 @@ const generateSkus = () => {
 
       // 创建SKU项
       const skuItem: ProductSkuItemRequestDo = {
-        uid: productSkuRequestDo.value.productSkuItemRequestDos.length + 1,
         productId: '', // 通常在保存产品时填充
         skuCode,
         quantity: 0,
@@ -150,7 +149,6 @@ const generateSkus = () => {
     // 如果没有规格组合，添加一个默认的SKU项，以SPU作为SKU编码
     if (productSkuRequestDo.value.spu) {
       const defaultSkuItem: ProductSkuItemRequestDo = {
-        uid: 1,
         productId: '',
         skuCode: productSkuRequestDo.value.spu,
         quantity: 0,
@@ -920,6 +918,7 @@ defineExpose({
             style="width: 100%"
             border
             max-height="500"
+            row-key="skuCode"
             :header-cell-style="{ background: '#f5f7fa', color: '#606266' }"
             @selection-change="handleSelectionChange"
           >
