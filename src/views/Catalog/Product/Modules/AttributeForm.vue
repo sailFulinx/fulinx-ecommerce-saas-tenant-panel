@@ -43,6 +43,15 @@ const {
 } = useProductStockStatusList()
 
 const formRef = ref()
+const multipleTable = ref() // 添加表格引用
+
+// 用于存储选中的行
+const multipleSelection = ref<ProductSkuItemRequestDo[]>([])
+
+// 选中行变化处理函数
+const handleSelectionChange = (val: ProductSkuItemRequestDo[]) => {
+  multipleSelection.value = val
+}
 
 const productSkuRequestDo = ref<ProductSkuRequestDo>({
   stockStatus: 1,
@@ -230,13 +239,18 @@ const applyBatchUpdate = () => {
     return
   }
 
+  if (multipleSelection.value.length === 0) {
+    ElMessage.warning('请先选择要更新的行')
+    return
+  }
+
   // 获取调整值和操作类型
   const adjustmentValue = batchUpdateForm.adjustmentValue
   const operation = batchUpdateForm.operation
   const field = batchUpdateForm.field as keyof ProductSkuItemRequestDo
 
-  // 对所有SKU项目应用批量更新
-  productSkuRequestDo.value.productSkuItemRequestDos.forEach(skuItem => {
+  // 对选中的SKU项目应用批量更新
+  multipleSelection.value.forEach(skuItem => {
     let newValue: any = null
 
     // 根据字段类型和操作类型计算新值
@@ -303,7 +317,7 @@ const applyBatchUpdate = () => {
     }
 
     // 更新字段值
-    ;(skuItem as any)[field] = newValue
+    (skuItem as any)[field] = newValue
   })
 
   // 显示操作成功消息
@@ -312,6 +326,7 @@ const applyBatchUpdate = () => {
     price: '价格',
     costPrice: '成本价',
     promotionPrice: '促销价格',
+    currencyId: '货币ID',
     weight: '重量',
     weightUnit: '重量单位',
     length: '长度',
@@ -326,7 +341,7 @@ const applyBatchUpdate = () => {
     issn: 'ISSN',
   }
 
-  ElMessage.success(`批量更新${fieldNameMap[field] || field}完成！`)
+  ElMessage.success(`已批量更新 ${multipleSelection.value.length} 个SKU的${fieldNameMap[field] || field}！`)
 }
 
 const attributeFormVisible = ref(true)
@@ -678,24 +693,29 @@ defineExpose({
             </div>
           </div>
           <ElTable
+            v-if="productSkuRequestDo.productSkuItemRequestDos.length > 0"
+            ref="multipleTable"
             :data="productSkuRequestDo.productSkuItemRequestDos"
             style="width: 100%"
-            row-key="uid"
-            highlight-current-row
             border
             max-height="500"
             :header-cell-style="{ background: '#f5f7fa', color: '#606266' }"
+            @selection-change="handleSelectionChange"
           >
             <ElTableColumn type="selection" width="55" />
             <ElTableColumn label="SKU编码" width="150">
               <template #default="scope">
                 <div class="w-full flex items-center">
-                  <ElInput v-model="scope.row.skuCode" clearable :placeholder="$t('product.placeholder.sku')" />
+                  <ElInput
+                    v-model="scope.row.skuCode"
+                    clearable
+                    :placeholder="$t('product.placeholder.skuCode')"
+                  />
                 </div>
               </template>
             </ElTableColumn>
 
-            <ElTableColumn label="SKU图片" width="90">
+            <ElTableColumn label="SKU图片" width="80">
               <template #default="scope">
                 <div class="w-full flex items-center">
                   <Icon
@@ -710,20 +730,6 @@ defineExpose({
                     :src="scope.row.skuImageFileVo.fileUrl"
                     class="w-6 h-6 mr-1"
                   >
-                </div>
-              </template>
-            </ElTableColumn>
-
-            <ElTableColumn label="库存" width="120">
-              <template #default="scope">
-                <div class="w-full flex items-center">
-                  <ElInput
-                    v-model.number="scope.row.quantity"
-                    type="number"
-                    :min="0"
-                    clearable
-                    :placeholder="$t('product.placeholder.quantity')"
-                  />
                 </div>
               </template>
             </ElTableColumn>
@@ -795,6 +801,18 @@ defineExpose({
                     value-format="YYYY-MM-DD HH:mm:ss"
                     :placeholder="$t('product.placeholder.promotionEndedTime')"
                     clearable
+                  />
+                </div>
+              </template>
+            </ElTableColumn>
+
+            <ElTableColumn label="是否需要运输" width="120">
+              <template #default="scope">
+                <div class="w-full flex items-center justify-center">
+                  <ElSwitch
+                    v-model="scope.row.isRequiredShipping"
+                    :active-value="true"
+                    :inactive-value="false"
                   />
                 </div>
               </template>
@@ -883,7 +901,11 @@ defineExpose({
             <ElTableColumn label="MPN" width="150">
               <template #default="scope">
                 <div class="w-full flex items-center">
-                  <ElInput v-model="scope.row.mpn" clearable :placeholder="$t('product.placeholder.mpn')" />
+                  <ElInput
+                    v-model="scope.row.mpn"
+                    clearable
+                    :placeholder="$t('product.placeholder.mpn')"
+                  />
                 </div>
               </template>
             </ElTableColumn>
@@ -891,7 +913,11 @@ defineExpose({
             <ElTableColumn label="UPC" width="150">
               <template #default="scope">
                 <div class="w-full flex items-center">
-                  <ElInput v-model="scope.row.upc" clearable :placeholder="$t('product.placeholder.upc')" />
+                  <ElInput
+                    v-model="scope.row.upc"
+                    clearable
+                    :placeholder="$t('product.placeholder.upc')"
+                  />
                 </div>
               </template>
             </ElTableColumn>
@@ -899,7 +925,11 @@ defineExpose({
             <ElTableColumn label="EAN" width="150">
               <template #default="scope">
                 <div class="w-full flex items-center">
-                  <ElInput v-model="scope.row.ean" clearable :placeholder="$t('product.placeholder.ean')" />
+                  <ElInput
+                    v-model="scope.row.ean"
+                    clearable
+                    :placeholder="$t('product.placeholder.ean')"
+                  />
                 </div>
               </template>
             </ElTableColumn>
@@ -907,7 +937,11 @@ defineExpose({
             <ElTableColumn label="JAN" width="150">
               <template #default="scope">
                 <div class="w-full flex items-center">
-                  <ElInput v-model="scope.row.jan" clearable :placeholder="$t('product.placeholder.jan')" />
+                  <ElInput
+                    v-model="scope.row.jan"
+                    clearable
+                    :placeholder="$t('product.placeholder.jan')"
+                  />
                 </div>
               </template>
             </ElTableColumn>
@@ -915,7 +949,11 @@ defineExpose({
             <ElTableColumn label="ISBN" width="150">
               <template #default="scope">
                 <div class="w-full flex items-center">
-                  <ElInput v-model="scope.row.isbn" clearable :placeholder="$t('product.placeholder.isbn')" />
+                  <ElInput
+                    v-model="scope.row.isbn"
+                    clearable
+                    :placeholder="$t('product.placeholder.isbn')"
+                  />
                 </div>
               </template>
             </ElTableColumn>
@@ -923,16 +961,16 @@ defineExpose({
             <ElTableColumn label="ISSN" width="150">
               <template #default="scope">
                 <div class="w-full flex items-center">
-                  <ElInput v-model="scope.row.issn" clearable :placeholder="$t('product.placeholder.issn')" />
+                  <ElInput
+                    v-model="scope.row.issn"
+                    clearable
+                    :placeholder="$t('product.placeholder.issn')"
+                  />
                 </div>
               </template>
             </ElTableColumn>
-            <ElTableColumn fixed="right" label="状态" min-width="80">
-              <template #default="scope">
-                <ElSwitch v-model="scope.row.status" />
-              </template>
-            </ElTableColumn>
           </ElTable>
+          <ElEmpty v-else description="请输入SPU" />
         </div>
       </ElFormItem>
     </ElForm>
