@@ -10,6 +10,8 @@ import SupplierForm from './Modules/SupplierForm.vue'
 
 const { t: $t } = useLocale()
 
+const router = useRouter()
+
 const pageTitle = $t('product.add')
 
 const productFormRef = ref()
@@ -239,6 +241,7 @@ const deleteTagView = (refresh: boolean) => {
 }
 
 const save = async () => {
+  // TODO 可以优化
   if (productForm.systemCategoryId && productForm.systemCategoryId?.length > 0) {
     productForm.systemCategoryId = productForm.systemCategoryId[0]
   }

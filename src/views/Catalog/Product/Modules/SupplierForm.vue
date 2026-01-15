@@ -25,6 +25,7 @@ onMounted(async () => {
 const suppliers = ref<ProductSupplierRequestDo[]>([])
 
 const currentSupplier = ref<ProductSupplierRequestDo>({
+  supplierId: '',
   supplierUrl: '',
   supplierData: undefined,
 })
@@ -53,8 +54,8 @@ const handleDeleteSupplier = (index: number) => {
 }
 
 const handleAddSupplierConfirm = () => {
+  currentSupplier.value.supplierId = currentSupplier.value.supplierData?.id
   suppliers.value.push(currentSupplier.value)
-  console.log(suppliers.value)
   supplierInputVisible.value = false
   currentSupplier.value = {
     supplierUrl: '',
