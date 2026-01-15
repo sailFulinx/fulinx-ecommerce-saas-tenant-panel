@@ -648,7 +648,6 @@ defineExpose({
           <div v-if="productSkuRequestDo.productSkuItemRequestDos.length > 1" class="p-4 bg-white mb-4 border border-gray-200">
             <div class="grid grid-cols-4 gap-4">
               <div class="flex items-center space-x-2">
-                <label class="text-sm text-gray-600 w-16">字段选择:</label>
                 <ElSelect v-model="batchUpdateForm.field" placeholder="选择字段" class="flex-1">
                   <ElOption label="库存" value="quantity" />
                   <ElOption label="价格" value="price" />
@@ -669,7 +668,6 @@ defineExpose({
                 </ElSelect>
               </div>
               <div class="flex items-center space-x-2">
-                <label class="text-sm text-gray-600 w-16">操作类型:</label>
                 <ElSelect v-model="batchUpdateForm.operation" class="flex-1">
                   <ElOption label="设置为固定值" value="set" />
                   <ElOption label="增加固定值" value="add" />
