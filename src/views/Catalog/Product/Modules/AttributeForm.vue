@@ -460,6 +460,10 @@ const handleChangeAttribute = async (id: string) => {
 
 const handleDeleteAttribute = (index: number) => {
   productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos.splice(index, 1)
+
+  // 清空快速选择表单
+  quickSelectForm.attributeId = ''
+  quickSelectForm.attributeValueIds = []
 }
 
 const handelAddAttribute = () => {
@@ -510,6 +514,10 @@ const handleAddAttributeSave = () => {
     attributeValueListResultDos: [],
   }
   attributeFormVisible.value = false
+
+  // 清空快速选择表单
+  quickSelectForm.attributeId = ''
+  quickSelectForm.attributeValueIds = []
 }
 
 const createAttributeRef = ref()
