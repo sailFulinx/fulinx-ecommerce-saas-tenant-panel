@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { use } from 'echarts'
 import { VueDraggable } from 'vue-draggable-plus'
 import { cartesianProduct } from '@/utils/cartesianProduct'
 import CreateAttributeDialog from '../../Attribute/Components/CreateAttributeDialog.vue'
