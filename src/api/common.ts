@@ -65,3 +65,12 @@ export function fetchWarehouseTypeListApi(data?: WarehouseTypeListParams): Promi
     data,
   })
 }
+
+export function fetchProductStockStatusListApi(
+  data?: ProductStockStatusListParams,
+): Promise<IResponse<TableResponse<ProductStockStatusData>>> {
+  return request.post({
+    url: 'share/public/common/stock/status/list',
+    data,
+  })
+}

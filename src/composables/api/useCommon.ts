@@ -35,3 +35,11 @@ export const useGenderTypeList = (payload?: Partial<GenderTypeListParams>, optio
 export const useWarehouseTypeList = (payload?: Partial<WarehouseTypeListParams>, options: UseCommonOptions = {}) => {
   return useList<WarehouseTypeData, WarehouseTypeListParams>(fetchWarehouseTypeListApi, payload, options)
 }
+
+// 库存状态列表
+export const useProductStockStatusList = (
+  payload?: Partial<ProductStockStatusListParams>,
+  options: UseCommonOptions = {},
+) => {
+  return useList<ProductStockStatusData, ProductStockStatusListParams>(fetchProductStockStatusListApi, payload, options)
+}

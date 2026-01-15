@@ -1,8 +1,11 @@
 <script setup lang="ts">
+import { use } from 'echarts'
 import { VueDraggable } from 'vue-draggable-plus'
 import { cartesianProduct } from '@/utils/cartesianProduct'
 import CreateAttributeDialog from '../../Attribute/Components/CreateAttributeDialog.vue'
 import CreateAttributeValueDialog from './CreateAttributeValueDialog.vue'
+
+const currencies = useCurrencyStore().currencies
 
 interface ProductCreateProvider {
   productForm: CreateProductParams
@@ -33,11 +36,18 @@ const {
   getList,
 } = useAttributeList(attributePayload)
 
+const {
+  loading: stockStatusLoading,
+  listData: stockStatusListData,
+  promise: stockStatusPromise,
+} = useProductStockStatusList()
+
 const formRef = ref()
 
 const productSkuRequestDo = ref<ProductSkuRequestDo>({
   stockStatus: 1,
   spu: '',
+  currencyId: '',
   productAttributeRequestDo: {
     attributeSummaryDos: [],
     searchIndex: '',
@@ -98,7 +108,7 @@ const generateSkus = () => {
         productId: '', // 通常在保存产品时填充
         skuCode,
         quantity: 0,
-        currencyId: '1', // 默认货币，实际应用中可能需要从其他地方获取
+        currencyId: productSkuRequestDo.value.currencyId, // 默认货币，实际应用中可能需要从其他地方获取
         price: 0, // 默认价格，用户后续设置
         productSkuAttributeRequestDos: productSkuAttributes.map(attr => {
           return {
@@ -123,7 +133,7 @@ const generateSkus = () => {
         productId: '',
         skuCode: productSkuRequestDo.value.spu,
         quantity: 0,
-        currencyId: '1',
+        currencyId: productSkuRequestDo.value.currencyId,
         price: 0,
         productSkuAttributeRequestDos: [],
         productSkuInventoryRequestDos: [],
@@ -157,7 +167,7 @@ onMounted(async () => {
   loading.init = true
   try {
     // 并行等待所有数据加载完成
-    await Promise.all([attributePromise])
+    await Promise.all([attributePromise, stockStatusPromise])
   } catch (error) {
     console.error('加载数据失败:', error)
   } finally {
@@ -171,6 +181,7 @@ const rules = reactive({
     { required: false, message: $t('product.placeholder.attributeSummaryDos'), trigger: 'change' },
   ],
   spu: [{ required: true, message: $t('product.placeholder.spu'), trigger: 'blur' }],
+  currencyId: [{ required: true, message: $t('product.placeholder.currencyId'), trigger: 'change' }],
 })
 
 const dragEnd = () => {
@@ -412,14 +423,18 @@ defineExpose({
   <div class="w-full">
     <ElForm ref="formRef" :model="productSkuRequestDo" :rules="rules" class="w-full" label-width="100px">
       <ElFormItem label="库存状态" prop="stockStatus">
-        <ElRadioGroup v-model="productSkuRequestDo.stockStatus">
-          <ElRadio :value="1">
-            现货
-          </ElRadio>
-          <ElRadio :value="2">
-            预售
+        <ElRadioGroup v-model="productSkuRequestDo.stockStatus" :loading="stockStatusLoading">
+          <ElRadio v-for="item in stockStatusListData.list" :key="item.id" :value="item.id">
+            {{ item.productStockStatusName }}
           </ElRadio>
         </ElRadioGroup>
+      </ElFormItem>
+      <ElFormItem label="货币" prop="currencyId">
+        <ElSelect v-model="productSkuRequestDo.currencyId" clearable filterable placeholder="请选择货币">
+          <ElOption v-for="item in currencies" :key="item.id" :value="item.id" :label="`${item.symbolLeft}${item.currencyCode} - ${item.currencyName}`">
+            {{ item.symbolLeft }} {{ item.currencyCode }} - {{ item.currencyName }}
+          </ElOption>
+        </ElSelect>
       </ElFormItem>
       <ElFormItem :label="$t('product.spu')" prop="spu">
         <ElInput

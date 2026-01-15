@@ -172,6 +172,7 @@ declare global {
   const fetchLayoutTypeListApi: typeof import('../api/common').fetchLayoutTypeListApi
   const fetchPermissionListApi: typeof import('../api/permission').fetchPermissionListApi
   const fetchProductSourceTypeListApi: typeof import('../api/common').fetchProductSourceTypeListApi
+  const fetchProductStockStatusListApi: typeof import('../api/common').fetchProductStockStatusListApi
   const fetchProductTypeListApi: typeof import('../api/common').fetchProductTypeListApi
   const fetchRoleDetailApi: typeof import('../api/role').fetchRoleDetailApi
   const fetchRoleListApi: typeof import('../api/role').fetchRoleListApi
@@ -557,6 +558,7 @@ declare global {
   const useCssModule: typeof import('vue').useCssModule
   const useCssVar: typeof import('@vueuse/core').useCssVar
   const useCssVars: typeof import('vue').useCssVars
+  const useCurrencyStore: typeof import('../stores/currency').useCurrencyStore
   const useCurrentElement: typeof import('@vueuse/core').useCurrentElement
   const useCycleList: typeof import('@vueuse/core').useCycleList
   const useDark: typeof import('@vueuse/core').useDark
@@ -657,6 +659,7 @@ declare global {
   const usePreferredReducedTransparency: typeof import('@vueuse/core').usePreferredReducedTransparency
   const usePrevious: typeof import('@vueuse/core').usePrevious
   const useProductSourceTypeList: typeof import('../composables/api/useCommon').useProductSourceTypeList
+  const useProductStockStatusList: typeof import('../composables/api/useCommon').useProductStockStatusList
   const useProductTypeList: typeof import('../composables/api/useCommon').useProductTypeList
   const useRafFn: typeof import('@vueuse/core').useRafFn
   const useRefHistory: typeof import('@vueuse/core').useRefHistory

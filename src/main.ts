@@ -1,11 +1,12 @@
+import { use } from 'echarts'
 import { createPinia } from 'pinia'
-import { createApp } from 'vue'
 
+import { createApp } from 'vue'
 import { setupI18n } from '@/utils/i18n'
 import App from './App.vue'
 import { initPermission } from './permission'
-import router from './router'
 
+import router from './router'
 import './assets/css/main.css'
 import 'animate.css'
 // import 'element-plus/dist/index.css'
@@ -25,6 +26,9 @@ const setupAll = async () => {
   await initPermission()
   // 初始化系统语言
   await useLanguageStore().initLanguageList()
+
+  // 初始化货币
+  await useCurrencyStore().initCurrencyList()
   // 初始化偏好设置
   usePreferenceStore().getPreferences()
 }

@@ -83,6 +83,22 @@ interface WarehouseTypeListParams {
   warehouseTypeCode?: string | null
 }
 
+interface ProductStockStatusListParams {
+  /* Product Stock Status */
+  productStockStatusCode?: string | null
+}
+
+interface ProductStockStatusData {
+  /* ID */
+  id: number
+
+  /* Code */
+  code: string
+
+  /* Product Stock Status Name */
+  productStockStatusName: string
+}
+
 interface WarehouseTypeData {
   /* ID */
   id: number
@@ -347,6 +363,7 @@ interface ProductSupplierRequestDo {
 interface ProductSkuRequestDo {
   stockStatus: number
   spu: string
+  currencyId: string
   /* Product Attribute Request Do */
   productAttributeRequestDo: ProductAttributeRequestDo
 
