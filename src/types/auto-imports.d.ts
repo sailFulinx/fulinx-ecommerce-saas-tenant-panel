@@ -724,6 +724,8 @@ declare global {
   const useVirtualList: typeof import('@vueuse/core').useVirtualList
   const useWaitRef: typeof import('../composables/sleep').useWaitRef
   const useWakeLock: typeof import('@vueuse/core').useWakeLock
+  const useWarehouseList: typeof import('../composables/api/useWarehouse').useWarehouseList
+  const useWarehousePagination: typeof import('../composables/api/useWarehouse').useWarehousePagination
   const useWarehouseTypeList: typeof import('../composables/api/useCommon').useWarehouseTypeList
   const useWebNotification: typeof import('@vueuse/core').useWebNotification
   const useWebSocket: typeof import('@vueuse/core').useWebSocket

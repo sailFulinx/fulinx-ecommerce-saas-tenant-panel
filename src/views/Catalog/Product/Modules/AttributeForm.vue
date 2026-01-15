@@ -16,6 +16,7 @@ const { productForm } = inject('ProductCreate') as ProductCreateProvider
 console.log(productForm)
 
 const { t: $t } = useLocale()
+
 const loading = reactive({
   init: false,
   button: false,
@@ -41,6 +42,14 @@ const {
   listData: stockStatusListData,
   promise: stockStatusPromise,
 } = useProductStockStatusList()
+
+const {
+  loading: warehouseLoading,
+  listData: warehouseListData,
+  promise: warehousePromise,
+} = useWarehouseList()
+
+const currentWarehouseId = ref('')
 
 const formRef = ref()
 const multipleTable = ref() // 添加表格引用
@@ -180,7 +189,8 @@ onMounted(async () => {
   loading.init = true
   try {
     // 并行等待所有数据加载完成
-    await Promise.all([attributePromise, stockStatusPromise])
+    await Promise.all([attributePromise, stockStatusPromise, warehousePromise])
+    currentWarehouseId.value = warehouseListData.value.list.find(item => item.isDefault)?.id || ''
   } catch (error) {
     console.error('加载数据失败:', error)
   } finally {
@@ -936,6 +946,27 @@ defineExpose({
                     :src="scope.row.skuImageFileVo.fileUrl"
                     class="w-6 h-6"
                   >
+                </div>
+              </template>
+            </ElTableColumn>
+
+            <ElTableColumn label="库存" width="120">
+              <template #header>
+                <div v-loading="warehouseLoading">
+                  <ElSelect v-model="currentWarehouseId" clearable filterable placeholder="请选择仓库">
+                    <ElOption v-for="warehouse in warehouseListData.list" :key="warehouse.id" :label="warehouse.warehouseName" :value="warehouse.id" />
+                  </ElSelect>
+                </div>
+              </template>
+              <template #default="scope">
+                <div class="w-full flex items-center">
+                  <ElInput
+                    v-model.number="scope.row.quantity"
+                    type="number"
+                    :min="0"
+                    clearable
+                    :placeholder="$t('product.placeholder.quantity')"
+                  />
                 </div>
               </template>
             </ElTableColumn>
