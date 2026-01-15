@@ -78,7 +78,7 @@ const cartes = computed(() => {
       attributeValue: av.attributeValueContent,
       attributeImageFileVo: av.attributeImageFileVo,
       attributeId: attr.attributeId, // 添加 attributeId
-      attributeValueId: av.attributeValueId, // 添加 attributeValueId
+      attributeValueId: av.id, // 添加 attributeValueId
     })),
   )
 
@@ -204,10 +204,9 @@ const dragEnd = () => {
 
 const dragEndAttributeValue = (attributeSummaryDoIndex: number) => {
   dragging.value = false
-  productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos[attributeSummaryDoIndex].attributeValueDos.map(
-    (item, index) => (item.sort = index + 1),
-  )
-  console.log(productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos[attributeSummaryDoIndex].attributeValueDos)
+  productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos[
+    attributeSummaryDoIndex
+  ].attributeValueDos.map((item, index) => (item.sort = index + 1))
 }
 
 const currentAttribute = ref<AttributeSummaryDo>({
@@ -225,6 +224,102 @@ const batchUpdateForm = reactive({
   operation: 'set',
   adjustmentValue: 0,
 })
+
+// 快速选择表单数据
+const quickSelectForm = reactive({
+  attributeId: '',
+  attributeValueIds: [] as string[], // 使用正确的复数形式
+})
+
+// 获取当前产品中存在的属性及属性值选项
+const getAttributeOptions = computed(() => {
+  const options = [] as {
+    attributeId: string
+    attributeName: string
+    values: { attributeValueId: string, attributeValueContent: string }[]
+  }[]
+
+  // 收集所有已添加的属性及其值
+  productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos.forEach(attr => {
+    const attributeOption = {
+      attributeId: attr.attributeId,
+      attributeName: attr.attributeName,
+      values: [] as { attributeValueId: string, attributeValueContent: string }[],
+    }
+
+    // 收集该属性下的所有值
+    attr.attributeValueDos.forEach(value => {
+      attributeOption.values.push({
+        attributeValueId: value.id,
+        attributeValueContent: value.attributeValueContent,
+      })
+    })
+
+    options.push(attributeOption)
+  })
+
+  return options
+})
+
+// 根据属性和属性值快速选择对应的SKU行
+const applyQuickSelect = () => {
+  // 移除了参数定义
+  if (
+    !quickSelectForm.attributeId
+    || !quickSelectForm.attributeValueIds
+    || quickSelectForm.attributeValueIds.length === 0
+  ) {
+    // 如果没有选择属性或属性值，清空当前选择
+    multipleTable.value.clearSelection()
+    multipleSelection.value = []
+    return
+  }
+
+  // 清空当前选择
+  multipleTable.value.clearSelection()
+
+  // 查找符合条件的SKU行并选中
+  productSkuRequestDo.value.productSkuItemRequestDos.forEach(skuItem => {
+    const hasMatchingAttribute = skuItem.productSkuAttributeRequestDos.some(
+      attr =>
+        attr.attributeId === quickSelectForm.attributeId
+        && quickSelectForm.attributeValueIds.includes(attr.attributeValueId),
+    )
+
+    if (hasMatchingAttribute) {
+      multipleTable.value.toggleRowSelection(skuItem, true)
+    }
+  })
+
+  // 更新multipleSelection
+  handleSelectionChange(multipleTable.value.getSelectionRows())
+
+  const selectedCount = multipleSelection.value.length
+  const selectedAttributeName
+    = getAttributeOptions.value.find(attr => attr.attributeId === quickSelectForm.attributeId)?.attributeName
+      || '未知属性'
+  const selectedValueNames
+    = quickSelectForm.attributeValueIds
+      .map(
+        id =>
+          getAttributeOptions.value
+            .find(attr => attr.attributeId === quickSelectForm.attributeId)
+            ?.values
+            .find(val => val.attributeValueId === id)
+            ?.attributeValueContent,
+      )
+      .filter(Boolean)
+      .join(', ') || '未知值'
+
+  ElMessage.success(`已选中 ${selectedCount} 个${selectedAttributeName}为"${selectedValueNames}"的SKU！`)
+}
+
+// 清空当前选择
+const clearSelection = () => {
+  multipleTable.value.clearSelection()
+  multipleSelection.value = []
+  ElMessage.info('已清空选择')
+}
 
 // 判断字段是否为文本类型
 const isTextField = (field: string) => {
@@ -325,7 +420,7 @@ const applyBatchUpdate = () => {
     }
 
     // 更新字段值
-    (skuItem as any)[field] = newValue
+    ;(skuItem as any)[field] = newValue
   })
 
   // 显示操作成功消息
@@ -645,68 +740,129 @@ defineExpose({
         <!-- 变体属性 -->
         <div class="w-full mt-4 bg-[#F6F7FD] p-4">
           <!-- 批量更新功能 -->
-          <div v-if="productSkuRequestDo.productSkuItemRequestDos.length > 1" class="p-4 bg-white mb-4 border border-gray-200">
-            <div class="grid grid-cols-4 gap-4">
-              <div class="flex items-center space-x-2">
-                <ElSelect v-model="batchUpdateForm.field" placeholder="选择字段" class="flex-1">
-                  <ElOption label="库存" value="quantity" />
-                  <ElOption label="价格" value="price" />
-                  <ElOption label="成本价" value="costPrice" />
-                  <ElOption label="促销价格" value="promotionPrice" />
-                  <ElOption label="重量" value="weight" />
-                  <ElOption label="重量单位" value="weightUnit" />
-                  <ElOption label="长度" value="length" />
-                  <ElOption label="宽度" value="width" />
-                  <ElOption label="高度" value="height" />
-                  <ElOption label="长度单位" value="lengthUnit" />
-                  <ElOption label="MPN" value="mpn" />
-                  <ElOption label="UPC" value="upc" />
-                  <ElOption label="EAN" value="ean" />
-                  <ElOption label="JAN" value="jan" />
-                  <ElOption label="ISBN" value="isbn" />
-                  <ElOption label="ISSN" value="issn" />
-                </ElSelect>
+          <div
+            v-if="productSkuRequestDo.productSkuItemRequestDos.length > 1"
+            class="p-4 bg-white mb-4 border border-gray-200"
+          >
+            <div class="w-full mb-4">
+              <div class="grid grid-cols-3 gap-4">
+                <!-- 新增快速选择功能 -->
+                <div class="flex items-center space-x-2">
+                  <ElSelect
+                    v-model="quickSelectForm.attributeId"
+                    placeholder="选择属性"
+                    class="flex-1"
+                    clearable
+                    @change="
+                      () => {
+                        quickSelectForm.attributeValueIds = []
+                        applyQuickSelect()
+                      }
+                    "
+                  >
+                    <ElOption
+                      v-for="attr in getAttributeOptions"
+                      :key="attr.attributeId"
+                      :label="attr.attributeName"
+                      :value="attr.attributeId"
+                    />
+                  </ElSelect>
+                </div>
+
+                <div class="flex items-center space-x-2">
+                  <ElSelect
+                    v-model="quickSelectForm.attributeValueIds"
+                    placeholder="选择属性值"
+                    class="flex-1"
+                    clearable
+                    multiple
+                    :multiple-limit="0"
+                    @change="applyQuickSelect"
+                  >
+                    <ElOption
+                      v-for="value in getAttributeOptions.find(attr => attr.attributeId === quickSelectForm.attributeId)
+                        ?.values || []"
+                      :key="value.attributeValueId"
+                      :label="value.attributeValueContent"
+                      :value="value.attributeValueId"
+                    />
+                  </ElSelect>
+                </div>
+
+                <div class="flex items-center justify-end space-x-2">
+                  <EBtn type="primary" @click="applyQuickSelect()">
+                    快速选择
+                  </EBtn>
+                  <EBtn type="info" @click="clearSelection()">
+                    清空选择
+                  </EBtn>
+                </div>
               </div>
-              <div class="flex items-center space-x-2">
-                <ElSelect v-model="batchUpdateForm.operation" class="flex-1">
-                  <ElOption label="设置为固定值" value="set" />
-                  <ElOption label="增加固定值" value="add" />
-                  <ElOption label="减少固定值" value="subtract" />
-                  <ElOption label="增加百分比" value="percent_add" />
-                  <ElOption label="减少百分比" value="percent_subtract" />
-                </ElSelect>
-              </div>
-              <div class="flex items-center space-x-2">
-                <label class="text-sm text-gray-600 w-12">调整值:</label>
-                <ElInput
-                  v-if="isTextField(batchUpdateForm.field)"
-                  v-model="batchUpdateForm.adjustmentValue"
-                  class="flex-1"
-                  :placeholder="getPlaceholder()"
-                />
-                <ElInputNumber
-                  v-else
-                  v-model="batchUpdateForm.adjustmentValue"
-                  :precision="
-                    batchUpdateForm.field.includes('price')
-                      || batchUpdateForm.field === 'quantity'
-                      || batchUpdateForm.field === 'weight'
-                      || batchUpdateForm.field === 'length'
-                      || batchUpdateForm.field === 'width'
-                      || batchUpdateForm.field === 'height'
-                      ? 2
-                      : 0
-                  "
-                  :step="1"
-                  :min="batchUpdateForm.operation.includes('percent') ? -100 : -Infinity"
-                  class="flex-1"
-                  :placeholder="getPlaceholder()"
-                />
-              </div>
-              <div class="flex items-center justify-end">
-                <EBtn type="primary" @click="applyBatchUpdate()">
-                  批量更新
-                </EBtn>
+            </div>
+            <div class="w-full">
+              <div class="grid grid-cols-4 gap-4">
+                <!-- 原有的批量更新字段选择 -->
+                <div class="flex items-center space-x-2">
+                  <ElSelect v-model="batchUpdateForm.field" placeholder="选择字段" class="flex-1">
+                    <ElOption label="库存" value="quantity" />
+                    <ElOption label="价格" value="price" />
+                    <ElOption label="成本价" value="costPrice" />
+                    <ElOption label="促销价格" value="promotionPrice" />
+                    <ElOption label="重量" value="weight" />
+                    <ElOption label="重量单位" value="weightUnit" />
+                    <ElOption label="长度" value="length" />
+                    <ElOption label="宽度" value="width" />
+                    <ElOption label="高度" value="height" />
+                    <ElOption label="长度单位" value="lengthUnit" />
+                    <ElOption label="MPN" value="mpn" />
+                    <ElOption label="UPC" value="upc" />
+                    <ElOption label="EAN" value="ean" />
+                    <ElOption label="JAN" value="jan" />
+                    <ElOption label="ISBN" value="isbn" />
+                    <ElOption label="ISSN" value="issn" />
+                  </ElSelect>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <ElSelect v-model="batchUpdateForm.operation" class="flex-1">
+                    <ElOption label="设置为固定值" value="set" />
+                    <ElOption label="增加固定值" value="add" />
+                    <ElOption label="减少固定值" value="subtract" />
+                    <ElOption label="增加百分比" value="percent_add" />
+                    <ElOption label="减少百分比" value="percent_subtract" />
+                  </ElSelect>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <label class="text-sm text-gray-600 w-12">调整值:</label>
+                  <ElInput
+                    v-if="isTextField(batchUpdateForm.field)"
+                    v-model="batchUpdateForm.adjustmentValue"
+                    class="flex-1"
+                    :placeholder="getPlaceholder()"
+                  />
+                  <ElInputNumber
+                    v-else
+                    v-model="batchUpdateForm.adjustmentValue"
+                    :precision="
+                      batchUpdateForm.field.includes('price')
+                        || batchUpdateForm.field === 'quantity'
+                        || batchUpdateForm.field === 'weight'
+                        || batchUpdateForm.field === 'length'
+                        || batchUpdateForm.field === 'width'
+                        || batchUpdateForm.field === 'height'
+                        ? 2
+                        : 0
+                    "
+                    :step="1"
+                    :min="batchUpdateForm.operation.includes('percent') ? -100 : -Infinity"
+                    class="flex-1"
+                    :placeholder="getPlaceholder()"
+                  />
+                </div>
+                <div class="flex items-center justify-end">
+                  <EBtn type="primary" @click="applyBatchUpdate()">
+                    批量更新
+                  </EBtn>
+                </div>
               </div>
             </div>
           </div>
@@ -724,11 +880,7 @@ defineExpose({
             <ElTableColumn label="SKU编码" width="150">
               <template #default="scope">
                 <div class="w-full flex items-center">
-                  <ElInput
-                    v-model="scope.row.skuCode"
-                    clearable
-                    :placeholder="$t('product.placeholder.skuCode')"
-                  />
+                  <ElInput v-model="scope.row.skuCode" clearable :placeholder="$t('product.placeholder.skuCode')" />
                 </div>
               </template>
             </ElTableColumn>
@@ -826,11 +978,7 @@ defineExpose({
             <ElTableColumn label="是否需要运输" width="120">
               <template #default="scope">
                 <div class="w-full flex items-center justify-center">
-                  <ElSwitch
-                    v-model="scope.row.isRequiredShipping"
-                    :active-value="true"
-                    :inactive-value="false"
-                  />
+                  <ElSwitch v-model="scope.row.isRequiredShipping" :active-value="true" :inactive-value="false" />
                 </div>
               </template>
             </ElTableColumn>
@@ -918,11 +1066,7 @@ defineExpose({
             <ElTableColumn label="MPN" width="150">
               <template #default="scope">
                 <div class="w-full flex items-center">
-                  <ElInput
-                    v-model="scope.row.mpn"
-                    clearable
-                    :placeholder="$t('product.placeholder.mpn')"
-                  />
+                  <ElInput v-model="scope.row.mpn" clearable :placeholder="$t('product.placeholder.mpn')" />
                 </div>
               </template>
             </ElTableColumn>
@@ -930,11 +1074,7 @@ defineExpose({
             <ElTableColumn label="UPC" width="150">
               <template #default="scope">
                 <div class="w-full flex items-center">
-                  <ElInput
-                    v-model="scope.row.upc"
-                    clearable
-                    :placeholder="$t('product.placeholder.upc')"
-                  />
+                  <ElInput v-model="scope.row.upc" clearable :placeholder="$t('product.placeholder.upc')" />
                 </div>
               </template>
             </ElTableColumn>
@@ -942,11 +1082,7 @@ defineExpose({
             <ElTableColumn label="EAN" width="150">
               <template #default="scope">
                 <div class="w-full flex items-center">
-                  <ElInput
-                    v-model="scope.row.ean"
-                    clearable
-                    :placeholder="$t('product.placeholder.ean')"
-                  />
+                  <ElInput v-model="scope.row.ean" clearable :placeholder="$t('product.placeholder.ean')" />
                 </div>
               </template>
             </ElTableColumn>
@@ -954,11 +1090,7 @@ defineExpose({
             <ElTableColumn label="JAN" width="150">
               <template #default="scope">
                 <div class="w-full flex items-center">
-                  <ElInput
-                    v-model="scope.row.jan"
-                    clearable
-                    :placeholder="$t('product.placeholder.jan')"
-                  />
+                  <ElInput v-model="scope.row.jan" clearable :placeholder="$t('product.placeholder.jan')" />
                 </div>
               </template>
             </ElTableColumn>
@@ -966,11 +1098,7 @@ defineExpose({
             <ElTableColumn label="ISBN" width="150">
               <template #default="scope">
                 <div class="w-full flex items-center">
-                  <ElInput
-                    v-model="scope.row.isbn"
-                    clearable
-                    :placeholder="$t('product.placeholder.isbn')"
-                  />
+                  <ElInput v-model="scope.row.isbn" clearable :placeholder="$t('product.placeholder.isbn')" />
                 </div>
               </template>
             </ElTableColumn>
@@ -978,11 +1106,7 @@ defineExpose({
             <ElTableColumn label="ISSN" width="150">
               <template #default="scope">
                 <div class="w-full flex items-center">
-                  <ElInput
-                    v-model="scope.row.issn"
-                    clearable
-                    :placeholder="$t('product.placeholder.issn')"
-                  />
+                  <ElInput v-model="scope.row.issn" clearable :placeholder="$t('product.placeholder.issn')" />
                 </div>
               </template>
             </ElTableColumn>

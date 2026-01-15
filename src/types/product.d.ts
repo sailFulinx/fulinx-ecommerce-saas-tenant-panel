@@ -131,6 +131,7 @@ interface ProductFileRequestDo {
 }
 
 interface AttributeValueDo {
+  id: string
   /* Language ID */
   languageId: string
 
