@@ -303,10 +303,7 @@ provide('ProductCreate', { productForm })
     <div class="view-main theme-card">
       <ElForm ref="productFormRef" :model="productForm" :rules="rules" label-width="100px">
         <div class="grid grid-cols-12 gap-4">
-          <div class="col-span-3 bg-white pa-4">
-            AI
-          </div>
-          <div class="col-span-9">
+          <div class="col-span-12">
             <div class="w-full mb-4 bg-white">
               <TailwindAnchor
                 v-model:active-href="currentHref"
