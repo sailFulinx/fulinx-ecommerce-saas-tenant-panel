@@ -715,20 +715,19 @@ defineExpose({
               </template>
             </ElTableColumn>
 
-            <ElTableColumn label="SKU图片" width="80">
+            <ElTableColumn label="SKU图片" width="90">
               <template #default="scope">
                 <div class="w-full flex items-center">
                   <Icon
                     v-if="!scope.row.skuImageFileVo || !scope.row.skuImageFileVo.fileUrl"
                     name="ri:image-line"
                     :size="6"
-                    class="mr-1"
                     color="gray"
                   />
                   <img
                     v-if="scope.row.skuImageFileVo && scope.row.skuImageFileVo.fileUrl"
                     :src="scope.row.skuImageFileVo.fileUrl"
-                    class="w-6 h-6 mr-1"
+                    class="w-6 h-6"
                   >
                 </div>
               </template>
