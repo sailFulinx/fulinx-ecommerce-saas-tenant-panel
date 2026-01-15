@@ -212,17 +212,16 @@ interface ProductSkuInventoryRequestDo {
   warehouseId: string
 
   /* Quantity */
-  quantity: string
+  quantity: number
 
   /* Locked Quantity */
-  lockedQuantity?: string
+  lockedQuantity?: number
 
   /* Remark */
   remark?: string
 }
 
 interface ProductSkuItemRequestDo {
-  uid?: number
   /* Product Sku ID */
   id?: string
 
@@ -237,8 +236,6 @@ interface ProductSkuItemRequestDo {
 
   /* Sku Code */
   skuCode: string
-
-  quantity: number
 
   /* Currency Id */
   currencyId: string

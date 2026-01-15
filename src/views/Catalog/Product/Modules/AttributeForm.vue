@@ -43,11 +43,7 @@ const {
   promise: stockStatusPromise,
 } = useProductStockStatusList()
 
-const {
-  loading: warehouseLoading,
-  listData: warehouseListData,
-  promise: warehousePromise,
-} = useWarehouseList()
+const { loading: warehouseLoading, listData: warehouseListData, promise: warehousePromise } = useWarehouseList()
 
 const currentWarehouseId = ref('')
 
@@ -125,7 +121,6 @@ const generateSkus = () => {
       const skuItem: ProductSkuItemRequestDo = {
         productId: '', // 通常在保存产品时填充
         skuCode,
-        quantity: 0,
         currencyId: productSkuRequestDo.value.currencyId, // 默认货币，实际应用中可能需要从其他地方获取
         price: 0, // 默认价格，用户后续设置
         status: true,
@@ -151,7 +146,6 @@ const generateSkus = () => {
       const defaultSkuItem: ProductSkuItemRequestDo = {
         productId: '',
         skuCode: productSkuRequestDo.value.spu,
-        quantity: 0,
         currencyId: productSkuRequestDo.value.currencyId,
         price: 0,
         status: true,
@@ -575,10 +569,12 @@ const getData = () => {
     return
   }
   // 校验库存是否小于等于0
-  if (skuItems.some(item => item.quantity != null && item.quantity <= 0)) {
-    ElMessage.error($t('product.placeholder.quantity'))
-    return
-  }
+  skuItems.forEach(item => {
+    if (item.productSkuInventoryRequestDos.some(skuItem => skuItem.quantity != null && skuItem.quantity <= 0)) {
+      ElMessage.error($t('product.placeholder.quantity'))
+    }
+  })
+
   // 校验所有的价格是否小于等于0
   if (skuItems.some(item => item.price != null && item.price <= 0)) {
     ElMessage.error($t('product.placeholder.price'))
@@ -953,7 +949,12 @@ defineExpose({
               <template #header>
                 <div v-loading="warehouseLoading">
                   <ElSelect v-model="currentWarehouseId" clearable filterable placeholder="请选择仓库">
-                    <ElOption v-for="warehouse in warehouseListData.list" :key="warehouse.id" :label="warehouse.warehouseName" :value="warehouse.id" />
+                    <ElOption
+                      v-for="warehouse in warehouseListData.list"
+                      :key="warehouse.id"
+                      :label="warehouse.warehouseName"
+                      :value="warehouse.id"
+                    />
                   </ElSelect>
                 </div>
               </template>
