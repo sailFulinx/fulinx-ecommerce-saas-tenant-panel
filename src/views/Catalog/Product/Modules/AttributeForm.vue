@@ -47,6 +47,20 @@ const { loading: warehouseLoading, listData: warehouseListData, promise: warehou
 
 const currentWarehouseId = ref('')
 
+onMounted(async () => {
+  // 设置初始化加载状态
+  loading.init = true
+  try {
+    // 并行等待所有数据加载完成
+    await Promise.all([attributePromise, stockStatusPromise, warehousePromise])
+    currentWarehouseId.value = warehouseListData.value.list.find(item => item.isDefault)?.id || ''
+  } catch (error) {
+    console.error('加载数据失败:', error)
+  } finally {
+    loading.init = false
+  }
+})
+
 const formRef = ref()
 const multipleTable = ref() // 添加表格引用
 
@@ -117,6 +131,19 @@ const generateSkus = () => {
         }
       })
 
+      const productSkuInventoryRequestDos: ProductSkuInventoryRequestDo[] = []
+      warehouseListData.value.list.forEach(warehouse => {
+        // 创建SKU库存信息
+        const skuInventory: ProductSkuInventoryRequestDo = {
+          warehouseId: warehouse.id,
+          quantity: 0,
+          skuCode,
+        }
+
+        // 将库存信息添加到SKU项中
+        productSkuInventoryRequestDos.push(skuInventory)
+      })
+
       // 创建SKU项
       const skuItem: ProductSkuItemRequestDo = {
         productId: '', // 通常在保存产品时填充
@@ -134,7 +161,7 @@ const generateSkus = () => {
             attributeValueId: attr.attributeValueId,
           }
         }),
-        productSkuInventoryRequestDos: [], // 库存信息，可能在后续步骤中填写
+        productSkuInventoryRequestDos, // 库存信息，可能在后续步骤中填写
       }
 
       // 将SKU项添加到数组中
@@ -143,6 +170,18 @@ const generateSkus = () => {
   } else {
     // 如果没有规格组合，添加一个默认的SKU项，以SPU作为SKU编码
     if (productSkuRequestDo.value.spu) {
+      const productSkuInventoryRequestDos: ProductSkuInventoryRequestDo[] = []
+      warehouseListData.value.list.forEach(warehouse => {
+        // 创建SKU库存信息
+        const skuInventory: ProductSkuInventoryRequestDo = {
+          warehouseId: warehouse.id,
+          quantity: 0,
+          skuCode: productSkuRequestDo.value.spu,
+        }
+
+        // 将库存信息添加到SKU项中
+        productSkuInventoryRequestDos.push(skuInventory)
+      })
       const defaultSkuItem: ProductSkuItemRequestDo = {
         productId: '',
         skuCode: productSkuRequestDo.value.spu,
@@ -150,7 +189,7 @@ const generateSkus = () => {
         price: 0,
         status: true,
         productSkuAttributeRequestDos: [],
-        productSkuInventoryRequestDos: [],
+        productSkuInventoryRequestDos,
       }
       productSkuRequestDo.value.productSkuItemRequestDos.push(defaultSkuItem)
     }
@@ -175,20 +214,6 @@ watch(
   },
   { deep: true },
 )
-
-onMounted(async () => {
-  // 设置初始化加载状态
-  loading.init = true
-  try {
-    // 并行等待所有数据加载完成
-    await Promise.all([attributePromise, stockStatusPromise, warehousePromise])
-    currentWarehouseId.value = warehouseListData.value.list.find(item => item.isDefault)?.id || ''
-  } catch (error) {
-    console.error('加载数据失败:', error)
-  } finally {
-    loading.init = false
-  }
-})
 
 const rules = reactive({
   stockStatus: [{ required: true, message: $t('product.placeholder.stockStatus'), trigger: 'change' }],
@@ -945,28 +970,37 @@ defineExpose({
               </template>
             </ElTableColumn>
 
-            <ElTableColumn label="库存" width="120">
+            <ElTableColumn label="库存" width="120" align="center">
               <template #header>
                 <div v-loading="warehouseLoading">
-                  <ElSelect v-model="currentWarehouseId" clearable filterable placeholder="请选择仓库">
-                    <ElOption
-                      v-for="warehouse in warehouseListData.list"
-                      :key="warehouse.id"
-                      :label="warehouse.warehouseName"
-                      :value="warehouse.id"
-                    />
-                  </ElSelect>
+                  <div class="flex flex-col">
+                    <div>仓库库存</div>
+                    <ElSelect v-model="currentWarehouseId" clearable filterable placeholder="请选择仓库">
+                      <ElOption
+                        v-for="warehouse in warehouseListData.list"
+                        :key="warehouse.id"
+                        :label="warehouse.warehouseName"
+                        :value="warehouse.id"
+                      />
+                    </ElSelect>
+                  </div>
                 </div>
               </template>
               <template #default="scope">
-                <div class="w-full flex items-center">
-                  <ElInput
-                    v-model.number="scope.row.quantity"
-                    type="number"
-                    :min="0"
-                    clearable
-                    :placeholder="$t('product.placeholder.quantity')"
-                  />
+                <div
+                  v-for="(item, index) in scope.row.productSkuInventoryRequestDos"
+                  :key="item.warehouseId"
+                  class="w-full flex items-center"
+                >
+                  <div v-if="item.warehouseId === currentWarehouseId && item.skuCode === scope.row.skuCode">
+                    <ElInput
+                      v-model.number="scope.row.productSkuInventoryRequestDos[index].quantity"
+                      type="number"
+                      :min="0"
+                      clearable
+                      :placeholder="$t('product.placeholder.quantity')"
+                    />
+                  </div>
                 </div>
               </template>
             </ElTableColumn>

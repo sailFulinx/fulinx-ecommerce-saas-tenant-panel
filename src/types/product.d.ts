@@ -205,6 +205,8 @@ interface ProductSkuInventoryRequestDo {
   /* Product Sku Inventory ID */
   id?: string
 
+  skuCode: string
+
   /* Product Sku ID */
   productSkuId?: string
 
