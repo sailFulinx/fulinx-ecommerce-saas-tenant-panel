@@ -202,6 +202,14 @@ const dragEnd = () => {
   productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos.map((item, index) => (item.sort = index + 1))
 }
 
+const dragEndAttributeValue = (attributeSummaryDoIndex: number) => {
+  dragging.value = false
+  productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos[attributeSummaryDoIndex].attributeValueDos.map(
+    (item, index) => (item.sort = index + 1),
+  )
+  console.log(productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos[attributeSummaryDoIndex].attributeValueDos)
+}
+
 const currentAttribute = ref<AttributeSummaryDo>({
   languageId: usePreferenceStore().preference.language.id,
   attributeId: '',
@@ -529,23 +537,35 @@ defineExpose({
                 </div>
               </div>
               <div class="w-full flex items-center">
-                <div v-for="(avItem, avItemIndex) in item.attributeValueDos" :key="avItemIndex">
-                  <div class="h-12 bg-white border border-gray-200 p-1 mr-2 flex items-center">
-                    <Icon
-                      v-if="!avItem.attributeImageFileVo || !avItem.attributeImageFileVo.fileUrl"
-                      name="ri:image-line"
-                      :size="6"
-                      class="mr-1"
-                      color="gray"
-                    />
-                    <img
-                      v-if="avItem.attributeImageFileVo && avItem.attributeImageFileVo.fileUrl"
-                      :src="avItem.attributeImageFileVo.fileUrl"
-                      class="w-6 h-6 mr-1"
-                    >
-                    <span class="fs-12px">{{ avItem.attributeValueContent }}</span>
+                <VueDraggable
+                  v-model="item.attributeValueDos"
+                  item-key="attributeValueId"
+                  :animation="200"
+                  :fallback-on-body="true"
+                  :swap-threshold="0.65"
+                  ghost-class="opacity-50"
+                  class="w-full flex items-center"
+                  @start="dragging = true"
+                  @end="dragEndAttributeValue(index)"
+                >
+                  <div v-for="(avItem, avItemIndex) in item.attributeValueDos" :key="avItemIndex">
+                    <div class="h-12 bg-white border border-gray-200 p-1 mr-2 flex items-center">
+                      <Icon
+                        v-if="!avItem.attributeImageFileVo || !avItem.attributeImageFileVo.fileUrl"
+                        name="ri:image-line"
+                        :size="6"
+                        class="mr-1"
+                        color="gray"
+                      />
+                      <img
+                        v-if="avItem.attributeImageFileVo && avItem.attributeImageFileVo.fileUrl"
+                        :src="avItem.attributeImageFileVo.fileUrl"
+                        class="w-6 h-6 mr-1"
+                      >
+                      <span class="fs-12px">{{ avItem.attributeValueContent }}</span>
+                    </div>
                   </div>
-                </div>
+                </VueDraggable>
               </div>
             </div>
           </VueDraggable>
