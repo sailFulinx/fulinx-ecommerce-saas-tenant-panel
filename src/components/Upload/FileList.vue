@@ -37,7 +37,13 @@ const pagination = async (val: PaginationComponentDataType) => {
   await getList()
 }
 
+// 响应式状态
+const selectedCategory = ref('')
+const selectedImages = ref<(FileData & CommonField)[]>([]) // 存储完整的图片对象数组
+const sortBy = ref('latest')
+
 const open = async () => {
+  selectedImages.value = []
   dialogVisible.value = true
   // 设置初始化加载状态
   loading.init = true
@@ -50,11 +56,6 @@ const open = async () => {
     loading.init = false
   }
 }
-
-// 响应式状态
-const selectedCategory = ref('')
-const selectedImages = ref<(FileData & CommonField)[]>([]) // 存储完整的图片对象数组
-const sortBy = ref('latest')
 
 // 存储容量
 const usedStorage = ref(1.1 * 1024 * 1024 * 1024) // 1.1GB
