@@ -25,7 +25,7 @@ const {
   listPayload,
   promise: filePromise,
   getList,
-} = useFilePagination(filePayload.value)
+} = useFilePagination(filePayload.value, { immediate: false })
 
 const pagination = async (val: PaginationComponentDataType) => {
   console.log(val)
@@ -36,7 +36,8 @@ const pagination = async (val: PaginationComponentDataType) => {
   await getList()
 }
 
-onMounted(async () => {
+const open = async () => {
+  dialogVisible.value = true
   // 设置初始化加载状态
   loading.init = true
   try {
@@ -47,10 +48,6 @@ onMounted(async () => {
   } finally {
     loading.init = true
   }
-})
-
-const open = () => {
-  dialogVisible.value = true
 }
 
 // 响应式状态
@@ -89,6 +86,26 @@ const cancelSelection = () => {
   selectedImageId.value = ''
 
   // 在实际应用中，这里可能会关闭模态框或触发取消事件
+}
+
+// 清除搜索
+const clearSearch = () => {
+  filePayload.value.fileOriginalName = undefined
+  searchQuery.value = '' // 同时清除界面上的搜索关键词
+  getList()
+}
+
+// 处理回车按键，防止页面跳转
+const handleEnterKey = (event: KeyboardEvent) => {
+  event.preventDefault()
+  event.stopPropagation()
+  getList()
+}
+
+// 处理输入事件，确保值正确更新
+const handleInput = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  filePayload.value.fileOriginalName = target.value || undefined
 }
 
 defineExpose({
@@ -159,10 +176,13 @@ defineExpose({
                     <!-- 搜索框 -->
                     <div class="relative">
                       <input
-                        v-model="searchQuery"
+                        v-model="filePayload.fileOriginalName"
                         type="text"
                         placeholder="查询图片名称"
-                        class="pl-9 pr-4 py-2 w-full md:w-64 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        class="pl-9 pr-10 py-2 w-full md:w-64 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        @keyup.enter.prevent.stop="getList"
+                        @keydown.enter.prevent="handleEnterKey"
+                        @input="handleInput"
                       >
                       <div class="absolute left-3 top-2.5 text-gray-400">
                         <svg
@@ -180,6 +200,27 @@ defineExpose({
                           />
                         </svg>
                       </div>
+                      <button
+                        v-if="filePayload.fileOriginalName"
+                        type="button"
+                        class="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600"
+                        @click="clearSearch"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-4 w-4"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12"
+                          />
+                        </svg>
+                      </button>
                     </div>
                   </div>
 
