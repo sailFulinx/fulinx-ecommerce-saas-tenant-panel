@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-import type { UploadProps } from 'element-plus'
-import { ElMessage } from 'element-plus'
-import { uploadFileApi } from '@/api/file'
+// import type { UploadProps } from 'element-plus'
 
 const props = defineProps({
   imageData: {
@@ -10,7 +8,7 @@ const props = defineProps({
 })
 const emit = defineEmits(['getData'])
 
-const loading = ref(false)
+// const loading = ref(false)
 
 const imageUrl = ref('')
 
@@ -52,45 +50,50 @@ watch(
   { immediate: true, deep: true },
 )
 
-const handleSuccess: UploadProps['onSuccess'] = (response, uploadFile) => {
-  imageUrl.value = URL.createObjectURL(uploadFile.raw!)
-}
+// const handleSuccess: UploadProps['onSuccess'] = (response, uploadFile) => {
+//   imageUrl.value = URL.createObjectURL(uploadFile.raw!)
+// }
 
-const beforeUpload: UploadProps['beforeUpload'] = rawFile => {
-  if (rawFile.type !== 'image/jpeg' && rawFile.type !== 'image/png' && rawFile.type !== 'image/gif' && rawFile.type !== 'image/svg+xml') {
-    ElMessage.error('图片必须是PNG或JPG或GIF或SVG格式!')
-    return false
-  } else if (rawFile.size / 1024 / 1024 > 50) {
-    ElMessage.error('Picture size can not exceed 50MB!')
-    return false
-  }
-  return true
-}
+// const beforeUpload: UploadProps['beforeUpload'] = rawFile => {
+//   if (
+//     rawFile.type !== 'image/jpeg'
+//     && rawFile.type !== 'image/png'
+//     && rawFile.type !== 'image/gif'
+//     && rawFile.type !== 'image/svg+xml'
+//   ) {
+//     ElMessage.error('图片必须是PNG或JPG或GIF或SVG格式!')
+//     return false
+//   } else if (rawFile.size / 1024 / 1024 > 50) {
+//     ElMessage.error('Picture size can not exceed 50MB!')
+//     return false
+//   }
+//   return true
+// }
 
-const handleUpload = async ({ file }: { file: File }) => {
-  loading.value = true
-  const formData = new FormData()
-  formData.append('file', file)
+// const handleUpload = async ({ file }: { file: File }) => {
+//   loading.value = true
+//   const formData = new FormData()
+//   formData.append('file', file)
 
-  // 生成当前日期格式为 YYYYMMDD 的字符串
-  const now = new Date()
-  const year = now.getFullYear()
-  const month = String(now.getMonth() + 1).padStart(2, '0')
-  const day = String(now.getDate()).padStart(2, '0')
-  const datePath = `${year}${month}${day}`
+//   // 生成当前日期格式为 YYYYMMDD 的字符串
+//   const now = new Date()
+//   const year = now.getFullYear()
+//   const month = String(now.getMonth() + 1).padStart(2, '0')
+//   const day = String(now.getDate()).padStart(2, '0')
+//   const datePath = `${year}${month}${day}`
 
-  // 构造新的上传路径
-  formData.append('folder', `images/${datePath}`)
-  formData.append('isPublic', 'true')
+//   // 构造新的上传路径
+//   formData.append('folder', `images/${datePath}`)
+//   formData.append('isPublic', 'true')
 
-  const { data } = await uploadFileApi(formData).catch(err => {
-    loading.value = false
-    throw err
-  })
-  fileData.value = { ...data }
-  emit('getData', { fileData: fileData.value })
-  loading.value = false
-}
+//   const { data } = await uploadFileApi(formData).catch(err => {
+//     loading.value = false
+//     throw err
+//   })
+//   fileData.value = { ...data }
+//   emit('getData', { fileData: fileData.value })
+//   loading.value = false
+// }
 
 const handleDelete = () => {
   fileData.value = {
@@ -118,15 +121,22 @@ const handleDelete = () => {
   emit('getData', { fileData: fileData.value })
 }
 
-const setFileData = (data: FileData & CommonField) => {
-  fileData.value = data
-  imageUrl.value = data.fileUrl
+const setFileData = (data: (FileData & CommonField)[]) => {
+  if (data.length > 0) {
+    fileData.value = data[0]
+    imageUrl.value = data[0].fileUrl
+  }
 }
 
 const getFileData = () => {
   return {
     fileData: fileData.value,
   }
+}
+
+const handleFileUploaded = (data: FileData) => {
+  fileData.value = { ...data }
+  imageUrl.value = data.fileUrl
 }
 
 defineExpose({
@@ -136,7 +146,14 @@ defineExpose({
 </script>
 
 <template>
-  <ElUpload
+  <FloatingUpload v-if="!imageUrl" :show-upload-button="true" @file-uploaded="handleFileUploaded" @selection-confirmed="setFileData" />
+  <div v-else class="w-48 h-48 border border-dashed border-solid-1 border-gray-300 rounded p-2 flex flex-col items-center justify-center relative">
+    <img class="w-full max-h-36 rounded object-cover mb-2" :src="imageUrl">
+    <EBtn text @click.stop="handleDelete">
+      <Icon :size="4" icon="ep:delete" />
+    </EBtn>
+  </div>
+  <!-- <ElUpload
     v-loading="loading"
     class="avatar-uploader"
     action=""
@@ -162,7 +179,7 @@ defineExpose({
         </div>
       </div>
     </div>
-  </ElUpload>
+  </ElUpload> -->
 </template>
 
 <style scoped>
