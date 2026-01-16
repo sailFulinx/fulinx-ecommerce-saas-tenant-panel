@@ -134,9 +134,19 @@ defineExpose({ getFileData, setFileData })
     </VueDraggable>
 
     <!-- 上传按钮 -->
+    <div class="w-41 h-41 border border-dashed hover:border-[#71A0FF] bg-white flex items-center justify-center group">
+      <div class="flex flex-col items-center justify-center w-full h-full p-2">
+        <div class="mb-2 flex items-center justify-center transition-colors duration-300 group-hover:text-[#71A0FF]">
+          <Icon :size="8" icon="ep:upload" color="#999" />
+        </div>
+        <div class="text-sm text-gray-500 flex justify-center text-center w-full transition-colors duration-300 group-hover:text-[#71A0FF]">
+          <span>只允许上传jpg, png, gif格式图片，最大不能超过50M</span>
+        </div>
+      </div>
+    </div>
     <ElUpload
       v-loading="loading"
-      class="w-full border border-gray-300 rounded p-2 flex items-center justify-center bg-white"
+      class="w-full border border-dashed border-gray-300 rounded p-2 flex items-center justify-center bg-white hover:border-[#71A0FF]"
       :multiple="true"
       action=""
       accept=".jpg,.jpeg,.png,.gif,.svg"
@@ -150,12 +160,9 @@ defineExpose({ getFileData, setFileData })
       :on-progress="handleProgress"
       :limit="10"
     >
-      <div>
-        <div class="w-full flex justify-center mb-5">
+      <div class="flex flex-col items-center justify-center w-full h-full transition-colors duration-300 hover:text-blue-500">
+        <div class="mb-2 flex items-center justify-center transition-colors duration-300 hover:text-blue-500">
           <Icon :size="8" icon="ep:upload" color="#999" />
-        </div>
-        <div class="w-full text-sm text-gray-500 flex justify-center text-center">
-          <span>只允许上传jpg, png, gif格式图片，最大不能超过50M</span>
         </div>
       </div>
     </ElUpload>
@@ -166,5 +173,16 @@ defineExpose({ getFileData, setFileData })
 :deep(.el-upload--picture-card) {
   background-color: #fff !important;
   border: 0 none !important;
+}
+
+/* 添加自定义样式来处理图标颜色 */
+.group:hover :deep(i),
+.group:hover :deep(svg) {
+  color: #409eff !important;
+}
+
+:deep(i),
+:deep(svg) {
+  transition: color 0.3s ease;
 }
 </style>
