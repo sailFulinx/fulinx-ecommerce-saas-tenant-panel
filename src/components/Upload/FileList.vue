@@ -89,7 +89,9 @@ const confirmSelection = (event: Event) => {
 }
 
 // 取消选择
-const cancelSelection = () => {
+const cancelSelection = (event: Event) => {
+  event.preventDefault() // 阻止默认行为，防止页面跳转
+  event.stopPropagation() // 阻止事件冒泡
   selectedImages.value = [] // 清空选中的图片数组
 
   dialogVisible.value = false

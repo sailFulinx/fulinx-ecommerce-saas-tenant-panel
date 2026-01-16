@@ -9,7 +9,7 @@ const {
   fileDataList,
   getFileData,
   setFileData, // 保留，因为可能需要在外部使用
-} = useUploadImage({ maxCount: 10, uploadPath: 'images' })
+} = useUploadFile({ maxCount: 10, uploadPath: `${useTenantStore().defaultStoreId}/images` })
 
 const dragging = ref(false)
 

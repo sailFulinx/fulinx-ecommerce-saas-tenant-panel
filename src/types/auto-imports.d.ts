@@ -717,7 +717,8 @@ declare global {
   const useToString: typeof import('@vueuse/core').useToString
   const useToggle: typeof import('@vueuse/core').useToggle
   const useTransition: typeof import('@vueuse/core').useTransition
-  const useUploadImage: typeof import('../composables/useUploadImage').useUploadImage
+  const useUploadFile: typeof import('../composables/useUploadFile').useUploadFile
+  const useUploadImage: typeof import('../composables/useUploadFile').useUploadImage
   const useUrlSearchParams: typeof import('@vueuse/core').useUrlSearchParams
   const useUserMedia: typeof import('@vueuse/core').useUserMedia
   const useVModel: typeof import('@vueuse/core').useVModel

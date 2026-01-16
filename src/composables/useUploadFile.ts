@@ -20,12 +20,12 @@ interface UseUploadImageOptions {
  * 图像上传 composable
  * 提供图像上传的核心功能，包括验证、上传、进度跟踪等功能
  */
-export const useUploadImage = (options: UseUploadImageOptions = {}) => {
+export const useUploadFile = (options: UseUploadImageOptions = {}) => {
   const {
     maxCount = 10,
     maxSize = 50,
     acceptTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml'],
-    uploadPath = 'images',
+    uploadPath = `${useTenantStore().defaultStoreId}/images`,
     onSuccessCallback,
   } = options
 
@@ -118,9 +118,7 @@ export const useUploadImage = (options: UseUploadImageOptions = {}) => {
    * 上传成功后的处理
    */
   const handleSuccess = (response: any, uploadFile: UploadFile) => {
-    beforeUploadFileDataList.value = beforeUploadFileDataList.value.filter(
-      item => item.uid !== uploadFile.uid,
-    )
+    beforeUploadFileDataList.value = beforeUploadFileDataList.value.filter(item => item.uid !== uploadFile.uid)
     delete uploadProgress.value[uploadFile.uid]
   }
 
@@ -143,9 +141,11 @@ export const useUploadImage = (options: UseUploadImageOptions = {}) => {
    */
   const removeFiles = (indexes: number[]) => {
     // 按降序排列，避免索引错位问题
-    indexes.sort((a, b) => b - a).forEach(index => {
-      removeFile(index)
-    })
+    indexes
+      .sort((a, b) => b - a)
+      .forEach(index => {
+        removeFile(index)
+      })
   }
 
   /**

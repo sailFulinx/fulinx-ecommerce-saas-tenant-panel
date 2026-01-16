@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { useUploadImage } from '@/composables/useUploadImage'
-
 interface Props {
   showUploadButton?: boolean // 是否显示上传按钮
 }
@@ -24,9 +22,9 @@ const {
   handleUpload,
   handleSuccess,
   handleProgress,
-} = useUploadImage({
+} = useUploadFile({
   maxCount: 10,
-  uploadPath: 'images',
+  uploadPath: `${useTenantStore().defaultStoreId}/images`,
   onSuccessCallback: (fileData: FileData) => {
     emit('fileUploaded', fileData)
   },
