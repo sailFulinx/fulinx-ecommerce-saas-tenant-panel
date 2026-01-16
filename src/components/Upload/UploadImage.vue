@@ -13,6 +13,9 @@ const {
 
 const dragging = ref(false)
 
+// 存储每张图片的预加载状态
+const imageLoadingStatus = ref<Record<string, boolean>>({})
+
 const handleRemove = (index: number) => {
   fileDataList.value.splice(index, 1)
   emit('removeFile', index)
@@ -22,6 +25,30 @@ const handleChangeSort = () => {
   fileDataList.value.forEach((item, index) => {
     item.sort = index + 1
   })
+}
+
+// 预加载图片函数
+const preloadImage = (src: string): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    img.onload = () => {
+      // 标记该图片已完成预加载
+      imageLoadingStatus.value[src] = false
+      resolve()
+    }
+    img.onerror = () => {
+      imageLoadingStatus.value[src] = false
+      reject()
+    }
+    // 开始预加载
+    imageLoadingStatus.value[src] = true
+    img.src = src
+  })
+}
+
+const handleChangePreview = async (fileUrl: string) => {
+  // 预加载图片
+  await preloadImage(fileUrl)
 }
 
 const handleFileUploaded = (fileData: FileData) => {
@@ -61,9 +88,11 @@ defineExpose({ getFileData, setFileData })
               <ElImage
                 v-if="item.fileUrl"
                 :src="item.fileUrl"
-                lazy
+                :preview-src-list="[item.fileUrl]"
+                :initial-index="index"
                 fit="cover"
                 class="w-full h-full object-cover"
+                @preview="handleChangePreview(item.fileUrl)"
               >
                 <template #placeholder>
                   <div class="flex items-center justify-center h-full">
@@ -71,6 +100,11 @@ defineExpose({ getFileData, setFileData })
                       <Icon icon="ep:loading" class="animate-spin" />
                       <span class="mt-2 text-xs text-gray-500">加载中...</span>
                     </div>
+                  </div>
+                </template>
+                <template #error>
+                  <div class="flex items-center justify-center h-full">
+                    <Icon icon="ep:picture" class="text-3xl text-gray-400" />
                   </div>
                 </template>
               </ElImage>
