@@ -273,7 +273,7 @@ defineExpose({ getFileData, setFileData })
         </div>
       </div>
     </div>
-    <FileList ref="fileListRef" />
+    <FileList ref="fileListRef" @get-file-data="setFileData" />
   </div>
 </template>
 

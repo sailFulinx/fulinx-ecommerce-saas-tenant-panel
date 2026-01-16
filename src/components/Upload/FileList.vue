@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { Refresh } from '@element-plus/icons-vue'
 
+const emit = defineEmits(['setFileData'])
+
 const dialogVisible = ref(false)
 // 图片分类数据
 const categories = ref([
@@ -73,17 +75,16 @@ const toggleSelectImage = (imageId: string) => {
 // 确认选择
 const confirmSelection = () => {
   if (selectedImageId.value) {
-    const _selectedImage = fileListData.value.list.find(img => img.id === selectedImageId.value)
-
-    // 在实际应用中，这里可能会触发一个事件或调用父组件的方法
+    const selectedImage = fileListData.value.list.find(img => img.id === selectedImageId.value)
+    emit('setFileData', [selectedImage])
+    dialogVisible.value = false
   }
 }
 
 // 取消选择
 const cancelSelection = () => {
   selectedImageId.value = ''
-
-  // 在实际应用中，这里可能会关闭模态框或触发取消事件
+  dialogVisible.value = false
 }
 
 // 清除搜索
