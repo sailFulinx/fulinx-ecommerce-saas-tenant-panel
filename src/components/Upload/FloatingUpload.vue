@@ -34,6 +34,7 @@ const acceptFileTypeComputed = computed(() => {
     'image/webp': '.webp',
     'image/bmp': '.bmp',
     'image/tiff': '.tiff,.tif',
+    'video/mp4': '.mp4',
   }
 
   return props.acceptFileType.map(mimeType => mimeToExtMap[mimeType] || '').join(',')
@@ -69,12 +70,13 @@ const getUploadHintText = computed(() => {
     'image/webp': 'webp',
     'image/bmp': 'bmp',
     'image/tiff': 'tiff/tif',
+    'video/mp4': 'mp4',
   }
 
   const extensions = props.acceptFileType.map(mimeType => mimeToExtMap[mimeType] || mimeType.split('/')[1] || mimeType)
   const extensionsText = extensions.join(', ')
 
-  return `只允许上传${extensionsText}格式文件，最大不能超过50M`
+  return `只允许上传${extensionsText}格式文件，最大不能超过${props.maxSize}M`
 })
 
 const fileListRef = ref()

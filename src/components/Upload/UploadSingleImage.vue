@@ -17,8 +17,6 @@ useUploadFile({
   },
 })
 
-// const loading = ref(false)
-
 const imageUrl = ref('')
 
 const fileData = ref<FileData & CommonField>({
@@ -119,11 +117,38 @@ defineExpose({
 </script>
 
 <template>
-  <FloatingUpload v-if="!imageUrl" :show-upload-button="true" :max-count="1" :max-size="5" upload-path="images" :accept-file-type="['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml']" @file-uploaded="handleFileUploaded" @selection-confirmed="setSelectionFileData" />
-  <div v-else class="w-41 h-auto border border-dashed border-solid-1 border-gray-300 rounded flex flex-col items-center justify-center relative group">
-    <img class="w-full rounded object-cover p-2" :src="imageUrl">
-    <div class="absolute inset-0 bg-black bg-opacity-40 rounded flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-      <Icon :size="4" icon="ep:delete" class="cursor-pointer" color="white" @click.stop="handleDelete" />
+  <div>
+    <FloatingUpload
+      v-if="!imageUrl"
+      :show-upload-button="true"
+      :max-count="1"
+      :max-size="5"
+      upload-path="images"
+      :accept-file-type="['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml']"
+      @file-uploaded="handleFileUploaded"
+      @selection-confirmed="setSelectionFileData"
+    />
+    <div
+      v-else
+      class="w-41 min-h-41 h-auto border border-dashed border-solid-1 border-gray-300 rounded flex flex-col items-center justify-center relative group"
+    >
+      <ElImage v-if="imageUrl" :src="imageUrl" lazy fit="cover" class="w-full h-full rounded object-cover p-2">
+        <template #placeholder>
+          <div class="flex items-center justify-center h-full">
+            <div class="flex flex-col items-center">
+              <ElIcon class="is-loading text-gray-400">
+                <Refresh />
+              </ElIcon>
+              <span class="mt-2 text-xs text-gray-500">加载中...</span>
+            </div>
+          </div>
+        </template>
+      </ElImage>
+      <div
+        class="absolute inset-0 bg-black bg-opacity-40 rounded flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+      >
+        <Icon :size="4" icon="ep:delete" class="cursor-pointer" color="white" @click.stop="handleDelete" />
+      </div>
     </div>
   </div>
 </template>
