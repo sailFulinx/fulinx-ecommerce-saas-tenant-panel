@@ -90,7 +90,7 @@ defineExpose({
           </div>
         </ElFormItem>
         <ElFormItem label="图片" required>
-          <UploadMultiImageText ref="uploadRef" @remove-file="getRemovedFiles" />
+          <UploadImageText ref="uploadRef" @remove-file="getRemovedFiles" />
         </ElFormItem>
         <ElFormItem label="描述" required>
           <div class="flex items-center w-full">

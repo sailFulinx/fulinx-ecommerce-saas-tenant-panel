@@ -130,7 +130,7 @@ defineExpose({
         <Editor ref="customEditorRef" v-model="form.customContent" />
       </ElFormItem>
       <ElFormItem v-if="form.customType === 'image'" :label="$t('comps.custom.imageContent')" class="mb-5" style="margin-bottom:20px;">
-        <UploadMultiImage ref="uploadRef" @remove-file="getRemovedFiles" />
+        <UploadImage ref="uploadRef" @remove-file="getRemovedFiles" />
       </ElFormItem>
       <ElFormItem v-if="form.customType === 'video'" :label="$t('comps.custom.videoContent')" class="mb-5" style="margin-bottom:20px;">
         <UploadVideo ref="uploadRef" :video-data="form.customContent" />

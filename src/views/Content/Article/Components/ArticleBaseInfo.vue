@@ -625,7 +625,7 @@ const handleCopyArticle = async () => {
             </div>
           </div>
           <div v-else>
-            <UploadMultiImage ref="uploadRefs" class="mb-5" @remove-file="handleGetRemoveFile" />
+            <UploadImage ref="uploadRefs" class="mb-5" @remove-file="handleGetRemoveFile" />
             <div class="flex justify-center items-center">
               <EBtn @click="handleCancelUpdateArticleFile">
                 {{ $t('common.cancel') }}

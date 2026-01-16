@@ -350,7 +350,7 @@ onMounted(() => {
                     </EBtn>
                   </ElFormItem>
                   <ElFormItem label="图片">
-                    <UploadMultiImage ref="uploadRef" />
+                    <UploadImage ref="uploadRef" />
                   </ElFormItem>
                   <ElFormItem label="自定义信息" class="flex flex-wrap">
                     <div class="w-full mb-5">

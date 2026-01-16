@@ -21,7 +21,7 @@ const selectedList = ref<string[]>([])
 const getList = async () => {
   loading.list = true
   if (listQuery.originalFileName === '') {
-    listQuery.originalFileName = null
+    listQuery.originalFileName = ''
   }
   const { data } = await filePaginationApi(listQuery).catch(err => {
     loading.list = false
@@ -174,7 +174,7 @@ init()
           {{ $t('file.uploadImage') }}
         </div>
       </template>
-      <UploadMultiImageManual class="overflow-hidden" @get-list="getList" />
+      <UploadImage class="overflow-hidden" @get-list="getList" />
     </ElDrawer>
   </div>
 </template>

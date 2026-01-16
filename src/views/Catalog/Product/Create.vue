@@ -411,7 +411,7 @@ provide('ProductCreate', { productForm })
                   图文信息
                 </div>
                 <ElFormItem :label="$t('product.productImage')" required>
-                  <UploadMultiImage ref="imageUploadRef" />
+                  <UploadImage ref="imageUploadRef" />
                 </ElFormItem>
                 <ElFormItem :label="$t('product.video')" required>
                   <UploadVideo ref="videoUploadRef" />

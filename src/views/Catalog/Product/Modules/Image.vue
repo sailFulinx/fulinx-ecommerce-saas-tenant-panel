@@ -93,7 +93,7 @@ const handleSave = async () => {
       </div>
     </template>
     <div class="w-full mt-5">
-      <UploadMultiImage ref="imageUploadRef" @remove-file="handleRemoveImage" />
+      <UploadImage ref="imageUploadRef" @remove-file="handleRemoveImage" />
     </div>
   </ElCard>
 </template>
