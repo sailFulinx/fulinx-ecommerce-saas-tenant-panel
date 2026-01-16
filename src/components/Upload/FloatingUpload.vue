@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 interface Props {
   showUploadButton?: boolean // 是否显示上传按钮
+  maxCount?: number
 }
 
 interface Emits {
@@ -10,6 +11,7 @@ interface Emits {
 
 withDefaults(defineProps<Props>(), {
   showUploadButton: true,
+  maxCount: 1,
 })
 const emit = defineEmits<Emits>()
 
@@ -23,7 +25,7 @@ const {
   handleSuccess,
   handleProgress,
 } = useUploadFile({
-  maxCount: 10,
+  maxCount: 1,
   uploadPath: `${useTenantStore().defaultStoreId}/images`,
   onSuccessCallback: (fileData: FileData) => {
     emit('fileUploaded', fileData)

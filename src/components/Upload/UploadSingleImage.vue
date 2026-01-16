@@ -8,6 +8,15 @@ const props = defineProps({
 })
 const emit = defineEmits(['getData'])
 
+useUploadFile({
+  maxCount: 10,
+  uploadPath: `${useTenantStore().defaultStoreId}/images`,
+  onSuccessCallback: (fileData: FileData) => {
+    console.log(fileData)
+    emit('getData', { fileData })
+  },
+})
+
 // const loading = ref(false)
 
 const imageUrl = ref('')
@@ -50,51 +59,6 @@ watch(
   { immediate: true, deep: true },
 )
 
-// const handleSuccess: UploadProps['onSuccess'] = (response, uploadFile) => {
-//   imageUrl.value = URL.createObjectURL(uploadFile.raw!)
-// }
-
-// const beforeUpload: UploadProps['beforeUpload'] = rawFile => {
-//   if (
-//     rawFile.type !== 'image/jpeg'
-//     && rawFile.type !== 'image/png'
-//     && rawFile.type !== 'image/gif'
-//     && rawFile.type !== 'image/svg+xml'
-//   ) {
-//     ElMessage.error('图片必须是PNG或JPG或GIF或SVG格式!')
-//     return false
-//   } else if (rawFile.size / 1024 / 1024 > 50) {
-//     ElMessage.error('Picture size can not exceed 50MB!')
-//     return false
-//   }
-//   return true
-// }
-
-// const handleUpload = async ({ file }: { file: File }) => {
-//   loading.value = true
-//   const formData = new FormData()
-//   formData.append('file', file)
-
-//   // 生成当前日期格式为 YYYYMMDD 的字符串
-//   const now = new Date()
-//   const year = now.getFullYear()
-//   const month = String(now.getMonth() + 1).padStart(2, '0')
-//   const day = String(now.getDate()).padStart(2, '0')
-//   const datePath = `${year}${month}${day}`
-
-//   // 构造新的上传路径
-//   formData.append('folder', `images/${datePath}`)
-//   formData.append('isPublic', 'true')
-
-//   const { data } = await uploadFileApi(formData).catch(err => {
-//     loading.value = false
-//     throw err
-//   })
-//   fileData.value = { ...data }
-//   emit('getData', { fileData: fileData.value })
-//   loading.value = false
-// }
-
 const handleDelete = () => {
   fileData.value = {
     id: '',
@@ -128,6 +92,14 @@ const setFileData = (data: (FileData & CommonField)[]) => {
   }
 }
 
+const setSelectionFileData = (data: (FileData & CommonField)[]) => {
+  if (data.length > 0) {
+    fileData.value = data[0]
+    imageUrl.value = data[0].fileUrl
+    emit('getData', { fileData: fileData.value })
+  }
+}
+
 const getFileData = () => {
   return {
     fileData: fileData.value,
@@ -137,6 +109,7 @@ const getFileData = () => {
 const handleFileUploaded = (data: FileData) => {
   fileData.value = { ...data }
   imageUrl.value = data.fileUrl
+  emit('getData', { fileData: fileData.value })
 }
 
 defineExpose({
@@ -146,40 +119,13 @@ defineExpose({
 </script>
 
 <template>
-  <FloatingUpload v-if="!imageUrl" :show-upload-button="true" @file-uploaded="handleFileUploaded" @selection-confirmed="setFileData" />
-  <div v-else class="w-48 h-48 border border-dashed border-solid-1 border-gray-300 rounded p-2 flex flex-col items-center justify-center relative">
-    <img class="w-full max-h-36 rounded object-cover mb-2" :src="imageUrl">
-    <EBtn text @click.stop="handleDelete">
-      <Icon :size="4" icon="ep:delete" />
-    </EBtn>
-  </div>
-  <!-- <ElUpload
-    v-loading="loading"
-    class="avatar-uploader"
-    action=""
-    accept=".jpg,.jpeg,.png,.gif,.svg"
-    :http-request="handleUpload"
-    :show-file-list="false"
-    :on-success="handleSuccess"
-    :before-upload="beforeUpload"
-  >
-    <div class="w-48 h-48 border border-solid-1 border-gray-300 rounded p-2 flex items-center justify-center">
-      <div v-if="imageUrl" class="flex flex-col items-center justify-center relative">
-        <img class="w-full max-h-38 rounded object-cover mb-2" :src="imageUrl">
-        <EBtn text @click.stop="handleDelete">
-          <Icon :size="4" icon="ep:delete" />
-        </EBtn>
-      </div>
-      <div v-else>
-        <div class="w-full flex justify-center mb-5">
-          <Icon :size="8" icon="ep:upload" color="#999" />
-        </div>
-        <div class="w-full text-sm text-gray-500 flex justify-center text-center">
-          <span>只允许上传jpg, png, gif, svg格式图片，最大不能超过50M</span>
-        </div>
-      </div>
+  <FloatingUpload v-if="!imageUrl" :show-upload-button="true" @file-uploaded="handleFileUploaded" @selection-confirmed="setSelectionFileData" />
+  <div v-else class="w-41 h-auto border border-dashed border-solid-1 border-gray-300 rounded flex flex-col items-center justify-center relative group">
+    <img class="w-full rounded object-cover p-2" :src="imageUrl">
+    <div class="absolute inset-0 bg-black bg-opacity-40 rounded flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+      <Icon :size="4" icon="ep:delete" class="cursor-pointer" color="white" @click.stop="handleDelete" />
     </div>
-  </ElUpload> -->
+  </div>
 </template>
 
 <style scoped>
