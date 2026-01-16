@@ -1,7 +1,12 @@
-<script lang="ts" setup>
+<script setup lang="ts">
+import { computed } from 'vue'
+
 interface Props {
   showUploadButton?: boolean // 是否显示上传按钮
   maxCount?: number
+  maxSize?: number
+  uploadPath?: string
+  acceptFileType?: string[] // 允许上传的文件类型，例如 ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml']
 }
 
 interface Emits {
@@ -9,11 +14,30 @@ interface Emits {
   (e: 'selectionConfirmed', fileDataList: FileData[]): void
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   showUploadButton: true,
   maxCount: 1,
+  maxSize: 5,
+  uploadPath: 'images',
+  acceptFileType: () => ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml'],
 })
 const emit = defineEmits<Emits>()
+
+// 创建一个计算属性，将MIME类型转换为文件扩展名格式
+const acceptFileTypeComputed = computed(() => {
+  const mimeToExtMap: Record<string, string> = {
+    'image/jpeg': '.jpg,.jpeg',
+    'image/png': '.png',
+    'image/gif': '.gif',
+    'image/svg+xml': '.svg',
+    'application/pdf': '.pdf',
+    'image/webp': '.webp',
+    'image/bmp': '.bmp',
+    'image/tiff': '.tiff,.tif',
+  }
+
+  return props.acceptFileType.map(mimeType => mimeToExtMap[mimeType] || '').join(',')
+})
 
 // 使用上传图片的 composable
 const {
@@ -25,11 +49,32 @@ const {
   handleSuccess,
   handleProgress,
 } = useUploadFile({
-  maxCount: 1,
+  maxCount: props.maxCount,
+  maxSize: props.maxSize,
+  acceptTypes: props.acceptFileType,
   uploadPath: `${useTenantStore().defaultStoreId}/images`,
   onSuccessCallback: (fileData: FileData) => {
     emit('fileUploaded', fileData)
   },
+})
+
+// 根据acceptFileType生成上传提示文本
+const getUploadHintText = computed(() => {
+  const mimeToExtMap: Record<string, string> = {
+    'image/jpeg': 'jpg/jpeg',
+    'image/png': 'png',
+    'image/gif': 'gif',
+    'image/svg+xml': 'svg',
+    'application/pdf': 'pdf',
+    'image/webp': 'webp',
+    'image/bmp': 'bmp',
+    'image/tiff': 'tiff/tif',
+  }
+
+  const extensions = props.acceptFileType.map(mimeType => mimeToExtMap[mimeType] || mimeType.split('/')[1] || mimeType)
+  const extensionsText = extensions.join(', ')
+
+  return `只允许上传${extensionsText}格式文件，最大不能超过50M`
 })
 
 const fileListRef = ref()
@@ -101,7 +146,7 @@ const setSelectionFileData = (fileDataList: FileData[]) => {
         <div
           class="text-sm text-gray-500 flex justify-center text-center w-full transition-colors duration-300 group-hover:text-[#71A0FF]"
         >
-          <span>只允许上传jpg, png, gif格式图片，最大不能超过50M</span>
+          <span>{{ getUploadHintText }}</span>
         </div>
       </div>
     </div>
@@ -120,7 +165,7 @@ const setSelectionFileData = (fileDataList: FileData[]) => {
           class="w-16 h-16 flex justify-center"
           :multiple="true"
           action=""
-          accept=".jpg,.jpeg,.png,.gif,.svg"
+          :accept="acceptFileTypeComputed"
           :file-list="beforeUploadFileDataList"
           :http-request="handleUpload"
           :show-file-list="false"
@@ -166,3 +211,9 @@ const setSelectionFileData = (fileDataList: FileData[]) => {
     </div>
   </div>
 </template>
+
+<style scoped>
+.relative {
+  position: relative;
+}
+</style>

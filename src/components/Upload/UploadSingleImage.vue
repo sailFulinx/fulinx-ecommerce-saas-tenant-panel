@@ -119,7 +119,7 @@ defineExpose({
 </script>
 
 <template>
-  <FloatingUpload v-if="!imageUrl" :show-upload-button="true" @file-uploaded="handleFileUploaded" @selection-confirmed="setSelectionFileData" />
+  <FloatingUpload v-if="!imageUrl" :show-upload-button="true" :max-count="1" :max-size="5" upload-path="images" :accept-file-type="['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml']" @file-uploaded="handleFileUploaded" @selection-confirmed="setSelectionFileData" />
   <div v-else class="w-41 h-auto border border-dashed border-solid-1 border-gray-300 rounded flex flex-col items-center justify-center relative group">
     <img class="w-full rounded object-cover p-2" :src="imageUrl">
     <div class="absolute inset-0 bg-black bg-opacity-40 rounded flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">

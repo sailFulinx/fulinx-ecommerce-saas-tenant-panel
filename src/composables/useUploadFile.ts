@@ -3,6 +3,8 @@ import { ElMessage } from 'element-plus'
 import { ref } from 'vue'
 import { uploadFileApi } from '@/api/file'
 
+const uploadPathPrefix = useTenantStore().defaultStoreId
+
 interface UseUploadImageOptions {
   /** 最大上传文件数量限制 */
   maxCount?: number
@@ -22,10 +24,10 @@ interface UseUploadImageOptions {
  */
 export const useUploadFile = (options: UseUploadImageOptions = {}) => {
   const {
-    maxCount = 10,
-    maxSize = 50,
+    maxCount = 1,
+    maxSize = 5,
     acceptTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml'],
-    uploadPath = `${useTenantStore().defaultStoreId}/images`,
+    uploadPath = 'images',
     onSuccessCallback,
   } = options
 
@@ -97,7 +99,7 @@ export const useUploadFile = (options: UseUploadImageOptions = {}) => {
     const datePath = `${year}${month}${day}`
 
     // 构造新的上传路径
-    formData.append('folder', `${uploadPath}/${datePath}`)
+    formData.append('folder', `${uploadPathPrefix}/${uploadPath}/${datePath}`)
     formData.append('isPublic', 'true')
 
     const res = await processUpload(formData)
