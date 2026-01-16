@@ -11,28 +11,59 @@ const fileDataList = ref<FileData[]>([])
 const uploadProgress = ref<{ [key: string]: number }>({})
 const dragging = ref(false)
 const isHovered = ref(false) // 控制是否显示悬浮上传控件
-let hoverTimeout: number | null = null // 存储延时定时器
+let hoverTimeout: number | null = null // 存储显示延时定时器
+let leaveTimeout: number | null = null // 存储隐藏延时定时器
+const hoverContainerRef = ref<HTMLElement>()
 
 const showHoverUpload = () => {
+  // 清除可能存在的隐藏定时器
+  if (leaveTimeout) {
+    clearTimeout(leaveTimeout)
+    leaveTimeout = null
+  }
   // 设置一个延时，避免鼠标快速划过时触发悬浮上传
   hoverTimeout = window.setTimeout(() => {
     isHovered.value = true
-  }, 100) // 延迟300毫秒显示悬浮上传控件
+  }, 300) // 延迟300毫秒显示悬浮上传控件
+}
+
+const handleHoverEnter = () => {
+  // 鼠标进入悬浮控件时，清除可能存在的离开定时器
+  if (leaveTimeout) {
+    clearTimeout(leaveTimeout)
+    leaveTimeout = null
+  }
+}
+
+const handleHoverLeave = () => {
+  // 鼠标离开悬浮控件时，设置一个短暂延时后再隐藏，防止意外触发
+  leaveTimeout = window.setTimeout(() => {
+    isHovered.value = false
+    if (leaveTimeout) {
+      leaveTimeout = null
+    }
+  }, 200) // 延迟200毫秒隐藏悬浮上传控件
 }
 
 const clearHoverTimeout = () => {
   if (hoverTimeout) {
     clearTimeout(hoverTimeout)
+    hoverTimeout = null
   }
 }
 
 const hideHoverUpload = () => {
-  // 清除之前的定时器，如果用户在延迟期间移出了，则不显示悬浮控件
+  // 清除之前的显示定时器
   clearHoverTimeout()
-  // 设置一个延时隐藏，如果鼠标快速移入又移出，则取消隐藏
-  hoverTimeout = window.setTimeout(() => {
-    isHovered.value = false
-  }, 100) // 延迟100毫秒隐藏悬浮上传控件
+  // 如果当前已经显示悬浮控件，设置一个延时来隐藏
+  if (isHovered.value) {
+    leaveTimeout = window.setTimeout(() => {
+      isHovered.value = false
+      if (leaveTimeout) {
+        leaveTimeout = null
+      }
+    }, 100) // 延迟100毫秒隐藏悬浮上传控件
+  }
 }
 
 const handleExceed = (_files: File[]) => {
@@ -164,13 +195,13 @@ defineExpose({ getFileData, setFileData })
     <!-- 悬浮上传控件，固定在视窗中 -->
     <div
       v-show="isHovered"
-      class="absolute z-50 flex items-center justify-center bg-white rounded-lg shadow-xl p-6 w-48 h-16 mx-4"
+      ref="hoverContainerRef"
+      class="absolute z-50 flex items-center justify-center bg-white rounded-lg shadow-xl border border-gray-200 p-6 w-48 h-16 mx-4"
       :style="{ top: '-70px', left: '-16px' }"
-      @mouseenter="clearHoverTimeout"
-      @mouseleave="isHovered = false"
+      @mouseenter="handleHoverEnter"
+      @mouseleave="handleHoverLeave"
     >
-      <div class="absolute inset-0" @click="isHovered = false" />
-      <div class="flex items-center justify-between space-x-2">
+      <div class="flex items-center w-full h-full">
         <ElUpload
           v-loading="loading"
           class="w-16 h-16 flex justify-center"
@@ -199,9 +230,11 @@ defineExpose({ getFileData, setFileData })
             </div>
           </div>
         </ElUpload>
-        <div class="w-16 h-16 text-center">
+        <div
+          class="w-16 h-16 ml-4 text-center flex items-center justify-center"
+        >
           <div
-            class="flex flex-col items-center justify-center w-full h-full transition-colors duration-300 hover:text-blue-500"
+            class="flex flex-col items-center justify-center w-full h-full transition-colors duration-300 hover:text-blue-500 group"
           >
             <div class="mb-2 flex items-center justify-center transition-colors duration-300 hover:text-blue-500">
               <Icon :size="4" icon="ep:upload" color="#999" />
