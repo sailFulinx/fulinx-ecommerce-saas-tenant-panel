@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { Refresh } from '@element-plus/icons-vue'
 
-const emit = defineEmits(['setFileData'])
+const emit = defineEmits(['selectionConfirmed'])
 
 const dialogVisible = ref(false)
 // 图片分类数据
@@ -53,7 +53,7 @@ const open = async () => {
 
 // 响应式状态
 const selectedCategory = ref('')
-const selectedImageId = ref('')
+const selectedImages = ref<(FileData & CommonField)[]>([]) // 存储完整的图片对象数组
 const sortBy = ref('latest')
 
 // 存储容量
@@ -63,27 +63,34 @@ const totalStorage = ref(20 * 1024 * 1024 * 1024) // 20GB
 // 分类选择
 const _selectCategory = (_val: number) => {}
 
-// 图片选择
-const toggleSelectImage = (imageId: string) => {
-  if (selectedImageId.value === imageId) {
-    selectedImageId.value = ''
+// 图片选择 - 支持多选
+const toggleSelectImage = (image: FileData & CommonField) => {
+  const index = selectedImages.value.findIndex(img => img.id === image.id)
+  if (index > -1) {
+    // 如果已选中，则取消选中
+    selectedImages.value.splice(index, 1)
   } else {
-    selectedImageId.value = imageId
+    // 如果未选中，则添加到选中列表
+    selectedImages.value.push(image)
   }
 }
 
 // 确认选择
-const confirmSelection = () => {
-  if (selectedImageId.value) {
-    const selectedImage = fileListData.value.list.find(img => img.id === selectedImageId.value)
-    emit('setFileData', [selectedImage])
+const confirmSelection = (event: Event) => {
+  event.preventDefault() // 阻止默认行为，防止页面跳转
+  event.stopPropagation() // 阻止事件冒泡
+
+  if (selectedImages.value.length > 0) {
+    // 直接使用selectedImages，因为已经是完整对象数组
+    emit('selectionConfirmed', selectedImages.value)
     dialogVisible.value = false
   }
 }
 
 // 取消选择
 const cancelSelection = () => {
-  selectedImageId.value = ''
+  selectedImages.value = [] // 清空选中的图片数组
+
   dialogVisible.value = false
 }
 
@@ -105,6 +112,17 @@ const handleEnterKey = (event: KeyboardEvent) => {
 const handleInput = (event: Event) => {
   const target = event.target as HTMLInputElement
   filePayload.value.originalFileName = target.value || undefined
+}
+
+// 全选/取消全选
+const toggleSelectAll = () => {
+  if (selectedImages.value.length === fileListData.value.list.length) {
+    // 如果当前已全选，则取消全选
+    selectedImages.value = []
+  } else {
+    // 否则，选中所有当前页的图片
+    selectedImages.value = [...fileListData.value.list]
+  }
 }
 
 defineExpose({
@@ -241,8 +259,8 @@ defineExpose({
                     v-for="image in fileListData.list"
                     :key="image.id"
                     class="border rounded-lg overflow-hidden cursor-pointer transition-all hover:shadow-md"
-                    :class="[selectedImageId === image.id ? 'ring-2 ring-blue-500 border-blue-500' : 'border-gray-200']"
-                    @click="toggleSelectImage(image.id)"
+                    :class="[selectedImages.some(img => img.id === image.id) ? 'ring-2 ring-blue-500 border-blue-500' : 'border-gray-200']"
+                    @click="toggleSelectImage(image)"
                   >
                     <!-- 图片容器 -->
                     <div class="relative bg-gray-100 aspect-square flex items-center justify-center">
@@ -284,7 +302,7 @@ defineExpose({
 
                       <!-- 选中标记 -->
                       <div
-                        v-if="selectedImageId === image.id"
+                        v-if="selectedImages.some(img => img.id === image.id)"
                         class="absolute top-2 right-2 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center"
                       >
                         <svg
@@ -337,26 +355,38 @@ defineExpose({
                     </div>
                   </div>
 
-                  <!-- 操作按钮 -->
-                  <div class="flex space-x-3">
-                    <button
-                      class="px-5 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                      @click="cancelSelection"
-                    >
-                      取消
-                    </button>
-                    <button
-                      :disabled="!selectedImageId"
-                      class="px-5 py-2 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                      :class="[
-                        selectedImageId
-                          ? 'bg-blue-600 text-white hover:bg-blue-700'
-                          : 'bg-gray-300 text-gray-500 cursor-not-allowed',
-                      ]"
-                      @click="confirmSelection"
-                    >
-                      确定
-                    </button>
+                  <!-- 选择状态和操作按钮 -->
+                  <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+                    <div class="text-sm text-gray-600 mb-2 sm:mb-0">
+                      已选择 {{ selectedImages.length }} 张图片
+                      <button
+                        v-if="fileListData.list.length > 0"
+                        class="ml-2 text-blue-500 hover:text-blue-700 underline"
+                        @click="toggleSelectAll"
+                      >
+                        {{ selectedImages.length === fileListData.list.length ? '取消全选' : '全选' }}
+                      </button>
+                    </div>
+                    <div class="flex space-x-3">
+                      <button
+                        class="px-5 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                        @click="cancelSelection"
+                      >
+                        取消
+                      </button>
+                      <button
+                        :disabled="selectedImages.length === 0"
+                        class="px-5 py-2 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                        :class="[
+                          selectedImages.length > 0
+                            ? 'bg-blue-600 text-white hover:bg-blue-700'
+                            : 'bg-gray-300 text-gray-500 cursor-not-allowed',
+                        ]"
+                        @click="confirmSelection"
+                      >
+                        确定 ({{ selectedImages.length }})
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>

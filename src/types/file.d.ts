@@ -36,27 +36,6 @@ interface FileData {
   sha256: string
 
   sort?: number
-
-  /* Soft Delete Flag */
-  isDelete: number
-
-  /* Remark */
-  remark: string
-
-  /* Record Version */
-  recordVersion: number
-
-  /* Record Create Name */
-  recordCreateName: string
-
-  /* Record Update Name */
-  recordUpdateName: string
-
-  /* Record Create Time */
-  recordCreateTime: string
-
-  /* Record Update Time */
-  recordUpdateTime: string
 }
 
 interface FileListParams {
@@ -69,6 +48,18 @@ interface RemoveFileParams {
 }
 
 interface FileListData {
+  /* Bucket Name */
+  bucketName: string
+
+  /* Etag */
+  etag: string
+
+  /* S3 Key */
+  s3Key: string
+
+  /* Is Public */
+  isPublic: boolean
+
   /* Original File Name */
   originalFileName: string
 
