@@ -7,17 +7,32 @@ const categories = ref([
   { id: 'product', name: '商品图', count: 13 },
 ])
 
+const loading = reactive({
+  init: false,
+})
+
 const filePayload = ref<FileListParams & Pagination>({
   fileOriginalName: undefined,
   pageSize: 20,
   pageNumber: 1,
 })
 
-const loading = reactive({
-  init: false,
-})
+const {
+  loading: fileLoading,
+  listData: fileListData,
+  listPayload,
+  promise: filePromise,
+  getList,
+} = useFilePagination(filePayload.value)
 
-const { loading: fileLoading, listData: fileListData, promise: filePromise } = useFilePagination(filePayload.value)
+const pagination = async (val: PaginationComponentDataType) => {
+  console.log(val)
+  if (val) {
+    listPayload.pageSize = val.limit
+    listPayload.pageNumber = val.page
+  }
+  await getList()
+}
 
 onMounted(async () => {
   // 设置初始化加载状态
@@ -47,9 +62,7 @@ const usedStorage = ref(1.1 * 1024 * 1024 * 1024) // 1.1GB
 const totalStorage = ref(20 * 1024 * 1024 * 1024) // 20GB
 
 // 分类选择
-const _selectCategory = (_val: number) => {
-
-}
+const _selectCategory = (_val: number) => {}
 
 // 图片选择
 const toggleSelectImage = (imageId: string) => {
@@ -83,24 +96,23 @@ defineExpose({
 
 <template>
   <ElDialog v-model="dialogVisible" width="60%">
-    <div class="p-4 md:p-6">
-      <div class="mx-auto">
-        <!-- 头部标题 -->
-        <div class="mb-6">
-          <h1 class="text-sm font-semibold text-gray-800">
-            选择图片
-          </h1>
-        </div>
+    <template #title>
+      <h1 class="text-sm font-semibold text-gray-800">
+        选择图片
+      </h1>
+    </template>
+    <div class="max-h-screen overflow-hidden">
+      <div class="mx-auto flex flex-col h-[70vh] p-4">
         <!-- 主容器 -->
-        <div class="bg-white rounded-lg shadow-md overflow-hidden">
-          <div class="flex flex-col lg:flex-row">
+        <div class="bg-white rounded-lg flex-1 overflow-hidden flex flex-col">
+          <div class="flex flex-col lg:flex-row h-full">
             <!-- 左侧分类导航 -->
-            <div class="lg:w-1/5 border-r border-gray-200">
+            <div class="lg:w-1/5 border-r border-gray-200 flex flex-col">
               <div class="p-4">
                 <h2 class="text-sm font-medium text-gray-500 uppercase tracking-wider mb-4">
                   图片分类
                 </h2>
-                <ul class="space-y-1">
+                <ul class="space-y-1 flex-1 overflow-y-auto">
                   <li v-for="category in categories" :key="category.id">
                     <button
                       class="w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-colors"
@@ -119,9 +131,9 @@ defineExpose({
             </div>
 
             <!-- 右侧主内容区 -->
-            <div class="lg:w-4/5">
+            <div class="lg:w-4/5 flex flex-col h-full">
               <!-- 筛选工具栏 -->
-              <div class="border-b border-gray-200 p-4">
+              <div class="border-b border-gray-200 p-4 flex-shrink-0">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div class="flex flex-wrap items-center gap-4">
                     <!-- 排序选择 -->
@@ -131,10 +143,10 @@ defineExpose({
                         class="pl-3 pr-10 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       >
                         <option value="latest">
-                          最新上传在前
+                          时间倒序
                         </option>
                         <option value="oldest">
-                          最早上传在前
+                          时间升序
                         </option>
                         <option value="name">
                           按名称排序
@@ -176,24 +188,11 @@ defineExpose({
               </div>
 
               <!-- 图片网格 -->
-              <div v-loading="fileLoading" class="p-4">
+              <div v-loading="fileLoading" class="p-4 flex-1 overflow-y-auto">
                 <!-- 无图片状态 -->
                 <div v-if="fileListData.total === 0" class="text-center py-12">
-                  <div class="mx-auto w-16 h-16 text-gray-300 mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="1.5"
-                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                      />
-                    </svg>
-                  </div>
-                  <p class="text-gray-500">
-                    未找到符合条件的图片
-                  </p>
+                  <ElEmpty description="未找到符合条件的图片" />
                 </div>
-
                 <!-- 图片网格 -->
                 <div v-else class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                   <div
@@ -253,9 +252,18 @@ defineExpose({
                   </div>
                 </div>
               </div>
+              <div class="w-full flex justify-end">
+                <Pagination
+                  v-show="fileListData.total > 0"
+                  v-model:page="filePayload.pageNumber"
+                  v-model:limit="filePayload.pageSize"
+                  :total="fileListData.total"
+                  @pagination="pagination"
+                />
+              </div>
 
               <!-- 底部栏 -->
-              <div class="border-t border-gray-200 p-4">
+              <div class="border-t border-gray-200 p-4 flex-shrink-0">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <!-- 容量使用情况 -->
                   <div class="w-full md:w-auto">

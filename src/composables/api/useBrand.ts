@@ -5,7 +5,7 @@ export const useBrandPagination = (payload?: Partial<BrandListParams & Paginatio
     languageId,
     ...payload,
   }
-  return useList<BrandListData, BrandListParams>(brandPaginationApi, finalPayload, options)
+  return useList<BrandListData & CommonField, BrandListParams & Pagination>(brandPaginationApi, finalPayload, options)
 }
 
 export const useBrandList = (payload?: Partial<BrandListParams>, options: UseCommonOptions = {}) => {
@@ -17,5 +17,5 @@ export const useBrandList = (payload?: Partial<BrandListParams>, options: UseCom
     ...payload,
   }
 
-  return useList<BrandListData, BrandListParams>(brandListApi, finalPayload, options)
+  return useList<BrandListData & CommonField, BrandListParams>(brandListApi, finalPayload, options)
 }

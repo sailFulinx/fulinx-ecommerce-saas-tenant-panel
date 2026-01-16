@@ -5,7 +5,11 @@ export const useWarehousePagination = (payload?: Partial<WarehouseListParams & P
     languageId,
     ...payload,
   }
-  return useList<(WarehouseData & CommonField), WarehouseListParams>(warehousePaginationApi, finalPayload, options)
+  return useList<WarehouseData & CommonField, WarehouseListParams & Pagination>(
+    warehousePaginationApi,
+    finalPayload,
+    options,
+  )
 }
 
 export const useWarehouseList = (payload?: Partial<WarehouseListParams>, options: UseCommonOptions = {}) => {

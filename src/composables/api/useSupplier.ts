@@ -6,7 +6,7 @@ export const useSupplierPagination = (payload?: Partial<SupplierListParams & Pag
     ...payload,
   }
 
-  return useList<SupplierListData, SupplierListParams>(supplierPaginationApi, finalPayload, options)
+  return useList<SupplierListData & CommonField, SupplierListParams & Pagination>(supplierPaginationApi, finalPayload, options)
 }
 
 export const useSupplierList = (payload?: Partial<SupplierListParams>, options: UseCommonOptions = {}) => {
@@ -16,5 +16,5 @@ export const useSupplierList = (payload?: Partial<SupplierListParams>, options: 
     languageId,
     ...payload,
   }
-  return useList<SupplierListData, SupplierListParams>(supplierListApi, finalPayload, options)
+  return useList<SupplierListData & CommonField, SupplierListParams>(supplierListApi, finalPayload, options)
 }

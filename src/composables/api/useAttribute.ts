@@ -5,7 +5,7 @@ export const useAttributePagination = (payload?: Partial<AttributeListParams & P
     languageId,
     ...payload,
   }
-  return useList<AttributeListData, AttributeListParams>(attributePaginationApi, finalPayload, options)
+  return useList<(AttributeListData & CommonField), AttributeListParams & Pagination>(attributePaginationApi, finalPayload, options)
 }
 
 export const useAttributeList = (payload?: Partial<AttributeListParams>, options: UseCommonOptions = {}) => {

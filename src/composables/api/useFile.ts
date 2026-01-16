@@ -5,5 +5,5 @@ export const useFilePagination = (payload?: Partial<FileListParams & Pagination>
     languageId,
     ...payload,
   }
-  return useList<FileListData & CommonField, FileListParams>(filePaginationApi, finalPayload, options)
+  return useList<FileListData & CommonField, FileListParams & Pagination>(filePaginationApi, finalPayload, options)
 }
