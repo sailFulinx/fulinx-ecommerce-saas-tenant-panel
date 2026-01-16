@@ -124,21 +124,22 @@ defineExpose({
       v-else
       class="w-41 min-h-41 h-auto border border-dashed border-solid-1 border-gray-300 rounded flex flex-col items-center justify-center relative group"
     >
-      <ElImage v-if="fileUrl" :src="fileUrl" lazy fit="cover" class="w-full h-full min-h-41 rounded object-cover p-2">
-        <template #placeholder>
-          <div class="flex items-center justify-center h-full min-h-41">
-            <div class="flex flex-col items-center">
-              <Icon icon="ep:loading" class="animate-spin" />
-              <span class="mt-2 text-xs text-gray-500">加载中...</span>
-            </div>
-          </div>
-        </template>
-      </ElImage>
-      <div
-        v-if="fileUrl"
-        class="absolute inset-0 bg-black bg-opacity-40 rounded flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-      >
-        <Icon :size="4" icon="ep:delete" class="cursor-pointer" color="white" @click.stop="handleDelete" />
+      <div v-if="fileUrl" class="w-full h-full min-h-41 rounded p-2 relative">
+        <video :src="fileUrl" controls class="w-full h-full w-full min-h-41 rounded" style="max-width: 100%; max-height: 100%;">
+          您的浏览器不支持视频播放
+        </video>
+        <ElButton
+          class="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity bg-white !border-none shadow-md !p-1.5 !m-0 !h-7 !w-7 !rounded-full"
+          @click.stop="handleDelete"
+        >
+          <Icon icon="ep:close" class="text-gray-500 text-sm" />
+        </ElButton>
+      </div>
+      <div v-else class="flex items-center justify-center h-full min-h-41">
+        <div class="flex flex-col items-center">
+          <Icon icon="ep:loading" class="animate-spin" />
+          <span class="mt-2 text-xs text-gray-500">加载中...</span>
+        </div>
       </div>
     </div>
   </div>
