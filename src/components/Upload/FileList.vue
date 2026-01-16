@@ -362,7 +362,7 @@ defineExpose({
                       已选择 {{ selectedImages.length }} 张图片
                       <button
                         v-if="fileListData.list.length > 0"
-                        class="ml-2 text-blue-500 hover:text-blue-700 underline"
+                        class="cursor-pointer ml-2 text-blue-500 hover:text-blue-700 underline"
                         @click="toggleSelectAll"
                       >
                         {{ selectedImages.length === fileListData.list.length ? '取消全选' : '全选' }}
@@ -370,14 +370,14 @@ defineExpose({
                     </div>
                     <div class="flex space-x-3">
                       <button
-                        class="px-5 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                        class="cursor-pointer px-5 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                         @click="cancelSelection"
                       >
                         取消
                       </button>
                       <button
                         :disabled="selectedImages.length === 0"
-                        class="px-5 py-2 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                        class="cursor-pointer px-5 py-2 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                         :class="[
                           selectedImages.length > 0
                             ? 'bg-blue-600 text-white hover:bg-blue-700'

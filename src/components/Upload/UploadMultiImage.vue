@@ -55,7 +55,6 @@ defineExpose({ getFileData, setFileData })
               <Icon :size="4" icon="ep:delete" />
             </EBtn>
           </div>
-
           <!-- 中间图片 -->
           <div v-if="item.fileUrl" class="w-41 p-2 my-auto">
             <div class="flex items-center justify-center">
