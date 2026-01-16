@@ -109,7 +109,7 @@ const setSelectionFileData = (fileDataList: FileData[]) => {
     <!-- 悬浮上传控件 -->
     <div
       v-show="isHovered"
-      class="absolute z-50 flex items-center justify-center bg-white rounded-lg shadow-xl border border-gray-200 p-6 w-48 h-16 mx-4"
+      class="absolute z-50 flex items-center justify-center bg-white rounded-lg shadow-xl border border-gray-200 p-6 w-41 h-16 mx-4"
       :style="{ top: '-70px', left: '-16px' }"
       @mouseenter="handleHoverEnter"
       @mouseleave="handleHoverLeave"
