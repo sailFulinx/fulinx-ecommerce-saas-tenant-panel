@@ -61,7 +61,7 @@ interface FileData {
 
 interface FileListParams {
   /* File Original Name */
-  fileOriginalName?: string | null
+  fileOriginalName?: string | undefined
 }
 
 interface RemoveFileParams {

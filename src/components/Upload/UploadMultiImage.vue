@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { UploadFile, UploadProps } from 'element-plus'
+import { isVisible } from 'element-plus/es/utils'
 import { VueDraggable } from 'vue-draggable-plus'
 import { uploadFileApi } from '@/api/file'
 
@@ -132,7 +133,34 @@ defineExpose({ getFileData, setFileData })
         </div>
       </div>
     </VueDraggable>
-
+    <div v-show="isVisible">
+      <ElUpload
+        v-loading="loading"
+        class="w-full border border-dashed border-gray-300 rounded p-2 flex items-center justify-center bg-white hover:border-[#71A0FF]"
+        :multiple="true"
+        action=""
+        accept=".jpg,.jpeg,.png,.gif,.svg"
+        :file-list="beforeUploadFileDataList"
+        list-type="picture-card"
+        :http-request="handleUpload"
+        :show-file-list="false"
+        :before-upload="beforeUpload"
+        :on-exceed="handleExceed"
+        :on-success="handleSuccess"
+        :on-progress="handleProgress"
+        :limit="10"
+      >
+        <div class="flex flex-col items-center justify-center w-full h-full transition-colors duration-300 hover:text-blue-500">
+          <div class="mb-2 flex items-center justify-center transition-colors duration-300 hover:text-blue-500">
+            <Icon :size="8" icon="ep:upload" color="#999" />
+          </div>
+          <div class="text-sm text-gray-500 flex justify-center text-center w-full transition-colors duration-300 group-hover:text-[#71A0FF]">
+            <span>本地上传</span>
+          </div>
+        </div>
+      </ElUpload>
+      <div>图库选择</div>
+    </div>
     <!-- 上传按钮 -->
     <div class="w-41 h-41 border border-dashed hover:border-[#71A0FF] bg-white flex items-center justify-center group">
       <div class="flex flex-col items-center justify-center w-full h-full p-2">
@@ -144,28 +172,6 @@ defineExpose({ getFileData, setFileData })
         </div>
       </div>
     </div>
-    <ElUpload
-      v-loading="loading"
-      class="w-full border border-dashed border-gray-300 rounded p-2 flex items-center justify-center bg-white hover:border-[#71A0FF]"
-      :multiple="true"
-      action=""
-      accept=".jpg,.jpeg,.png,.gif,.svg"
-      :file-list="beforeUploadFileDataList"
-      list-type="picture-card"
-      :http-request="handleUpload"
-      :show-file-list="false"
-      :before-upload="beforeUpload"
-      :on-exceed="handleExceed"
-      :on-success="handleSuccess"
-      :on-progress="handleProgress"
-      :limit="10"
-    >
-      <div class="flex flex-col items-center justify-center w-full h-full transition-colors duration-300 hover:text-blue-500">
-        <div class="mb-2 flex items-center justify-center transition-colors duration-300 hover:text-blue-500">
-          <Icon :size="8" icon="ep:upload" color="#999" />
-        </div>
-      </div>
-    </ElUpload>
   </div>
 </template>
 

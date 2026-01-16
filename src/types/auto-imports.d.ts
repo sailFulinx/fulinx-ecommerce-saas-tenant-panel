@@ -589,6 +589,8 @@ declare global {
   const useFavicon: typeof import('@vueuse/core').useFavicon
   const useFetch: typeof import('@vueuse/core').useFetch
   const useFileDialog: typeof import('@vueuse/core').useFileDialog
+  const useFileList: typeof import('../composables/api/useFile').useFileList
+  const useFilePagination: typeof import('../composables/api/useFile').useFilePagination
   const useFileRootUrl: typeof import('../composables/general').useFileRootUrl
   const useFileSystemAccess: typeof import('@vueuse/core').useFileSystemAccess
   const useFlashy: typeof import('../composables/useFlashy').useFlashy
