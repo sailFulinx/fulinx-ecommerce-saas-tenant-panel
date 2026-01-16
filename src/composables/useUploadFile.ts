@@ -31,6 +31,8 @@ export const useUploadFile = (options: UseUploadImageOptions = {}) => {
     onSuccessCallback,
   } = options
 
+  console.log(maxCount, maxSize, acceptTypes, uploadPath)
+
   // 上传过程中的文件列表
   const beforeUploadFileDataList = ref<UploadFile[]>([])
   // 已上传的文件数据列表
@@ -61,8 +63,10 @@ export const useUploadFile = (options: UseUploadImageOptions = {}) => {
   /**
    * 上传超出限制的处理
    */
-  const handleExceed = (_files: File[]) => {
-    ElMessage.error(`您最多只能上传${maxCount}个文件!`)
+  const handleExceed = (files: File[]) => {
+    if (maxCount && fileDataList.value.length + files.length > maxCount) {
+      ElMessage.error(`您最多只能上传${maxCount}个文件!`)
+    }
   }
 
   /**

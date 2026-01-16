@@ -33,7 +33,7 @@ defineExpose({ getFileData, setFileData })
 
 <template>
   <div>
-    <FloatingUpload :show-upload-button="true" :max-count="10" :max-size="5" upload-path="images" :accept-file-type="['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml']" @file-uploaded="handleFileUploaded" @selection-confirmed="setFileData" />
+    <FloatingUpload :show-upload-button="true" :multiple="true" :max-count="10" :max-size="5" upload-path="images" :accept-file-type="['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml']" @file-uploaded="handleFileUploaded" @selection-confirmed="setFileData" />
 
     <VueDraggable
       v-if="fileDataList && fileDataList.length > 0"

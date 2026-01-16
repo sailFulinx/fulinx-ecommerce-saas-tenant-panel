@@ -8,15 +8,6 @@ const props = defineProps({
 })
 const emit = defineEmits(['getData'])
 
-useUploadFile({
-  maxCount: 10,
-  uploadPath: `${useTenantStore().defaultStoreId}/images`,
-  onSuccessCallback: (fileData: FileData) => {
-    console.log(fileData)
-    emit('getData', { fileData })
-  },
-})
-
 const imageUrl = ref('')
 
 const fileData = ref<FileData & CommonField>({
@@ -123,6 +114,7 @@ defineExpose({
       :show-upload-button="true"
       :max-count="1"
       :max-size="5"
+      :multiple="false"
       upload-path="images"
       :accept-file-type="['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml']"
       @file-uploaded="handleFileUploaded"
@@ -132,19 +124,18 @@ defineExpose({
       v-else
       class="w-41 min-h-41 h-auto border border-dashed border-solid-1 border-gray-300 rounded flex flex-col items-center justify-center relative group"
     >
-      <ElImage v-if="imageUrl" :src="imageUrl" lazy fit="cover" class="w-full h-full rounded object-cover p-2">
+      <ElImage v-if="imageUrl" :src="imageUrl" lazy fit="cover" class="w-full h-full min-h-41 rounded object-cover p-2">
         <template #placeholder>
-          <div class="flex items-center justify-center h-full">
+          <div class="flex items-center justify-center h-full min-h-41">
             <div class="flex flex-col items-center">
-              <ElIcon class="is-loading text-gray-400">
-                <Refresh />
-              </ElIcon>
+              <Icon icon="ep:loading" class="animate-spin" />
               <span class="mt-2 text-xs text-gray-500">加载中...</span>
             </div>
           </div>
         </template>
       </ElImage>
       <div
+        v-if="imageUrl"
         class="absolute inset-0 bg-black bg-opacity-40 rounded flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
       >
         <Icon :size="4" icon="ep:delete" class="cursor-pointer" color="white" @click.stop="handleDelete" />
