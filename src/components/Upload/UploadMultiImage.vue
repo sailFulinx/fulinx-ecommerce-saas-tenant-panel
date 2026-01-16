@@ -17,7 +17,7 @@ const showHoverUpload = () => {
   // 设置一个延时，避免鼠标快速划过时触发悬浮上传
   hoverTimeout = window.setTimeout(() => {
     isHovered.value = true
-  }, 300) // 延迟300毫秒显示悬浮上传控件
+  }, 100) // 延迟300毫秒显示悬浮上传控件
 }
 
 const clearHoverTimeout = () => {
@@ -162,55 +162,63 @@ defineExpose({ getFileData, setFileData })
     </VueDraggable>
 
     <!-- 悬浮上传控件，固定在视窗中 -->
-    <Teleport v-if="isHovered" to="body">
-      <div
-        class="fixed inset-0 z-50 flex items-center justify-center"
-        @mouseenter="clearHoverTimeout"
-        @mouseleave="isHovered = false"
-      >
-        <div class="absolute inset-0" @click="isHovered = false" />
-        <div class="relative bg-white rounded-lg shadow-xl border border-gray-200 p-6 w-full max-w-md mx-4">
-          <div class="flex items-center">
-            <ElUpload
-              v-loading="loading"
-              class="w-16 h-16"
-              :multiple="true"
-              action=""
-              accept=".jpg,.jpeg,.png,.gif,.svg"
-              :file-list="beforeUploadFileDataList"
-              list-type="picture-card"
-              :http-request="handleUpload"
-              :show-file-list="false"
-              :before-upload="beforeUpload"
-              :on-exceed="handleExceed"
-              :on-success="handleSuccess"
-              :on-progress="handleProgress"
-              :limit="10"
+    <div
+      v-show="isHovered"
+      class="absolute z-50 flex items-center justify-center bg-white rounded-lg shadow-xl p-6 w-48 h-16 mx-4"
+      :style="{ top: '-70px', left: '-16px' }"
+      @mouseenter="clearHoverTimeout"
+      @mouseleave="isHovered = false"
+    >
+      <div class="absolute inset-0" @click="isHovered = false" />
+      <div class="flex items-center justify-between space-x-2">
+        <ElUpload
+          v-loading="loading"
+          class="w-16 h-16 flex justify-center"
+          :multiple="true"
+          action=""
+          accept=".jpg,.jpeg,.png,.gif,.svg"
+          :file-list="beforeUploadFileDataList"
+          :http-request="handleUpload"
+          :show-file-list="false"
+          :before-upload="beforeUpload"
+          :on-exceed="handleExceed"
+          :on-success="handleSuccess"
+          :on-progress="handleProgress"
+          :limit="10"
+        >
+          <div
+            class="flex flex-col items-center justify-center w-full h-full transition-colors duration-300 hover:text-blue-500 group"
+          >
+            <div class="mb-2 flex items-center justify-center transition-colors duration-300 hover:text-blue-500">
+              <Icon :size="4" icon="ep:upload" color="#999" />
+            </div>
+            <div
+              class="fs-12px leading-3 text-gray-500 flex justify-center text-center w-full transition-colors duration-300 group-hover:text-[#71A0FF]"
             >
-              <div
-                class="flex flex-col items-center justify-center w-full h-full transition-colors duration-300 hover:text-blue-500"
-              >
-                <div class="mb-2 flex items-center justify-center transition-colors duration-300 hover:text-blue-500">
-                  <Icon :size="4" icon="ep:upload" color="#999" />
-                </div>
-                <div
-                  class="text-sm text-gray-500 flex justify-center text-center w-full transition-colors duration-300 group-hover:text-[#71A0FF]"
-                >
-                  <span>本地上传</span>
-                </div>
-              </div>
-            </ElUpload>
-            <div class="w-16 h-16 border border-gray-500 text-center">
-              图库选择
+              <span>本地上传</span>
+            </div>
+          </div>
+        </ElUpload>
+        <div class="w-16 h-16 text-center">
+          <div
+            class="flex flex-col items-center justify-center w-full h-full transition-colors duration-300 hover:text-blue-500"
+          >
+            <div class="mb-2 flex items-center justify-center transition-colors duration-300 hover:text-blue-500">
+              <Icon :size="4" icon="ep:upload" color="#999" />
+            </div>
+            <div
+              class="fs-12px leading-3 text-gray-500 flex justify-center text-center w-full transition-colors duration-300 group-hover:text-[#71A0FF]"
+            >
+              <span>图库选择</span>
             </div>
           </div>
         </div>
       </div>
-    </Teleport>
+    </div>
 
     <!-- 上传按钮 -->
     <div
-      class="w-41 h-41 border border-dashed hover:border-[#71A0FF] bg-white flex items-center justify-center group"
+      class="w-41 h-41 border border-dashed hover:border-[#71A0FF] bg-white flex items-center justify-center group relative"
       @mouseenter="showHoverUpload"
       @mouseleave="hideHoverUpload"
     >
