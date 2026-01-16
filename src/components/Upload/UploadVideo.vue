@@ -1,21 +1,16 @@
 <script lang="ts" setup>
-import type { UploadProps } from 'element-plus'
-import { ElMessage } from 'element-plus'
-import { uploadFileApi } from '@/api/file'
+// import type { UploadProps } from 'element-plus'
 
 const props = defineProps({
-  videoData: {
-    type: Object as () => FileData,
+  imageData: {
+    type: Object as () => FileData & CommonField,
   },
 })
-
 const emit = defineEmits(['getData'])
 
-const loading = ref(false)
+const fileUrl = ref('')
 
-const videoUrl = ref('')
-
-const fileData = ref<FileData>({
+const fileData = ref<FileData & CommonField>({
   id: '',
   bucketName: '',
   etag: '',
@@ -38,56 +33,20 @@ const fileData = ref<FileData>({
 })
 
 watch(
-  () => props.videoData,
+  () => props.imageData,
   val => {
     if (val) {
       if (val.fileUrl) {
-        videoUrl.value = val.fileUrl
+        const image = val.fileUrl
+        fileUrl.value = image
       } else {
-        videoUrl.value = ''
+        fileUrl.value = ''
       }
       fileData.value = { ...val }
     }
   },
   { immediate: true, deep: true },
 )
-
-const handleSuccess: UploadProps['onSuccess'] = (response, uploadFile) => {
-  videoUrl.value = URL.createObjectURL(uploadFile.raw!)
-}
-
-const beforeUpload: UploadProps['beforeUpload'] = rawFile => {
-  if (rawFile.type !== 'video/mp4') {
-    ElMessage.error('视频必须是MP4格式!')
-    return false
-  } else if (rawFile.size / 1024 / 1024 > 1000) {
-    ElMessage.error('视频大小不能超过1000MB!')
-    return false
-  }
-  return true
-}
-
-const handleUpload = async ({ file }: { file: File }) => {
-  loading.value = true
-  const formData = new FormData()
-  formData.append('file', file)
-  // 生成当前日期格式为 YYYYMMDD 的字符串
-  const now = new Date()
-  const year = now.getFullYear()
-  const month = String(now.getMonth() + 1).padStart(2, '0')
-  const day = String(now.getDate()).padStart(2, '0')
-  const datePath = `${year}${month}${day}`
-
-  // 构造新的上传路径
-  formData.append('folder', `videos/${datePath}`)
-  formData.append('isPublic', 'true')
-  const { data } = await uploadFileApi(formData).catch(err => {
-    loading.value = false
-    throw err
-  })
-  fileData.value = { ...data }
-  loading.value = false
-}
 
 const handleDelete = () => {
   fileData.value = {
@@ -111,18 +70,35 @@ const handleDelete = () => {
     recordCreateTime: '',
     recordUpdateTime: '',
   }
-  videoUrl.value = ''
+  fileUrl.value = ''
   emit('getData', { fileData: fileData.value })
 }
 
-const setFileData = (data: FileData) => {
-  fileData.value = data
+const setFileData = (data: (FileData & CommonField)[]) => {
+  if (data.length > 0) {
+    fileData.value = data[0]
+    fileUrl.value = data[0].fileUrl
+  }
+}
+
+const setSelectionFileData = (data: (FileData & CommonField)[]) => {
+  if (data.length > 0) {
+    fileData.value = data[0]
+    fileUrl.value = data[0].fileUrl
+    emit('getData', { fileData: fileData.value })
+  }
 }
 
 const getFileData = () => {
   return {
     fileData: fileData.value,
   }
+}
+
+const handleFileUploaded = (data: FileData) => {
+  fileData.value = { ...data }
+  fileUrl.value = data.fileUrl
+  emit('getData', { fileData: fileData.value })
 }
 
 defineExpose({
@@ -132,31 +108,38 @@ defineExpose({
 </script>
 
 <template>
-  <ElUpload
-    v-loading="loading"
-    action=""
-    accept=".mp4"
-    :http-request="handleUpload"
-    :show-file-list="false"
-    :on-success="handleSuccess"
-    :before-upload="beforeUpload"
-    class="flex items-center justify-center bg-white"
-  >
-    <div class="w-42 h-42 border border-solid-1 border-gray-300 rounded p-2 flex items-center justify-center">
-      <div v-if="videoUrl" class="flex flex-col items-center justify-center relative">
-        <video class="w-full max-h-41 rounded object-cover mb-2" :src="videoUrl" controls />
-        <EBtn text @click.stop="handleDelete">
-          <Icon :size="4" icon="ep:delete" />
-        </EBtn>
-      </div>
-      <div v-else>
-        <div class="w-full flex justify-center mb-5">
-          <Icon :size="8" icon="ep:upload" color="#999" />
-        </div>
-        <div class="w-full text-sm text-gray-500 flex justify-center text-center">
-          <span>只允许上传mp4格式视频，最大不能超过1000M</span>
-        </div>
+  <div>
+    <FloatingUpload
+      v-if="!fileUrl"
+      :show-upload-button="true"
+      :max-count="1"
+      :max-size="150"
+      :multiple="false"
+      upload-path="videos"
+      :accept-file-type="['video/mp4']"
+      @file-uploaded="handleFileUploaded"
+      @selection-confirmed="setSelectionFileData"
+    />
+    <div
+      v-else
+      class="w-41 min-h-41 h-auto border border-dashed border-solid-1 border-gray-300 rounded flex flex-col items-center justify-center relative group"
+    >
+      <ElImage v-if="fileUrl" :src="fileUrl" lazy fit="cover" class="w-full h-full min-h-41 rounded object-cover p-2">
+        <template #placeholder>
+          <div class="flex items-center justify-center h-full min-h-41">
+            <div class="flex flex-col items-center">
+              <Icon icon="ep:loading" class="animate-spin" />
+              <span class="mt-2 text-xs text-gray-500">加载中...</span>
+            </div>
+          </div>
+        </template>
+      </ElImage>
+      <div
+        v-if="fileUrl"
+        class="absolute inset-0 bg-black bg-opacity-40 rounded flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+      >
+        <Icon :size="4" icon="ep:delete" class="cursor-pointer" color="white" @click.stop="handleDelete" />
       </div>
     </div>
-  </ElUpload>
+  </div>
 </template>

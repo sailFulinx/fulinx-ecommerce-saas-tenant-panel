@@ -143,26 +143,3 @@ defineExpose({
     </div>
   </div>
 </template>
-
-<style scoped>
-.avatar-uploader .avatar {
-  width: 1200px;
-  height: 100px;
-  display: block;
-}
-</style>
-
-<style>
-.avatar-uploader .el-upload {
-  border: 1px dashed var(--el-border-color);
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  transition: var(--el-transition-duration-fast);
-}
-
-.avatar-uploader .el-upload:hover {
-  border-color: var(--el-color-primary);
-}
-</style>
