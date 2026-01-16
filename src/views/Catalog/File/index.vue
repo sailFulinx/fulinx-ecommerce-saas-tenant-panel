@@ -12,7 +12,7 @@ const loading = reactive({
   del: false,
 })
 const listQuery = reactive<FileListParams & Pagination>({
-  fileOriginalName: '',
+  originalFileName: '',
   pageSize: 24,
   pageNumber: 1,
 })
@@ -20,8 +20,8 @@ const selectedList = ref<string[]>([])
 
 const getList = async () => {
   loading.list = true
-  if (listQuery.fileOriginalName === '') {
-    listQuery.fileOriginalName = null
+  if (listQuery.originalFileName === '') {
+    listQuery.originalFileName = null
   }
   const { data } = await filePaginationApi(listQuery).catch(err => {
     loading.list = false
@@ -105,7 +105,7 @@ init()
             {{ $t('router.file') }}
           </div>
           <ElInput
-            v-model="listQuery.fileOriginalName"
+            v-model="listQuery.originalFileName"
             clearable
             :placeholder="$t('file.placeholder.originalFileName')"
             style="width: 200px"

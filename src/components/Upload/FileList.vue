@@ -14,7 +14,7 @@ const loading = reactive({
 })
 
 const filePayload = ref<FileListParams & Pagination>({
-  fileOriginalName: undefined,
+  originalFileName: undefined,
   pageSize: 20,
   pageNumber: 1,
 })
@@ -23,7 +23,6 @@ const {
   loading: fileLoading,
   listData: fileListData,
   listPayload,
-  promise: filePromise,
   getList,
 } = useFilePagination(filePayload.value, { immediate: false })
 
@@ -41,12 +40,12 @@ const open = async () => {
   // 设置初始化加载状态
   loading.init = true
   try {
-    // 并行等待所有数据加载完成
-    await Promise.all([filePromise])
+    // 重新获取数据
+    await getList()
   } catch (error) {
     console.error('加载数据失败:', error)
   } finally {
-    loading.init = true
+    loading.init = false
   }
 }
 
@@ -54,7 +53,6 @@ const open = async () => {
 const selectedCategory = ref('')
 const selectedImageId = ref('')
 const sortBy = ref('latest')
-const searchQuery = ref('')
 
 // 存储容量
 const usedStorage = ref(1.1 * 1024 * 1024 * 1024) // 1.1GB
@@ -90,8 +88,8 @@ const cancelSelection = () => {
 
 // 清除搜索
 const clearSearch = () => {
-  filePayload.value.fileOriginalName = undefined
-  searchQuery.value = '' // 同时清除界面上的搜索关键词
+  filePayload.value.originalFileName = undefined
+  listPayload.originalFileName = undefined
   getList()
 }
 
@@ -105,7 +103,7 @@ const handleEnterKey = (event: KeyboardEvent) => {
 // 处理输入事件，确保值正确更新
 const handleInput = (event: Event) => {
   const target = event.target as HTMLInputElement
-  filePayload.value.fileOriginalName = target.value || undefined
+  filePayload.value.originalFileName = target.value || undefined
 }
 
 defineExpose({
@@ -176,7 +174,7 @@ defineExpose({
                     <!-- 搜索框 -->
                     <div class="relative">
                       <input
-                        v-model="filePayload.fileOriginalName"
+                        v-model="listPayload.originalFileName"
                         type="text"
                         placeholder="查询图片名称"
                         class="pl-9 pr-10 py-2 w-full md:w-64 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -201,7 +199,7 @@ defineExpose({
                         </svg>
                       </div>
                       <button
-                        v-if="filePayload.fileOriginalName"
+                        v-if="filePayload.originalFileName"
                         type="button"
                         class="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600"
                         @click="clearSearch"
