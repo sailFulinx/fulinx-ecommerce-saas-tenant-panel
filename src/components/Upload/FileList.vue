@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { Refresh } from '@element-plus/icons-vue'
+
 const dialogVisible = ref(false)
 // 图片分类数据
 const categories = ref([
@@ -204,7 +206,24 @@ defineExpose({
                   >
                     <!-- 图片容器 -->
                     <div class="relative bg-gray-100 aspect-square flex items-center justify-center">
-                      <ElImage v-if="image.fileUrl" :src="image.fileUrl" />
+                      <ElImage
+                        v-if="image.fileUrl"
+                        :src="image.fileUrl"
+                        lazy
+                        fit="cover"
+                        class="w-full h-full object-cover"
+                      >
+                        <template #placeholder>
+                          <div class="flex items-center justify-center h-full">
+                            <div class="flex flex-col items-center">
+                              <ElIcon class="is-loading text-gray-400">
+                                <Refresh />
+                              </ElIcon>
+                              <span class="mt-2 text-xs text-gray-500">加载中...</span>
+                            </div>
+                          </div>
+                        </template>
+                      </ElImage>
                       <!-- 图片占位符 -->
                       <div v-else class="text-gray-400">
                         <svg
@@ -308,16 +327,3 @@ defineExpose({
     </div>
   </ElDialog>
 </template>
-
-<style>
-/* 添加一些自定义样式以匹配原图效果 */
-select:focus,
-input:focus {
-  outline: none;
-}
-
-/* 确保图片容器保持正方形 */
-.aspect-square {
-  aspect-ratio: 1 / 1;
-}
-</style>
