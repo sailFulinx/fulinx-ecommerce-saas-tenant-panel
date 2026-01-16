@@ -33,12 +33,12 @@ defineExpose({ getFileData, setFileData })
 
 <template>
   <div>
-    <FloatingUpload :show-upload-button="true" :multiple="true" :max-count="10" :max-size="5" upload-path="images" :accept-file-type="['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml']" @file-uploaded="handleFileUploaded" @selection-confirmed="setFileData" />
+    <FloatingUpload :show-upload-button="true" :multiple="true" :max-count="10" :max-size="50" upload-path="images" :accept-file-type="['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml']" @file-uploaded="handleFileUploaded" @selection-confirmed="setFileData" />
 
     <VueDraggable
       v-if="fileDataList && fileDataList.length > 0"
       v-model="fileDataList"
-      class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
+      class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-8  gap-4"
       item-key="id"
       @start="dragging = true"
       @end="handleChangeSort"
@@ -68,9 +68,7 @@ defineExpose({ getFileData, setFileData })
                 <template #placeholder>
                   <div class="flex items-center justify-center h-full">
                     <div class="flex flex-col items-center">
-                      <ElIcon class="is-loading text-gray-400">
-                        <Refresh />
-                      </ElIcon>
+                      <Icon icon="ep:loading" class="animate-spin" />
                       <span class="mt-2 text-xs text-gray-500">加载中...</span>
                     </div>
                   </div>
