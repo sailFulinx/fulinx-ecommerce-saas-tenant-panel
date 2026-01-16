@@ -168,7 +168,25 @@ defineExpose({ getFileData, setFileData })
 
 <template>
   <div>
+    <!-- 上传按钮 -->
+    <div
+      class="w-41 h-41 border border-dashed hover:border-[#71A0FF] bg-white flex items-center justify-center group relative mb-4"
+      @mouseenter="showHoverUpload"
+      @mouseleave="hideHoverUpload"
+    >
+      <div class="flex flex-col items-center justify-center w-full h-full p-2">
+        <div class="mb-2 flex items-center justify-center transition-colors duration-300 group-hover:text-[#71A0FF]">
+          <Icon :size="8" icon="ep:upload" color="#999" />
+        </div>
+        <div
+          class="text-sm text-gray-500 flex justify-center text-center w-full transition-colors duration-300 group-hover:text-[#71A0FF]"
+        >
+          <span>只允许上传jpg, png, gif格式图片，最大不能超过50M</span>
+        </div>
+      </div>
+    </div>
     <VueDraggable
+      v-if="fileDataList && fileDataList.length > 0"
       v-model="fileDataList"
       class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
       item-key="id"
@@ -177,7 +195,7 @@ defineExpose({ getFileData, setFileData })
     >
       <div v-for="(item, index) in fileDataList" :key="index" class="flex flex-col items-center">
         <!-- 图片卡片 -->
-        <div class="w-full border border-gray-300 rounded flex flex-col items-center justify-between mb-2">
+        <div class="w-full border border-gray-200 rounded flex flex-col items-center justify-between mb-2">
           <!-- 顶部按钮 -->
           <div class="w-full h-6 flex justify-between border-b border-gray-300 bg-gray-50">
             <EBtn text @click.stop="handleRemove(index)">
@@ -189,9 +207,26 @@ defineExpose({ getFileData, setFileData })
           </div>
 
           <!-- 中间图片 -->
-          <div v-if="item.fileUrl" class="w-full h-42 flex items-center justify-center p-2">
+          <div v-if="item.fileUrl" class="w-41 flex items-center justify-center p-2">
             <div>
-              <img class="w-full max-h-42 rounded object-cover py-2" :src="`${item.fileUrl}`">
+              <ElImage
+                v-if="item.fileUrl"
+                :src="item.fileUrl"
+                lazy
+                fit="cover"
+                class="w-full h-full object-cover"
+              >
+                <template #placeholder>
+                  <div class="flex items-center justify-center h-full">
+                    <div class="flex flex-col items-center">
+                      <ElIcon class="is-loading text-gray-400">
+                        <Refresh />
+                      </ElIcon>
+                      <span class="mt-2 text-xs text-gray-500">加载中...</span>
+                    </div>
+                  </div>
+                </template>
+              </ElImage>
             </div>
           </div>
         </div>
@@ -256,23 +291,6 @@ defineExpose({ getFileData, setFileData })
       </div>
     </div>
 
-    <!-- 上传按钮 -->
-    <div
-      class="w-41 h-41 border border-dashed hover:border-[#71A0FF] bg-white flex items-center justify-center group relative"
-      @mouseenter="showHoverUpload"
-      @mouseleave="hideHoverUpload"
-    >
-      <div class="flex flex-col items-center justify-center w-full h-full p-2">
-        <div class="mb-2 flex items-center justify-center transition-colors duration-300 group-hover:text-[#71A0FF]">
-          <Icon :size="8" icon="ep:upload" color="#999" />
-        </div>
-        <div
-          class="text-sm text-gray-500 flex justify-center text-center w-full transition-colors duration-300 group-hover:text-[#71A0FF]"
-        >
-          <span>只允许上传jpg, png, gif格式图片，最大不能超过50M</span>
-        </div>
-      </div>
-    </div>
     <FileList ref="fileListRef" @selection-confirmed="setFileData" />
   </div>
 </template>
