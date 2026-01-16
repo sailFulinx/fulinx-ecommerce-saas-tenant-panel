@@ -66,6 +66,12 @@ const hideHoverUpload = () => {
   }
 }
 
+const fileListRef = ref()
+
+const handleOpenFileListDialog = () => {
+  fileListRef.value.open()
+}
+
 const handleExceed = (_files: File[]) => {
   ElMessage.error('您最多只能上传10张图片!')
 }
@@ -232,6 +238,7 @@ defineExpose({ getFileData, setFileData })
         </ElUpload>
         <div
           class="w-16 h-16 ml-4 text-center flex items-center justify-center"
+          @mousedown="handleOpenFileListDialog"
         >
           <div
             class="flex flex-col items-center justify-center w-full h-full transition-colors duration-300 hover:text-blue-500 group"
@@ -266,6 +273,7 @@ defineExpose({ getFileData, setFileData })
         </div>
       </div>
     </div>
+    <FileList ref="fileListRef" />
   </div>
 </template>
 
