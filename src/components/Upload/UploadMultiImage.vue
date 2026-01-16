@@ -45,7 +45,7 @@ defineExpose({ getFileData, setFileData })
     >
       <div v-for="(item, index) in fileDataList" :key="index" class="flex flex-col items-center">
         <!-- 图片卡片 -->
-        <div class="w-full border border-gray-200 rounded flex flex-col items-center justify-between mb-2">
+        <div class="w-full border border-gray-200 rounded flex flex-col h-60 items-center justify-between mb-2">
           <!-- 顶部按钮 -->
           <div class="w-full h-6 flex justify-between border-b border-gray-300 bg-gray-50">
             <EBtn text @click.stop="handleRemove(index)">
@@ -57,8 +57,8 @@ defineExpose({ getFileData, setFileData })
           </div>
 
           <!-- 中间图片 -->
-          <div v-if="item.fileUrl" class="w-41 flex items-center justify-center p-2">
-            <div>
+          <div v-if="item.fileUrl" class="w-41 p-2 my-auto">
+            <div class="flex items-center justify-center">
               <ElImage
                 v-if="item.fileUrl"
                 :src="item.fileUrl"
