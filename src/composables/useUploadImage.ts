@@ -165,14 +165,19 @@ export const useUploadImage = (options: UseUploadImageOptions = {}) => {
   }
 
   /**
-   * 设置文件数据
+   * 设置文件数据（追加到现有列表）
    */
   const setFileData = (fileList: FileData[]) => {
-    if (fileList && fileList.length === 0) {
-      fileDataList.value = []
-      return
+    if (fileList && fileList.length > 0) {
+      // 为追加的文件设置正确的排序号
+      const startIndex = fileDataList.value.length + 1
+      fileList.forEach((file, index) => {
+        if (!file.sort) {
+          file.sort = startIndex + index
+        }
+      })
+      fileDataList.value.push(...fileList)
     }
-    Object.assign(fileDataList.value, fileList)
   }
 
   /**
