@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import type { UploadFile, UploadProps } from 'element-plus'
-import { isVisible } from 'element-plus/es/utils'
 import { VueDraggable } from 'vue-draggable-plus'
 import { uploadFileApi } from '@/api/file'
 
@@ -11,13 +10,41 @@ const beforeUploadFileDataList = ref<UploadFile[]>([])
 const fileDataList = ref<FileData[]>([])
 const uploadProgress = ref<{ [key: string]: number }>({})
 const dragging = ref(false)
+const isHovered = ref(false) // 控制是否显示悬浮上传控件
+let hoverTimeout: number | null = null // 存储延时定时器
+
+const showHoverUpload = () => {
+  // 设置一个延时，避免鼠标快速划过时触发悬浮上传
+  hoverTimeout = window.setTimeout(() => {
+    isHovered.value = true
+  }, 300) // 延迟300毫秒显示悬浮上传控件
+}
+
+const clearHoverTimeout = () => {
+  if (hoverTimeout) {
+    clearTimeout(hoverTimeout)
+  }
+}
+
+const hideHoverUpload = () => {
+  // 清除之前的定时器，如果用户在延迟期间移出了，则不显示悬浮控件
+  clearHoverTimeout()
+  // 设置一个延时隐藏，如果鼠标快速移入又移出，则取消隐藏
+  hoverTimeout = window.setTimeout(() => {
+    isHovered.value = false
+  }, 100) // 延迟100毫秒隐藏悬浮上传控件
+}
 
 const handleExceed = (_files: File[]) => {
   ElMessage.error('您最多只能上传10张图片!')
 }
 
 const beforeUpload: UploadProps['beforeUpload'] = rawFile => {
-  const isJPGOrPNG = rawFile.type === 'image/jpeg' || rawFile.type === 'image/png' || rawFile.type === 'image/gif' || rawFile.type === 'image/svg+xml'
+  const isJPGOrPNG
+    = rawFile.type === 'image/jpeg'
+      || rawFile.type === 'image/png'
+      || rawFile.type === 'image/gif'
+      || rawFile.type === 'image/svg+xml'
   const isLt50M = rawFile.size / 1024 / 1024 < 50
 
   if (!isJPGOrPNG) {
@@ -133,41 +160,67 @@ defineExpose({ getFileData, setFileData })
         </div>
       </div>
     </VueDraggable>
-    <div v-show="isVisible">
-      <ElUpload
-        v-loading="loading"
-        class="w-full border border-dashed border-gray-300 rounded p-2 flex items-center justify-center bg-white hover:border-[#71A0FF]"
-        :multiple="true"
-        action=""
-        accept=".jpg,.jpeg,.png,.gif,.svg"
-        :file-list="beforeUploadFileDataList"
-        list-type="picture-card"
-        :http-request="handleUpload"
-        :show-file-list="false"
-        :before-upload="beforeUpload"
-        :on-exceed="handleExceed"
-        :on-success="handleSuccess"
-        :on-progress="handleProgress"
-        :limit="10"
+
+    <!-- 悬浮上传控件，固定在视窗中 -->
+    <Teleport v-if="isHovered" to="body">
+      <div
+        class="fixed inset-0 z-50 flex items-center justify-center"
+        @mouseenter="clearHoverTimeout"
+        @mouseleave="isHovered = false"
       >
-        <div class="flex flex-col items-center justify-center w-full h-full transition-colors duration-300 hover:text-blue-500">
-          <div class="mb-2 flex items-center justify-center transition-colors duration-300 hover:text-blue-500">
-            <Icon :size="8" icon="ep:upload" color="#999" />
-          </div>
-          <div class="text-sm text-gray-500 flex justify-center text-center w-full transition-colors duration-300 group-hover:text-[#71A0FF]">
-            <span>本地上传</span>
+        <div class="absolute inset-0" @click="isHovered = false" />
+        <div class="relative bg-white rounded-lg shadow-xl border border-gray-200 p-6 w-full max-w-md mx-4">
+          <div class="flex items-center">
+            <ElUpload
+              v-loading="loading"
+              class="w-16 h-16"
+              :multiple="true"
+              action=""
+              accept=".jpg,.jpeg,.png,.gif,.svg"
+              :file-list="beforeUploadFileDataList"
+              list-type="picture-card"
+              :http-request="handleUpload"
+              :show-file-list="false"
+              :before-upload="beforeUpload"
+              :on-exceed="handleExceed"
+              :on-success="handleSuccess"
+              :on-progress="handleProgress"
+              :limit="10"
+            >
+              <div
+                class="flex flex-col items-center justify-center w-full h-full transition-colors duration-300 hover:text-blue-500"
+              >
+                <div class="mb-2 flex items-center justify-center transition-colors duration-300 hover:text-blue-500">
+                  <Icon :size="4" icon="ep:upload" color="#999" />
+                </div>
+                <div
+                  class="text-sm text-gray-500 flex justify-center text-center w-full transition-colors duration-300 group-hover:text-[#71A0FF]"
+                >
+                  <span>本地上传</span>
+                </div>
+              </div>
+            </ElUpload>
+            <div class="w-16 h-16 border border-gray-500 text-center">
+              图库选择
+            </div>
           </div>
         </div>
-      </ElUpload>
-      <div>图库选择</div>
-    </div>
+      </div>
+    </Teleport>
+
     <!-- 上传按钮 -->
-    <div class="w-41 h-41 border border-dashed hover:border-[#71A0FF] bg-white flex items-center justify-center group">
+    <div
+      class="w-41 h-41 border border-dashed hover:border-[#71A0FF] bg-white flex items-center justify-center group"
+      @mouseenter="showHoverUpload"
+      @mouseleave="hideHoverUpload"
+    >
       <div class="flex flex-col items-center justify-center w-full h-full p-2">
         <div class="mb-2 flex items-center justify-center transition-colors duration-300 group-hover:text-[#71A0FF]">
           <Icon :size="8" icon="ep:upload" color="#999" />
         </div>
-        <div class="text-sm text-gray-500 flex justify-center text-center w-full transition-colors duration-300 group-hover:text-[#71A0FF]">
+        <div
+          class="text-sm text-gray-500 flex justify-center text-center w-full transition-colors duration-300 group-hover:text-[#71A0FF]"
+        >
           <span>只允许上传jpg, png, gif格式图片，最大不能超过50M</span>
         </div>
       </div>
