@@ -19,11 +19,11 @@ const productFormRef = ref()
 const containerRef = ref<HTMLElement>()
 
 // 直接使用useAnchorScroll返回的currentHref，避免手动声明
-const currentHref = ref('#productName')
+const currentHref = ref('#productBase')
 
 // 定义锚点链接
 const anchorLinks = [
-  { href: '#productName', title: $t('product.base') },
+  { href: '#productBase', title: $t('product.base') },
   { href: '#productFile', title: $t('product.imageText') },
   { href: '#productOption', title: $t('product.option') },
   { href: '#productOther', title: $t('product.other') },
@@ -190,7 +190,7 @@ const createProductForm = (): CreateProductParams => {
   return {
     languageId: usePreferenceStore().preference.language.id,
     spu: '',
-    productType: undefined,
+    productType: 1,
     onlineTime: '',
     offlineTime: '',
     brandId: undefined,
@@ -336,13 +336,16 @@ provide('ProductCreate', { productForm })
             </div>
             <div ref="containerRef" class="w-full container-custom overflow-x-hidden">
               <!-- 基础 -->
-              <div id="productName" class="bg-white mb-5 pa-4">
+              <div id="productBase" class="bg-white mb-5 pa-4">
                 <div class="w-full fs-16px font-bold mb-4">
                   基础信息
                 </div>
                 <div class="w-full">
                   <!-- 系统分类 -->
                   <ElFormItem :label="$t('product.systemCategory')" prop="systemCategoryId">
+                    <div class="w-full fs-14px text-gray">
+                      选择一个恰当的系统分类，将会让产品的流量得到提升
+                    </div>
                     <ElCascader
                       v-model="productForm.systemCategoryId"
                       clearable
@@ -355,20 +358,14 @@ provide('ProductCreate', { productForm })
                     />
                   </ElFormItem>
                   <ElFormItem :label="$t('product.productType')" prop="productType">
-                    <ElSelect
-                      v-model="productForm.productType"
-                      v-loading="productTypeLoading"
-                      clearable
-                      filterable
-                      placeholder="请选择"
-                    >
-                      <ElOption
+                    <ElRadioGroup v-model="productForm.productType" v-loading="productTypeLoading">
+                      <ElRadio
                         v-for="item in productTypeListData?.list || []"
                         :key="item.id"
                         :value="item.id"
                         :label="item.productTypeName"
                       />
-                    </ElSelect>
+                    </ElRadioGroup>
                   </ElFormItem>
                   <!-- 产品名称 -->
                   <ElFormItem :label="$t('product.productName')" prop="productName">
@@ -379,6 +376,22 @@ provide('ProductCreate', { productForm })
                       maxlength="120"
                       :placeholder="$t('product.placeholder.productName')"
                     />
+                  </ElFormItem>
+                  <ElFormItem :label="$t('product.brand')" prop="brandId">
+                    <ElSelect
+                      v-model="productForm.brandId"
+                      v-loading="brandLoading"
+                      clearable
+                      filterable
+                      :placeholder="`${$t('product.placeholder.brand')}`"
+                    >
+                      <ElOption
+                        v-for="item in brandListData?.list || []"
+                        :key="item.id"
+                        :value="item.id"
+                        :label="item.brandName"
+                      />
+                    </ElSelect>
                   </ElFormItem>
                   <!-- 产品短名称 -->
                   <ElFormItem :label="$t('product.productShortName')" prop="productShortName">
