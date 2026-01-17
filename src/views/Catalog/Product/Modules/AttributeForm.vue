@@ -43,11 +43,7 @@ const {
   promise: stockStatusPromise,
 } = useProductStockStatusList()
 
-const {
-  loading: warehouseLoading,
-  listData: warehouseListData,
-  promise: warehousePromise,
-} = useWarehouseList()
+const { loading: warehouseLoading, listData: warehouseListData, promise: warehousePromise } = useWarehouseList()
 
 // 添加重量单位和长度单位列表数据
 const { loading: weightUnitLoading, listData: weightUnitListData, promise: weightUnitPromise } = useWeightUnitList()
@@ -448,7 +444,12 @@ const isTextField = (field: string) => {
   const dateFields = ['promotionStartedTime', 'promotionEndedTime']
   const selectFields = ['weightUnit', 'lengthUnit'] // 选择字段不再视为文本字段
   // 不包括日期字段和quantity，但包括选择字段
-  return !numericFields.includes(field) && !dateFields.includes(field) && !selectFields.includes(field) && field !== 'quantity'
+  return (
+    !numericFields.includes(field)
+    && !dateFields.includes(field)
+    && !selectFields.includes(field)
+    && field !== 'quantity'
+  )
 }
 
 // 判断字段是否为数字类型
@@ -483,8 +484,16 @@ const getOperationOptions = computed(() => {
     { label: '设置为固定值', value: 'set', disabled: false },
     { label: '增加固定值', value: 'add', disabled: !isNumericField(batchUpdateForm.field) },
     { label: '减少固定值', value: 'subtract', disabled: !isNumericField(batchUpdateForm.field) },
-    { label: '增加百分比', value: 'percent_add', disabled: !isNumericField(batchUpdateForm.field) || isInteger || isSelect },
-    { label: '减少百分比', value: 'percent_subtract', disabled: !isNumericField(batchUpdateForm.field) || isInteger || isSelect },
+    {
+      label: '增加百分比',
+      value: 'percent_add',
+      disabled: !isNumericField(batchUpdateForm.field) || isInteger || isSelect,
+    },
+    {
+      label: '减少百分比',
+      value: 'percent_subtract',
+      disabled: !isNumericField(batchUpdateForm.field) || isInteger || isSelect,
+    },
   ]
 
   // 如果是日期字段，禁用数值操作
@@ -886,45 +895,6 @@ const setData = (data: ProductSkuRequestDo) => {
 }
 
 const getData = () => {
-  // 校验数据
-  if (!productSkuRequestDo.value.spu) {
-    ElMessage.error($t('product.placeholder.spu'))
-    return
-  }
-  // 校验skuCode是否有重复和校验skuCode是否为空
-  const skuItems = productSkuRequestDo.value.productSkuItemRequestDos
-  // 检查是否有空值（包括只有空白字符的情况）
-  if (skuItems.some(item => !item.skuCode || item.skuCode.trim() === '')) {
-    ElMessage.error($t('product.placeholder.skuCode'))
-    return
-  }
-  // 检查是否有重复的skuCode
-  const skuCodes = skuItems.map(item => item.skuCode.trim())
-  const uniqueSkuCodes = new Set(skuCodes)
-  if (uniqueSkuCodes.size !== skuCodes.length) {
-    ElMessage.error($t('product.error.duplicateSkuCode')) // 你需要添加对应的国际化词条
-    return
-  }
-  // 校验库存是否小于等于0
-  skuItems.forEach(item => {
-    if (item.productSkuInventoryRequestDos.some(skuItem => skuItem.quantity != null && skuItem.quantity <= 0)) {
-      ElMessage.error($t('product.placeholder.quantity'))
-    }
-    // 对skuItems的几个时间字段进行处理
-    if (item.promotionEndedTime) {
-      item.promotionEndedTime = formatTime(item.promotionEndedTime)
-    }
-    if (item.promotionStartedTime) {
-      item.promotionStartedTime = formatTime(item.promotionStartedTime)
-    }
-  })
-
-  // 校验所有的价格是否小于等于0
-  if (skuItems.some(item => item.price != null && item.price <= 0)) {
-    ElMessage.error($t('product.placeholder.price'))
-    return
-  }
-
   // 计算searchIndex
   const attributeSummaryDos = productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos
   const searchIndexParts = []
@@ -937,6 +907,87 @@ const getData = () => {
 
   // 将计算好的searchIndex赋值回去
   productSkuRequestDo.value.productAttributeRequestDo.searchIndex = searchIndexParts.join(';')
+
+  // 校验数据
+  if (!productSkuRequestDo.value.spu) {
+    ElMessage.error($t('product.error.spu'))
+    return
+  }
+  // 校验skuCode是否有重复和校验skuCode是否为空
+  const skuItems = productSkuRequestDo.value.productSkuItemRequestDos
+  // 检查是否有空值（包括只有空白字符的情况）
+  if (skuItems.some(item => !item.skuCode || item.skuCode.trim() === '')) {
+    ElMessage.error($t('product.error.skuCode'))
+    return
+  }
+  // 检查是否有重复的skuCode
+  const skuCodes = skuItems.map(item => item.skuCode.trim())
+  const uniqueSkuCodes = new Set(skuCodes)
+  if (uniqueSkuCodes.size !== skuCodes.length) {
+    ElMessage.error($t('product.error.duplicateSkuCode')) // 你需要添加对应的国际化词条
+    return
+  }
+  // 校验库存是否小于等于0
+  skuItems.forEach(item => {
+    if (item.productSkuInventoryRequestDos.some(skuItem => skuItem.quantity != null && skuItem.quantity < 0)) {
+      ElMessage.error($t('product.error.quantity'))
+    }
+
+    if (!item.price || item.price === 0) {
+      ElMessage.error($t('product.error.price'))
+      return
+    }
+
+    // 成本价大于正常价格时报错
+    if (item.costPrice && item.price < item.costPrice) {
+      ElMessage.error($t('product.error.costPrice'))
+      return
+    }
+
+    // 促销价格大于正常价格时报错
+    if (item.promotionPrice && item.price <= item.promotionPrice) {
+      ElMessage.error($t('product.error.promotionPrice'))
+      return
+    }
+
+    // 如果输入了重量，则重量单位必须选择
+    if (item.weight && !item.weightUnit) {
+      ElMessage.error($t('product.error.weightUnitRequired'))
+      return
+    }
+
+    if (!item.weight && item.weightUnit) {
+      ElMessage.error($t('product.error.weight'))
+      return
+    }
+
+    if ((item.length || item.height || item.width) && !item.lengthUnit) {
+      // 当length, height, width中任意一个存在，但lengthUnit不存在时，执行这里的校验逻辑
+      ElMessage.error($t('product.error.lengthUnitRequired'))
+      return
+    }
+
+    if (item.lengthUnit) {
+    // 精确检查每个字段是否有有效值（包括0）
+      const hasLength = item.length !== null && item.length !== undefined
+      const hasHeight = item.height !== null && item.height !== undefined
+      const hasWidth = item.width !== null && item.width !== undefined
+
+      // 如果三个字段都没有有效值，则校验失败
+      if (!hasLength && !hasHeight && !hasWidth) {
+        ElMessage.error($t('product.error.lengthWidthHeightRequired'))
+        return
+      }
+    }
+
+    // 对skuItems的几个时间字段进行处理
+    if (item.promotionEndedTime) {
+      item.promotionEndedTime = formatTime(item.promotionEndedTime)
+    }
+    if (item.promotionStartedTime) {
+      item.promotionStartedTime = formatTime(item.promotionStartedTime)
+    }
+  })
 
   return productSkuRequestDo.value
 }
@@ -1200,7 +1251,12 @@ defineExpose({
               <div class="grid grid-cols-4 gap-4">
                 <!-- 原有的批量更新字段选择 -->
                 <div class="flex items-center space-x-2">
-                  <ElSelect v-model="batchUpdateForm.field" placeholder="选择字段" class="flex-1" @change="handleChangeField">
+                  <ElSelect
+                    v-model="batchUpdateForm.field"
+                    placeholder="选择字段"
+                    class="flex-1"
+                    @change="handleChangeField"
+                  >
                     <ElOption label="库存" value="quantity" />
                     <ElOption label="价格" value="price" />
                     <ElOption label="成本价" value="costPrice" />
@@ -1250,7 +1306,9 @@ defineExpose({
                         || batchUpdateForm.field === 'length'
                         || batchUpdateForm.field === 'width'
                         || batchUpdateForm.field === 'height'
-                        ? (batchUpdateForm.field === 'quantity' ? 0 : 2)
+                        ? batchUpdateForm.field === 'quantity'
+                          ? 0
+                          : 2
                         : 0
                     "
                     :step="1"
@@ -1277,7 +1335,9 @@ defineExpose({
                     filterable
                   >
                     <ElOption
-                      v-for="item in batchUpdateForm.field === 'weightUnit' ? weightUnitListData.list : lengthUnitListData.list"
+                      v-for="item in batchUpdateForm.field === 'weightUnit'
+                        ? weightUnitListData.list
+                        : lengthUnitListData.list"
                       :key="item.id"
                       :label="item.name"
                       :value="item.id"
@@ -1483,7 +1543,12 @@ defineExpose({
             <ElTableColumn label="重量单位" width="120">
               <template #default="scope">
                 <div class="w-full flex items-center">
-                  <ElSelect v-model="scope.row.weightUnit" :placeholder="$t('product.placeholder.weightUnit')" clearable filterable>
+                  <ElSelect
+                    v-model="scope.row.weightUnit"
+                    :placeholder="$t('product.placeholder.weightUnit')"
+                    clearable
+                    filterable
+                  >
                     <ElOption
                       v-for="item in weightUnitListData.list"
                       :key="item.id"
@@ -1540,7 +1605,12 @@ defineExpose({
             <ElTableColumn label="长度单位" width="120">
               <template #default="scope">
                 <div class="w-full flex items-center">
-                  <ElSelect v-model="scope.row.lengthUnit" :placeholder="$t('product.placeholder.lengthUnit')" clearable filterable>
+                  <ElSelect
+                    v-model="scope.row.lengthUnit"
+                    :placeholder="$t('product.placeholder.lengthUnit')"
+                    clearable
+                    filterable
+                  >
                     <ElOption
                       v-for="item in lengthUnitListData.list"
                       :key="item.id"

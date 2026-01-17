@@ -1,3 +1,5 @@
+import Price from '@/views/Catalog/Product/Modules/Price.vue'
+
 export default {
   show: '产品详情',
   add: '添加产品',
@@ -101,5 +103,18 @@ export default {
     supplierInput: '请输入供应商名称',
     attributeId: '请选择属性',
     attributeValueDos: '请选择属性值',
+  },
+  error: {
+    spu: '请输入SPU',
+    skuCode: 'SKU不能为空或存在空白字符',
+    duplicateSkuCode: 'SKU不能重复',
+    quantity: '库存不能为空或小于0',
+    price: '价格不能为空或小于0',
+    costPrice: '成本价格不能小于售价',
+    promotionPrice: '促销价格不能小于或等于售价',
+    weightUnitRequired: '请选择重量单位',
+    weight: '重量不能为空或小于等于0',
+    lengthUnitRequired: '请选择长度单位',
+    lengthWidthHeightRequired: '长度、宽度、高度最少一个不能为空或小于等于0',
   },
 }
