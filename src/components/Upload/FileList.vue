@@ -1,6 +1,14 @@
 <script lang="ts" setup>
 import { Refresh } from '@element-plus/icons-vue'
 
+interface Props {
+  acceptFileType?: string[] // 允许上传的文件类型，例如 ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml']
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  acceptFileType: () => ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml'],
+})
+
 const emit = defineEmits(['selectionConfirmed'])
 
 const dialogVisible = ref(false)
@@ -29,7 +37,6 @@ const {
 } = useFilePagination(filePayload.value, { immediate: false })
 
 const pagination = async (val: PaginationComponentDataType) => {
-  console.log(val)
   if (val) {
     listPayload.pageSize = val.limit
     listPayload.pageNumber = val.page
@@ -49,20 +56,17 @@ const getFileSize = async () => {
 
 // 响应式状态
 // const selectedCategory = ref('')
-const selectedImages = ref<(FileData & CommonField)[]>([]) // 存储完整的图片对象数组
+const selectedFile = ref<(FileData & CommonField)[]>([]) // 存储完整的图片对象数组
 // const sortBy = ref('latest')
 
 const open = async () => {
-  selectedImages.value = []
+  selectedFile.value = []
   dialogVisible.value = true
   // 设置初始化加载状态
   loading.init = true
   try {
     // 重新获取数据
-    await Promise.all([
-      getList(),
-      getFileSize(),
-    ])
+    await Promise.all([getList(), getFileSize()])
   } catch (error) {
     console.error('加载数据失败:', error)
   } finally {
@@ -78,14 +82,19 @@ const totalStorage = ref(20 * 1024 * 1024 * 1024) // 20GB
 const _selectCategory = (_val: number) => {}
 
 // 图片选择 - 支持多选
-const toggleSelectImage = (image: FileData & CommonField) => {
-  const index = selectedImages.value.findIndex(img => img.id === image.id)
+const toggleSelectFile = (file: FileData & CommonField) => {
+  const index = selectedFile.value.findIndex(item => item.id === file.id)
   if (index > -1) {
     // 如果已选中，则取消选中
-    selectedImages.value.splice(index, 1)
+    selectedFile.value.splice(index, 1)
   } else {
     // 如果未选中，则添加到选中列表
-    selectedImages.value.push(image)
+    // 如果props.acceptFileType包含file.fileContentType，则添加到选中列表
+    if (props.acceptFileType.includes(file.fileContentType)) {
+      selectedFile.value.push(file)
+    } else {
+      ElMessage.warning('请选择正确的文件类型')
+    }
   }
 }
 
@@ -94,9 +103,9 @@ const confirmSelection = (event: Event) => {
   event.preventDefault() // 阻止默认行为，防止页面跳转
   event.stopPropagation() // 阻止事件冒泡
 
-  if (selectedImages.value.length > 0) {
-    // 直接使用selectedImages，因为已经是完整对象数组
-    emit('selectionConfirmed', selectedImages.value)
+  if (selectedFile.value.length > 0) {
+    // 直接使用selectedFile，因为已经是完整对象数组
+    emit('selectionConfirmed', selectedFile.value)
     dialogVisible.value = false
   }
 }
@@ -105,7 +114,7 @@ const confirmSelection = (event: Event) => {
 const cancelSelection = (event: Event) => {
   event.preventDefault() // 阻止默认行为，防止页面跳转
   event.stopPropagation() // 阻止事件冒泡
-  selectedImages.value = [] // 清空选中的图片数组
+  selectedFile.value = [] // 清空选中的图片数组
 
   dialogVisible.value = false
 }
@@ -132,12 +141,50 @@ const handleInput = (event: Event) => {
 
 // 全选/取消全选
 const toggleSelectAll = () => {
-  if (selectedImages.value.length === fileListData.value.list.length) {
+  if (selectedFile.value.length === fileListData.value.list.length) {
     // 如果当前已全选，则取消全选
-    selectedImages.value = []
+    selectedFile.value = []
   } else {
     // 否则，选中所有当前页的图片
-    selectedImages.value = [...fileListData.value.list]
+    selectedFile.value = [...fileListData.value.list]
+  }
+}
+
+// 重载图片
+// 重载图片
+const handleReLoadImage = async (image: FileData & CommonField, index: number) => {
+  console.log('重新加载图片:', image)
+
+  if (!image.fileUrl) {
+    return
+  }
+
+  try {
+    // 创建新的图片实例来测试加载
+    const img = new Image()
+
+    // 添加时间戳参数避免缓存
+    const timestamp = new Date().getTime()
+    const url = new URL(image.fileUrl)
+    url.searchParams.set('_t', timestamp.toString())
+    const newImageUrl = url.toString()
+
+    // 返回一个Promise来处理图片加载
+    await new Promise((resolve, reject) => {
+      img.onload = () => resolve(true)
+      img.onerror = () => reject(new Error('图片加载失败'))
+      img.src = newImageUrl
+    })
+
+    // 如果新图片加载成功，更新列表中的图片URL
+    image.fileUrl = newImageUrl
+    fileListData.value.list[index] = { ...image } // 使用展开运算符创建新对象以触发响应式更新
+
+    console.log('图片重新加载成功')
+  } catch (error) {
+    console.error('图片重新加载失败:', error)
+    // 可以在这里添加用户提示，比如显示通知
+    // ElMessage.error('图片重新加载失败')
   }
 }
 
@@ -147,7 +194,7 @@ defineExpose({
 </script>
 
 <template>
-  <ElDialog v-model="dialogVisible" width="60%">
+  <ElDialog v-model="dialogVisible" :close-on-click-modal="false" width="60%">
     <template #title>
       <h1 class="text-sm font-semibold text-gray-800">
         选择图片
@@ -272,32 +319,73 @@ defineExpose({
                 <!-- 图片网格 -->
                 <div v-else class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                   <div
-                    v-for="image in fileListData.list"
-                    :key="image.id"
+                    v-for="(item, index) in fileListData.list"
+                    :key="item.id"
                     class="border rounded-lg overflow-hidden cursor-pointer transition-all hover:shadow-md"
-                    :class="[selectedImages.some(img => img.id === image.id) ? 'ring-2 ring-blue-500 border-blue-500' : 'border-gray-200']"
-                    @click="toggleSelectImage(image)"
+                    :class="[
+                      selectedFile.some(sFile => sFile.id === item.id)
+                        ? 'ring-2 ring-blue-500 border-blue-500'
+                        : 'border-gray-200',
+                    ]"
+                    @click="toggleSelectFile(item)"
                   >
                     <!-- 图片容器 -->
                     <div class="relative bg-gray-100 aspect-square flex items-center justify-center">
-                      <ElImage
-                        v-if="image.fileUrl"
-                        :src="image.fileUrl"
-                        lazy
-                        fit="cover"
-                        class="w-full h-full object-cover"
-                      >
-                        <template #placeholder>
-                          <div class="flex items-center justify-center h-full">
-                            <div class="flex flex-col items-center">
-                              <ElIcon class="is-loading text-gray-400">
-                                <Refresh />
-                              </ElIcon>
-                              <span class="mt-2 text-xs text-gray-500">加载中...</span>
+                      <div v-if="item.fileUrl">
+                        <ElImage
+                          v-if="
+                            item.fileContentType === 'image/jpeg'
+                              || item.fileContentType === 'image/png'
+                              || item.fileContentType === 'image/gif'
+                              || item.fileContentType === 'image/svg+xml'
+                          "
+                          :src="item.fileUrl"
+                          lazy
+                          fit="cover"
+                          class="w-full h-full object-cover"
+                          @error="handleReLoadImage(item, index)"
+                        >
+                          <template #error>
+                            <div class="flex items-center justify-center h-full">
+                              <div class="flex flex-col items-center">
+                                <div class="mt-2 text-xs text-gray-500">
+                                  图片加载失败
+                                </div>
+                                <div
+                                  class="mt-2 text-xs text-gray-500 cursor-pointer"
+                                  @click.stop="handleReLoadImage(item, index)"
+                                >
+                                  <Icon name="ep:refresh" :size="6" />
+                                </div>
+                              </div>
                             </div>
-                          </div>
-                        </template>
-                      </ElImage>
+                          </template>
+                          <template #placeholder>
+                            <div class="flex items-center justify-center h-full">
+                              <div class="flex flex-col items-center">
+                                <ElIcon class="is-loading text-gray-400">
+                                  <Refresh />
+                                </ElIcon>
+                                <span class="mt-2 text-xs text-gray-500">加载中...</span>
+                              </div>
+                            </div>
+                          </template>
+                        </ElImage>
+                        <!-- 视频 -->
+                        <div
+                          v-if="
+                            item.fileContentType === 'video/mp4'
+                              || item.fileContentType === 'video/webm'
+                              || item.fileContentType === 'video/ogg'
+                          "
+                          class="w-full h-full"
+                        >
+                          <video :src="item.fileUrl" class="w-full h-full object-cover" controls>
+                            您的浏览器不支持 HTML5 video 标签。
+                          </video>
+                        </div>
+                      </div>
+
                       <!-- 图片占位符 -->
                       <div v-else class="text-gray-400">
                         <svg
@@ -318,7 +406,7 @@ defineExpose({
 
                       <!-- 选中标记 -->
                       <div
-                        v-if="selectedImages.some(img => img.id === image.id)"
+                        v-if="selectedFile.some(sFile => sFile.id === item.id)"
                         class="absolute top-2 right-2 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center"
                       >
                         <svg
@@ -339,7 +427,7 @@ defineExpose({
                     <!-- 图片信息 -->
                     <div class="p-3">
                       <h3 class="text-sm font-medium text-gray-800 truncate">
-                        {{ image.originalFileName }}
+                        {{ item.originalFileName }}
                       </h3>
                     </div>
                   </div>
@@ -374,13 +462,13 @@ defineExpose({
                   <!-- 选择状态和操作按钮 -->
                   <div class="flex flex-col sm:flex-row sm:items-center gap-3">
                     <div class="text-sm text-gray-600 mb-2 sm:mb-0">
-                      已选择 {{ selectedImages.length }} 张图片
+                      已选择 {{ selectedFile.length }} 张图片
                       <button
                         v-if="fileListData.list.length > 0"
                         class="cursor-pointer ml-2 text-blue-500 hover:text-blue-700 underline"
                         @click="toggleSelectAll"
                       >
-                        {{ selectedImages.length === fileListData.list.length ? '取消全选' : '全选' }}
+                        {{ selectedFile.length === fileListData.list.length ? '取消全选' : '全选' }}
                       </button>
                     </div>
                     <div class="flex space-x-3">
@@ -391,16 +479,16 @@ defineExpose({
                         取消
                       </button>
                       <button
-                        :disabled="selectedImages.length === 0"
+                        :disabled="selectedFile.length === 0"
                         class="cursor-pointer px-5 py-2 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                         :class="[
-                          selectedImages.length > 0
+                          selectedFile.length > 0
                             ? 'bg-blue-600 text-white hover:bg-blue-700'
                             : 'bg-gray-300 text-gray-500 cursor-not-allowed',
                         ]"
                         @click="confirmSelection"
                       >
-                        确定 ({{ selectedImages.length }})
+                        确定 ({{ selectedFile.length }})
                       </button>
                     </div>
                   </div>
