@@ -5,11 +5,11 @@ const emit = defineEmits(['selectionConfirmed'])
 
 const dialogVisible = ref(false)
 // 图片分类数据
-const categories = ref([
-  { id: 'all', name: '我的图片', count: 13 },
-  { id: 'shop', name: '店铺图', count: 0 },
-  { id: 'product', name: '商品图', count: 13 },
-])
+// const categories = ref([
+//   { id: 'all', name: '所有文件', count: 0 },
+//   { id: 'image', name: '图片', count: 0 },
+//   { id: 'video', name: '视频', count: 0 },
+// ])
 
 const loading = reactive({
   init: false,
@@ -48,9 +48,9 @@ const getFileSize = async () => {
 }
 
 // 响应式状态
-const selectedCategory = ref('')
+// const selectedCategory = ref('')
 const selectedImages = ref<(FileData & CommonField)[]>([]) // 存储完整的图片对象数组
-const sortBy = ref('latest')
+// const sortBy = ref('latest')
 
 const open = async () => {
   selectedImages.value = []
@@ -159,7 +159,7 @@ defineExpose({
         <div class="bg-white rounded-lg flex-1 overflow-hidden flex flex-col">
           <div class="flex flex-col lg:flex-row h-full">
             <!-- 左侧分类导航 -->
-            <div class="lg:w-1/5 border-r border-gray-200 flex flex-col">
+            <!-- <div class="lg:w-1/5 border-r border-gray-200 flex flex-col">
               <div class="p-4">
                 <h2 class="text-sm font-medium text-gray-500 uppercase tracking-wider mb-4">
                   图片分类
@@ -180,16 +180,16 @@ defineExpose({
                   </li>
                 </ul>
               </div>
-            </div>
+            </div> -->
 
             <!-- 右侧主内容区 -->
-            <div class="lg:w-4/5 flex flex-col h-full">
+            <div class="lg:w-5/5 flex flex-col h-full">
               <!-- 筛选工具栏 -->
               <div class="border-b border-gray-200 p-4 flex-shrink-0">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div class="flex flex-wrap items-center gap-4">
                     <!-- 排序选择 -->
-                    <div class="relative">
+                    <!-- <div class="relative">
                       <select
                         v-model="sortBy"
                         class="pl-3 pr-10 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -204,7 +204,7 @@ defineExpose({
                           按名称排序
                         </option>
                       </select>
-                    </div>
+                    </div> -->
 
                     <!-- 搜索框 -->
                     <div class="relative">
