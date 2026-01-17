@@ -150,6 +150,25 @@ const generateSkus = () => {
         currencyId: productSkuRequestDo.value.currencyId, // 默认货币，实际应用中可能需要从其他地方获取
         price: 0, // 默认价格，用户后续设置
         status: true,
+        skuImageFileId: undefined,
+        skuImageFileVo: null,
+        costPrice: null,
+        promotionPrice: null,
+        promotionStartedTime: null,
+        promotionEndedTime: null,
+        isRequiredShipping: productForm.productType === 1,
+        weight: null,
+        weightUnit: undefined,
+        length: null,
+        width: null,
+        height: null,
+        lengthUnit: undefined,
+        mpn: undefined,
+        upc: undefined,
+        ean: undefined,
+        jan: undefined,
+        isbn: undefined,
+        issn: undefined,
         productSkuAttributeRequestDos: productSkuAttributes.map(attr => {
           return {
             attributeName: attr.attributeName,
@@ -187,6 +206,25 @@ const generateSkus = () => {
         currencyId: productSkuRequestDo.value.currencyId,
         price: 0,
         status: true,
+        skuImageFileId: undefined,
+        skuImageFileVo: null,
+        costPrice: null,
+        promotionPrice: null,
+        promotionStartedTime: null,
+        promotionEndedTime: null,
+        isRequiredShipping: productForm.productType === 1,
+        weight: null,
+        weightUnit: undefined,
+        length: null,
+        width: null,
+        height: null,
+        lengthUnit: undefined,
+        mpn: undefined,
+        upc: undefined,
+        ean: undefined,
+        jan: undefined,
+        isbn: undefined,
+        issn: undefined,
         productSkuAttributeRequestDos: [],
         productSkuInventoryRequestDos,
       }
@@ -592,14 +630,14 @@ const setAttributeImage = ({
 
   console.log(attributeValue)
 
-  // TODO 更新sku
-
-  productSkuRequestDo.value.productSkuItemRequestDos.forEach(item => {
+  productSkuRequestDo.value.productSkuItemRequestDos.forEach((item, index) => {
     console.log(item.productSkuAttributeRequestDos)
     // 如果item.productSkuAttributeRequestDos中的attributeValueId包含了attributeValue.attributeValueId, 则把图片赋值给item.skuImageFileId和skuImageFileVo
     if (item.productSkuAttributeRequestDos.some(attr => attr.attributeValueId === attributeValue.attributeValueId)) {
       item.skuImageFileId = fileData.id
-      item.skuImageFileVo = fileData
+      // 使用 Vue 的响应式更新方式，确保更改能被检测到
+      productSkuRequestDo.value.productSkuItemRequestDos[index].skuImageFileVo = { ...fileData }
+      console.log(item)
     }
   })
 }
@@ -990,6 +1028,7 @@ defineExpose({
             <ElTableColumn label="SKU图片" width="90">
               <template #default="scope">
                 <div class="w-full flex items-center">
+                  {{ scope.row }}
                   <Icon
                     v-if="!scope.row.skuImageFileVo || !scope.row.skuImageFileVo.fileUrl"
                     name="ri:image-line"

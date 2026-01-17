@@ -235,7 +235,7 @@ interface ProductSkuItemRequestDo {
   skuImageFileId?: string
 
   /* Sku Image File Vo */
-  skuImageFileVo?: FileData & CommonField
+  skuImageFileVo?: (FileData & CommonField) | null
 
   /* Sku Code */
   skuCode: string
