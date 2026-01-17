@@ -29,9 +29,6 @@ const attributePayload = reactive<AttributeListParams>({
   status: true,
 })
 
-// 添加缺失的shouldShowUpload响应式变量
-const shouldShowUpload = ref(true)
-
 const {
   loading: attributeLoading,
   listData: attributeListData,
@@ -107,8 +104,12 @@ const cartes = computed(() => {
   return cartesianProduct(attributeValues)
 })
 
+// 用于判断是否有图片属性的属性ID
+const hasImageAttributeId = ref('')
+
 // 生成SKU函数
 const generateSkus = () => {
+  hasImageAttributeId.value = ''
   // 保存现有的图片信息
   const existingSkuImages = new Map()
   productSkuRequestDo.value.productSkuItemRequestDos.forEach(sku => {
@@ -131,8 +132,6 @@ const generateSkus = () => {
   // 获取笛卡尔积结果
   const combinations = cartes.value
 
-  console.log(combinations)
-
   // 如果有规格组合
   if (combinations.length > 0 && combinations[0].length > 0) {
     combinations.forEach(combination => {
@@ -142,6 +141,9 @@ const generateSkus = () => {
 
       // 创建SKU属性数组
       const productSkuAttributes = combination.map(item => {
+        if (item.attributeImageFileVo != null && item.attributeImageFileVo.id) {
+          hasImageAttributeId.value = item.attributeId
+        }
         return {
           attributeValueContent: item.attributeValue,
           attributeName: item.attributeName,
@@ -844,7 +846,7 @@ defineExpose({
                     <div class="h-14 bg-white border border-gray-200 px-1 py-2 mr-2 flex items-center">
                       <!-- 控制上传组件是否显示 -->
                       <UploadSingleImageMini
-                        v-if="shouldShowUpload"
+                        v-if="item.attributeId === hasImageAttributeId || !hasImageAttributeId"
                         :attribute-index="index"
                         :attribute-value-index="avItemIndex"
                         class="mr-1"
