@@ -454,6 +454,35 @@ const isDateField = (field: string) => {
   return dateFields.includes(field)
 }
 
+// 获取操作选项，根据字段类型决定是否禁用某些选项
+const getOperationOptions = computed(() => {
+  const baseOptions = [
+    { label: '设置为固定值', value: 'set' },
+    { label: '增加固定值', value: 'add', disabled: !isNumericField(batchUpdateForm.field) },
+    { label: '减少固定值', value: 'subtract', disabled: !isNumericField(batchUpdateForm.field) },
+    { label: '增加百分比', value: 'percent_add', disabled: !isNumericField(batchUpdateForm.field) },
+    { label: '减少百分比', value: 'percent_subtract', disabled: !isNumericField(batchUpdateForm.field) },
+  ]
+
+  // 如果是日期字段，禁用数值操作
+  if (isDateField(batchUpdateForm.field)) {
+    baseOptions.forEach(option => {
+      if (option.value !== 'set') {
+        option.disabled = true
+      }
+    })
+  } else if (isTextField(batchUpdateForm.field)) {
+    // 如果是文本字段，也禁用数值操作
+    baseOptions.forEach(option => {
+      if (option.value !== 'set') {
+        option.disabled = true
+      }
+    })
+  }
+
+  return baseOptions
+})
+
 // 获取占位符文本
 const getPlaceholder = () => {
   if (isTextField(batchUpdateForm.field)) {
@@ -1124,12 +1153,7 @@ defineExpose({
               <div class="grid grid-cols-4 gap-4">
                 <!-- 原有的批量更新字段选择 -->
                 <div class="flex items-center space-x-2">
-                  <ElSelect
-                    v-model="batchUpdateForm.field"
-                    placeholder="选择字段"
-                    class="flex-1"
-                    @change="handleChangeField"
-                  >
+                  <ElSelect v-model="batchUpdateForm.field" placeholder="选择字段" clearable filterable class="flex-1" @change="handleChangeField">
                     <ElOption label="库存" value="quantity" />
                     <ElOption label="价格" value="price" />
                     <ElOption label="成本价" value="costPrice" />
@@ -1151,12 +1175,14 @@ defineExpose({
                   </ElSelect>
                 </div>
                 <div class="flex items-center space-x-2">
-                  <ElSelect v-model="batchUpdateForm.operation" class="flex-1" @change="handleChangeOperation">
-                    <ElOption label="设置为固定值" value="set" />
-                    <ElOption label="增加固定值" value="add" />
-                    <ElOption label="减少固定值" value="subtract" />
-                    <ElOption label="增加百分比" value="percent_add" />
-                    <ElOption label="减少百分比" value="percent_subtract" />
+                  <ElSelect v-model="batchUpdateForm.operation" clearable filterable class="flex-1" @change="handleChangeOperation">
+                    <ElOption
+                      v-for="option in getOperationOptions"
+                      :key="option.value"
+                      :label="option.label"
+                      :value="option.value"
+                      :disabled="option.disabled"
+                    />
                   </ElSelect>
                 </div>
                 <div class="flex items-center space-x-2">
