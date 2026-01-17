@@ -44,18 +44,14 @@ const {
 } = useProductStockStatusList()
 
 const {
-  loading: weightUnitLoading,
-  listData: weightUnitListData,
-  promise: weightUnitPromise,
-} = useWeightUnitList()
+  loading: warehouseLoading,
+  listData: warehouseListData,
+  promise: warehousePromise,
+} = useWarehouseList()
 
-const {
-  loading: lengthUnitLoading,
-  listData: lengthUnitListData,
-  promise: lengthUnitPromise,
-} = useLengthUnitList()
-
-const { loading: warehouseLoading, listData: warehouseListData, promise: warehousePromise } = useWarehouseList()
+// 添加重量单位和长度单位列表数据
+const { loading: weightUnitLoading, listData: weightUnitListData, promise: weightUnitPromise } = useWeightUnitList()
+const { loading: lengthUnitLoading, listData: lengthUnitListData, promise: lengthUnitPromise } = useLengthUnitList()
 
 const currentWarehouseId = ref('')
 
@@ -450,8 +446,9 @@ const clearSelection = () => {
 const isTextField = (field: string) => {
   const numericFields = ['price', 'costPrice', 'promotionPrice', 'weight', 'length', 'width', 'height']
   const dateFields = ['promotionStartedTime', 'promotionEndedTime']
-  // 不包括日期字段和quantity
-  return !numericFields.includes(field) && !dateFields.includes(field) && field !== 'quantity'
+  const selectFields = ['weightUnit', 'lengthUnit'] // 选择字段不再视为文本字段
+  // 不包括日期字段和quantity，但包括选择字段
+  return !numericFields.includes(field) && !dateFields.includes(field) && !selectFields.includes(field) && field !== 'quantity'
 }
 
 // 判断字段是否为数字类型
@@ -471,16 +468,23 @@ const isDateField = (field: string) => {
   return dateFields.includes(field)
 }
 
+// 判断字段是否为选择类型
+const isSelectField = (field: string) => {
+  const selectFields = ['weightUnit', 'lengthUnit']
+  return selectFields.includes(field)
+}
+
 // 获取操作选项，根据字段类型决定是否禁用某些选项
 const getOperationOptions = computed(() => {
   const isInteger = isIntegerField(batchUpdateForm.field)
+  const isSelect = isSelectField(batchUpdateForm.field)
 
   const baseOptions = [
-    { label: '设置为固定值', value: 'set' },
+    { label: '设置为固定值', value: 'set', disabled: false },
     { label: '增加固定值', value: 'add', disabled: !isNumericField(batchUpdateForm.field) },
     { label: '减少固定值', value: 'subtract', disabled: !isNumericField(batchUpdateForm.field) },
-    { label: '增加百分比', value: 'percent_add', disabled: !isNumericField(batchUpdateForm.field) || isInteger },
-    { label: '减少百分比', value: 'percent_subtract', disabled: !isNumericField(batchUpdateForm.field) || isInteger },
+    { label: '增加百分比', value: 'percent_add', disabled: !isNumericField(batchUpdateForm.field) || isInteger || isSelect },
+    { label: '减少百分比', value: 'percent_subtract', disabled: !isNumericField(batchUpdateForm.field) || isInteger || isSelect },
   ]
 
   // 如果是日期字段，禁用数值操作
@@ -547,6 +551,12 @@ const applyBatchUpdate = () => {
     }
   }
 
+  // 检查选择字段是否选择了值
+  if (isSelectField(batchUpdateForm.field) && !batchUpdateForm.adjustmentValue) {
+    ElMessage.warning('请选择要更新的值')
+    return
+  }
+
   // 获取调整值和操作类型
   const adjustmentValue = batchUpdateForm.adjustmentValue
   const operation = batchUpdateForm.operation
@@ -564,7 +574,7 @@ const applyBatchUpdate = () => {
         break
       case 'add':
         // 增加固定值（仅对数值类型字段）
-        if (!isTextField(field)) {
+        if (!isTextField(field) && !isSelectField(field)) {
           // 数值字段处理
           if (!isNumericField(field)) {
             // 对于日期字段，不支持此操作
@@ -573,14 +583,14 @@ const applyBatchUpdate = () => {
           }
           newValue = ((skuItem[field] as number) || 0) + Number(adjustmentValue)
         } else {
-          // 文本字段不支持此操作
+          // 文本字段或选择字段不支持此操作
           ElMessage.warning(`${field} 字段不支持增加操作`)
           return
         }
         break
       case 'subtract':
         // 减少固定值（仅对数值类型字段）
-        if (!isTextField(field)) {
+        if (!isTextField(field) && !isSelectField(field)) {
           // 数值字段处理
           if (!isNumericField(field)) {
             // 对于日期字段，不支持此操作
@@ -589,14 +599,14 @@ const applyBatchUpdate = () => {
           }
           newValue = ((skuItem[field] as number) || 0) - Number(adjustmentValue)
         } else {
-          // 文本字段不支持此操作
+          // 文本字段或选择字段不支持此操作
           ElMessage.warning(`${field} 字段不支持减少操作`)
           return
         }
         break
       case 'percent_add':
         // 增加百分比（仅对数值类型字段）
-        if (!isTextField(field)) {
+        if (!isTextField(field) && !isSelectField(field)) {
           // 数值字段处理
           if (!isNumericField(field)) {
             // 对于日期字段，不支持此操作
@@ -605,14 +615,14 @@ const applyBatchUpdate = () => {
           }
           newValue = ((skuItem[field] as number) || 0) * (1 + Number(adjustmentValue) / 100)
         } else {
-          // 文本字段不支持此操作
+          // 文本字段或选择字段不支持此操作
           ElMessage.warning(`${field} 字段不支持百分比增加操作`)
           return
         }
         break
       case 'percent_subtract':
         // 减少百分比（仅对数值类型字段）
-        if (!isTextField(field)) {
+        if (!isTextField(field) && !isSelectField(field)) {
           // 数值字段处理
           if (!isNumericField(field)) {
             // 对于日期字段，不支持此操作
@@ -621,7 +631,7 @@ const applyBatchUpdate = () => {
           }
           newValue = ((skuItem[field] as number) || 0) * (1 - Number(adjustmentValue) / 100)
         } else {
-          // 文本字段不支持此操作
+          // 文本字段或选择字段不支持此操作
           ElMessage.warning(`${field} 字段不支持百分比减少操作`)
           return
         }
@@ -1172,7 +1182,7 @@ defineExpose({
               <div class="grid grid-cols-4 gap-4">
                 <!-- 原有的批量更新字段选择 -->
                 <div class="flex items-center space-x-2">
-                  <ElSelect v-model="batchUpdateForm.field" placeholder="选择字段" clearable filterable class="flex-1" @change="handleChangeField">
+                  <ElSelect v-model="batchUpdateForm.field" placeholder="选择字段" class="flex-1" @change="handleChangeField">
                     <ElOption label="库存" value="quantity" />
                     <ElOption label="价格" value="price" />
                     <ElOption label="成本价" value="costPrice" />
@@ -1194,7 +1204,7 @@ defineExpose({
                   </ElSelect>
                 </div>
                 <div class="flex items-center space-x-2">
-                  <ElSelect v-model="batchUpdateForm.operation" clearable filterable class="flex-1" @change="handleChangeOperation">
+                  <ElSelect v-model="batchUpdateForm.operation" class="flex-1" @change="handleChangeOperation">
                     <ElOption
                       v-for="option in getOperationOptions"
                       :key="option.value"
@@ -1239,6 +1249,22 @@ defineExpose({
                     :placeholder="getPlaceholder()"
                     class="flex-1"
                   />
+                  <ElSelect
+                    v-else-if="isSelectField(batchUpdateForm.field)"
+                    v-model="batchUpdateForm.adjustmentValue"
+                    v-loading="batchUpdateForm.field === 'weightUnit' ? weightUnitLoading : lengthUnitLoading"
+                    :placeholder="getPlaceholder()"
+                    class="flex-1"
+                    clearable
+                    filterable
+                  >
+                    <ElOption
+                      v-for="item in batchUpdateForm.field === 'weightUnit' ? weightUnitListData.list : lengthUnitListData.list"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id"
+                    />
+                  </ElSelect>
                 </div>
                 <div class="flex items-center justify-end">
                   <EBtn type="primary" @click="applyBatchUpdate()">
@@ -1439,11 +1465,14 @@ defineExpose({
             <ElTableColumn label="重量单位" width="120">
               <template #default="scope">
                 <div class="w-full flex items-center">
-                  <ElInput
-                    v-model="scope.row.weightUnit"
-                    clearable
-                    :placeholder="$t('product.placeholder.weightUnit')"
-                  />
+                  <ElSelect v-model="scope.row.weightUnit" :placeholder="$t('product.placeholder.weightUnit')" clearable filterable>
+                    <ElOption
+                      v-for="item in weightUnitListData.list"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id"
+                    />
+                  </ElSelect>
                 </div>
               </template>
             </ElTableColumn>
@@ -1493,11 +1522,14 @@ defineExpose({
             <ElTableColumn label="长度单位" width="120">
               <template #default="scope">
                 <div class="w-full flex items-center">
-                  <ElInput
-                    v-model="scope.row.lengthUnit"
-                    clearable
-                    :placeholder="$t('product.placeholder.lengthUnit')"
-                  />
+                  <ElSelect v-model="scope.row.lengthUnit" :placeholder="$t('product.placeholder.lengthUnit')" clearable filterable>
+                    <ElOption
+                      v-for="item in lengthUnitListData.list"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id"
+                    />
+                  </ElSelect>
                 </div>
               </template>
             </ElTableColumn>
