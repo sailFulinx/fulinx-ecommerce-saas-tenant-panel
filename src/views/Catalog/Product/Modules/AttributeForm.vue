@@ -323,11 +323,17 @@ const currentAttribute = ref<AttributeSummaryDo>({
   attributeValueListResultDos: [],
 })
 
+interface BatchUpdateForm {
+  field: string
+  operation: string
+  adjustmentValue: any
+}
+
 // 批量更新表单数据
-const batchUpdateForm = reactive({
+const batchUpdateForm = reactive<BatchUpdateForm>({
   field: '',
   operation: 'set',
-  adjustmentValue: 0,
+  adjustmentValue: null,
 })
 
 // 快速选择表单数据
@@ -431,7 +437,21 @@ const clearSelection = () => {
 // 判断字段是否为文本类型
 const isTextField = (field: string) => {
   const numericFields = ['price', 'costPrice', 'promotionPrice', 'weight', 'length', 'width', 'height']
-  return !numericFields.includes(field)
+  const dateFields = ['promotionStartedTime', 'promotionEndedTime']
+  // 不包括日期字段
+  return !numericFields.includes(field) && !dateFields.includes(field)
+}
+
+// 判断字段是否为数字类型
+const isNumericField = (field: string) => {
+  const numericFields = ['price', 'costPrice', 'promotionPrice', 'weight', 'length', 'width', 'height', 'quantity']
+  return numericFields.includes(field)
+}
+
+// 判断字段是否为日期类型
+const isDateField = (field: string) => {
+  const dateFields = ['promotionStartedTime', 'promotionEndedTime']
+  return dateFields.includes(field)
 }
 
 // 获取占位符文本
@@ -440,6 +460,15 @@ const getPlaceholder = () => {
     return `请输入${batchUpdateForm.field}`
   }
   return '请输入数值'
+}
+
+const handleChangeField = () => {
+  batchUpdateForm.operation = 'set'
+  batchUpdateForm.adjustmentValue = null
+}
+
+const handleChangeOperation = () => {
+  batchUpdateForm.adjustmentValue = null
 }
 
 // 批量更新方法
@@ -452,6 +481,22 @@ const applyBatchUpdate = () => {
   if (multipleSelection.value.length === 0) {
     ElMessage.warning('请先选择要更新的行')
     return
+  }
+
+  // 检查时间字段的特殊验证
+  if (batchUpdateForm.field === 'promotionEndedTime') {
+    // 验证促销结束时间不能早于今天
+    const today = new Date()
+    const inputDate = new Date(
+      typeof batchUpdateForm.adjustmentValue === 'string'
+        ? batchUpdateForm.adjustmentValue
+        : String(batchUpdateForm.adjustmentValue),
+    )
+
+    if (inputDate < today) {
+      ElMessage.warning('促销结束时间不能早于今天')
+      return
+    }
   }
 
   // 获取调整值和操作类型
@@ -472,6 +517,12 @@ const applyBatchUpdate = () => {
       case 'add':
         // 增加固定值（仅对数值类型字段）
         if (!isTextField(field)) {
+          // 数值字段处理
+          if (!isNumericField(field)) {
+            // 对于日期字段，不支持此操作
+            ElMessage.warning(`${field} 字段不支持增加操作`)
+            return
+          }
           newValue = ((skuItem[field] as number) || 0) + Number(adjustmentValue)
         } else {
           // 文本字段不支持此操作
@@ -482,6 +533,12 @@ const applyBatchUpdate = () => {
       case 'subtract':
         // 减少固定值（仅对数值类型字段）
         if (!isTextField(field)) {
+          // 数值字段处理
+          if (!isNumericField(field)) {
+            // 对于日期字段，不支持此操作
+            ElMessage.warning(`${field} 字段不支持减少操作`)
+            return
+          }
           newValue = ((skuItem[field] as number) || 0) - Number(adjustmentValue)
         } else {
           // 文本字段不支持此操作
@@ -492,6 +549,12 @@ const applyBatchUpdate = () => {
       case 'percent_add':
         // 增加百分比（仅对数值类型字段）
         if (!isTextField(field)) {
+          // 数值字段处理
+          if (!isNumericField(field)) {
+            // 对于日期字段，不支持此操作
+            ElMessage.warning(`${field} 字段不支持百分比增加操作`)
+            return
+          }
           newValue = ((skuItem[field] as number) || 0) * (1 + Number(adjustmentValue) / 100)
         } else {
           // 文本字段不支持此操作
@@ -502,6 +565,12 @@ const applyBatchUpdate = () => {
       case 'percent_subtract':
         // 减少百分比（仅对数值类型字段）
         if (!isTextField(field)) {
+          // 数值字段处理
+          if (!isNumericField(field)) {
+            // 对于日期字段，不支持此操作
+            ElMessage.warning(`${field} 字段不支持百分比减少操作`)
+            return
+          }
           newValue = ((skuItem[field] as number) || 0) * (1 - Number(adjustmentValue) / 100)
         } else {
           // 文本字段不支持此操作
@@ -515,7 +584,7 @@ const applyBatchUpdate = () => {
     }
 
     // 对数值类型字段确保值不为负数
-    if (!isTextField(field)) {
+    if (isNumericField(field)) {
       newValue = Math.max(0, Number(newValue))
 
       // 保留适当的小数位数
@@ -540,6 +609,32 @@ const applyBatchUpdate = () => {
             inventoryItem.quantity = newValue
           }
         })
+      }
+    }
+
+    // 对时间字段的额外验证
+    if (field === 'promotionEndedTime' && newValue) {
+      const startTime = skuItem.promotionStartedTime ? new Date(skuItem.promotionStartedTime) : null
+      const endTime = new Date(newValue)
+
+      if (startTime && endTime <= startTime) {
+        ElMessage.warning('促销结束时间必须晚于促销开始时间')
+        return
+      }
+
+      if (endTime < new Date()) {
+        ElMessage.warning('促销结束时间不能早于今天')
+        return
+      }
+    }
+
+    if (field === 'promotionStartedTime' && newValue) {
+      const endTime = skuItem.promotionEndedTime ? new Date(skuItem.promotionEndedTime) : null
+      const startTime = new Date(newValue)
+
+      if (endTime && startTime >= endTime) {
+        ElMessage.warning('促销开始时间必须早于促销结束时间')
+        return
       }
     }
 
@@ -1029,7 +1124,12 @@ defineExpose({
               <div class="grid grid-cols-4 gap-4">
                 <!-- 原有的批量更新字段选择 -->
                 <div class="flex items-center space-x-2">
-                  <ElSelect v-model="batchUpdateForm.field" placeholder="选择字段" class="flex-1">
+                  <ElSelect
+                    v-model="batchUpdateForm.field"
+                    placeholder="选择字段"
+                    class="flex-1"
+                    @change="handleChangeField"
+                  >
                     <ElOption label="库存" value="quantity" />
                     <ElOption label="价格" value="price" />
                     <ElOption label="成本价" value="costPrice" />
@@ -1051,7 +1151,7 @@ defineExpose({
                   </ElSelect>
                 </div>
                 <div class="flex items-center space-x-2">
-                  <ElSelect v-model="batchUpdateForm.operation" class="flex-1">
+                  <ElSelect v-model="batchUpdateForm.operation" class="flex-1" @change="handleChangeOperation">
                     <ElOption label="设置为固定值" value="set" />
                     <ElOption label="增加固定值" value="add" />
                     <ElOption label="减少固定值" value="subtract" />
@@ -1068,7 +1168,7 @@ defineExpose({
                     :placeholder="getPlaceholder()"
                   />
                   <ElInputNumber
-                    v-else
+                    v-else-if="isNumericField(batchUpdateForm.field)"
                     v-model="batchUpdateForm.adjustmentValue"
                     :precision="
                       batchUpdateForm.field.includes('price')
@@ -1084,6 +1184,15 @@ defineExpose({
                     :min="batchUpdateForm.operation.includes('percent') ? -100 : -Infinity"
                     class="flex-1"
                     :placeholder="getPlaceholder()"
+                  />
+                  <ElDatePicker
+                    v-else-if="isDateField(batchUpdateForm.field)"
+                    v-model="batchUpdateForm.adjustmentValue"
+                    type="datetime"
+                    format="YYYY-MM-DD HH:mm:ss"
+                    value-format="YYYY-MM-DD HH:mm:ss"
+                    :placeholder="getPlaceholder()"
+                    class="flex-1"
                   />
                 </div>
                 <div class="flex items-center justify-end">
@@ -1218,6 +1327,15 @@ defineExpose({
                     format="YYYY-MM-DD HH:mm:ss"
                     value-format="YYYY-MM-DD HH:mm:ss"
                     :placeholder="$t('product.placeholder.promotionStartedTime')"
+                    :picker-options="{
+                      disabledDate: (time: Date) => {
+                        // 确保开始时间不超过结束时间
+                        if (scope.row.promotionEndedTime) {
+                          return time.getTime() > new Date(scope.row.promotionEndedTime).getTime()
+                        }
+                        return false
+                      },
+                    }"
                     clearable
                   />
                 </div>
@@ -1233,6 +1351,18 @@ defineExpose({
                     format="YYYY-MM-DD HH:mm:ss"
                     value-format="YYYY-MM-DD HH:mm:ss"
                     :placeholder="$t('product.placeholder.promotionEndedTime')"
+                    :picker-options="{
+                      disabledDate: (time: Date) => {
+                        // 确保结束时间不早于开始时间
+                        if (scope.row.promotionStartedTime) {
+                          return time.getTime() < new Date(scope.row.promotionStartedTime).getTime()
+                        }
+                        // 确保结束时间不早于今天
+                        const today = new Date()
+                        today.setHours(0, 0, 0, 0)
+                        return time.getTime() < today.getTime()
+                      },
+                    }"
                     clearable
                   />
                 </div>
