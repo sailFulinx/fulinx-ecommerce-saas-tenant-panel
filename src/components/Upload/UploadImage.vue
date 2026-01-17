@@ -9,7 +9,7 @@ const {
   fileDataList,
   getFileData,
   setFileData, // 保留，因为可能需要在外部使用
-} = useUploadFile({ maxCount: 10, uploadPath: `${useTenantStore().defaultStoreId}/images` })
+} = useUploadFile()
 
 const dragging = ref(false)
 
@@ -60,7 +60,7 @@ defineExpose({ getFileData, setFileData })
 
 <template>
   <div>
-    <FloatingUpload :show-upload-button="true" :multiple="true" :max-count="10" :max-size="50" upload-path="images" :accept-file-type="['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml']" @file-uploaded="handleFileUploaded" @selection-confirmed="setFileData" />
+    <FloatingUpload :show-upload-button="true" :multiple="true" :max-count="10" :max-size="5" upload-path="images" :accept-file-type="['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml']" @file-uploaded="handleFileUploaded" @selection-confirmed="setFileData" />
 
     <VueDraggable
       v-if="fileDataList && fileDataList.length > 0"

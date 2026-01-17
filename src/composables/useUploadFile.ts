@@ -31,7 +31,7 @@ export const useUploadFile = (options: UseUploadImageOptions = {}) => {
     onSuccessCallback,
   } = options
 
-  console.log(maxCount, maxSize, acceptTypes, uploadPath)
+  console.log(options)
 
   // 上传过程中的文件列表
   const beforeUploadFileDataList = ref<UploadFile[]>([])

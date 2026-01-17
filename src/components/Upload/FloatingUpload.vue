@@ -55,7 +55,7 @@ const {
   maxCount: props.maxCount,
   maxSize: props.maxSize,
   acceptTypes: props.acceptFileType,
-  uploadPath: `${useTenantStore().defaultStoreId}/images`,
+  uploadPath: props.uploadPath,
   onSuccessCallback: (fileData: FileData) => {
     emit('fileUploaded', fileData)
   },
