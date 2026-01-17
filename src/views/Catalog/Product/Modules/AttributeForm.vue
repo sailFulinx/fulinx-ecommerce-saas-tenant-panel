@@ -525,6 +525,23 @@ const applyBatchUpdate = () => {
       }
     }
 
+    // 如果更新的是库存，更新的是当前仓库的multipleSelection.value.productSkuInventoryRequestDos中的值
+    if (batchUpdateForm.field === 'quantity') {
+      if (skuItem.productSkuInventoryRequestDos.length === 0) {
+        skuItem.productSkuInventoryRequestDos.push({
+          skuCode: skuItem.skuCode,
+          warehouseId: currentWarehouseId.value,
+          quantity: newValue,
+        })
+      } else {
+        skuItem.productSkuInventoryRequestDos.forEach(inventoryItem => {
+          if (inventoryItem.warehouseId === currentWarehouseId.value) {
+            inventoryItem.quantity = newValue
+          }
+        })
+      }
+    }
+
     // 更新字段值
     ;(skuItem as any)[field] = newValue
   })
@@ -845,7 +862,9 @@ defineExpose({
                   @end="dragEndAttributeValue(index)"
                 >
                   <div v-for="(avItem, avItemIndex) in item.attributeValueDos" :key="avItemIndex">
-                    <div class="min-w-14 h-14 bg-white border border-gray-200 px-1 py-2 mr-2 flex items-center justify-center">
+                    <div
+                      class="min-w-14 h-14 bg-white border border-gray-200 px-1 py-2 mr-2 flex items-center justify-center"
+                    >
                       <!-- 控制上传组件是否显示 -->
                       <UploadSingleImageMini
                         v-if="item.attributeId === hasImageAttributeId || !hasImageAttributeId"
