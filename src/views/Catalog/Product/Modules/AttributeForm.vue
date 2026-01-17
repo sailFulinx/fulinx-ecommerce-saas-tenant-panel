@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { VueDraggable } from 'vue-draggable-plus'
+import { formatTime } from '@/utils'
 import { cartesianProduct } from '@/utils/cartesianProduct'
 import CreateAttributeDialog from '../../Attribute/Components/CreateAttributeDialog.vue'
 import CreateAttributeValueDialog from './CreateAttributeValueDialog.vue'
@@ -552,6 +553,8 @@ const applyBatchUpdate = () => {
     price: '价格',
     costPrice: '成本价',
     promotionPrice: '促销价格',
+    promotionStartedTime: '促销开始时间',
+    promotionEndedTime: '促销结束时间',
     currencyId: '货币ID',
     weight: '重量',
     weightUnit: '重量单位',
@@ -749,6 +752,13 @@ const getData = () => {
   skuItems.forEach(item => {
     if (item.productSkuInventoryRequestDos.some(skuItem => skuItem.quantity != null && skuItem.quantity <= 0)) {
       ElMessage.error($t('product.placeholder.quantity'))
+    }
+    // 对skuItems的几个时间字段进行处理
+    if (item.promotionEndedTime) {
+      item.promotionEndedTime = formatTime(item.promotionEndedTime)
+    }
+    if (item.promotionStartedTime) {
+      item.promotionStartedTime = formatTime(item.promotionStartedTime)
     }
   })
 
@@ -1024,6 +1034,8 @@ defineExpose({
                     <ElOption label="价格" value="price" />
                     <ElOption label="成本价" value="costPrice" />
                     <ElOption label="促销价格" value="promotionPrice" />
+                    <ElOption label="促销开始时间" value="promotionStartedTime" />
+                    <ElOption label="促销结束时间" value="promotionEndedTime" />
                     <ElOption label="重量" value="weight" />
                     <ElOption label="重量单位" value="weightUnit" />
                     <ElOption label="长度" value="length" />
@@ -1125,7 +1137,7 @@ defineExpose({
                 <div v-loading="warehouseLoading">
                   <div class="flex flex-col">
                     <div>仓库库存</div>
-                    <ElSelect v-model="currentWarehouseId" clearable filterable placeholder="请选择仓库">
+                    <ElSelect v-model="currentWarehouseId" filterable placeholder="请选择仓库">
                       <ElOption
                         v-for="warehouse in warehouseListData.list"
                         :key="warehouse.id"
