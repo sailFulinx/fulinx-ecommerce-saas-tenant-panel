@@ -560,10 +560,10 @@ const applyBatchUpdate = () => {
   // 获取调整值和操作类型
   const adjustmentValue = batchUpdateForm.adjustmentValue
   const operation = batchUpdateForm.operation
-  const field = batchUpdateForm.field as keyof ProductSkuItemRequestDo
+  const field = batchUpdateForm.field
 
   // 对选中的SKU项目应用批量更新
-  multipleSelection.value.forEach(skuItem => {
+  for (const skuItem of multipleSelection.value) {
     let newValue: any = null
 
     // 根据字段类型和操作类型计算新值
@@ -581,7 +581,8 @@ const applyBatchUpdate = () => {
             ElMessage.warning(`${field} 字段不支持增加操作`)
             return
           }
-          newValue = ((skuItem[field] as number) || 0) + Number(adjustmentValue)
+          newValue = (skuItem as any)[field] !== undefined ? Number((skuItem as any)[field]) || 0 : 0
+          newValue = newValue + Number(adjustmentValue)
         } else {
           // 文本字段或选择字段不支持此操作
           ElMessage.warning(`${field} 字段不支持增加操作`)
@@ -597,7 +598,8 @@ const applyBatchUpdate = () => {
             ElMessage.warning(`${field} 字段不支持减少操作`)
             return
           }
-          newValue = ((skuItem[field] as number) || 0) - Number(adjustmentValue)
+          newValue = (skuItem as any)[field] !== undefined ? Number((skuItem as any)[field]) || 0 : 0
+          newValue = newValue - Number(adjustmentValue)
         } else {
           // 文本字段或选择字段不支持此操作
           ElMessage.warning(`${field} 字段不支持减少操作`)
@@ -613,7 +615,8 @@ const applyBatchUpdate = () => {
             ElMessage.warning(`${field} 字段不支持百分比增加操作`)
             return
           }
-          newValue = ((skuItem[field] as number) || 0) * (1 + Number(adjustmentValue) / 100)
+          newValue = (skuItem as any)[field] !== undefined ? Number((skuItem as any)[field]) || 0 : 0
+          newValue = newValue * (1 + Number(adjustmentValue) / 100)
         } else {
           // 文本字段或选择字段不支持此操作
           ElMessage.warning(`${field} 字段不支持百分比增加操作`)
@@ -629,7 +632,8 @@ const applyBatchUpdate = () => {
             ElMessage.warning(`${field} 字段不支持百分比减少操作`)
             return
           }
-          newValue = ((skuItem[field] as number) || 0) * (1 - Number(adjustmentValue) / 100)
+          newValue = (skuItem as any)[field] !== undefined ? Number((skuItem as any)[field]) || 0 : 0
+          newValue = newValue * (1 - Number(adjustmentValue) / 100)
         } else {
           // 文本字段或选择字段不支持此操作
           ElMessage.warning(`${field} 字段不支持百分比减少操作`)
@@ -648,7 +652,7 @@ const applyBatchUpdate = () => {
       // 保留适当的小数位数
       if (['price', 'costPrice', 'promotionPrice', 'weight', 'length', 'width', 'height'].includes(field)) {
         newValue = Number(newValue.toFixed(2))
-      } else {
+      } else if (field !== 'quantity') {
         newValue = Math.round(newValue)
       }
     }
@@ -698,7 +702,7 @@ const applyBatchUpdate = () => {
 
     // 更新字段值
     ;(skuItem as any)[field] = newValue
-  })
+  }
 
   // 显示操作成功消息
   const fieldNameMap: Record<string, string> = {
