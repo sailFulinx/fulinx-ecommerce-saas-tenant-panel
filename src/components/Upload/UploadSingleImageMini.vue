@@ -109,7 +109,7 @@ defineExpose({
 
 <template>
   <div>
-    <FloatingUpload
+    <FloatingUploadMini
       v-if="!imageUrl"
       :show-upload-button="true"
       :max-count="1"
@@ -122,11 +122,11 @@ defineExpose({
     />
     <div
       v-else
-      class="w-41 min-h-41 h-auto border border-dashed border-solid-1 border-gray-300 rounded flex flex-col items-center justify-center relative group"
+      class="w-10 min-h-10 h-auto border border-dashed border-solid-1 border-gray-300 rounded flex flex-col items-center justify-center relative group"
     >
-      <ElImage v-if="imageUrl" :src="imageUrl" lazy fit="cover" class="w-full h-full min-h-41 rounded object-cover p-2">
+      <ElImage v-if="imageUrl" :src="imageUrl" lazy fit="cover" class="w-full h-full min-h-10 rounded object-cover p-2">
         <template #placeholder>
-          <div class="flex items-center justify-center h-full min-h-41">
+          <div class="flex items-center justify-center h-full min-h-10">
             <div class="flex flex-col items-center">
               <Icon icon="ep:loading" class="animate-spin" />
               <span class="mt-2 text-xs text-gray-500">加载中...</span>

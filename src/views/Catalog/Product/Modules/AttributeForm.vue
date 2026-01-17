@@ -713,12 +713,8 @@ defineExpose({
                 >
                   <div v-for="(avItem, avItemIndex) in item.attributeValueDos" :key="avItemIndex">
                     <div class="h-12 bg-white border border-gray-200 p-1 mr-2 flex items-center">
-                      <Icon
+                      <UploadSingleImageMini
                         v-if="!avItem.attributeImageFileVo || !avItem.attributeImageFileVo.fileUrl"
-                        name="ri:image-line"
-                        :size="6"
-                        class="mr-1"
-                        color="gray"
                       />
                       <img
                         v-if="avItem.attributeImageFileVo && avItem.attributeImageFileVo.fileUrl"
