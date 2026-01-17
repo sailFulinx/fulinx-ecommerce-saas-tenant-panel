@@ -712,9 +712,10 @@ defineExpose({
                   @end="dragEndAttributeValue(index)"
                 >
                   <div v-for="(avItem, avItemIndex) in item.attributeValueDos" :key="avItemIndex">
-                    <div class="h-12 bg-white border border-gray-200 p-1 mr-2 flex items-center">
+                    <div class="h-14 bg-white border border-gray-200 px-1 py-2 mr-2 flex items-center">
                       <UploadSingleImageMini
                         v-if="!avItem.attributeImageFileVo || !avItem.attributeImageFileVo.fileUrl"
+                        class="mr-1"
                       />
                       <img
                         v-if="avItem.attributeImageFileVo && avItem.attributeImageFileVo.fileUrl"

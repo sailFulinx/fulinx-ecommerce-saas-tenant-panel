@@ -124,7 +124,7 @@ defineExpose({
       v-else
       class="w-10 min-h-10 h-auto border border-dashed border-solid-1 border-gray-300 rounded flex flex-col items-center justify-center relative group"
     >
-      <ElImage v-if="imageUrl" :src="imageUrl" lazy fit="cover" class="w-full h-full min-h-10 rounded object-cover p-2">
+      <ElImage v-if="imageUrl" :src="imageUrl" lazy fit="cover" class="w-full h-full min-h-10 rounded object-cover p-1">
         <template #placeholder>
           <div class="flex items-center justify-center h-full min-h-10">
             <div class="flex flex-col items-center">
