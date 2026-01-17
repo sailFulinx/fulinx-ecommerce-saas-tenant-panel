@@ -843,7 +843,7 @@ defineExpose({
                   @end="dragEndAttributeValue(index)"
                 >
                   <div v-for="(avItem, avItemIndex) in item.attributeValueDos" :key="avItemIndex">
-                    <div class="h-14 bg-white border border-gray-200 px-1 py-2 mr-2 flex items-center">
+                    <div class="min-w-14 h-14 bg-white border border-gray-200 px-1 py-2 mr-2 flex items-center justify-center">
                       <!-- 控制上传组件是否显示 -->
                       <UploadSingleImageMini
                         v-if="item.attributeId === hasImageAttributeId || !hasImageAttributeId"
