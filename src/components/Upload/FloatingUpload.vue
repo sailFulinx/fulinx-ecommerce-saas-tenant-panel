@@ -213,7 +213,7 @@ const setSelectionFileData = (fileDataList: FileData[]) => {
           </div>
         </div>
 
-        <FileList ref="fileListRef" :accept-file-type="acceptFileType" @selection-confirmed="setSelectionFileData" />
+        <FileList ref="fileListRef" :accept-file-type="acceptFileType" :max-selectable-count="maxCount" @selection-confirmed="setSelectionFileData" />
       </div>
     </div>
   </div>

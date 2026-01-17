@@ -3,10 +3,12 @@ import { Refresh } from '@element-plus/icons-vue'
 
 interface Props {
   acceptFileType?: string[] // 允许上传的文件类型，例如 ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml']
+  maxSelectableCount?: number // 最大可选文件数量，-1 表示无限制，默认为 -1
 }
 
 const props = withDefaults(defineProps<Props>(), {
   acceptFileType: () => ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml'],
+  maxSelectableCount: -1, // 默认为 -1，表示无限制
 })
 
 const emit = defineEmits(['selectionConfirmed'])
@@ -89,6 +91,12 @@ const toggleSelectFile = (file: FileData & CommonField) => {
     selectedFile.value.splice(index, 1)
   } else {
     // 如果未选中，则添加到选中列表
+    // 检查是否达到最大选择数量限制
+    if (props.maxSelectableCount !== -1 && selectedFile.value.length >= props.maxSelectableCount) {
+      ElMessage.warning(`最多只能选择 ${props.maxSelectableCount} 个文件`)
+      return
+    }
+
     // 如果props.acceptFileType包含file.fileContentType，则添加到选中列表
     if (props.acceptFileType.includes(file.fileContentType)) {
       selectedFile.value.push(file)
@@ -146,7 +154,19 @@ const toggleSelectAll = () => {
     selectedFile.value = []
   } else {
     // 否则，选中所有当前页的图片
-    selectedFile.value = [...fileListData.value.list]
+    // 检查是否超过最大选择数量限制
+    let selectableItems = [...fileListData.value.list]
+
+    if (props.maxSelectableCount !== -1) {
+      const remainingCount = props.maxSelectableCount - selectedFile.value.length
+      if (remainingCount <= 0) {
+        ElMessage.warning(`已达到最大选择数量限制 ${props.maxSelectableCount}`)
+        return
+      }
+      selectableItems = selectableItems.slice(0, remainingCount)
+    }
+
+    selectedFile.value = [...selectedFile.value, ...selectableItems]
   }
 }
 
