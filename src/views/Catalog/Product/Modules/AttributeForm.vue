@@ -174,7 +174,7 @@ const generateSkus = () => {
         price: 0, // 默认价格，用户后续设置
         status: true,
         // 保留原有的图片信息
-        ...existingSkuImages.has(key)
+        ...(existingSkuImages.has(key)
           ? {
               skuImageFileId: existingSkuImages.get(key).skuImageFileId,
               skuImageFileVo: existingSkuImages.get(key).skuImageFileVo,
@@ -182,7 +182,7 @@ const generateSkus = () => {
           : {
               skuImageFileId: undefined,
               skuImageFileVo: null,
-            },
+            }),
         costPrice: null,
         promotionPrice: null,
         promotionStartedTime: null,
@@ -656,19 +656,42 @@ const setAttributeImage = ({
     return
   }
 
-  const attributeValue = productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos[attributeIndex].attributeValueDos[
-    attributeValueIndex
-  ]
+  // 检查其他属性中是否已有图片
+  const hasImageInOtherAttributes = productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos.some(
+    (attr, idx) =>
+      idx !== attributeIndex
+      && attr.attributeValueDos.some(av => av.attributeImageFileVo !== null && av.attributeImageFileVo !== undefined),
+  )
+
+  // 如果其他属性已有图片，则不允许添加
+  if (hasImageInOtherAttributes) {
+    ElMessage.warning('已有其他属性设置了规格图，不能重复添加')
+    return
+  }
+
+  // 清除其他所有属性的图片（包括当前属性的其他值）
+  productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos.forEach((attr, idx) => {
+    if (idx !== attributeIndex) {
+      attr.attributeValueDos.forEach(av => {
+        av.attributeImageFileVo = null
+        av.attributeImageFileId = undefined
+      })
+    }
+  })
+
+  // 设置当前属性值的图片
+  const attributeValue
+    = productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos[attributeIndex].attributeValueDos[
+      attributeValueIndex
+    ]
   attributeValue.attributeImageFileVo = fileData
   attributeValue.attributeImageFileId = fileData.id
 
+  // 更新SKU项中的图片信息
   productSkuRequestDo.value.productSkuItemRequestDos.forEach(item => {
-    // 如果item.productSkuAttributeRequestDos中的attributeValueId包含了attributeValue.attributeValueId, 则把图片赋值给item.skuImageFileId和skuImageFileVo
     if (item.productSkuAttributeRequestDos.some(attr => attr.attributeValueId === attributeValue.attributeValueId)) {
       item.skuImageFileId = fileData.id
-      // 使用 Vue 的响应式更新方式，确保更改能被检测到
       item.skuImageFileVo = { ...fileData }
-      console.log(item)
     }
   })
 }

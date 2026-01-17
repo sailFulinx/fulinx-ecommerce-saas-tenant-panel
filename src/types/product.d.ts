@@ -149,7 +149,7 @@ interface AttributeValueDo {
   attributeImageFileId?: string
 
   /* Attribute Image File Vo */
-  attributeImageFileVo?: FileData & CommonField
+  attributeImageFileVo?: (FileData & CommonField) | null
 }
 
 interface AttributeSummaryDo {
