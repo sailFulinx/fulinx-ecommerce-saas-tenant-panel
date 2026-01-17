@@ -246,7 +246,8 @@ watch(
 // 监听属性值变化，重新生成SKU
 watch(
   cartes,
-  () => {
+  val => {
+    console.log(val)
     generateSkus()
   },
   { deep: true },
@@ -628,15 +629,12 @@ const setAttributeImage = ({
   attributeValue.attributeImageFileVo = fileData
   attributeValue.attributeImageFileId = fileData.id
 
-  console.log(attributeValue)
-
-  productSkuRequestDo.value.productSkuItemRequestDos.forEach((item, index) => {
-    console.log(item.productSkuAttributeRequestDos)
+  productSkuRequestDo.value.productSkuItemRequestDos.forEach(item => {
     // 如果item.productSkuAttributeRequestDos中的attributeValueId包含了attributeValue.attributeValueId, 则把图片赋值给item.skuImageFileId和skuImageFileVo
     if (item.productSkuAttributeRequestDos.some(attr => attr.attributeValueId === attributeValue.attributeValueId)) {
       item.skuImageFileId = fileData.id
       // 使用 Vue 的响应式更新方式，确保更改能被检测到
-      productSkuRequestDo.value.productSkuItemRequestDos[index].skuImageFileVo = { ...fileData }
+      item.skuImageFileVo = { ...fileData }
       console.log(item)
     }
   })
@@ -785,17 +783,11 @@ defineExpose({
                   <div v-for="(avItem, avItemIndex) in item.attributeValueDos" :key="avItemIndex">
                     <div class="h-14 bg-white border border-gray-200 px-1 py-2 mr-2 flex items-center">
                       <UploadSingleImageMini
-                        v-if="!avItem.attributeImageFileVo || !avItem.attributeImageFileVo.fileUrl"
                         :attribute-index="index"
                         :attribute-value-index="avItemIndex"
                         class="mr-1"
                         @get-data="setAttributeImage"
                       />
-                      <img
-                        v-if="avItem.attributeImageFileVo && avItem.attributeImageFileVo.fileUrl"
-                        :src="avItem.attributeImageFileVo.fileUrl"
-                        class="w-6 h-6 mr-1"
-                      >
                       <span class="fs-12px">{{ avItem.attributeValueContent }}</span>
                     </div>
                   </div>
@@ -1028,7 +1020,6 @@ defineExpose({
             <ElTableColumn label="SKU图片" width="90">
               <template #default="scope">
                 <div class="w-full flex items-center">
-                  {{ scope.row }}
                   <Icon
                     v-if="!scope.row.skuImageFileVo || !scope.row.skuImageFileVo.fileUrl"
                     name="ri:image-line"
