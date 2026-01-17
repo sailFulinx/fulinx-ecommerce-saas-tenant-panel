@@ -422,6 +422,8 @@ const applyQuickSelect = () => {
 const clearSelection = () => {
   multipleTable.value.clearSelection()
   multipleSelection.value = []
+  quickSelectForm.attributeValueIds = []
+  quickSelectForm.attributeId = ''
   ElMessage.info('已清空选择')
 }
 
