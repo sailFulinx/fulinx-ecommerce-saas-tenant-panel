@@ -78,7 +78,7 @@ export function formatTime(time: Date | number | string, fmt = 'yyyy-MM-dd HH:mm
     return ''
   } else {
     const date = new Date(time)
-    const o = {
+    const o: { [key: string]: number } = {
       'M+': date.getMonth() + 1,
       'd+': date.getDate(),
       'H+': date.getHours(),
@@ -87,12 +87,17 @@ export function formatTime(time: Date | number | string, fmt = 'yyyy-MM-dd HH:mm
       'q+': Math.floor((date.getMonth() + 3) / 3),
       'S': date.getMilliseconds(),
     }
-    if (/(y+)/.test(fmt)) {
-      fmt = fmt.replace(RegExp.$1, `${date.getFullYear()}`.substr(4 - RegExp.$1.length))
+    const yearMatch = fmt.match(/(y+)/)
+    if (yearMatch) {
+      fmt = fmt.replace(yearMatch[1], `${date.getFullYear()}`.substr(4 - yearMatch[1].length))
     }
     for (const k in o) {
-      if (new RegExp(`(${k})`).test(fmt)) {
-        fmt = fmt.replace(RegExp.$1, RegExp.$1.length === 1 ? o[k] : `00${o[k]}`.substr(`${o[k]}`.length))
+      const reg = new RegExp(`(${k})`)
+      if (reg.test(fmt)) {
+        const matchResult = fmt.match(reg)
+        if (matchResult) {
+          fmt = fmt.replace(matchResult[1], matchResult[1].length === 1 ? String(o[k]) : `00${o[k]}`.substr(`${o[k]}`.length))
+        }
       }
     }
     return fmt
@@ -140,7 +145,7 @@ export function hasContentElements(content: Record<string, any>): boolean {
     } else if (typeof value === 'object' && value !== null) {
       if (value instanceof Date) {
         // 检查 Date 是否有效
-        return !isNaN(value.getTime())
+        return !Number.isNaN(value.getTime())
       } else if (value instanceof Set || value instanceof Map) {
         // 检查 Set 或 Map 是否非空
         return value.size > 0
