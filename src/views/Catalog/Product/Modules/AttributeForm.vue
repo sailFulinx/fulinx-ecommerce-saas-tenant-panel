@@ -438,14 +438,19 @@ const clearSelection = () => {
 const isTextField = (field: string) => {
   const numericFields = ['price', 'costPrice', 'promotionPrice', 'weight', 'length', 'width', 'height']
   const dateFields = ['promotionStartedTime', 'promotionEndedTime']
-  // 不包括日期字段
-  return !numericFields.includes(field) && !dateFields.includes(field)
+  // 不包括日期字段和quantity
+  return !numericFields.includes(field) && !dateFields.includes(field) && field !== 'quantity'
 }
 
 // 判断字段是否为数字类型
 const isNumericField = (field: string) => {
   const numericFields = ['price', 'costPrice', 'promotionPrice', 'weight', 'length', 'width', 'height', 'quantity']
   return numericFields.includes(field)
+}
+
+// 判断字段是否为整数类型（不允许小数）
+const isIntegerField = (field: string) => {
+  return field === 'quantity' // 可以扩展其他整数类型的字段
 }
 
 // 判断字段是否为日期类型
@@ -456,12 +461,14 @@ const isDateField = (field: string) => {
 
 // 获取操作选项，根据字段类型决定是否禁用某些选项
 const getOperationOptions = computed(() => {
+  const isInteger = isIntegerField(batchUpdateForm.field)
+
   const baseOptions = [
     { label: '设置为固定值', value: 'set' },
     { label: '增加固定值', value: 'add', disabled: !isNumericField(batchUpdateForm.field) },
     { label: '减少固定值', value: 'subtract', disabled: !isNumericField(batchUpdateForm.field) },
-    { label: '增加百分比', value: 'percent_add', disabled: !isNumericField(batchUpdateForm.field) },
-    { label: '减少百分比', value: 'percent_subtract', disabled: !isNumericField(batchUpdateForm.field) },
+    { label: '增加百分比', value: 'percent_add', disabled: !isNumericField(batchUpdateForm.field) || isInteger },
+    { label: '减少百分比', value: 'percent_subtract', disabled: !isNumericField(batchUpdateForm.field) || isInteger },
   ]
 
   // 如果是日期字段，禁用数值操作
@@ -1197,13 +1204,13 @@ defineExpose({
                     v-else-if="isNumericField(batchUpdateForm.field)"
                     v-model="batchUpdateForm.adjustmentValue"
                     :precision="
-                      batchUpdateForm.field.includes('price')
-                        || batchUpdateForm.field === 'quantity'
+                      batchUpdateForm.field === 'quantity'
+                        || batchUpdateForm.field.includes('price')
                         || batchUpdateForm.field === 'weight'
                         || batchUpdateForm.field === 'length'
                         || batchUpdateForm.field === 'width'
                         || batchUpdateForm.field === 'height'
-                        ? 2
+                        ? (batchUpdateForm.field === 'quantity' ? 0 : 2)
                         : 0
                     "
                     :step="1"

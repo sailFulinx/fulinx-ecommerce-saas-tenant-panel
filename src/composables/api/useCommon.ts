@@ -43,3 +43,13 @@ export const useProductStockStatusList = (
 ) => {
   return useList<ProductStockStatusData, ProductStockStatusListParams>(fetchProductStockStatusListApi, payload, options)
 }
+
+// 重量单位列表
+export const useWeightUnitList = (payload?: Partial<CommonEnumListParams>, options: UseCommonOptions = {}) => {
+  return useList<CommonEnumData, CommonEnumListParams>(fetchWeightUnitListApi, payload, options)
+}
+
+// 长度单位列表
+export const useLengthUnitList = (payload?: Partial<CommonEnumListParams>, options: UseCommonOptions = {}) => {
+  return useList<CommonEnumData, CommonEnumListParams>(fetchLengthUnitListApi, payload, options)
+}

@@ -50,16 +50,16 @@ export function fetchConditionTypeListApi(
   })
 }
 
-export function fetchGenderTypeListApi(
-  data?: GenderTypeListParams,
-): Promise<IResponse<TableResponse<GenderTypeData>>> {
+export function fetchGenderTypeListApi(data?: GenderTypeListParams): Promise<IResponse<TableResponse<GenderTypeData>>> {
   return request.post({
     url: 'share/public/common/gender/type/list',
     data,
   })
 }
 
-export function fetchWarehouseTypeListApi(data?: WarehouseTypeListParams): Promise<IResponse<TableResponse<WarehouseTypeData>>> {
+export function fetchWarehouseTypeListApi(
+  data?: WarehouseTypeListParams,
+): Promise<IResponse<TableResponse<WarehouseTypeData>>> {
   return request.post({
     url: 'share/public/common/warehouse/type/list',
     data,
@@ -71,6 +71,20 @@ export function fetchProductStockStatusListApi(
 ): Promise<IResponse<TableResponse<ProductStockStatusData>>> {
   return request.post({
     url: 'share/public/common/stock/status/list',
+    data,
+  })
+}
+
+export function fetchWeightUnitListApi(data?: CommonEnumListParams): Promise<IResponse<TableResponse<CommonEnumData>>> {
+  return request.post({
+    url: 'share/public/common/weight/unit/list',
+    data,
+  })
+}
+
+export function fetchLengthUnitListApi(data?: CommonEnumListParams): Promise<IResponse<TableResponse<CommonEnumData>>> {
+  return request.post({
+    url: 'share/public/common/length/unit/list',
     data,
   })
 }

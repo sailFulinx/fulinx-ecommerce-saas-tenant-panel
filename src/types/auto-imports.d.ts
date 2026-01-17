@@ -170,6 +170,7 @@ declare global {
   const fetchImpPaginationApi: typeof import('../api/imp').fetchImpPaginationApi
   const fetchLanguageListApi: typeof import('../api/language').fetchLanguageListApi
   const fetchLayoutTypeListApi: typeof import('../api/common').fetchLayoutTypeListApi
+  const fetchLengthUnitListApi: typeof import('../api/common').fetchLengthUnitListApi
   const fetchPermissionListApi: typeof import('../api/permission').fetchPermissionListApi
   const fetchProductSourceTypeListApi: typeof import('../api/common').fetchProductSourceTypeListApi
   const fetchProductStockStatusListApi: typeof import('../api/common').fetchProductStockStatusListApi
@@ -184,6 +185,7 @@ declare global {
   const fetchUserInfoApi: typeof import('../api/user').fetchUserInfoApi
   const fetchUserPaginationApi: typeof import('../api/user').fetchUserPaginationApi
   const fetchWarehouseTypeListApi: typeof import('../api/common').fetchWarehouseTypeListApi
+  const fetchWeightUnitListApi: typeof import('../api/common').fetchWeightUnitListApi
   const filePaginationApi: typeof import('../api/file').filePaginationApi
   const fileSizeApi: typeof import('../api/file').fileSizeApi
   const getActivePinia: typeof import('pinia').getActivePinia
@@ -620,6 +622,7 @@ declare global {
   const useLanguageStore: typeof import('../stores/language').useLanguageStore
   const useLastChanged: typeof import('@vueuse/core').useLastChanged
   const useLayoutTypeList: typeof import('../composables/api/useCommon').useLayoutTypeList
+  const useLengthUnitList: typeof import('../composables/api/useCommon').useLengthUnitList
   const useLink: typeof import('vue-router').useLink
   const useList: typeof import('../composables/useApi').useList
   const useLocalStorage: typeof import('@vueuse/core').useLocalStorage
@@ -737,6 +740,7 @@ declare global {
   const useWebSocket: typeof import('@vueuse/core').useWebSocket
   const useWebWorker: typeof import('@vueuse/core').useWebWorker
   const useWebWorkerFn: typeof import('@vueuse/core').useWebWorkerFn
+  const useWeightUnitList: typeof import('../composables/api/useCommon').useWeightUnitList
   const useWindowFocus: typeof import('@vueuse/core').useWindowFocus
   const useWindowScroll: typeof import('@vueuse/core').useWindowScroll
   const useWindowSize: typeof import('@vueuse/core').useWindowSize

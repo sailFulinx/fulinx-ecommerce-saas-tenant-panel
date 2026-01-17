@@ -88,6 +88,10 @@ interface ProductStockStatusListParams {
   productStockStatusCode?: string | null
 }
 
+interface CommonEnumListParams {
+  code?: string | null
+}
+
 interface ProductStockStatusData {
   /* ID */
   id: number
@@ -97,6 +101,16 @@ interface ProductStockStatusData {
 
   /* Product Stock Status Name */
   productStockStatusName: string
+}
+
+interface CommonEnumData {
+  /* ID */
+  id: number
+
+  /* Code */
+  code: string
+
+  name: string
 }
 
 interface WarehouseTypeData {
