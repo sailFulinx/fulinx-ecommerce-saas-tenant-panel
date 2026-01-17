@@ -43,6 +43,18 @@ const {
   promise: stockStatusPromise,
 } = useProductStockStatusList()
 
+const {
+  loading: weightUnitLoading,
+  listData: weightUnitListData,
+  promise: weightUnitPromise,
+} = useWeightUnitList()
+
+const {
+  loading: lengthUnitLoading,
+  listData: lengthUnitListData,
+  promise: lengthUnitPromise,
+} = useLengthUnitList()
+
 const { loading: warehouseLoading, listData: warehouseListData, promise: warehousePromise } = useWarehouseList()
 
 const currentWarehouseId = ref('')
@@ -52,7 +64,7 @@ onMounted(async () => {
   loading.init = true
   try {
     // 并行等待所有数据加载完成
-    await Promise.all([attributePromise, stockStatusPromise, warehousePromise])
+    await Promise.all([attributePromise, stockStatusPromise, warehousePromise, weightUnitPromise, lengthUnitPromise])
     currentWarehouseId.value = warehouseListData.value.list.find(item => item.isDefault)?.id || ''
   } catch (error) {
     console.error('加载数据失败:', error)
