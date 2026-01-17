@@ -330,8 +330,9 @@ defineExpose({
                     @click="toggleSelectFile(item)"
                   >
                     <!-- 图片容器 -->
-                    <div class="relative bg-gray-100 aspect-square flex items-center justify-center">
-                      <div v-if="item.fileUrl">
+                    <div class="relative bg-gray-100 aspect-square flex items-center justify-center overflow-hidden">
+                      <div v-if="item.fileUrl" class="w-full h-full flex items-center justify-center">
+                        <!-- 图片处理 -->
                         <ElImage
                           v-if="
                             item.fileContentType === 'image/jpeg'
@@ -341,11 +342,11 @@ defineExpose({
                           "
                           :src="item.fileUrl"
                           lazy
-                          fit="cover"
-                          class="w-full h-full object-cover"
-                          @error="handleReLoadImage(item, index)"
+                          class="media-content"
                         >
+                          @error="handleReLoadImage(item, index)" >
                           <template #error>
+                            <!-- 错误处理模板保持不变 -->
                             <div class="flex items-center justify-center h-full">
                               <div class="flex flex-col items-center">
                                 <div class="mt-2 text-xs text-gray-500">
@@ -361,6 +362,7 @@ defineExpose({
                             </div>
                           </template>
                           <template #placeholder>
+                            <!-- 占位符模板保持不变 -->
                             <div class="flex items-center justify-center h-full">
                               <div class="flex flex-col items-center">
                                 <ElIcon class="is-loading text-gray-400">
@@ -371,22 +373,23 @@ defineExpose({
                             </div>
                           </template>
                         </ElImage>
-                        <!-- 视频 -->
+
+                        <!-- 视频处理 -->
                         <div
                           v-if="
                             item.fileContentType === 'video/mp4'
                               || item.fileContentType === 'video/webm'
                               || item.fileContentType === 'video/ogg'
                           "
-                          class="w-full h-full"
+                          class="w-full h-full flex items-center justify-center"
                         >
-                          <video :src="item.fileUrl" class="w-full h-full object-cover" controls>
+                          <video :src="item.fileUrl" class="media-content" controls>
                             您的浏览器不支持 HTML5 video 标签。
                           </video>
                         </div>
                       </div>
 
-                      <!-- 图片占位符 -->
+                      <!-- 图片占位符（保持不变） -->
                       <div v-else class="text-gray-400">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -404,7 +407,7 @@ defineExpose({
                         </svg>
                       </div>
 
-                      <!-- 选中标记 -->
+                      <!-- 选中标记（保持不变） -->
                       <div
                         v-if="selectedFile.some(sFile => sFile.id === item.id)"
                         class="absolute top-2 right-2 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center"
@@ -501,3 +504,14 @@ defineExpose({
     </div>
   </ElDialog>
 </template>
+
+<style scoped>
+/* 新增媒体内容样式 */
+.media-content {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: scale-down; /* 关键属性：小图片不放大，大图片缩小适应 */
+}
+</style>
