@@ -5,6 +5,14 @@ const props = defineProps({
   imageData: {
     type: Object as () => FileData & CommonField,
   },
+  attributeValueIndex: {
+    type: Number,
+    default: 0,
+  },
+  attributeIndex: {
+    type: Number,
+    default: 0,
+  },
 })
 const emit = defineEmits(['getData'])
 
@@ -71,7 +79,7 @@ const handleDelete = () => {
     recordUpdateTime: '',
   }
   imageUrl.value = ''
-  emit('getData', { fileData: fileData.value })
+  emit('getData', { attributeIndex: props.attributeIndex, attributeValueIndex: props.attributeValueIndex, fileData: fileData.value })
 }
 
 const setFileData = (data: (FileData & CommonField)[]) => {
@@ -84,8 +92,9 @@ const setFileData = (data: (FileData & CommonField)[]) => {
 const setSelectionFileData = (data: (FileData & CommonField)[]) => {
   if (data.length > 0) {
     fileData.value = data[0]
+    console.log(data[0])
     imageUrl.value = data[0].fileUrl
-    emit('getData', { fileData: fileData.value })
+    emit('getData', { attributeIndex: props.attributeIndex, attributeValueIndex: props.attributeValueIndex, fileData: fileData.value })
   }
 }
 
@@ -98,7 +107,7 @@ const getFileData = () => {
 const handleFileUploaded = (data: FileData) => {
   fileData.value = { ...data }
   imageUrl.value = data.fileUrl
-  emit('getData', { fileData: fileData.value })
+  emit('getData', { attributeIndex: props.attributeIndex, attributeValueIndex: props.attributeValueIndex, fileData: fileData.value })
 }
 
 defineExpose({

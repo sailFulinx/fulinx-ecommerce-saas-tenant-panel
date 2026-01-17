@@ -571,6 +571,39 @@ const getAttributeList = async () => {
   )?.attributeValueListResultDos
 }
 
+const setAttributeImage = ({
+  attributeIndex,
+  attributeValueIndex,
+  fileData,
+}: {
+  attributeIndex: number
+  attributeValueIndex: number
+  fileData: FileData & CommonField
+}) => {
+  if (attributeIndex === undefined || attributeValueIndex === undefined || fileData === undefined) {
+    return
+  }
+
+  const attributeValue = productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos[attributeIndex].attributeValueDos[
+    attributeValueIndex
+  ]
+  attributeValue.attributeImageFileVo = fileData
+  attributeValue.attributeImageFileId = fileData.id
+
+  console.log(attributeValue)
+
+  // TODO 更新sku
+
+  productSkuRequestDo.value.productSkuItemRequestDos.forEach(item => {
+    console.log(item.productSkuAttributeRequestDos)
+    // 如果item.productSkuAttributeRequestDos中的attributeValueId包含了attributeValue.attributeValueId, 则把图片赋值给item.skuImageFileId和skuImageFileVo
+    if (item.productSkuAttributeRequestDos.some(attr => attr.attributeValueId === attributeValue.attributeValueId)) {
+      item.skuImageFileId = fileData.id
+      item.skuImageFileVo = fileData
+    }
+  })
+}
+
 const setData = (data: ProductSkuRequestDo) => {
   productSkuRequestDo.value = data
 }
@@ -715,7 +748,10 @@ defineExpose({
                     <div class="h-14 bg-white border border-gray-200 px-1 py-2 mr-2 flex items-center">
                       <UploadSingleImageMini
                         v-if="!avItem.attributeImageFileVo || !avItem.attributeImageFileVo.fileUrl"
+                        :attribute-index="index"
+                        :attribute-value-index="avItemIndex"
                         class="mr-1"
+                        @get-data="setAttributeImage"
                       />
                       <img
                         v-if="avItem.attributeImageFileVo && avItem.attributeImageFileVo.fileUrl"
