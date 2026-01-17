@@ -106,13 +106,29 @@ const cartes = computed(() => {
 
 // 生成SKU函数
 const generateSkus = () => {
+  // 保存现有的图片信息
+  const existingSkuImages = new Map()
+  productSkuRequestDo.value.productSkuItemRequestDos.forEach(sku => {
+    if (sku.skuImageFileId && sku.skuImageFileVo) {
+      // 创建一个标识符，由所有属性值组合而成
+      const key = sku.productSkuAttributeRequestDos
+        .map(attr => attr.attributeValueId)
+        .sort()
+        .join('-')
+      existingSkuImages.set(key, {
+        skuImageFileId: sku.skuImageFileId,
+        skuImageFileVo: sku.skuImageFileVo,
+      })
+    }
+  })
+
   // 清空现有的SKU项
   productSkuRequestDo.value.productSkuItemRequestDos = []
 
   // 获取笛卡尔积结果
   const combinations = cartes.value
 
-  // 为每个组合创建一个SKU项
+  // 如果有规格组合
   if (combinations.length > 0 && combinations[0].length > 0) {
     combinations.forEach(combination => {
       // 生成SKU编码，格式为 spu-组合值
@@ -130,6 +146,7 @@ const generateSkus = () => {
         }
       })
 
+      // 创建库存信息数组
       const productSkuInventoryRequestDos: ProductSkuInventoryRequestDo[] = []
       warehouseListData.value.list.forEach(warehouse => {
         // 创建SKU库存信息
@@ -143,6 +160,12 @@ const generateSkus = () => {
         productSkuInventoryRequestDos.push(skuInventory)
       })
 
+      // 创建一个标识符，用于匹配现有图片
+      const key = combination
+        .map(attr => attr.attributeValueId)
+        .sort()
+        .join('-')
+
       // 创建SKU项
       const skuItem: ProductSkuItemRequestDo = {
         productId: '', // 通常在保存产品时填充
@@ -150,8 +173,16 @@ const generateSkus = () => {
         currencyId: productSkuRequestDo.value.currencyId, // 默认货币，实际应用中可能需要从其他地方获取
         price: 0, // 默认价格，用户后续设置
         status: true,
-        skuImageFileId: undefined,
-        skuImageFileVo: null,
+        // 保留原有的图片信息
+        ...existingSkuImages.has(key)
+          ? {
+              skuImageFileId: existingSkuImages.get(key).skuImageFileId,
+              skuImageFileVo: existingSkuImages.get(key).skuImageFileVo,
+            }
+          : {
+              skuImageFileId: undefined,
+              skuImageFileVo: null,
+            },
         costPrice: null,
         promotionPrice: null,
         promotionStartedTime: null,
@@ -186,7 +217,7 @@ const generateSkus = () => {
       productSkuRequestDo.value.productSkuItemRequestDos.push(skuItem)
     })
   } else {
-    // 如果没有规格组合，添加一个默认的SKU项，以SPU作为SKU编码
+    // 如果没有规格组合，添加一个默认的SKU项
     if (productSkuRequestDo.value.spu) {
       const productSkuInventoryRequestDos: ProductSkuInventoryRequestDo[] = []
       warehouseListData.value.list.forEach(warehouse => {
@@ -200,6 +231,7 @@ const generateSkus = () => {
         // 将库存信息添加到SKU项中
         productSkuInventoryRequestDos.push(skuInventory)
       })
+
       const defaultSkuItem: ProductSkuItemRequestDo = {
         productId: '',
         skuCode: productSkuRequestDo.value.spu,
@@ -228,6 +260,7 @@ const generateSkus = () => {
         productSkuAttributeRequestDos: [],
         productSkuInventoryRequestDos,
       }
+
       productSkuRequestDo.value.productSkuItemRequestDos.push(defaultSkuItem)
     }
   }
