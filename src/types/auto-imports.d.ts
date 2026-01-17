@@ -185,10 +185,12 @@ declare global {
   const fetchUserPaginationApi: typeof import('../api/user').fetchUserPaginationApi
   const fetchWarehouseTypeListApi: typeof import('../api/common').fetchWarehouseTypeListApi
   const filePaginationApi: typeof import('../api/file').filePaginationApi
+  const fileSizeApi: typeof import('../api/file').fileSizeApi
   const getActivePinia: typeof import('pinia').getActivePinia
   const getCurrentInstance: typeof import('vue').getCurrentInstance
   const getCurrentScope: typeof import('vue').getCurrentScope
   const getCurrentWatcher: typeof import('vue').getCurrentWatcher
+  const getFileSize: typeof import('../api/file').getFileSize
   const getParam: typeof import('../composables/general').getParam
   const getToken: typeof import('../composables/index').getToken
   const getWarehouseDetail: typeof import('../api/warehouse').getWarehouseDetail

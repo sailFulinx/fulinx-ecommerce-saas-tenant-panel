@@ -37,6 +37,16 @@ const pagination = async (val: PaginationComponentDataType) => {
   await getList()
 }
 
+const fileSize = ref(0)
+
+const getFileSize = async () => {
+  const { data } = await fileSizeApi().catch(error => {
+    console.error('获取文件大小失败:', error)
+    throw error
+  })
+  fileSize.value = data
+}
+
 // 响应式状态
 const selectedCategory = ref('')
 const selectedImages = ref<(FileData & CommonField)[]>([]) // 存储完整的图片对象数组
@@ -49,7 +59,10 @@ const open = async () => {
   loading.init = true
   try {
     // 重新获取数据
-    await getList()
+    await Promise.all([
+      getList(),
+      getFileSize(),
+    ])
   } catch (error) {
     console.error('加载数据失败:', error)
   } finally {
@@ -348,7 +361,7 @@ defineExpose({
                   <!-- 容量使用情况 -->
                   <div class="w-full md:w-auto">
                     <div class="text-sm text-gray-700 mb-1">
-                      已使用 20M / 20G
+                      已使用 {{ fileSize }}G / 10G
                     </div>
                     <div class="w-full md:w-64 bg-gray-200 rounded-full h-2">
                       <div

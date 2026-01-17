@@ -15,6 +15,13 @@ export function uploadFileApi(data: any, config?: any): Promise<IResponse> {
   })
 }
 
+export function fileSizeApi(): Promise<IResponse<number>> {
+  return request.get({
+    url: 'system/file/count/file/size',
+    token: true,
+  })
+}
+
 export function filePaginationApi(
   params: FileListParams & Pagination,
 ): Promise<IResponse<TableResponse<FileListData & CommonField>>> {

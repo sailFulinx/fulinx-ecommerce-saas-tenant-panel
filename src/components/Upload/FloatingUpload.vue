@@ -199,7 +199,7 @@ const setSelectionFileData = (fileDataList: FileData[]) => {
             @mousedown.stop="handleOpenFileListDialog"
           >
             <div
-              class="flex flex-col items-center justify-center w-full h-full transition-colors duration-300 hover:text-blue-500 group"
+              class="flex flex-col items-center justify-center w-full h-full transition-colors duration-300 hover:text-blue-500 group cursor-pointer"
             >
               <div class="mb-2 flex items-center justify-center transition-colors duration-300 hover:text-blue-500">
                 <Icon :size="4" icon="ep:upload" color="#999" />
