@@ -86,7 +86,7 @@ const productSkuRequestDo = ref<ProductSkuRequestDo>({
   currencyId: '',
   productAttributeRequestDo: {
     attributeSummaryDos: [],
-    searchIndex: '22222', // TODO 待完善
+    searchIndex: '',
   },
   productSkuItemRequestDos: [],
 })
@@ -924,6 +924,20 @@ const getData = () => {
     ElMessage.error($t('product.placeholder.price'))
     return
   }
+
+  // 计算searchIndex
+  const attributeSummaryDos = productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos
+  const searchIndexParts = []
+
+  for (const attr of attributeSummaryDos) {
+    const attributeName = attr.attributeName
+    const attributeValues = attr.attributeValueDos.map(av => av.attributeValueContent).join(',')
+    searchIndexParts.push(`${attributeName}:${attributeValues}`)
+  }
+
+  // 将计算好的searchIndex赋值回去
+  productSkuRequestDo.value.productAttributeRequestDo.searchIndex = searchIndexParts.join(';')
+
   return productSkuRequestDo.value
 }
 
