@@ -29,6 +29,9 @@ const attributePayload = reactive<AttributeListParams>({
   status: true,
 })
 
+// 添加缺失的shouldShowUpload响应式变量
+const shouldShowUpload = ref(true)
+
 const {
   loading: attributeLoading,
   listData: attributeListData,
@@ -127,6 +130,8 @@ const generateSkus = () => {
 
   // 获取笛卡尔积结果
   const combinations = cartes.value
+
+  console.log(combinations)
 
   // 如果有规格组合
   if (combinations.length > 0 && combinations[0].length > 0) {
@@ -279,8 +284,7 @@ watch(
 // 监听属性值变化，重新生成SKU
 watch(
   cartes,
-  val => {
-    console.log(val)
+  () => {
     generateSkus()
   },
   { deep: true },
@@ -838,7 +842,9 @@ defineExpose({
                 >
                   <div v-for="(avItem, avItemIndex) in item.attributeValueDos" :key="avItemIndex">
                     <div class="h-14 bg-white border border-gray-200 px-1 py-2 mr-2 flex items-center">
+                      <!-- 控制上传组件是否显示 -->
                       <UploadSingleImageMini
+                        v-if="shouldShowUpload"
                         :attribute-index="index"
                         :attribute-value-index="avItemIndex"
                         class="mr-1"
