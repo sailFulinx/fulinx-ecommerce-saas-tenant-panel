@@ -31,8 +31,6 @@ export const useUploadFile = (options: UseUploadImageOptions = {}) => {
     onSuccessCallback,
   } = options
 
-  console.log(options)
-
   // 上传过程中的文件列表
   const beforeUploadFileDataList = ref<UploadFile[]>([])
   // 已上传的文件数据列表
