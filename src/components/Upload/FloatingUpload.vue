@@ -141,8 +141,8 @@ const setSelectionFileData = (fileDataList: FileData[]) => {
       <!-- 上传按钮 -->
       <div
         v-if="showUploadButton"
-        class="w-41 h-41 border border-dashed hover:border-[#71A0FF] bg-white flex items-center justify-center group relative mb-4"
-        @mouseenter="showHoverUpload"
+        class="w-41 h-41 border border-dashed hover:border-[#71A0FF] bg-white flex items-center justify-center group cursor-pointer relative mb-4"
+        @mousedown="showHoverUpload"
         @mouseleave="hideHoverUpload"
       >
         <div class="flex flex-col items-center justify-center w-full h-full p-2">
@@ -201,7 +201,7 @@ const setSelectionFileData = (fileDataList: FileData[]) => {
             <div
               class="flex flex-col items-center justify-center w-full h-full transition-colors duration-300 hover:text-blue-500 group cursor-pointer"
             >
-              <div class="mb-2 flex items-center justify-center transition-colors duration-300 hover:text-blue-500">
+              <div class="mb-2 flex items-center justify-center transition-colors duration-300 group-hover:text-[#71A0FF]">
                 <Icon :size="4" icon="ep:upload" color="#999" />
               </div>
               <div
