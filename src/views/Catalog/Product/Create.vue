@@ -252,9 +252,8 @@ const deleteTagView = (refresh: boolean) => {
 
 const save = async () => {
   loading.init = true
-  // TODO 可以优化
   if (productForm.systemCategoryId && productForm.systemCategoryId?.length > 0) {
-    productForm.systemCategoryId = productForm.systemCategoryId[0]
+    productForm.systemCategoryId = productForm.systemCategoryId.at(-1)
   }
   productForm.productParameterRelationRequestDos = []
   productForm.languageId = languageId
