@@ -135,7 +135,7 @@ const handleImport = () => {
           <ElInput
             v-model="listQuery.spu"
             clearable
-            :placeholder="$t('product.placeholder.skuQuery')"
+            :placeholder="$t('product.placeholder.spuQuery')"
             style="width: 200px"
             class="filter-item mr-5"
             @clear="getList"
@@ -186,14 +186,9 @@ const handleImport = () => {
             />
           </template>
         </ElTableColumn>
-        <ElTableColumn :label="$t('product.sku')">
+        <ElTableColumn :label="$t('product.spu')">
           <template #default="scope">
-            <span>{{ scope.row.sku }}</span>
-          </template>
-        </ElTableColumn>
-        <ElTableColumn :label="$t('product.mpn')">
-          <template #default="scope">
-            <span>{{ scope.row.mpn }}</span>
+            <span>{{ scope.row.spu }}</span>
           </template>
         </ElTableColumn>
         <ElTableColumn :label="$t('product.productName')">

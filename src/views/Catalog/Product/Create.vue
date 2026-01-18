@@ -4,6 +4,7 @@ import { datePickerShortcuts } from '@/data/date'
 import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
 import { useTagsViewStore } from '@/stores/tagsView'
+import { formatTime } from '@/utils'
 import AttributeForm from './Modules/AttributeForm.vue'
 import CreateBrandDialog from './Modules/CreateBrandDialog.vue'
 import ParameterForm from './Modules/ParameterForm.vue'
@@ -250,6 +251,7 @@ const deleteTagView = (refresh: boolean) => {
 }
 
 const save = async () => {
+  loading.init = true
   // TODO 可以优化
   if (productForm.systemCategoryId && productForm.systemCategoryId?.length > 0) {
     productForm.systemCategoryId = productForm.systemCategoryId[0]
@@ -294,18 +296,31 @@ const save = async () => {
 
   productForm.productFileRequestDos = [...productForm.productFileRequestDos, videoData]
 
+  if (productForm.onlineTime) {
+    productForm.onlineTime = formatTime(productForm.onlineTime)
+  }
+
+  if (productForm.offlineTime) {
+    productForm.onlineTime = formatTime(productForm.offlineTime)
+  }
+
   const valid = await productFormRef.value.validate((valid: boolean) => {
     if (!valid) {
+      loading.init = false
       return false
     }
   })
   if (!valid) {
+    loading.init = false
     return false
   }
 
   await createProductApi(productForm).catch(err => {
+    loading.init = false
     throw err
   })
+
+  loading.init = false
 
   deleteTagView(true)
   ElMessage({
