@@ -20,6 +20,7 @@ export default {
   categoryInfo: '产品分类',
   image: '产品图片',
   brand: '品牌',
+  createBrand: '添加品牌',
   category: '产品分类',
   productName: '产品名称',
   productShortName: '产品短标题',

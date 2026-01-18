@@ -1,4 +1,4 @@
-<script setup name="CreateSupplierDialog" lang="ts">
+<script setup name="CreateBrandDialog" lang="ts">
 import type { FormRules } from 'element-plus'
 
 const emit = defineEmits(['getList'])
@@ -12,17 +12,17 @@ const loading = reactive({
   parameters: false,
 })
 
-const supplierNameString = ref('')
+const brandNameString = ref('')
 
-const form = reactive<CreateSupplierBatchParams>({
+const form = reactive<CreateBrandBatchParams>({
   languageId: '',
-  supplierNames: [],
+  brandNames: [],
 })
 
 const resetForm = () => {
   form.languageId = ''
-  form.supplierNames = []
-  supplierNameString.value = ''
+  form.brandNames = []
+  brandNameString.value = ''
 }
 
 const openDialog = async (languageId: string) => {
@@ -31,20 +31,20 @@ const openDialog = async (languageId: string) => {
   dialogVisible.value = true
 }
 
-const createSupplier = async () => {
+const createBrand = async () => {
   loading.init = true
   try {
     const payloadForm = $clone(form)
 
     // 使用 Promise.all 等待所有请求完成
     const results = await Promise.all(
-      payloadForm.supplierNames.map(async item => {
+      payloadForm.brandNames.map(async item => {
         try {
           const payload = {
             languageId: payloadForm.languageId,
-            supplierName: item,
+            brandName: item,
           }
-          const { data } = await createSupplierApi(payload)
+          const { data } = await createBrandApi(payload)
           return { success: true, data, name: item }
         } catch (error) {
           return { success: false, error, name: item }
@@ -79,19 +79,19 @@ const onSave = () => {
     }
 
     // 解析多行输入
-    const supplierNames = supplierNameString.value
+    const brandNames = brandNameString.value
       .split('\n')
       .map(item => item.trim())
       .filter(item => item.trim() !== '')
 
-    if (supplierNames.length === 0) {
+    if (brandNames.length === 0) {
       ElMessage.error($t('common.warning.enterAtLeastOneValue'))
       return
     }
 
     // 批量创建
-    form.supplierNames = supplierNames
-    const results = await createSupplier()
+    form.brandNames = brandNames
+    const results = await createBrand()
 
     // 检查是否至少有一个成功创建
     const hasSuccess = results && results.some(r => r.success)
@@ -104,11 +104,11 @@ const onSave = () => {
 
 const rules: FormRules = {
   // 修复：验证用户实际输入的字段
-  supplierNameString: [
+  brandNameString: [
     {
       required: true,
       validator: (rule: any, value: any, callback: any) => {
-        const values = supplierNameString.value
+        const values = brandNameString.value
           .split('\n')
           .map(item => item.trim())
           .filter(item => item.trim() !== '')
@@ -130,16 +130,16 @@ defineExpose({
 </script>
 
 <template>
-  <ElDrawer v-model="dialogVisible" :title="$t('supplier.add')" size="50%">
+  <ElDrawer v-model="dialogVisible" :title="$t('brand.add')" size="50%">
     <ElForm ref="formRef" :model="form" :rules="rules" label-width="120px">
-      <ElFormItem :label="$t('product.supplier')" prop="supplierNameString">
+      <ElFormItem :label="$t('product.brand')" prop="brandNameString">
         <ElInput
-          v-model="supplierNameString"
+          v-model="brandNameString"
           class="input-line"
           type="textarea"
           :rows="6"
           clearable
-          :placeholder="`${$t('product.placeholder.supplierInput')}（${$t('common.perLine')}）`"
+          :placeholder="`${$t('product.placeholder.brandInput')}（${$t('common.perLine')}）`"
         />
       </ElFormItem>
     </ElForm>

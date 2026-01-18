@@ -12,6 +12,14 @@ interface CreateBrandParams {
   brandFileId?: string
 }
 
+interface CreateBrandBatchParams {
+  /* Language ID */
+  languageId: string
+
+  /* Brand Names */
+  brandNames: string[]
+}
+
 interface CreateBrandNameParams {
   /* Brand ID */
   brandId: string

@@ -5,6 +5,7 @@ import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
 import { useTagsViewStore } from '@/stores/tagsView'
 import AttributeForm from './Modules/AttributeForm.vue'
+import CreateBrandDialog from './Modules/CreateBrandDialog.vue'
 import ParameterForm from './Modules/ParameterForm.vue'
 import SupplierForm from './Modules/SupplierForm.vue'
 
@@ -64,11 +65,13 @@ const { loading: genderLoading, listData: genderTypeListData, promise: genderPro
 
 const { loading: conditionLoading, listData: conditionTypeListData, promise: conditionPromise } = useConditionTypeList()
 
-const { loading: brandLoading, listData: brandListData, promise: brandPromise } = useBrandList()
+const { loading: brandLoading, listData: brandListData, promise: brandPromise, getList: getBrandList } = useBrandList()
+
+const languageId = usePreferenceStore().preference.language.id
 
 // 系统分类
 const listSystemCategoryPayload = reactive<SystemCategoryListParams>({
-  languageId: usePreferenceStore().preference.language.id,
+  languageId,
   systemCategoryName: null,
 })
 
@@ -102,7 +105,7 @@ const {
  * 分类
  */
 const listCategoryPayload = reactive<CategoryListParams>({
-  languageId: usePreferenceStore().preference.language.id,
+  languageId,
   categoryName: null,
 })
 
@@ -174,6 +177,12 @@ onMounted(async () => {
   }
 })
 
+const createBrandDialogRef = ref()
+
+const handleCreateBrand = () => {
+  createBrandDialogRef.value.openDialog(languageId)
+}
+
 const editorRef = ref()
 
 const attributeFormRef = ref()
@@ -188,7 +197,7 @@ const videoUploadRef = ref()
 
 const createProductForm = (): CreateProductParams => {
   return {
-    languageId: usePreferenceStore().preference.language.id,
+    languageId,
     spu: '',
     productType: 1,
     onlineTime: '',
@@ -246,7 +255,7 @@ const save = async () => {
     productForm.systemCategoryId = productForm.systemCategoryId[0]
   }
   productForm.productParameterRelationRequestDos = []
-  productForm.languageId = usePreferenceStore().preference.language.id
+  productForm.languageId = languageId
   const attributeForm = attributeFormRef.value.getData()
   productForm.spu = attributeForm.spu
   if (categoryIds.value && categoryIds.value.length > 0) {
@@ -262,7 +271,7 @@ const save = async () => {
   productForm.productFileRequestDos?.forEach((item, index) => {
     item.productFileType = 1
     item.fileId = item.id
-    item.languageId = usePreferenceStore().preference.language.id
+    item.languageId = languageId
     if (index === 0) {
       item.isDefault = true
     } else {
@@ -273,8 +282,14 @@ const save = async () => {
     productForm.metaTitle = productForm.productName
   }
 
-  // const video = videoUploadRef.value.getFileData()
-  // productForm.productFileRequestDos = [...productForm.productFileRequestDos, ...video.fileData]
+  const video = videoUploadRef.value.getFileData()
+
+  const videoData = {
+    productFileType: 2,
+    ...video.fileData,
+  }
+
+  productForm.productFileRequestDos = [...productForm.productFileRequestDos, ...videoData]
 
   const valid = await productFormRef.value.validate((valid: boolean) => {
     if (!valid) {
@@ -378,20 +393,30 @@ provide('ProductCreate', { productForm })
                     />
                   </ElFormItem>
                   <ElFormItem :label="$t('product.brand')" prop="brandId">
-                    <ElSelect
-                      v-model="productForm.brandId"
-                      v-loading="brandLoading"
-                      clearable
-                      filterable
-                      :placeholder="`${$t('product.placeholder.brand')}`"
-                    >
-                      <ElOption
-                        v-for="item in brandListData?.list || []"
-                        :key="item.id"
-                        :value="item.id"
-                        :label="item.brandName"
-                      />
-                    </ElSelect>
+                    <div class="w-full flex items-center justify-between">
+                      <div class="flex-1 mr-2">
+                        <ElSelect
+                          v-model="productForm.brandId"
+                          v-loading="brandLoading"
+                          clearable
+                          filterable
+                          :placeholder="`${$t('product.placeholder.brand')}`"
+                        >
+                          <ElOption
+                            v-for="item in brandListData?.list || []"
+                            :key="item.id"
+                            :value="item.id"
+                            :label="item.brandName"
+                          />
+                        </ElSelect>
+                      </div>
+                      <div>
+                        <EBtn size="default" @click="handleCreateBrand">
+                          <Icon icon="ant-design:plus-outlined" class="mr-1" />
+                          {{ $t('product.createBrand') }}
+                        </EBtn>
+                      </div>
+                    </div>
                   </ElFormItem>
                   <!-- 产品短名称 -->
                   <ElFormItem :label="$t('product.productShortName')" prop="productShortName">
@@ -503,22 +528,6 @@ provide('ProductCreate', { productForm })
                       :shortcuts="datePickerShortcuts"
                     />
                   </ElFormItem>
-                  <ElFormItem :label="$t('product.brand')" prop="brandId">
-                    <ElSelect
-                      v-model="productForm.brandId"
-                      v-loading="brandLoading"
-                      clearable
-                      filterable
-                      :placeholder="`${$t('product.placeholder.brand')}`"
-                    >
-                      <ElOption
-                        v-for="item in brandListData?.list || []"
-                        :key="item.id"
-                        :value="item.id"
-                        :label="item.brandName"
-                      />
-                    </ElSelect>
-                  </ElFormItem>
                   <ElFormItem :label="$t('product.supplier')" prop="supplierId">
                     <SupplierForm ref="supplierFormRef" />
                   </ElFormItem>
@@ -596,6 +605,7 @@ provide('ProductCreate', { productForm })
         </div>
       </ElForm>
     </div>
+    <CreateBrandDialog ref="createBrandDialogRef" @get-list="getBrandList" />
   </div>
 </template>
 
