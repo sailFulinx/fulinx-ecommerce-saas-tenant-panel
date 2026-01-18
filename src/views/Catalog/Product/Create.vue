@@ -286,10 +286,13 @@ const save = async () => {
 
   const videoData = {
     productFileType: 2,
+    fileId: video.fileData.id,
     ...video.fileData,
+    languageId,
+    isDefault: false,
   }
 
-  productForm.productFileRequestDos = [...productForm.productFileRequestDos, ...videoData]
+  productForm.productFileRequestDos = [...productForm.productFileRequestDos, videoData]
 
   const valid = await productFormRef.value.validate((valid: boolean) => {
     if (!valid) {
@@ -499,15 +502,6 @@ provide('ProductCreate', { productForm })
                       minlength="1"
                       maxlength="120"
                       :placeholder="$t('product.placeholder.metaDescription')"
-                    />
-                  </ElFormItem>
-                  <ElFormItem :label="$t('product.productShortDescription')" prop="productShortDescription">
-                    <ElInput
-                      v-model="productForm.productShortDescription"
-                      clearable
-                      minlength="1"
-                      maxlength="120"
-                      :placeholder="$t('product.placeholder.productShortDescription')"
                     />
                   </ElFormItem>
                   <ElFormItem :label="$t('product.onlineTime')" prop="onlineTime">
