@@ -11,6 +11,7 @@ export default {
   option: '价格库存',
   other: '其他信息',
   priceInfo: '价格',
+  quantity: '库存数量',
   seo: 'SEO',
   slug: '自定义URL',
   parameter: '参数',

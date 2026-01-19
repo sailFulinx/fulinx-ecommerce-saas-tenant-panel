@@ -194,6 +194,11 @@ const handleImport = () => {
             <span>{{ scope.row.productName }}</span>
           </template>
         </ElTableColumn>
+        <ElTableColumn :label="$t('product.quantity')">
+          <template #default="scope">
+            <span>{{ scope.row.productTotalQuantity }}</span>
+          </template>
+        </ElTableColumn>
         <ElTableColumn :label="$t('product.productPrice')">
           <template #default="scope">
             <span>
