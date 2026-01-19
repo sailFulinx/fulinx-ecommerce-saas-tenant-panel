@@ -104,13 +104,6 @@ const handleRedirectEdit = (val: ProductListData & CommonField) => {
   router.push({ name: 'ShowProduct', params: { id: val.id } })
 }
 
-const impDialogRef = ref()
-
-// 导入
-const handleImport = () => {
-  impDialogRef.value.handleOpen()
-}
-
 // init()
 </script>
 
@@ -145,9 +138,6 @@ const handleImport = () => {
           </EBtn>
         </div>
         <div>
-          <EBtn type="default" @click="handleImport">
-            {{ $t('imp.name') }}
-          </EBtn>
           <EBtn type="danger" @click="handleMultiDelete">
             <Icon icon="ep:delete" class="mr-1" />
             {{ $t('common.remove') }}
@@ -247,6 +237,5 @@ const handleImport = () => {
         @pagination="pagination"
       />
     </div>
-    <ImpDialog ref="impDialogRef" import-type="product" />
   </div>
 </template>
