@@ -57,7 +57,7 @@ export default {
   placeholder: {
     systemCategory: '请选择系统分类',
     productNameQuery: '请输入产品名称查询',
-    skuQuery: '请输入sku查询',
+    spuQuery: '请输入spu查询',
     mpnQuery: '请输入制造商产品编号查询',
     productName: '请输入产品名称',
     productShortName: '请输入产品短标题',

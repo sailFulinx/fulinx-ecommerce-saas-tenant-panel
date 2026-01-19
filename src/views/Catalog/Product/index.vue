@@ -171,7 +171,7 @@ const handleImport = () => {
         @selection-change="selectedProductItem"
       >
         <ElTableColumn type="selection" width="55" />
-        <ElTableColumn :label="$t('product.productImage')">
+        <ElTableColumn :label="$t('product.productImage')" width="100" align="center">
           <template #default="scope">
             <SImg
               v-if="scope.row.productMainImageUrl"
@@ -179,7 +179,7 @@ const handleImport = () => {
               :alt="scope.row.productName"
               fit="cover"
               lazy
-              width="120px"
+              width="80px"
               placeholder
             />
           </template>
