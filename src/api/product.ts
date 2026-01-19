@@ -49,7 +49,7 @@ export function productPaginationApi(
  */
 export function showProductApi(params: ShowProductParams): Promise<IResponse<ShowProduct & CommonField>> {
   return request.post({
-    url: 'system/product/show',
+    url: 'system/product/admin/show',
     data: params,
     token: true,
   })

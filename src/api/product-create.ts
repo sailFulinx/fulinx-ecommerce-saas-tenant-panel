@@ -37,3 +37,45 @@ export function createProductApi(params: CreateProductParams): Promise<IResponse
     token: true,
   })
 }
+
+export function createProductNameApi(params: CreateProductNameParams): Promise<IResponse<ShowProduct & CommonField>> {
+  return request.post({
+    url: 'system/product/create/product/name',
+    data: params,
+    token: true,
+  })
+}
+
+export function createProductSeoApi(params: CreateProductSeoParams): Promise<IResponse<ShowProduct & CommonField>> {
+  return request.post({
+    url: 'system/product/create/product/seo',
+    data: params,
+    token: true,
+  })
+}
+
+export function createProductSkuApi(params: CreateProductSkuParams): Promise<IResponse<ShowProduct & CommonField>> {
+  return request.post({
+    url: 'system/product/create/product/sku',
+    data: params,
+    token: true,
+  })
+}
+
+export function createProductSupplierApi(params: CreateProductSupplierParams): Promise<IResponse<ShowProduct & CommonField>> {
+  return request.post({
+    url: 'system/product/create/product/supplier',
+    data: params,
+    token: true,
+  })
+}
+
+export function createProductTagApi(
+  params: CreateProductTagParams,
+): Promise<IResponse<ShowProduct & CommonField>> {
+  return request.post({
+    url: 'system/product/create/product/supplier',
+    data: params,
+    token: true,
+  })
+}

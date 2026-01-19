@@ -109,7 +109,11 @@ declare global {
   const createPinia: typeof import('pinia').createPinia
   const createProductApi: typeof import('../api/product-create').createProductApi
   const createProductDetailApi: typeof import('../api/product').createProductDetailApi
-  const createProductSeoApi: typeof import('../api/product').createProductSeoApi
+  const createProductNameApi: typeof import('../api/product-create').createProductNameApi
+  const createProductSeoApi: typeof import('../api/product-create').createProductSeoApi
+  const createProductSkuApi: typeof import('../api/product-create').createProductSkuApi
+  const createProductSupplierApi: typeof import('../api/product-create').createProductSupplierApi
+  const createProductTagApi: typeof import('../api/product-create').createProductTagApi
   const createReactiveFn: typeof import('@vueuse/core').createReactiveFn
   const createRef: typeof import('@vueuse/core').createRef
   const createReusableTemplate: typeof import('@vueuse/core').createReusableTemplate
@@ -397,6 +401,7 @@ declare global {
   const unref: typeof import('vue').unref
   const unrefElement: typeof import('@vueuse/core').unrefElement
   const until: typeof import('@vueuse/core').until
+  const updateAgeGroupTypeApi: typeof import('../api/product-update').updateAgeGroupTypeApi
   const updateArticleCategoryApi: typeof import('../api/article').updateArticleCategoryApi
   const updateArticleCustomsApi: typeof import('../api/article').updateArticleCustomsApi
   const updateArticleDescriptionApi: typeof import('../api/article').updateArticleDescriptionApi
@@ -418,6 +423,7 @@ declare global {
   const updateAttributeValueContentApi: typeof import('../api/attributeValue-update').updateAttributeValueContentApi
   const updateAttributeValueSortApi: typeof import('../api/attributeValue-update').updateAttributeValueSortApi
   const updateAttributeValueStatusApi: typeof import('../api/attributeValue-update').updateAttributeValueStatusApi
+  const updateBrandApi: typeof import('../api/product-update').updateBrandApi
   const updateBrandDetailApi: typeof import('../api/brand').updateBrandDetailApi
   const updateBrandDetailBrandNameApi: typeof import('../api/brand-update').updateBrandDetailBrandNameApi
   const updateBrandDetailBrandShortDescriptionApi: typeof import('../api/brand-update').updateBrandDetailBrandShortDescriptionApi
@@ -434,6 +440,8 @@ declare global {
   const updateBrandSlugApi: typeof import('../api/brand-update').updateBrandSlugApi
   const updateBrandSortApi: typeof import('../api/brand-update').updateBrandSortApi
   const updateBrandStatusApi: typeof import('../api/brand-update').updateBrandStatusApi
+  const updateCategoryApi: typeof import('../api/product-update').updateCategoryApi
+  const updateConditionTypeApi: typeof import('../api/product-update').updateConditionTypeApi
   const updateCouponDescriptionApi: typeof import('../api/coupon').updateCouponDescriptionApi
   const updateCouponEndedTimeApi: typeof import('../api/coupon').updateCouponEndedTimeApi
   const updateCouponIssueCountApi: typeof import('../api/coupon').updateCouponIssueCountApi
@@ -444,6 +452,12 @@ declare global {
   const updateCouponStatusApi: typeof import('../api/coupon').updateCouponStatusApi
   const updateCouponTypeApi: typeof import('../api/coupon').updateCouponTypeApi
   const updateCouponValueApi: typeof import('../api/coupon').updateCouponValueApi
+  const updateCustomsApi: typeof import('../api/product-update').updateCustomsApi
+  const updateFileApi: typeof import('../api/product-update').updateFileApi
+  const updateGenderTypeApi: typeof import('../api/product-update').updateGenderTypeApi
+  const updateIsAdultApi: typeof import('../api/product-update').updateIsAdultApi
+  const updateIsTopApi: typeof import('../api/product-update').updateIsTopApi
+  const updateLayoutApi: typeof import('../api/product-update').updateLayoutApi
   const updateOrderStatusApi: typeof import('../api/order').updateOrderStatusApi
   const updatePageCustomsApi: typeof import('../api/page').updatePageCustomsApi
   const updatePageDescriptionApi: typeof import('../api/page').updatePageDescriptionApi
@@ -454,6 +468,7 @@ declare global {
   const updatePageShortNameApi: typeof import('../api/page').updatePageShortNameApi
   const updatePageSlugApi: typeof import('../api/page').updatePageSlugApi
   const updatePageStatusApi: typeof import('../api/page').updatePageStatusApi
+  const updateParameterApi: typeof import('../api/product-update').updateParameterApi
   const updateParameterDetailParameterNameApi: typeof import('../api/parameter').updateParameterDetailParameterNameApi
   const updateParameterGroupDetailParameterGroupNameApi: typeof import('../api/parameter').updateParameterGroupDetailParameterGroupNameApi
   const updateParameterGroupStatusApi: typeof import('../api/parameter').updateParameterGroupStatusApi
@@ -466,7 +481,7 @@ declare global {
   const updateParameterValueSortApi: typeof import('../api/parameterValue-update').updateParameterValueSortApi
   const updateParameterValueStatusApi: typeof import('../api/parameterValue-update').updateParameterValueStatusApi
   const updateProductCategoryApi: typeof import('../api/product').updateProductCategoryApi
-  const updateProductDescriptionApi: typeof import('../api/product').updateProductDescriptionApi
+  const updateProductDescriptionApi: typeof import('../api/product-update').updateProductDescriptionApi
   const updateProductImageApi: typeof import('../api/product').updateProductImageApi
   const updateProductInStockQuantityApi: typeof import('../api/product').updateProductInStockQuantityApi
   const updateProductIsSettingOfflineTimeApi: typeof import('../api/product').updateProductIsSettingOfflineTimeApi
@@ -474,7 +489,7 @@ declare global {
   const updateProductMetaDescriptionApi: typeof import('../api/product').updateProductMetaDescriptionApi
   const updateProductMetaTitleApi: typeof import('../api/product').updateProductMetaTitleApi
   const updateProductMpnApi: typeof import('../api/product').updateProductMpnApi
-  const updateProductNameApi: typeof import('../api/product').updateProductNameApi
+  const updateProductNameApi: typeof import('../api/product-update').updateProductNameApi
   const updateProductOfflineTimeApi: typeof import('../api/product').updateProductOfflineTimeApi
   const updateProductOnlineTimeApi: typeof import('../api/product').updateProductOnlineTimeApi
   const updateProductParameterApi: typeof import('../api/product').updateProductParameterApi
