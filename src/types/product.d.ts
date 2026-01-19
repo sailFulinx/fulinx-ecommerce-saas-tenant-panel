@@ -538,13 +538,139 @@ interface ProductListData {
   productType: number
 
   /* Online Time */
-  onlineTime: string
+  onlineTime: Record<string, unknown>
 
   /* Offline Time */
-  offlineTime: string
+  offlineTime: Record<string, unknown>
 
   /* Brand ID */
   brandId: string
+
+  /* */
+  brandListResultDo: {
+    /* Brand ID */
+    id: string
+
+    /* Language ID */
+    languageId: string
+
+    /* Brand Name */
+    brandName: string
+
+    /* Brand Description */
+    brandDescription: string
+
+    /* Brand File ID */
+    brandFileId: string
+
+    /* */
+    brandFileVo: {
+      /* File ID */
+      id: string
+
+      /* Bucket Name */
+      bucketName: string
+
+      /* Etag */
+      etag: string
+
+      /* S3 Key */
+      s3Key: string
+
+      /* Is Public */
+      isPublic: boolean
+
+      /* Original File Name */
+      originalFileName: string
+
+      /* File Name */
+      fileName: string
+
+      /* File Content Type */
+      fileContentType: string
+
+      /* File Extension Name */
+      fileExtensionName: string
+
+      /* File Size */
+      fileSize: string
+
+      /* Path */
+      path: string
+
+      /* File Url */
+      fileUrl: string
+
+      /* sha256 */
+      sha256: string
+
+      /* Soft Delete Flag */
+      isDelete: number
+
+      /* Remark */
+      remark: string
+
+      /* Record Version */
+      recordVersion: number
+
+      /* Record Create Name */
+      recordCreateName: string
+
+      /* Record Update Name */
+      recordUpdateName: string
+
+      /* Record Create Time */
+      recordCreateTime: Record<string, unknown>
+
+      /* Record Update Time */
+      recordUpdateTime: Record<string, unknown>
+    }
+
+    /* Slug ID */
+    slugId: string
+
+    /* Slug */
+    slug: string
+
+    /* Meta Title */
+    metaTitle: string
+
+    /* Meta Description */
+    metaDescription: string
+
+    /* Status, 0 - Disabled , 1 - Enabled */
+    status: boolean
+
+    /* Is Custom Layout */
+    isCustomLayout: boolean
+
+    /* Layout ID */
+    layoutId: string
+
+    /* Soft Delete Flag */
+    isDelete: number
+
+    /* Remark */
+    remark: string
+
+    /* Record Version */
+    recordVersion: number
+
+    /* Record Create Name */
+    recordCreateName: string
+
+    /* Record Update Name */
+    recordUpdateName: string
+
+    /* Record Create Time */
+    recordCreateTime: Record<string, unknown>
+
+    /* Record Update Time */
+    recordUpdateTime: Record<string, unknown>
+  }
+
+  /* Stock Status: 1-In Stock, 2-Out Of Stock, 3-Pre-Order, 4-Back Order */
+  stockStatus: number
 
   /* Sort */
   sort: number
@@ -561,23 +687,269 @@ interface ProductListData {
   /* Product Source Type, 1-own, 2-oem, 3-agency, 4-drop, 5-other */
   productSourceType: number
 
+  /* Product Source Type Label */
+  productSourceTypeLabel: string
+
   /* Is Adult,  0 - No, 1 - Yes */
   isAdult: boolean
 
   /* Age Group Type, 1-newborn,2-infant,3-toddler,4-kids,5-adult */
   ageGroupType: number
 
+  /* Age Group Type Label */
+  ageGroupTypeLabel: string
+
   /* Gender Type, 1-male,2-female,3-unisex */
   genderType: number
+
+  /* Gender Type Label */
+  genderTypeLabel: string
 
   /* Condition Type, 1-new,2-refurbished,3-used */
   conditionType: number
 
+  /* Condition Type Label */
+  conditionTypeLabel: string
+
   /* Language ID */
   languageId: string
 
+  /* Currency ID */
+  currencyId: string
+
+  /* */
+  currencyListResultDo: {
+    /* Currency ID */
+    id: string
+
+    /* Country Name */
+    countryName: string
+
+    /* Currency Code */
+    currencyName: string
+
+    /* Currency Code */
+    currencyCode: string
+
+    /* Symbol Left */
+    symbolLeft: string
+
+    /* Symbol Right */
+    symbolRight: string
+
+    /* Decimal Place */
+    decimalPlace: number
+
+    /* Is Hot */
+    isHot: boolean
+
+    /* Sort */
+    sort: number
+
+    /* Soft Delete Flag */
+    isDelete: number
+
+    /* Remark */
+    remark: string
+
+    /* Record Version */
+    recordVersion: number
+
+    /* Record Create Name */
+    recordCreateName: string
+
+    /* Record Update Name */
+    recordUpdateName: string
+
+    /* Record Create Time */
+    recordCreateTime: Record<string, unknown>
+
+    /* Record Update Time */
+    recordUpdateTime: Record<string, unknown>
+  }
+
   /* Product Name */
   productName: string
+
+  /* Min Price */
+  minPrice: number
+
+  /* Max Price */
+  maxPrice: number
+
+  /* Min Cost Price */
+  minCostPrice: number
+
+  /* Max Cost Price */
+  maxCostPrice: number
+
+  /* Min Promotion Price */
+  minPromotionPrice: number
+
+  /* Max Promotion Price */
+  maxPromotionPrice: number
+
+  /* Min Promotion Started Time */
+  minPromotionStartedTime: Record<string, unknown>
+
+  /* Max Promotion Started Time */
+  maxPromotionStartedTime: Record<string, unknown>
+
+  /* Min Promotion Ended Time */
+  minPromotionEndedTime: Record<string, unknown>
+
+  /* Max Promotion Ended Time */
+  maxPromotionEndedTime: Record<string, unknown>
+
+  /* Product Total Quantity */
+  productTotalQuantity: number
+
+  /* Product Main Image Url */
+  productMainImageUrl: string
+
+  /* Product File Relation List Dos */
+  productFileRelationListResultDos: {
+    /* Product File Relation ID */
+    id: string
+
+    /* Product ID */
+    productId: string
+
+    /* Language ID */
+    languageId: string
+
+    /* Product File Type, 1-Image, 2-Video, 3-Pdf */
+    productFileType: number
+
+    /* File ID */
+    fileId: string
+
+    /* */
+    fileVo: {
+      /* File ID */
+      id: string
+
+      /* Bucket Name */
+      bucketName: string
+
+      /* Etag */
+      etag: string
+
+      /* S3 Key */
+      s3Key: string
+
+      /* Is Public */
+      isPublic: boolean
+
+      /* Original File Name */
+      originalFileName: string
+
+      /* File Name */
+      fileName: string
+
+      /* File Content Type */
+      fileContentType: string
+
+      /* File Extension Name */
+      fileExtensionName: string
+
+      /* File Size */
+      fileSize: string
+
+      /* Path */
+      path: string
+
+      /* File Url */
+      fileUrl: string
+
+      /* sha256 */
+      sha256: string
+
+      /* Soft Delete Flag */
+      isDelete: number
+
+      /* Remark */
+      remark: string
+
+      /* Record Version */
+      recordVersion: number
+
+      /* Record Create Name */
+      recordCreateName: string
+
+      /* Record Update Name */
+      recordUpdateName: string
+
+      /* Record Create Time */
+      recordCreateTime: Record<string, unknown>
+
+      /* Record Update Time */
+      recordUpdateTime: Record<string, unknown>
+    }
+
+    /* Is Default, 0 - No, 1 - Yes */
+    isDefault: boolean
+
+    /* Sort */
+    sort: number
+
+    /* Soft Delete Flag */
+    isDelete: number
+
+    /* Remark */
+    remark: string
+
+    /* Record Version */
+    recordVersion: number
+
+    /* Record Create Name */
+    recordCreateName: string
+
+    /* Record Update Name */
+    recordUpdateName: string
+
+    /* Record Create Time */
+    recordCreateTime: Record<string, unknown>
+
+    /* Record Update Time */
+    recordUpdateTime: Record<string, unknown>
+  }[]
+
+  /* */
+  productSystemCategoryRelationListResultDo: {
+    /* Product System Category Relation ID */
+    id: string
+
+    /* Product ID */
+    productId: string
+
+    /* System Category ID */
+    systemCategoryId: string
+
+    /* System Category Name */
+    systemCategoryName: string
+
+    /* Soft Delete Flag */
+    isDelete: number
+
+    /* Remark */
+    remark: string
+
+    /* Record Version */
+    recordVersion: number
+
+    /* Record Create Name */
+    recordCreateName: string
+
+    /* Record Update Name */
+    recordUpdateName: string
+
+    /* Record Create Time */
+    recordCreateTime: Record<string, unknown>
+
+    /* Record Update Time */
+    recordUpdateTime: Record<string, unknown>
+  }
 
   /* Slug ID */
   slugId: string
@@ -994,6 +1366,9 @@ interface ProductAttributeListResultDo {
   /* Product ID */
   productId: string
 
+  /* Language ID */
+  languageId: string
+
   /* Attribute Summary */
   attributeSummary: string
 
@@ -1302,6 +1677,8 @@ interface ShowProduct {
 
   /* Is Top */
   isTop: boolean
+
+  stockStatus: number
 
   /* Status: 0-Disabled , 1-Enabled */
   status: boolean

@@ -1,0 +1,687 @@
+<script setup lang="ts">
+import type { InputInstance } from 'element-plus'
+import { debounce } from 'lodash-es'
+import Editor from '@/components/common/Editor.vue'
+import CustomsTable from './CustomsTable.vue'
+
+interface Props {
+  productData?: ShowProduct
+  productDetail?: ProductAdminLocalizedViewDo
+  languageId: string
+  productId: string
+}
+
+const props = defineProps<Props>()
+
+const emit = defineEmits<{
+  refreshData: []
+  removeTag: [index: number]
+  showInputTag: [index: number]
+  inputTagConfirm: []
+  cancelUpdateProductFile: []
+  getRemoveFile: [index: number]
+}>()
+
+const resourceUrl = import.meta.env.VITE_RESOURCE_URL
+
+const { t: $t } = useLocale()
+
+// 产品名称相关
+const inputProductNameVisible = ref<boolean>(false)
+const currentProductName = ref<string>('')
+// 产品短名称相关
+const inputProductShortNameVisible = ref<boolean>(false)
+const currentProductShortName = ref<string>('')
+
+const handleClickUpdateProductName = (productName: string) => {
+  currentProductName.value = productName
+  inputProductNameVisible.value = true
+}
+
+const handleCancelUpdateProductName = () => {
+  inputProductNameVisible.value = false
+}
+
+const editProductName = async (productDetailId: string) => {
+  if (!currentProductName.value) {
+    ElMessage.warning($t('product.error.productName'))
+    return
+  }
+  await updateProductNameApi({
+    productName: currentProductName.value,
+    productDetailId,
+  }).catch(error => {
+    throw error
+  })
+  currentProductName.value = ''
+  inputProductNameVisible.value = false
+  ElMessage.success($t('success.edit'))
+  emit('refreshData')
+}
+
+// 产品短名称相关方法
+const handleClickUpdateProductShortName = (productShortName: string) => {
+  currentProductShortName.value = productShortName
+  inputProductShortNameVisible.value = true
+}
+
+const handleCancelUpdateProductShortName = () => {
+  inputProductShortNameVisible.value = false
+}
+
+const editProductShortName = async (productDetailId: string) => {
+  // 短名称可以为空
+  await updateProductShortNameApi({
+    productShortName: currentProductShortName.value,
+    productDetailId,
+  }).catch(error => {
+    throw error
+  })
+  currentProductShortName.value = ''
+  inputProductShortNameVisible.value = false
+  ElMessage.success($t('success.edit'))
+  emit('refreshData')
+}
+
+const createProductName = async () => {
+  if (!currentProductName.value) {
+    ElMessage.warning($t('product.error.productName'))
+    return
+  }
+  await createProductNameApi({
+    productName: currentProductName.value,
+    productId: props.productId,
+    languageId: props.languageId,
+  })
+  currentProductName.value = ''
+  ElMessage.success($t('success.create'))
+  emit('refreshData')
+}
+
+// 产品描述相关
+const isExpanded = ref(false)
+const inputProductDescriptionVisible = ref<boolean>(false)
+const currentProductDescription = ref<string>('<p></p>')
+// 产品短描述相关
+const inputProductShortDescriptionVisible = ref<boolean>(false)
+const currentProductShortDescription = ref<string>('')
+const editorRefs = ref()
+
+const toggleExpand = () => {
+  isExpanded.value = !isExpanded.value
+}
+
+const handleClickUpdateProductDescription = async (productDescription: string) => {
+  currentProductDescription.value = productDescription
+  inputProductDescriptionVisible.value = true
+  await nextTick(async () => {
+    await editorRefs.value?.setEditorContent(productDescription)
+  })
+}
+
+const handleCancelUpdateProductDescription = () => {
+  inputProductDescriptionVisible.value = false
+}
+
+const editProductDescription = async (productDetailId: string) => {
+  await nextTick()
+  const editorInstance = editorRefs.value as any
+  currentProductDescription.value = editorInstance?.getEditorContent()
+  await updateProductDescriptionApi({
+    productDetailId,
+    productDescription: currentProductDescription.value,
+  }).catch(error => {
+    throw error
+  })
+  currentProductDescription.value = ''
+  inputProductDescriptionVisible.value = false
+  ElMessage.success($t('success.edit'))
+  emit('refreshData')
+}
+
+// 产品短描述相关方法
+const handleClickUpdateProductShortDescription = (productShortDescription: string) => {
+  currentProductShortDescription.value = productShortDescription
+  inputProductShortDescriptionVisible.value = true
+}
+
+const handleCancelUpdateProductShortDescription = () => {
+  inputProductShortDescriptionVisible.value = false
+}
+
+const editProductShortDescription = async (productDetailId: string) => {
+  // 短描述可以为空
+  await updateProductShortDescriptionApi({
+    productDetailId,
+    productShortDescription: currentProductShortDescription.value,
+  }).catch(error => {
+    throw error
+  })
+  currentProductShortDescription.value = ''
+  inputProductShortDescriptionVisible.value = false
+  ElMessage.success($t('success.edit'))
+  emit('refreshData')
+}
+
+// 更新类型
+
+const productTypePayload = reactive<ProductTypeListParams>({
+  productTypeCode: null,
+})
+
+const productTypes = ref<ListProductTypeRes>({
+  list: [],
+  total: 0,
+})
+
+const getProductTypeList = async () => {
+  const { data } = await fetchProductTypeListApi(productTypePayload).catch(error => {
+    throw error
+  })
+  productTypes.value = { ...data }
+}
+
+const productTypeVisible = ref<boolean>(false)
+
+const currentProductType = ref<number | undefined>(undefined)
+
+const handleEditProductType = () => {
+  if (props.productData?.productType) {
+    currentProductType.value = props.productData?.productType
+  }
+  productTypeVisible.value = true
+  getProductTypeList()
+}
+
+const handleCancelEditProductType = () => {
+  productTypeVisible.value = false
+}
+const handleSaveProductType = async () => {
+  if (!currentProductType.value) {
+    ElMessage.warning($t('product.error.productType'))
+    return
+  }
+  await updateProductTypeApi({
+    productId: props.productId,
+    languageId: props.languageId,
+    productType: currentProductType.value,
+  }).catch(error => {
+    throw error
+  })
+  productTypeVisible.value = false
+  emit('refreshData')
+  ElMessage.success($t('success.edit'))
+}
+
+// 标签相关
+const inputProductTagVisible = ref<boolean>(false)
+const inputTagValue = ref('')
+const InputTagRefs = ref<InputInstance[]>([])
+
+const handleShowInputTag = () => {
+  inputProductTagVisible.value = true
+  nextTick(() => {
+    if (InputTagRefs.value && InputTagRefs.value[0]) {
+      const inputEl = InputTagRefs.value[0].$el.querySelector('input')
+      if (inputEl) {
+        inputEl.focus()
+      }
+    }
+  })
+}
+
+const handleRemoveTag = async (index: number) => {
+  if (!props.productDetail) {
+    return
+  }
+  await removeProductTagApi({
+    productTagRelationId: props.productDetail.productTagListResultDos[index].id,
+  }).catch(error => {
+    throw error
+  })
+  ElMessage.success($t('success.edit'))
+  emit('refreshData')
+}
+
+const handleInputTagConfirm = debounce(async () => {
+  if (!inputTagValue.value) {
+    return
+  }
+  if (inputTagValue.value.length > 20) {
+    ElMessage.warning($t('product.error.tagLength'))
+    return
+  }
+  if (props.productDetail?.productTagListResultDos && props.productDetail?.productTagListResultDos.length >= 9) {
+    ElMessage.warning($t('product.error.tagLimit'))
+    return
+  }
+  await createProductTagApi({
+    productId: props.productId,
+    languageId: props.languageId,
+    tagName: inputTagValue.value.trim(),
+  }).catch(error => {
+    throw error
+  })
+  inputProductTagVisible.value = false
+  inputTagValue.value = ''
+  ElMessage.success($t('success.edit'))
+  emit('refreshData')
+}, 500)
+
+// 图片相关
+const uploadRefs = ref()
+const settingProductFileVisible = ref<boolean>(false)
+const productFileList = ref<(FileData & CommonField)[]>([])
+const deletedFileIds = ref<string[]>([])
+
+const handleClickUpdateProductFile = async () => {
+  if (
+    props.productDetail?.productFileRelationListResultDos
+    && props.productDetail?.productFileRelationListResultDos.length !== 0
+  ) {
+    const productFileListData: (FileData & CommonField)[] = []
+    props.productDetail.productFileRelationListResultDos.forEach((item: ProductFileListResultDo & CommonField) => {
+      productFileListData.push(item.fileVo)
+    })
+    productFileList.value = productFileListData
+  }
+  settingProductFileVisible.value = true
+  await nextTick()
+  const uploadInstance = uploadRefs.value as any
+  await uploadInstance?.setFileData(productFileList.value)
+}
+
+const handleCancelUpdateProductFile = () => {
+  settingProductFileVisible.value = false
+  emit('cancelUpdateProductFile')
+}
+
+const handleGetRemoveFile = (indexValue: number) => {
+  deletedFileIds.value.push(productFileList.value[indexValue].id)
+}
+
+const editProductFile = async () => {
+  const uploadInstance = uploadRefs.value as any
+  const fileList = uploadInstance?.getFileData()
+  productFileList.value = fileList.fileDataList
+  const productFileVoList: ProductFileVo[] = []
+  productFileList.value.map((item: FileData & CommonField, index: number) => {
+    productFileVoList.push({
+      productFileId: item.id,
+      sort: item?.sort || 0,
+      isDefault: index === 0,
+    })
+  })
+  const payload = {
+    productId: props.productId,
+    languageId: props.languageId,
+    productFileVoList,
+    productFileDeletedIds: deletedFileIds.value,
+  }
+  await updateProductFileApi(payload).catch(error => {
+    throw error
+  })
+  settingProductFileVisible.value = false
+  ElMessage.success($t('success.edit'))
+  emit('refreshData')
+}
+
+const refreshFormData = () => {
+  emit('refreshData')
+}
+
+// 复制功能相关
+const productAdminLocalizedViewDos = defineModel<ProductAdminLocalizedViewDo[]>('productAdminLocalizedViewDos', { required: true })
+const copyLanguageCode = ref('')
+const fromLanguageId = ref('')
+
+const handleCopyProduct = async () => {
+  if (!copyLanguageCode.value) {
+    ElMessage.warning($t('product.error.copyLanguageCode'))
+    return
+  }
+
+  // 查找源语言ID
+  if (productAdminLocalizedViewDos.value) {
+    productAdminLocalizedViewDos.value.forEach(item => {
+      if (item.languageCode === copyLanguageCode.value) {
+        fromLanguageId.value = item.languageId
+      }
+    })
+  }
+
+  if (!fromLanguageId.value) {
+    ElMessage.warning($t('product.error.copyLanguageCode'))
+    return
+  }
+
+  await CopyProductDetailApi({
+    productId: props.productId,
+    fromLanguageId: fromLanguageId.value,
+    toLanguageId: props.languageId,
+  }).catch(error => {
+    throw error
+  })
+
+  ElMessage.success($t('success.copy'))
+  copyLanguageCode.value = ''
+  fromLanguageId.value = ''
+  emit('refreshData')
+}
+</script>
+
+<template>
+  <ElCard v-if="productDetail?.productDetailListResultDo" shadow="never" class="mb-5">
+    <div class="w-full mt-0 pt-0">
+      <!-- 产品类型 -->
+      <div class="w-full flex border-b border-gray-200 p-4">
+        <div class="w-30 font-semibold text-gray-700 flex-shrink-0">
+          {{ $t('product.productType') }}:
+        </div>
+        <div class="flex-1 w-full flex items-center">
+          <span v-if="!productTypeVisible" class="mr-2">
+            {{ productData?.productTypeLabel }}
+            <EBtn type="primary" text @click="handleEditProductType()">
+              <Icon icon="ep:edit" :size="5" class="mr-1" />
+            </EBtn>
+          </span>
+          <span v-else>
+            <ElSelect
+              v-model="currentProductType"
+              :placeholder="$t('product.placeholder.productType')"
+              clearable
+              filterable
+              class="mr-5 w-100"
+              style="width: 100px"
+            >
+              <ElOption
+                v-for="item in productTypes.list"
+                :key="item.id"
+                :value="item.id"
+                :label="item.productTypeName"
+              />
+            </ElSelect>
+            <EBtn text @click="handleCancelEditProductType">
+              <Icon icon="ep:close" :size="5" class="mr-1" />
+            </EBtn>
+            <EBtn type="danger" class="ml-5" @click="handleSaveProductType">
+              <Icon icon="ep:check" :size="5" class="mr-1" />
+            </EBtn>
+          </span>
+        </div>
+      </div>
+      <!-- 产品名称 -->
+      <div class="w-full flex border-b border-gray-200 p-4">
+        <div class="w-30 font-semibold text-gray-700 flex-shrink-0">
+          {{ $t('product.productName') }}:
+        </div>
+        <div class="flex-1 w-full flex items-center">
+          <span v-if="!inputProductNameVisible" class="mr-2">
+            {{ productDetail.productDetailListResultDo.productName }}
+          </span>
+          <span v-else>
+            <ElInput
+              v-model="currentProductName"
+              clearable
+              minlength="1"
+              maxlength="250"
+              style="width: 300px"
+              class="mr-2"
+              @blur="editProductName(productDetail.productDetailListResultDo.id)"
+            />
+            <EBtn text @click="handleCancelUpdateProductName">
+              <Icon icon="ep:close" :size="5" class="mr-1" />
+            </EBtn>
+          </span>
+          <EBtn
+            v-if="!inputProductNameVisible"
+            type="primary"
+            text
+            @click="handleClickUpdateProductName(productDetail.productDetailListResultDo.productName)"
+          >
+            <Icon icon="ep:edit" :size="5" class="mr-1" />
+          </EBtn>
+        </div>
+      </div>
+      <!-- 产品短名称 -->
+      <div class="w-full flex border-b border-gray-200 p-4">
+        <div class="w-30 font-semibold text-gray-700 flex-shrink-0">
+          {{ $t('product.productShortName') }}:
+        </div>
+        <div class="flex-1 w-full flex items-center">
+          <span v-if="!inputProductShortNameVisible" class="mr-2">
+            {{ productDetail.productDetailListResultDo.productShortName }}
+          </span>
+          <span v-else>
+            <ElInput
+              v-model="currentProductShortName"
+              clearable
+              minlength="1"
+              maxlength="250"
+              style="width: 300px"
+              class="mr-2"
+              @blur="editProductShortName(productDetail.productDetailListResultDo.id)"
+            />
+            <EBtn text @click="handleCancelUpdateProductShortName">
+              <Icon icon="ep:close" :size="5" class="mr-1" />
+            </EBtn>
+          </span>
+          <EBtn
+            v-if="!inputProductShortNameVisible"
+            type="primary"
+            text
+            @click="handleClickUpdateProductShortName(productDetail.productDetailListResultDo.productShortName)"
+          >
+            <Icon icon="ep:edit" :size="5" class="mr-1" />
+          </EBtn>
+        </div>
+      </div>
+      <!-- 描述 -->
+      <div class="w-full flex border-b border-gray-200 p-4">
+        <div class="w-30 font-semibold text-gray-700 flex-shrink-0">
+          {{ $t('product.description') }}:
+        </div>
+        <div class="flex-1 w-full flex items-center">
+          <div v-if="!inputProductDescriptionVisible" class="mr-2">
+            <div class="flex items-center mb-5">
+              <div class="mr-2">
+                <EBtn
+                  type="primary"
+                  plain
+                  @click="
+                    handleClickUpdateProductDescription(productDetail.productDetailListResultDo.productDescription)
+                  "
+                >
+                  <Icon icon="ep:edit" :size="5" class="mr-1" />
+                  {{ $t('common.edit') }}
+                </EBtn>
+              </div>
+
+              <!-- 切换显示全部和隐藏的按钮 -->
+              <div class="text-right">
+                <EBtn @click="toggleExpand">
+                  {{ isExpanded ? '隐藏' : '显示全部' }}
+                </EBtn>
+              </div>
+            </div>
+            <div class="grid grid-cols-12 gap-4">
+              <div class="col-span-12 border border-gray-200 p-4">
+                <!-- 根据 isExpanded 的状态切换 max-height -->
+                <div
+                  :class="{ 'max-h-[200px]': !isExpanded, 'overflow-hidden': !isExpanded }"
+                  class="transition-all ease-in-out duration-300"
+                  v-html="productDetail.productDetailListResultDo.productDescription"
+                />
+              </div>
+            </div>
+          </div>
+          <div v-else>
+            <Editor ref="editorRefs" v-model="currentProductDescription" class="mb-5" />
+            <div class="flex justify-center items-center">
+              <EBtn @click="handleCancelUpdateProductDescription">
+                {{ $t('common.cancel') }}
+              </EBtn>
+              <EBtn type="primary" @click="editProductDescription(productDetail.productDetailListResultDo.id)">
+                {{ $t('common.save') }}
+              </EBtn>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 短描述 -->
+      <div class="w-full flex border-b border-gray-200 p-4">
+        <div class="w-30 font-semibold text-gray-700 flex-shrink-0">
+          {{ $t('product.shortDescription') }}:
+        </div>
+        <div class="flex-1 w-full flex items-center">
+          <div v-if="!inputProductShortDescriptionVisible" class="w-full mr-2">
+            <div class="flex items-center mb-5">
+              <div class="mr-2">
+                <EBtn
+                  type="primary"
+                  plain
+                  @click="
+                    handleClickUpdateProductShortDescription(productDetail.productDetailListResultDo.productShortDescription)
+                  "
+                >
+                  <Icon icon="ep:edit" :size="5" class="mr-1" />
+                  {{ $t('common.edit') }}
+                </EBtn>
+              </div>
+            </div>
+            <div class="grid grid-cols-12 gap-4">
+              <div class="col-span-12 p-4">
+                {{ productDetail.productDetailListResultDo.productShortDescription }}
+              </div>
+            </div>
+          </div>
+          <div v-else class="w-full">
+            <ElInput
+              v-model="currentProductShortDescription"
+              type="textarea"
+              :rows="4"
+              class="w-full mb-5"
+              style="width: 100%"
+            />
+            <div class="flex justify-center items-center">
+              <EBtn @click="handleCancelUpdateProductShortDescription">
+                {{ $t('common.cancel') }}
+              </EBtn>
+              <EBtn type="primary" @click="editProductShortDescription(productDetail.productDetailListResultDo.id)">
+                {{ $t('common.save') }}
+              </EBtn>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 标签 -->
+      <div class="w-full flex border-b border-gray-200 p-4">
+        <div class="w-30 font-semibold text-gray-700 flex-shrink-0">
+          {{ $t('product.tag') }}:
+        </div>
+        <div class="flex-1 w-full flex items-center">
+          <ElTag
+            v-for="(tag, index) in productDetail.productTagListResultDos"
+            :key="tag.id"
+            class="mr-2"
+            closable
+            :disable-transitions="false"
+            @close="handleRemoveTag(index)"
+          >
+            {{ tag.tagName }}
+          </ElTag>
+          <ElInput
+            v-if="inputProductTagVisible"
+            ref="InputTagRefs"
+            v-model="inputTagValue"
+            style="width: 150px"
+            size="small"
+            @keyup.enter="handleInputTagConfirm"
+            @blur="handleInputTagConfirm"
+          />
+          <ElButton v-else size="small" @click="handleShowInputTag">
+            + 新标签
+          </ElButton>
+        </div>
+      </div>
+      <!-- 图片 -->
+      <div class="w-full flex border-b border-gray-200 p-4">
+        <div class="w-30 font-semibold text-gray-700 flex-shrink-0">
+          {{ $t('product.pics') }}:
+        </div>
+        <div class="flex-1 w-full flex items-center">
+          <div v-if="!settingProductFileVisible">
+            <EBtn type="primary" text class="mb-5" @click="handleClickUpdateProductFile">
+              <Icon icon="ep:edit" :size="5" class="mr-1" />
+            </EBtn>
+            <div class="grid grid-cols-6 gap-4">
+              <div
+                v-for="fItem in productDetail.productFileRelationListResultDos"
+                :key="fItem.id"
+                class="col-span-1 border border-gray-200 pa-4"
+              >
+                <ElImage :src="resourceUrl + fItem.fileVo?.fileUrl" />
+              </div>
+            </div>
+          </div>
+          <div v-else>
+            <UploadImage ref="uploadRefs" class="mb-5" @remove-file="handleGetRemoveFile" />
+            <div class="flex justify-center items-center">
+              <EBtn @click="handleCancelUpdateProductFile">
+                {{ $t('common.cancel') }}
+              </EBtn>
+              <EBtn type="primary" @click="editProductFile">
+                {{ $t('common.save') }}
+              </EBtn>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 自定义信息 -->
+      <div class="w-full flex border-b border-gray-200 p-4">
+        <div class="w-30 font-semibold text-gray-700 flex-shrink-0">
+          {{ $t('product.customs') }}:
+        </div>
+        <div class="flex-1 w-full flex items-center">
+          <CustomsTable
+            :custom-list="productDetail.productDetailListResultDo.customList"
+            :product-detail-id="productDetail.productDetailListResultDo.id"
+            @refresh-data="refreshFormData"
+          />
+        </div>
+      </div>
+    </div>
+  </ElCard>
+  <ElCard v-else>
+    <div class="flex-col justify-center items-center mb-5">
+      <div class="w-full mb-5">
+        <ElAlert :title="$t('product.warning.noDetailData')" type="warning" show-icon />
+      </div>
+      <div class="bg-red-50 pa-3 flex justify-between items-center">
+        <ElSelect
+          v-model="copyLanguageCode"
+          placeholder="请选择"
+          style="width: 200px"
+        >
+          <ElOption
+            v-for="item in (productAdminLocalizedViewDos || []).filter(i => i.languageCode !== productDetail?.languageCode)"
+            :key="item.languageCode"
+            :label="item.languageName"
+            :value="item.languageCode"
+          />
+        </ElSelect>
+        <EBtn type="primary" @click="handleCopyProduct">
+          <Icon icon="ant-design:save-outlined" :size="5" class="mr-1" />
+          复制
+        </EBtn>
+      </div>
+    </div>
+    <div class="pa-3 flex justify-center items-center mb-5">
+      <ElInput v-model="currentProductName" :placeholder="$t('product.placeholder.productName')" />
+      <EBtn type="primary" class="ml-5" @click="createProductName">
+        <Icon icon="ant-design:save-outlined" :size="5" class="mr-1" />
+        {{ $t('common.save') }}
+      </EBtn>
+    </div>
+  </ElCard>
+</template>
