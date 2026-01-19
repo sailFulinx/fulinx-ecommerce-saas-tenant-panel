@@ -252,9 +252,11 @@ const deleteTagView = (refresh: boolean) => {
 
 const save = async () => {
   loading.init = true
+  console.log(productForm.systemCategoryId)
   if (productForm.systemCategoryId && productForm.systemCategoryId?.length > 0) {
     productForm.systemCategoryId = productForm.systemCategoryId.at(-1)
   }
+  console.log(productForm.systemCategoryId)
   productForm.productParameterRelationRequestDos = []
   productForm.languageId = languageId
   const attributeForm = attributeFormRef.value.getData()
@@ -300,7 +302,7 @@ const save = async () => {
   }
 
   if (productForm.offlineTime) {
-    productForm.onlineTime = formatTime(productForm.offlineTime)
+    productForm.offlineTime = formatTime(productForm.offlineTime)
   }
 
   const valid = await productFormRef.value.validate((valid: boolean) => {

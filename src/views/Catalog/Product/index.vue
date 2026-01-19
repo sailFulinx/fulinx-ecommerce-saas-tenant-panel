@@ -9,8 +9,6 @@ const listResult = ref<TableResponse<ProductListData & CommonField>>({
   total: 0,
 })
 
-const sourceUrl = import.meta.env.VITE_RESOURCE_URL
-
 const loading = reactive({
   list: false,
   del: false,
@@ -177,7 +175,7 @@ const handleImport = () => {
           <template #default="scope">
             <SImg
               v-if="scope.row.productMainImageUrl"
-              :src="sourceUrl + scope.row.productMainImageUrl"
+              :src="scope.row.productMainImageUrl"
               :alt="scope.row.productName"
               fit="cover"
               lazy
@@ -198,29 +196,20 @@ const handleImport = () => {
         </ElTableColumn>
         <ElTableColumn :label="$t('product.productPrice')">
           <template #default="scope">
-            <span v-if="scope.row.productPriceListResultDos && scope.row.productPriceListResultDos.length > 0">
-              {{ scope.row.productPriceListResultDos[0].currencyVo.currencyCode }}
-              {{ scope.row.productPriceListResultDos[0]?.currencyVo?.symbolLeft || ''
-              }}{{
-                scope.row.productPriceListResultDos[0]?.price
-                  ? scope.row.productPriceListResultDos[0]?.price?.toFixed(2)
-                  : '-'
-              }}
+            <span>
+              {{ scope.row.currencyListResultDo?.currencyCode || '' }}
+              {{ scope.row.currencyListResultDo?.symbolLeft || ''
+              }}{{ scope.row.minPrice ? scope.row.minPrice?.toFixed(2) : '' }} - {{ scope.row.maxPrice ? scope.row.maxPrice?.toFixed(2) : '' }}
             </span>
           </template>
         </ElTableColumn>
         <ElTableColumn :label="$t('product.salePrice')">
           <template #default="scope">
-            <span v-if="scope.row.productPriceListResultDos && scope.row.productPriceListResultDos.length > 0">
-              {{ scope.row.productPriceListResultDos[0].currencyVo.currencyCode }}
-              {{ scope.row.productPriceListResultDos[0]?.currencyVo?.symbolLeft || ''
-              }}{{
-                scope.row.productPriceListResultDos[0]?.salePrice
-                  ? scope.row.productPriceListResultDos[0]?.salePrice?.toFixed(2)
-                  : '-'
-              }}
+            <span>
+              {{ scope.row.currencyListResultDo?.currencyCode || '' }}
+              {{ scope.row.currencyListResultDo?.symbolLeft || ''
+              }}{{ scope.row.minPromotionPrice ? scope.row.minPromotionPrice?.toFixed(2) : '' }} - {{ scope.row.maxPromotionPrice ? scope.row.maxPromotionPrice?.toFixed(2) : '' }}
             </span>
-            <span v-else>无</span>
           </template>
         </ElTableColumn>
         <ElTableColumn :label="$t('product.recordCreateTime')">
