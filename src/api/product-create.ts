@@ -74,7 +74,7 @@ export function createProductTagApi(
   params: CreateProductTagParams,
 ): Promise<IResponse<ShowProduct & CommonField>> {
   return request.post({
-    url: 'system/product/create/product/supplier',
+    url: 'system/product/create/product/tag',
     data: params,
     token: true,
   })

@@ -54,3 +54,21 @@ export function showProductApi(params: ShowProductParams): Promise<IResponse<Sho
     token: true,
   })
 }
+
+export function removeProductApi(
+  params: RemoveProductParams,
+): Promise<IResponse<boolean>> {
+  return request.delete({
+    url: 'system/product',
+    data: params,
+    token: true,
+  })
+}
+
+export function removeProductTagApi(params: RemoveProductTagParams): Promise<IResponse<boolean>> {
+  return request.delete({
+    url: 'system/product/tag',
+    data: params,
+    token: true,
+  })
+}

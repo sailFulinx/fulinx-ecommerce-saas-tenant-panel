@@ -1,4 +1,5 @@
 <script setup name="ProductDetail" lang="ts">
+import type { InputInstance, TabPaneName } from 'element-plus'
 import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
 import ProductBaseInfo from './Modules/ProductBaseInfo.vue'
@@ -14,16 +15,14 @@ const id = useRoute().params.id as string
 
 const selectLanguage = ref<LanguageData>(usePreferenceStore().preference?.language)
 
+const languageId = ref('')
+
 const activeName = ref<string>('base')
 
 const loading = reactive({
   init: false,
   list: false,
 })
-
-const handleChangeTab = async (pane: string) => {
-  activeName.value = pane
-}
 
 // 创建product请求参数
 const createFormData = (): ShowProduct & CommonField => {
@@ -79,6 +78,20 @@ const createFormData = (): ShowProduct & CommonField => {
 // form初始化
 const form = reactive<ShowProduct & CommonField>(createFormData())
 
+const resetFormData = async (val: ShowProduct) => {
+  await nextTick(() => {
+    Object.assign(form, JSON.parse(JSON.stringify(val)))
+  })
+}
+
+const handleChangeTab = async (pane: string) => {
+  activeName.value = pane
+}
+
+const handleChangeLanguageTab = async (_name: TabPaneName) => {
+  await resetFormData(form)
+}
+
 const showProductPayload = reactive<ShowProductParams>({
   id,
   languageId: selectLanguage.value.id,
@@ -95,12 +108,6 @@ const getProductData = async () => {
   return data
 }
 
-const resetFormData = async (val: ShowProduct) => {
-  await nextTick(() => {
-    Object.assign(form, JSON.parse(JSON.stringify(val)))
-  })
-}
-
 const initFormData = async () => {
   const res = await getProductData()
   resetFormData(res)
@@ -112,6 +119,7 @@ watch(
     if (val) {
       selectLanguage.value = val
       showProductPayload.languageId = val.id
+      languageId.value = val.id
       await initFormData()
     }
   },
@@ -149,24 +157,45 @@ const editProductStatus = async () => {
       </div>
     </div>
 
-    <div v-if="!loading.init" class="view-main theme-card">
-      <ElTabs v-model="activeName" class="demo-tabs" @tab-change="handleChangeTab">
-        <ElTabPane :label="$t('product.base')" name="base">
-          <ProductBaseInfo :form="form" @reset-form-data="resetFormData" />
-        </ElTabPane>
-        <!-- <ElTabPane :label="$t('product.price')" name="price">
-          <Price :form="form" @reset-form-data="resetFormData" />
-        </ElTabPane>
-        <ElTabPane :label="$t('product.parameter')" name="parameter">
-          <Parameter :form="form" @reset-form-data="resetFormData" />
-        </ElTabPane>
-        <ElTabPane :label="$t('product.image')" name="image">
-          <Image :form="form" @reset-form-data="resetFormData" />
-        </ElTabPane>
-        <ElTabPane :label="$t('product.seo')" name="seo">
-          <Seo :form="form" @reset-form-data="resetFormData" />
-        </ElTabPane> -->
-      </ElTabs>
+    <div v-if="!loading.init" class="view-main theme-card flex flex-col h-[calc(100vh-120px)]">
+      <div class="flex-none sticky top-0 bg-white z-20">
+        <ElTabs v-model="languageId" @tab-change="handleChangeLanguageTab">
+          <ElTabPane
+            v-for="item in form.productAdminLocalizedViewDos"
+            :key="item.languageId"
+            :label="item.languageName"
+            :name="item.languageId"
+          >
+            <ElTabs v-model="activeName" class="demo-tabs" @tab-change="handleChangeTab">
+              <ElTabPane :label="$t('product.base')" name="base" />
+              <!-- <ElTabPane :label="$t('product.category')" name="category" />
+              <ElTabPane :label="$t('product.seo')" name="seo" />
+              <ElTabPane :label="$t('product.layout')" name="layout" />
+              <ElTabPane :label="$t('product.slug')" name="slug" /> -->
+            </ElTabs>
+          </ElTabPane>
+        </ElTabs>
+      </div>
+      <div class="flex-1 overflow-auto pr-4 -mr-4">
+        <div v-for="item in form.productAdminLocalizedViewDos" :key="item.languageId">
+          <div v-show="languageId === item.languageId">
+            <div v-show="activeName === 'base'">
+              <ProductBaseInfo
+                v-model:product-admin-localized-view-dos="form.productAdminLocalizedViewDos"
+                :product-data="form"
+                :product-detail="item"
+                :language-id="item.languageId"
+                :product-id="id"
+                @refresh-data="initFormData"
+              />
+            </div>
+            <div v-show="activeName === 'category'" />
+            <div v-show="activeName === 'seo'" />
+            <div v-show="activeName === 'layout'" />
+            <div v-show="activeName === 'slug'" />
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>

@@ -353,7 +353,7 @@ provide('ProductCreate', { productForm })
         </div>
       </div>
     </div>
-    <div class="view-main theme-card">
+    <div class="view-main theme-card bg-[var(--bg-100)]">
       <ElForm ref="productFormRef" :model="productForm" :rules="rules" label-width="100px">
         <div class="grid grid-cols-12 gap-4">
           <div class="col-span-12">

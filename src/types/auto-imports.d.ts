@@ -301,6 +301,7 @@ declare global {
   const removeParameterGroupParameterRelationApi: typeof import('../api/parameter').removeParameterGroupParameterRelationApi
   const removeParameterValueApi: typeof import('../api/parameterValue').removeParameterValueApi
   const removeProductApi: typeof import('../api/product').removeProductApi
+  const removeProductTagApi: typeof import('../api/product').removeProductTagApi
   const removeRoleApi: typeof import('../api/role').removeRoleApi
   const removeShippingCompanyApi: typeof import('../api/shipping').removeShippingCompanyApi
   const removeShippingCompanyTemplateApi: typeof import('../api/shipping').removeShippingCompanyTemplateApi

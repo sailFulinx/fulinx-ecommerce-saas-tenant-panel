@@ -1663,6 +1663,8 @@ interface ShowProduct {
   /* Product Type: 1-physical,2-Virtual */
   productType: number
 
+  productTypeLabel: string
+
   /* Online Time */
   onlineTime: string
 
@@ -1727,4 +1729,17 @@ interface ShowProduct {
 
   /* Product Slug */
   slug: string
+}
+
+interface RemoveProductParams {
+  /* Product Ids */
+  productIds: string[]
+}
+
+interface RemoveProductTagParams {
+  /* Product Tag ID */
+  productTagId: string
+
+  /* Language ID */
+  languageId: string
 }

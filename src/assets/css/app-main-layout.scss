@@ -1,5 +1,5 @@
 .theme-card {
-  background-color: var(--bg-100);
+  background-color: #FFF;
 }
 .app-main {
   /* 50= navbar  50  */
@@ -20,7 +20,7 @@
     width: 100%;
     padding: 20px;
     box-shadow: 0 1px 3px #eee;
-    background-color: #FFF;
+    background-color: #fff;
     z-index: 9;
     &.no-shadow {
       box-shadow: none !important;
@@ -108,22 +108,26 @@
   text-overflow: ellipsis;
 }
 
-.underline-input input, .underline-input .el-input__inner {
-  border: none;               /* 移除所有边框 */
+.underline-input input,
+.underline-input .el-input__inner {
+  border: none; /* 移除所有边框 */
   border-bottom: 2px solid #000; /* 仅保留底部边框 */
-  border-radius: 0;           /* 移除圆角 */
+  border-radius: 0; /* 移除圆角 */
 }
 
-.underline-input:hover input, .underline-input:hover .el-input__inner {
-  border-bottom-color: #409EFF; /* 设置悬停时的底部边框颜色 */
+.underline-input:hover input,
+.underline-input:hover .el-input__inner {
+  border-bottom-color: #409eff; /* 设置悬停时的底部边框颜色 */
 }
 
-.underline-input .el-select, .underline-input .el-select .el-input__inner {
-  border: none;               /* 移除所有边框 */
+.underline-input .el-select,
+.underline-input .el-select .el-input__inner {
+  border: none; /* 移除所有边框 */
   border-bottom: 2px solid #000; /* 仅保留底部边框 */
-  border-radius: 0;           /* 移除圆角 */
+  border-radius: 0; /* 移除圆角 */
 }
 
-.underline-input:hover .el-select, .underline-input:hover .el-select .el-input__inner {
-  border-bottom-color: #409EFF; /* 设置悬停时的底部边框颜色 */
+.underline-input:hover .el-select,
+.underline-input:hover .el-select .el-input__inner {
+  border-bottom-color: #409eff; /* 设置悬停时的底部边框颜色 */
 }

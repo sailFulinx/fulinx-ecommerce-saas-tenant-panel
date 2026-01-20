@@ -26,6 +26,8 @@ export default {
   productName: '产品名称',
   productShortName: '产品短标题',
   productShortDescription: '产品简单描述',
+  tag: '标签',
+  customs: '自定义信息',
   productPrice: '产品价格',
   price: '价格',
   unitPrice: '单价',

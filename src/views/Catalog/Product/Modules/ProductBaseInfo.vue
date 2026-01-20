@@ -22,8 +22,6 @@ const emit = defineEmits<{
   getRemoveFile: [index: number]
 }>()
 
-const resourceUrl = import.meta.env.VITE_RESOURCE_URL
-
 const { t: $t } = useLocale()
 
 // 产品名称相关
@@ -163,56 +161,6 @@ const editProductShortDescription = async (productDetailId: string) => {
   emit('refreshData')
 }
 
-// 更新类型
-
-const productTypePayload = reactive<ProductTypeListParams>({
-  productTypeCode: null,
-})
-
-const productTypes = ref<ListProductTypeRes>({
-  list: [],
-  total: 0,
-})
-
-const getProductTypeList = async () => {
-  const { data } = await fetchProductTypeListApi(productTypePayload).catch(error => {
-    throw error
-  })
-  productTypes.value = { ...data }
-}
-
-const productTypeVisible = ref<boolean>(false)
-
-const currentProductType = ref<number | undefined>(undefined)
-
-const handleEditProductType = () => {
-  if (props.productData?.productType) {
-    currentProductType.value = props.productData?.productType
-  }
-  productTypeVisible.value = true
-  getProductTypeList()
-}
-
-const handleCancelEditProductType = () => {
-  productTypeVisible.value = false
-}
-const handleSaveProductType = async () => {
-  if (!currentProductType.value) {
-    ElMessage.warning($t('product.error.productType'))
-    return
-  }
-  await updateProductTypeApi({
-    productId: props.productId,
-    languageId: props.languageId,
-    productType: currentProductType.value,
-  }).catch(error => {
-    throw error
-  })
-  productTypeVisible.value = false
-  emit('refreshData')
-  ElMessage.success($t('success.edit'))
-}
-
 // 标签相关
 const inputProductTagVisible = ref<boolean>(false)
 const inputTagValue = ref('')
@@ -235,7 +183,8 @@ const handleRemoveTag = async (index: number) => {
     return
   }
   await removeProductTagApi({
-    productTagRelationId: props.productDetail.productTagListResultDos[index].id,
+    productTagId: props.productDetail.productTagListResultDos[index].id,
+    languageId: props.languageId,
   }).catch(error => {
     throw error
   })
@@ -268,70 +217,10 @@ const handleInputTagConfirm = debounce(async () => {
   emit('refreshData')
 }, 500)
 
-// 图片相关
-const uploadRefs = ref()
-const settingProductFileVisible = ref<boolean>(false)
-const productFileList = ref<(FileData & CommonField)[]>([])
-const deletedFileIds = ref<string[]>([])
-
-const handleClickUpdateProductFile = async () => {
-  if (
-    props.productDetail?.productFileRelationListResultDos
-    && props.productDetail?.productFileRelationListResultDos.length !== 0
-  ) {
-    const productFileListData: (FileData & CommonField)[] = []
-    props.productDetail.productFileRelationListResultDos.forEach((item: ProductFileListResultDo & CommonField) => {
-      productFileListData.push(item.fileVo)
-    })
-    productFileList.value = productFileListData
-  }
-  settingProductFileVisible.value = true
-  await nextTick()
-  const uploadInstance = uploadRefs.value as any
-  await uploadInstance?.setFileData(productFileList.value)
-}
-
-const handleCancelUpdateProductFile = () => {
-  settingProductFileVisible.value = false
-  emit('cancelUpdateProductFile')
-}
-
-const handleGetRemoveFile = (indexValue: number) => {
-  deletedFileIds.value.push(productFileList.value[indexValue].id)
-}
-
-const editProductFile = async () => {
-  const uploadInstance = uploadRefs.value as any
-  const fileList = uploadInstance?.getFileData()
-  productFileList.value = fileList.fileDataList
-  const productFileVoList: ProductFileVo[] = []
-  productFileList.value.map((item: FileData & CommonField, index: number) => {
-    productFileVoList.push({
-      productFileId: item.id,
-      sort: item?.sort || 0,
-      isDefault: index === 0,
-    })
-  })
-  const payload = {
-    productId: props.productId,
-    languageId: props.languageId,
-    productFileVoList,
-    productFileDeletedIds: deletedFileIds.value,
-  }
-  await updateProductFileApi(payload).catch(error => {
-    throw error
-  })
-  settingProductFileVisible.value = false
-  ElMessage.success($t('success.edit'))
-  emit('refreshData')
-}
-
-const refreshFormData = () => {
-  emit('refreshData')
-}
-
 // 复制功能相关
-const productAdminLocalizedViewDos = defineModel<ProductAdminLocalizedViewDo[]>('productAdminLocalizedViewDos', { required: true })
+const productAdminLocalizedViewDos = defineModel<ProductAdminLocalizedViewDo[]>('productAdminLocalizedViewDos', {
+  required: true,
+})
 const copyLanguageCode = ref('')
 const fromLanguageId = ref('')
 
@@ -355,14 +244,6 @@ const handleCopyProduct = async () => {
     return
   }
 
-  await CopyProductDetailApi({
-    productId: props.productId,
-    fromLanguageId: fromLanguageId.value,
-    toLanguageId: props.languageId,
-  }).catch(error => {
-    throw error
-  })
-
   ElMessage.success($t('success.copy'))
   copyLanguageCode.value = ''
   fromLanguageId.value = ''
@@ -379,34 +260,8 @@ const handleCopyProduct = async () => {
           {{ $t('product.productType') }}:
         </div>
         <div class="flex-1 w-full flex items-center">
-          <span v-if="!productTypeVisible" class="mr-2">
+          <span class="mr-2">
             {{ productData?.productTypeLabel }}
-            <EBtn type="primary" text @click="handleEditProductType()">
-              <Icon icon="ep:edit" :size="5" class="mr-1" />
-            </EBtn>
-          </span>
-          <span v-else>
-            <ElSelect
-              v-model="currentProductType"
-              :placeholder="$t('product.placeholder.productType')"
-              clearable
-              filterable
-              class="mr-5 w-100"
-              style="width: 100px"
-            >
-              <ElOption
-                v-for="item in productTypes.list"
-                :key="item.id"
-                :value="item.id"
-                :label="item.productTypeName"
-              />
-            </ElSelect>
-            <EBtn text @click="handleCancelEditProductType">
-              <Icon icon="ep:close" :size="5" class="mr-1" />
-            </EBtn>
-            <EBtn type="danger" class="ml-5" @click="handleSaveProductType">
-              <Icon icon="ep:check" :size="5" class="mr-1" />
-            </EBtn>
           </span>
         </div>
       </div>
@@ -479,7 +334,7 @@ const handleCopyProduct = async () => {
       <!-- 描述 -->
       <div class="w-full flex border-b border-gray-200 p-4">
         <div class="w-30 font-semibold text-gray-700 flex-shrink-0">
-          {{ $t('product.description') }}:
+          {{ $t('product.productDescription') }}:
         </div>
         <div class="flex-1 w-full flex items-center">
           <div v-if="!inputProductDescriptionVisible" class="mr-2">
@@ -531,7 +386,7 @@ const handleCopyProduct = async () => {
       <!-- 短描述 -->
       <div class="w-full flex border-b border-gray-200 p-4">
         <div class="w-30 font-semibold text-gray-700 flex-shrink-0">
-          {{ $t('product.shortDescription') }}:
+          {{ $t('product.productShortDescription') }}:
         </div>
         <div class="flex-1 w-full flex items-center">
           <div v-if="!inputProductShortDescriptionVisible" class="w-full mr-2">
@@ -541,7 +396,9 @@ const handleCopyProduct = async () => {
                   type="primary"
                   plain
                   @click="
-                    handleClickUpdateProductShortDescription(productDetail.productDetailListResultDo.productShortDescription)
+                    handleClickUpdateProductShortDescription(
+                      productDetail.productDetailListResultDo.productShortDescription,
+                    )
                   "
                 >
                   <Icon icon="ep:edit" :size="5" class="mr-1" />
@@ -604,50 +461,17 @@ const handleCopyProduct = async () => {
           </ElButton>
         </div>
       </div>
-      <!-- 图片 -->
-      <div class="w-full flex border-b border-gray-200 p-4">
-        <div class="w-30 font-semibold text-gray-700 flex-shrink-0">
-          {{ $t('product.pics') }}:
-        </div>
-        <div class="flex-1 w-full flex items-center">
-          <div v-if="!settingProductFileVisible">
-            <EBtn type="primary" text class="mb-5" @click="handleClickUpdateProductFile">
-              <Icon icon="ep:edit" :size="5" class="mr-1" />
-            </EBtn>
-            <div class="grid grid-cols-6 gap-4">
-              <div
-                v-for="fItem in productDetail.productFileRelationListResultDos"
-                :key="fItem.id"
-                class="col-span-1 border border-gray-200 pa-4"
-              >
-                <ElImage :src="resourceUrl + fItem.fileVo?.fileUrl" />
-              </div>
-            </div>
-          </div>
-          <div v-else>
-            <UploadImage ref="uploadRefs" class="mb-5" @remove-file="handleGetRemoveFile" />
-            <div class="flex justify-center items-center">
-              <EBtn @click="handleCancelUpdateProductFile">
-                {{ $t('common.cancel') }}
-              </EBtn>
-              <EBtn type="primary" @click="editProductFile">
-                {{ $t('common.save') }}
-              </EBtn>
-            </div>
-          </div>
-        </div>
-      </div>
       <!-- 自定义信息 -->
       <div class="w-full flex border-b border-gray-200 p-4">
         <div class="w-30 font-semibold text-gray-700 flex-shrink-0">
           {{ $t('product.customs') }}:
         </div>
         <div class="flex-1 w-full flex items-center">
-          <CustomsTable
+          <!-- <CustomsTable
             :custom-list="productDetail.productDetailListResultDo.customList"
             :product-detail-id="productDetail.productDetailListResultDo.id"
             @refresh-data="refreshFormData"
-          />
+          /> -->
         </div>
       </div>
     </div>
@@ -658,13 +482,11 @@ const handleCopyProduct = async () => {
         <ElAlert :title="$t('product.warning.noDetailData')" type="warning" show-icon />
       </div>
       <div class="bg-red-50 pa-3 flex justify-between items-center">
-        <ElSelect
-          v-model="copyLanguageCode"
-          placeholder="请选择"
-          style="width: 200px"
-        >
+        <ElSelect v-model="copyLanguageCode" placeholder="请选择" style="width: 200px">
           <ElOption
-            v-for="item in (productAdminLocalizedViewDos || []).filter(i => i.languageCode !== productDetail?.languageCode)"
+            v-for="item in (productAdminLocalizedViewDos || []).filter(
+              i => i.languageCode !== productDetail?.languageCode,
+            )"
             :key="item.languageCode"
             :label="item.languageName"
             :value="item.languageCode"
