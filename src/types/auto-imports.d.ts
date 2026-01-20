@@ -515,6 +515,7 @@ declare global {
   const updateProductSourceTypeApi: typeof import('../api/product-update').updateProductSourceTypeApi
   const updateProductSpuApi: typeof import('../api/product-update').updateProductSpuApi
   const updateProductStatusApi: typeof import('../api/product-update').updateProductStatusApi
+  const updateProductStockStatusApi: typeof import('../api/product-update').updateProductStockStatusApi
   const updateProductSupplierApi: typeof import('../api/product-update').updateProductSupplierApi
   const updateProductSystemCategoryApi: typeof import('../api/product-update').updateProductSystemCategoryApi
   const updateShippingCompanyApi: typeof import('../api/shipping').updateShippingCompanyApi

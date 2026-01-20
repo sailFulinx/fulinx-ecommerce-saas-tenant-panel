@@ -20,6 +20,8 @@ interface FileData {
   /* File Name */
   fileName: string
 
+  fileSize: string
+
   /* File Content Type */
   fileContentType: string
 

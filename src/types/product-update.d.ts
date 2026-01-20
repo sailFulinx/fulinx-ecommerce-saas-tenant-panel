@@ -432,3 +432,16 @@ interface UpdateProductStatusParams {
   /* Language ID */
   languageId: string
 }
+
+interface UpdateProductStockStatusParams {
+  /* Product ID */
+  productId: string
+
+  /* Stock Status */
+  stockStatus: number
+
+  /* Language ID */
+  languageId: string
+}
+
+/* Sort Order */

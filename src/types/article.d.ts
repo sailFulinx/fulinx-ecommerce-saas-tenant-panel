@@ -559,8 +559,6 @@ interface ArticleAdminLocalizedViewDo {
   languageId: string
   languageName: string
   languageCode: string
-  /* Category Name List */
-  categoryNameList?: string[]
   /* Article Category List Result Dos */
   articleCategoryRelationListResultDos: (ArticleCategoryListResultDo & CommonField)[]
 

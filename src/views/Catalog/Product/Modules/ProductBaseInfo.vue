@@ -22,7 +22,62 @@ const emit = defineEmits<{
   getRemoveFile: [index: number]
 }>()
 
+const productDetailId = props.productDetail?.productDetailListResultDo.id
+
 const { t: $t } = useLocale()
+
+const loading = reactive({
+  init: false,
+})
+
+const { loading: productTypeLoading, listData: productTypeListData, promise: productTypePromise } = useProductTypeList()
+
+const {
+  loading: productSourceTypeLoading,
+  listData: productSourceTypeListData,
+  promise: productSourceTypePromise,
+} = useProductSourceTypeList()
+
+const { loading: ageGroupLoading, listData: ageGroupTypeListData, promise: ageGroupPromise } = useAgeGroupTypeList()
+
+const { loading: genderLoading, listData: genderTypeListData, promise: genderPromise } = useGenderTypeList()
+
+const { loading: conditionLoading, listData: conditionTypeListData, promise: conditionPromise } = useConditionTypeList()
+
+const { loading: brandLoading, listData: brandListData, promise: brandPromise, getList: getBrandList } = useBrandList()
+
+const listSystemCategoryPayload = reactive<SystemCategoryListParams>({
+  languageId: props.languageId,
+  systemCategoryName: null,
+})
+
+const {
+  loading: systemCategoryLoading,
+  listData: listSystemCategoryData,
+  promise: systemCategoryPromise,
+} = useSystemCategoryList(listSystemCategoryPayload)
+
+onMounted(async () => {
+  console.log(props.languageId)
+  // 设置初始化加载状态
+  loading.init = true
+  try {
+    // 并行等待所有数据加载完成
+    await Promise.all([
+      productTypePromise,
+      productSourceTypePromise,
+      ageGroupPromise,
+      genderPromise,
+      conditionPromise,
+      systemCategoryPromise,
+      brandPromise,
+    ])
+  } catch (error) {
+    console.error('加载数据失败:', error)
+  } finally {
+    loading.init = false
+  }
+})
 
 // 产品名称相关
 const inputProductNameVisible = ref<boolean>(false)
@@ -30,6 +85,34 @@ const currentProductName = ref<string>('')
 // 产品短名称相关
 const inputProductShortNameVisible = ref<boolean>(false)
 const currentProductShortName = ref<string>('')
+
+// 品牌相关
+const inputBrandVisible = ref<boolean>(false)
+const currentBrandId = ref<string>('')
+
+// 库存状态相关
+const inputStockStatusVisible = ref<boolean>(false)
+const currentStockStatus = ref<number>(1)
+
+// 产品来源类型相关
+const inputProductSourceTypeVisible = ref<boolean>(false)
+const currentProductSourceType = ref<number>(0)
+
+// 成人用品相关
+const inputIsAdultVisible = ref<boolean>(false)
+const currentIsAdult = ref<boolean>(false)
+
+// 年龄组类型相关
+const inputAgeGroupTypeVisible = ref<boolean>(false)
+const currentAgeGroupType = ref<number>(0)
+
+// 性别类型相关
+const inputGenderTypeVisible = ref<boolean>(false)
+const currentGenderType = ref<number>(0)
+
+// 条件类型相关
+const inputConditionTypeVisible = ref<boolean>(false)
+const currentConditionType = ref<number>(0)
 
 const handleClickUpdateProductName = (productName: string) => {
   currentProductName.value = productName
@@ -77,6 +160,191 @@ const editProductShortName = async (productDetailId: string) => {
   })
   currentProductShortName.value = ''
   inputProductShortNameVisible.value = false
+  ElMessage.success($t('success.edit'))
+  emit('refreshData')
+}
+
+// 品牌相关方法
+const handleClickUpdateBrand = (brandId: string) => {
+  currentBrandId.value = brandId
+  inputBrandVisible.value = true
+}
+
+const handleCancelUpdateBrand = () => {
+  inputBrandVisible.value = false
+}
+
+const editBrand = async () => {
+  if (!currentBrandId.value) {
+    ElMessage.warning($t('product.error.brand'))
+    return
+  }
+  await updateProductBrandApi({
+    brandId: currentBrandId.value,
+    productId: props.productId,
+    languageId: props.languageId,
+  }).catch(error => {
+    throw error
+  })
+  inputBrandVisible.value = false
+  ElMessage.success($t('success.edit'))
+  emit('refreshData')
+}
+
+// 库存状态相关方法
+const handleClickUpdateStockStatus = (stockStatus: number) => {
+  currentStockStatus.value = stockStatus
+  inputStockStatusVisible.value = true
+}
+
+const handleCancelUpdateStockStatus = () => {
+  inputStockStatusVisible.value = false
+}
+
+const editStockStatus = async () => {
+  if (currentStockStatus.value === undefined || currentStockStatus.value === null) {
+    ElMessage.warning($t('product.error.stockStatus'))
+    return
+  }
+  await updateProductStockStatusApi({
+    stockStatus: currentStockStatus.value,
+    productId: props.productId,
+    languageId: props.languageId,
+  }).catch(error => {
+    throw error
+  })
+  inputStockStatusVisible.value = false
+  ElMessage.success($t('success.edit'))
+  emit('refreshData')
+}
+
+// 产品来源类型相关方法
+const handleClickUpdateProductSourceType = (productSourceType: number) => {
+  currentProductSourceType.value = productSourceType
+  inputProductSourceTypeVisible.value = true
+}
+
+const handleCancelUpdateProductSourceType = () => {
+  inputProductSourceTypeVisible.value = false
+}
+
+const editProductSourceType = async () => {
+  if (currentProductSourceType.value === undefined || currentProductSourceType.value === null) {
+    ElMessage.warning($t('product.error.productSourceType'))
+    return
+  }
+  await updateProductSourceTypeApi({
+    productSourceType: currentProductSourceType.value,
+    productId: props.productId,
+    languageId: props.languageId,
+  }).catch(error => {
+    throw error
+  })
+  inputProductSourceTypeVisible.value = false
+  ElMessage.success($t('success.edit'))
+  emit('refreshData')
+}
+
+// 成人用品相关方法
+const handleClickUpdateIsAdult = (isAdult: boolean) => {
+  currentIsAdult.value = isAdult
+  inputIsAdultVisible.value = true
+}
+
+const handleCancelUpdateIsAdult = () => {
+  inputIsAdultVisible.value = false
+}
+
+const editIsAdult = async () => {
+  await updateProductIsAdultApi({
+    isAdult: currentIsAdult.value,
+    languageId: props.languageId,
+    productId: props.productId,
+  }).catch(error => {
+    throw error
+  })
+  inputIsAdultVisible.value = false
+  ElMessage.success($t('success.edit'))
+  emit('refreshData')
+}
+
+// 年龄组类型相关方法
+const handleClickUpdateAgeGroupType = (ageGroupType: number) => {
+  currentAgeGroupType.value = ageGroupType
+  inputAgeGroupTypeVisible.value = true
+}
+
+const handleCancelUpdateAgeGroupType = () => {
+  inputAgeGroupTypeVisible.value = false
+}
+
+const editAgeGroupType = async () => {
+  if (currentAgeGroupType.value === undefined || currentAgeGroupType.value === null) {
+    ElMessage.warning($t('product.error.ageGroupType'))
+    return
+  }
+  await updateProductAgeGroupTypeApi({
+    ageGroupType: currentAgeGroupType.value,
+    languageId: props.languageId,
+    productId: props.productId,
+  }).catch(error => {
+    throw error
+  })
+  inputAgeGroupTypeVisible.value = false
+  ElMessage.success($t('success.edit'))
+  emit('refreshData')
+}
+
+// 性别类型相关方法
+const handleClickUpdateGenderType = (genderType: number) => {
+  currentGenderType.value = genderType
+  inputGenderTypeVisible.value = true
+}
+
+const handleCancelUpdateGenderType = () => {
+  inputGenderTypeVisible.value = false
+}
+
+const editGenderType = async () => {
+  if (currentGenderType.value === undefined || currentGenderType.value === null) {
+    ElMessage.warning($t('product.error.genderType'))
+    return
+  }
+  await updateProductGenderTypeApi({
+    genderType: currentGenderType.value,
+    productId: props.productId,
+    languageId: props.languageId,
+  }).catch(error => {
+    throw error
+  })
+  inputGenderTypeVisible.value = false
+  ElMessage.success($t('success.edit'))
+  emit('refreshData')
+}
+
+// 条件类型相关方法
+const handleClickUpdateConditionType = (conditionType: number) => {
+  currentConditionType.value = conditionType
+  inputConditionTypeVisible.value = true
+}
+
+const handleCancelUpdateConditionType = () => {
+  inputConditionTypeVisible.value = false
+}
+
+const editConditionType = async () => {
+  if (currentConditionType.value === undefined || currentConditionType.value === null) {
+    ElMessage.warning($t('product.error.conditionType'))
+    return
+  }
+  await updateProductConditionTypeApi({
+    conditionType: currentConditionType.value,
+    languageId: props.languageId,
+    productId: props.productId,
+  }).catch(error => {
+    throw error
+  })
+  inputConditionTypeVisible.value = false
   ElMessage.success($t('success.edit'))
   emit('refreshData')
 }
@@ -254,6 +522,17 @@ const handleCopyProduct = async () => {
 <template>
   <ElCard v-if="productDetail?.productDetailListResultDo" shadow="never" class="mb-5">
     <div class="w-full mt-0 pt-0">
+      <!-- 系统分类 -->
+      <div class="w-full flex border-b border-gray-200 p-4">
+        <div class="w-30 font-semibold text-gray-700 flex-shrink-0">
+          {{ $t('product.systemCategory') }}:
+        </div>
+        <div class="flex-1 w-full flex items-center">
+          <span class="mr-2">
+            {{ productData?.productTypeLabel }}
+          </span>
+        </div>
+      </div>
       <!-- 产品类型 -->
       <div class="w-full flex border-b border-gray-200 p-4">
         <div class="w-30 font-semibold text-gray-700 flex-shrink-0">
@@ -326,6 +605,223 @@ const handleCopyProduct = async () => {
             type="primary"
             text
             @click="handleClickUpdateProductShortName(productDetail.productDetailListResultDo.productShortName)"
+          >
+            <Icon icon="ep:edit" :size="5" class="mr-1" />
+          </EBtn>
+        </div>
+      </div>
+      <!-- 品牌 -->
+      <div class="w-full flex border-b border-gray-200 p-4">
+        <div class="w-30 font-semibold text-gray-700 flex-shrink-0">
+          {{ $t('product.brand') }}:
+        </div>
+        <div class="flex-1 w-full flex items-center">
+          <span v-if="!inputBrandVisible" class="mr-2">
+            {{ productData?.brandListResultDo?.brandName }}
+          </span>
+          <span v-else>
+            <ElSelect
+              v-model="currentBrandId"
+              clearable
+              filterable
+              placeholder="请选择品牌"
+              style="width: 300px"
+              class="mr-2"
+            >
+              <ElOption
+                v-for="brand in brandListData.list" :key="brand.id"
+                :label="brand.brandName"
+                :value="brand.id"
+              />
+            </ElSelect>
+            <EBtn text @click="handleCancelUpdateBrand">
+              <Icon icon="ep:close" :size="5" class="mr-1" />
+            </EBtn>
+          </span>
+          <EBtn
+            v-if="!inputBrandVisible"
+            type="primary"
+            text
+            @click="handleClickUpdateBrand(productData?.brandListResultDo?.id || '')"
+          >
+            <Icon icon="ep:edit" :size="5" class="mr-1" />
+          </EBtn>
+        </div>
+      </div>
+      <!-- 库存状态 -->
+      <div class="w-full flex border-b border-gray-200 p-4">
+        <div class="w-30 font-semibold text-gray-700 flex-shrink-0">
+          {{ $t('product.stockStatus') }}:
+        </div>
+        <div class="flex-1 w-full flex items-center">
+          <span v-if="!inputStockStatusVisible" class="mr-2">
+            {{ productData?.stockStatusLabel }}
+          </span>
+          <span v-else>
+            <ElRadioGroup v-model="currentStockStatus" class="mr-2">
+              <ElRadio :value="1">现货</ElRadio>
+              <ElRadio :value="2">预售</ElRadio>
+              <ElRadio :value="3">缺货</ElRadio>
+            </ElRadioGroup>
+            <EBtn text @click="handleCancelUpdateStockStatus">
+              <Icon icon="ep:close" :size="5" class="mr-1" />
+            </EBtn>
+          </span>
+          <EBtn
+            v-if="!inputStockStatusVisible"
+            type="primary"
+            text
+            @click="handleClickUpdateStockStatus(productData?.stockStatus || 1)"
+          >
+            <Icon icon="ep:edit" :size="5" class="mr-1" />
+          </EBtn>
+        </div>
+      </div>
+      <!-- 产品来源类型 -->
+      <div class="w-full flex border-b border-gray-200 p-4">
+        <div class="w-30 font-semibold text-gray-700 flex-shrink-0">
+          {{ $t('product.productSourceType') }}:
+        </div>
+        <div class="flex-1 w-full flex items-center">
+          <span v-if="!inputProductSourceTypeVisible" class="mr-2">
+            {{ productData?.productSourceTypeLabel }}
+          </span>
+          <span v-else>
+            <ElRadioGroup v-model="currentProductSourceType" class="mr-2">
+              <ElRadio :value="1">自有</ElRadio>
+              <ElRadio :value="2">OEM</ElRadio>
+              <ElRadio :value="3">代理</ElRadio>
+              <ElRadio :value="4">代销</ElRadio>
+              <ElRadio :value="5">其他</ElRadio>
+            </ElRadioGroup>
+            <EBtn text @click="handleCancelUpdateProductSourceType">
+              <Icon icon="ep:close" :size="5" class="mr-1" />
+            </EBtn>
+          </span>
+          <EBtn
+            v-if="!inputProductSourceTypeVisible"
+            type="primary"
+            text
+            @click="handleClickUpdateProductSourceType(productData?.productSourceType || 0)"
+          >
+            <Icon icon="ep:edit" :size="5" class="mr-1" />
+          </EBtn>
+        </div>
+      </div>
+      <!-- 是否成人用品 -->
+      <div class="w-full flex border-b border-gray-200 p-4">
+        <div class="w-30 font-semibold text-gray-700 flex-shrink-0">
+          {{ $t('product.isAdult') }}:
+        </div>
+        <div class="flex-1 w-full flex items-center">
+          <span v-if="!inputIsAdultVisible" class="mr-2">
+            {{ productData?.isAdult ? $t('common.yes') : $t('common.no') }}
+          </span>
+          <span v-else>
+            <ElSwitch
+              v-model="currentIsAdult"
+              active-text="是"
+              inactive-text="否"
+              class="mr-2"
+            />
+            <EBtn text @click="handleCancelUpdateIsAdult">
+              <Icon icon="ep:close" :size="5" class="mr-1" />
+            </EBtn>
+          </span>
+          <EBtn
+            v-if="!inputIsAdultVisible"
+            type="primary"
+            text
+            @click="handleClickUpdateIsAdult(!!productData?.isAdult)"
+          >
+            <Icon icon="ep:edit" :size="5" class="mr-1" />
+          </EBtn>
+        </div>
+      </div>
+      <!-- 年龄组类型 -->
+      <div class="w-full flex border-b border-gray-200 p-4">
+        <div class="w-30 font-semibold text-gray-700 flex-shrink-0">
+          {{ $t('product.ageGroupType') }}:
+        </div>
+        <div class="flex-1 w-full flex items-center">
+          <span v-if="!inputAgeGroupTypeVisible" class="mr-2">
+            {{ productData?.ageGroupTypeLabel }}
+          </span>
+          <span v-else>
+            <ElRadioGroup v-model="currentAgeGroupType" class="mr-2">
+              <ElRadio :value="1">新生儿</ElRadio>
+              <ElRadio :value="2">婴儿</ElRadio>
+              <ElRadio :value="3">幼儿</ElRadio>
+              <ElRadio :value="4">儿童</ElRadio>
+              <ElRadio :value="5">成人</ElRadio>
+            </ElRadioGroup>
+            <EBtn text @click="handleCancelUpdateAgeGroupType">
+              <Icon icon="ep:close" :size="5" class="mr-1" />
+            </EBtn>
+          </span>
+          <EBtn
+            v-if="!inputAgeGroupTypeVisible"
+            type="primary"
+            text
+            @click="handleClickUpdateAgeGroupType(productData?.ageGroupType || 0)"
+          >
+            <Icon icon="ep:edit" :size="5" class="mr-1" />
+          </EBtn>
+        </div>
+      </div>
+      <!-- 性别类型 -->
+      <div class="w-full flex border-b border-gray-200 p-4">
+        <div class="w-30 font-semibold text-gray-700 flex-shrink-0">
+          {{ $t('product.genderType') }}:
+        </div>
+        <div class="flex-1 w-full flex items-center">
+          <span v-if="!inputGenderTypeVisible" class="mr-2">
+            {{ productData?.genderTypeLabel }}
+          </span>
+          <span v-else>
+            <ElRadioGroup v-model="currentGenderType" class="mr-2">
+              <ElRadio :value="1">男性</ElRadio>
+              <ElRadio :value="2">女性</ElRadio>
+              <ElRadio :value="3">通用</ElRadio>
+            </ElRadioGroup>
+            <EBtn text @click="handleCancelUpdateGenderType">
+              <Icon icon="ep:close" :size="5" class="mr-1" />
+            </EBtn>
+          </span>
+          <EBtn
+            v-if="!inputGenderTypeVisible"
+            type="primary"
+            text
+            @click="handleClickUpdateGenderType(productData?.genderType || 0)"
+          >
+            <Icon icon="ep:edit" :size="5" class="mr-1" />
+          </EBtn>
+        </div>
+      </div>
+      <!-- 条件类型 -->
+      <div class="w-full flex border-b border-gray-200 p-4">
+        <div class="w-30 font-semibold text-gray-700 flex-shrink-0">
+          {{ $t('product.conditionType') }}:
+        </div>
+        <div class="flex-1 w-full flex items-center">
+          <span v-if="!inputConditionTypeVisible" class="mr-2">
+            {{ productData?.conditionTypeLabel }}
+          </span>
+          <span v-else>
+            <ElRadioGroup v-model="currentConditionType" class="mr-2">
+              <ElRadio :value="1">全新</ElRadio>
+              <ElRadio :value="2">翻新</ElRadio>
+              <ElRadio :value="3">二手</ElRadio>
+            </ElRadioGroup>
+            <EBtn text @click="handleCancelUpdateConditionType">
+              <Icon icon="ep:close" :size="5" class="mr-1" />
+            </EBtn>
+          </span>
+          <EBtn
+            v-if="!inputConditionTypeVisible"
+            type="primary"
+            text
+            @click="handleClickUpdateConditionType(productData?.conditionType || 0)"
           >
             <Icon icon="ep:edit" :size="5" class="mr-1" />
           </EBtn>

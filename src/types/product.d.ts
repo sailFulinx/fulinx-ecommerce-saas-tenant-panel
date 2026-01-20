@@ -1224,7 +1224,7 @@ interface ProductFileRelationListResultDo {
   fileId: string
 
   /* */
-  fileVo: FileVo
+  fileVo: FileData & CommonField
 
   /* Is Default, 0 - No, 1 - Yes */
   isDefault: boolean
@@ -1340,8 +1340,14 @@ interface ProductAdminLocalizedViewDo {
   /* Product Category List Result Dos */
   productCategoryRelationListResultDos: ProductCategoryRelationListResultDo[]
 
+  /* Category Name List */
+  categoryNameList?: string[]
+
   /* Product System Category List Result Dos */
   productSystemCategoryRelationListResultDos: ProductSystemCategoryRelationListResultDo[]
+
+  /* System Category Name List */
+  systemCategoryNameList?: string[]
 
   /* */
   productDetailListResultDo: ProductDetailListResultDo
@@ -1450,6 +1456,8 @@ interface ProductSkuAttributeListResultDo {
 interface ProductSkuInventoryListResultDo {
   /* Product Sku Inventory ID */
   id: string
+
+  productId: string
 
   /* Product Sku ID */
   productSkuId: string
@@ -1674,6 +1682,8 @@ interface ShowProduct {
   /* Brand ID */
   brandId: string
 
+  brandListResultDo: BrandListData & CommonField
+
   /* Sort */
   sort: number
 
@@ -1682,14 +1692,20 @@ interface ShowProduct {
 
   stockStatus: number
 
+  stockStatusLabel: string
+
   /* Status: 0-Disabled , 1-Enabled */
   status: boolean
 
   /* System Status: 0-Draft, 1-Pending Review, 2-Approved, 3-Active, 4-Inactive, 5-Rejected, 6-Suspended, 7-Archived */
   systemStatus: number
 
+  systemStatusLabel: string
+
   /* Product Source Type, 1-own, 2-oem, 3-agency, 4-drop, 5-other */
   productSourceType: number
+
+  productSourceTypeLabel: string
 
   /* Is Adult,  0 - No, 1 - Yes */
   isAdult: boolean
@@ -1697,11 +1713,17 @@ interface ShowProduct {
   /* Age Group Type, 1-newborn,2-infant,3-toddler,4-kids,5-adult */
   ageGroupType: number
 
+  ageGroupTypeLabel: string
+
   /* Gender Type, 1-male,2-female,3-unisex */
   genderType: number
 
+  genderTypeLabel: string
+
   /* Condition Type, 1-new,2-refurbished,3-used */
   conditionType: number
+
+  conditionTypeLabel: string
 
   /* Category Ids */
   categoryIds: string[]

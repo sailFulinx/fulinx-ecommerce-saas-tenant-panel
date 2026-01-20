@@ -28,6 +28,7 @@ export default {
   productShortDescription: '产品简单描述',
   tag: '标签',
   customs: '自定义信息',
+  stockStatus: '库存状态',
   productPrice: '产品价格',
   price: '价格',
   unitPrice: '单价',

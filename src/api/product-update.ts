@@ -223,3 +223,11 @@ export function updateProductStatusApi(params: UpdateProductStatusParams): Promi
     token: true,
   })
 }
+
+export function updateProductStockStatusApi(params: UpdateProductStockStatusParams): Promise<IResponse<ShowProduct & CommonField>> {
+  return request.post({
+    url: 'system/product/update/stock/status',
+    data: params,
+    token: true,
+  })
+}
