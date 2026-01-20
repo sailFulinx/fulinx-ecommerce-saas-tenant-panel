@@ -22,15 +22,11 @@ const emit = defineEmits<{
   getRemoveFile: [index: number]
 }>()
 
-const productDetailId = props.productDetail?.productDetailListResultDo.id
-
 const { t: $t } = useLocale()
 
 const loading = reactive({
   init: false,
 })
-
-const { loading: productTypeLoading, listData: productTypeListData, promise: productTypePromise } = useProductTypeList()
 
 const {
   loading: productSourceTypeLoading,
@@ -44,40 +40,53 @@ const { loading: genderLoading, listData: genderTypeListData, promise: genderPro
 
 const { loading: conditionLoading, listData: conditionTypeListData, promise: conditionPromise } = useConditionTypeList()
 
-const { loading: brandLoading, listData: brandListData, promise: brandPromise, getList: getBrandList } = useBrandList()
-
-const listSystemCategoryPayload = reactive<SystemCategoryListParams>({
-  languageId: props.languageId,
-  systemCategoryName: null,
-})
+const { loading: brandLoading, listData: brandListData, promise: brandPromise } = useBrandList()
 
 const {
-  loading: systemCategoryLoading,
-  listData: listSystemCategoryData,
-  promise: systemCategoryPromise,
-} = useSystemCategoryList(listSystemCategoryPayload)
+  loading: stockStatusLoading,
+  listData: stockStatusListData,
+  promise: stockStatusPromise,
+} = useProductStockStatusList()
 
-onMounted(async () => {
-  console.log(props.languageId)
-  // 设置初始化加载状态
-  loading.init = true
-  try {
-    // 并行等待所有数据加载完成
-    await Promise.all([
-      productTypePromise,
-      productSourceTypePromise,
-      ageGroupPromise,
-      genderPromise,
-      conditionPromise,
-      systemCategoryPromise,
-      brandPromise,
-    ])
-  } catch (error) {
-    console.error('加载数据失败:', error)
-  } finally {
-    loading.init = false
-  }
-})
+// 使用 watch 监听 props.languageId 的变化
+watch(
+  () => props.languageId,
+  async newLanguageId => {
+    if (!newLanguageId) {
+      return
+    }
+
+    console.log('Language ID changed:', newLanguageId)
+    // 设置初始化加载状态
+    loading.init = true
+    try {
+      // 创建系统分类的 payload
+      const listSystemCategoryPayload = reactive<SystemCategoryListParams>({
+        languageId: newLanguageId,
+        systemCategoryName: null,
+      })
+
+      // 创建系统分类列表的 hook
+      const { promise } = useSystemCategoryList(listSystemCategoryPayload)
+
+      // 并行等待所有数据加载完成
+      await Promise.all([
+        productSourceTypePromise,
+        ageGroupPromise,
+        genderPromise,
+        conditionPromise,
+        promise,
+        brandPromise,
+        stockStatusPromise,
+      ])
+    } catch (error) {
+      console.error('加载数据失败:', error)
+    } finally {
+      loading.init = false
+    }
+  },
+  { immediate: true }, // 立即执行一次，相当于 mounted 的效果
+)
 
 // 产品名称相关
 const inputProductNameVisible = ref<boolean>(false)
@@ -622,14 +631,17 @@ const handleCopyProduct = async () => {
           <span v-else>
             <ElSelect
               v-model="currentBrandId"
+              v-loading="brandLoading"
               clearable
               filterable
               placeholder="请选择品牌"
               style="width: 300px"
               class="mr-2"
+              @blur="editBrand"
             >
               <ElOption
-                v-for="brand in brandListData.list" :key="brand.id"
+                v-for="brand in brandListData.list"
+                :key="brand.id"
                 :label="brand.brandName"
                 :value="brand.id"
               />
@@ -657,14 +669,17 @@ const handleCopyProduct = async () => {
           <span v-if="!inputStockStatusVisible" class="mr-2">
             {{ productData?.stockStatusLabel }}
           </span>
-          <span v-else>
-            <ElRadioGroup v-model="currentStockStatus" class="mr-2">
-              <ElRadio :value="1">现货</ElRadio>
-              <ElRadio :value="2">预售</ElRadio>
-              <ElRadio :value="3">缺货</ElRadio>
+          <span v-else class="flex items-center">
+            <ElRadioGroup v-model="currentStockStatus" :loading="stockStatusLoading" class="mr-2">
+              <ElRadio v-for="item in stockStatusListData.list" :key="item.id" :value="item.id">
+                {{ item.productStockStatusName }}
+              </ElRadio>
             </ElRadioGroup>
+            <EBtn text @click="editStockStatus">
+              <Icon icon="ep:check" :size="5" />
+            </EBtn>
             <EBtn text @click="handleCancelUpdateStockStatus">
-              <Icon icon="ep:close" :size="5" class="mr-1" />
+              <Icon icon="ep:close" :size="5" />
             </EBtn>
           </span>
           <EBtn
@@ -686,14 +701,23 @@ const handleCopyProduct = async () => {
           <span v-if="!inputProductSourceTypeVisible" class="mr-2">
             {{ productData?.productSourceTypeLabel }}
           </span>
-          <span v-else>
-            <ElRadioGroup v-model="currentProductSourceType" class="mr-2">
-              <ElRadio :value="1">自有</ElRadio>
-              <ElRadio :value="2">OEM</ElRadio>
-              <ElRadio :value="3">代理</ElRadio>
-              <ElRadio :value="4">代销</ElRadio>
-              <ElRadio :value="5">其他</ElRadio>
-            </ElRadioGroup>
+          <span v-else class="flex items-center">
+            <ElSelect
+              v-model="currentProductSourceType"
+              v-loading="productSourceTypeLoading"
+              clearable
+              filterable
+              placeholder="请选择"
+              style="width: 200px"
+              @blur="editProductSourceType"
+            >
+              <ElOption
+                v-for="item in productSourceTypeListData?.list || []"
+                :key="item.id"
+                :value="item.id"
+                :label="item.productSourceTypeName"
+              />
+            </ElSelect>
             <EBtn text @click="handleCancelUpdateProductSourceType">
               <Icon icon="ep:close" :size="5" class="mr-1" />
             </EBtn>
@@ -717,13 +741,11 @@ const handleCopyProduct = async () => {
           <span v-if="!inputIsAdultVisible" class="mr-2">
             {{ productData?.isAdult ? $t('common.yes') : $t('common.no') }}
           </span>
-          <span v-else>
-            <ElSwitch
-              v-model="currentIsAdult"
-              active-text="是"
-              inactive-text="否"
-              class="mr-2"
-            />
+          <span v-else class="flex items-center">
+            <ElSwitch v-model="currentIsAdult" class="mr-2" />
+            <EBtn text @click="editIsAdult">
+              <Icon icon="ep:check" :size="5" class="mr-1" />
+            </EBtn>
             <EBtn text @click="handleCancelUpdateIsAdult">
               <Icon icon="ep:close" :size="5" class="mr-1" />
             </EBtn>
@@ -747,14 +769,23 @@ const handleCopyProduct = async () => {
           <span v-if="!inputAgeGroupTypeVisible" class="mr-2">
             {{ productData?.ageGroupTypeLabel }}
           </span>
-          <span v-else>
-            <ElRadioGroup v-model="currentAgeGroupType" class="mr-2">
-              <ElRadio :value="1">新生儿</ElRadio>
-              <ElRadio :value="2">婴儿</ElRadio>
-              <ElRadio :value="3">幼儿</ElRadio>
-              <ElRadio :value="4">儿童</ElRadio>
-              <ElRadio :value="5">成人</ElRadio>
-            </ElRadioGroup>
+          <span v-else class="flex items-center">
+            <ElSelect
+              v-model="currentAgeGroupType"
+              v-loading="ageGroupLoading"
+              clearable
+              filterable
+              placeholder="请选择"
+              style="width: 200px"
+              @blur="editAgeGroupType"
+            >
+              <ElOption
+                v-for="item in ageGroupTypeListData?.list || []"
+                :key="item.id"
+                :value="item.id"
+                :label="item.ageGroupTypeName"
+              />
+            </ElSelect>
             <EBtn text @click="handleCancelUpdateAgeGroupType">
               <Icon icon="ep:close" :size="5" class="mr-1" />
             </EBtn>
@@ -779,11 +810,22 @@ const handleCopyProduct = async () => {
             {{ productData?.genderTypeLabel }}
           </span>
           <span v-else>
-            <ElRadioGroup v-model="currentGenderType" class="mr-2">
-              <ElRadio :value="1">男性</ElRadio>
-              <ElRadio :value="2">女性</ElRadio>
-              <ElRadio :value="3">通用</ElRadio>
-            </ElRadioGroup>
+            <ElSelect
+              v-model="currentGenderType"
+              v-loading="genderLoading"
+              clearable
+              filterable
+              :placeholder="`${$t('product.placeholder.genderType')}`"
+              @blur="editGenderType"
+            >
+              <ElOption
+                v-for="item in genderTypeListData?.list || []"
+                :key="item.id"
+                :value="item.id"
+                :label="item.genderTypeName"
+              />
+            </ElSelect>
+
             <EBtn text @click="handleCancelUpdateGenderType">
               <Icon icon="ep:close" :size="5" class="mr-1" />
             </EBtn>
@@ -807,12 +849,23 @@ const handleCopyProduct = async () => {
           <span v-if="!inputConditionTypeVisible" class="mr-2">
             {{ productData?.conditionTypeLabel }}
           </span>
-          <span v-else>
-            <ElRadioGroup v-model="currentConditionType" class="mr-2">
-              <ElRadio :value="1">全新</ElRadio>
-              <ElRadio :value="2">翻新</ElRadio>
-              <ElRadio :value="3">二手</ElRadio>
-            </ElRadioGroup>
+          <span v-else class="flex items-center">
+            <ElSelect
+              v-model="currentConditionType"
+              v-loading="conditionLoading"
+              clearable
+              filterable
+              placeholder="请选择"
+              style="width: 200px"
+              @blur="editConditionType"
+            >
+              <ElOption
+                v-for="item in conditionTypeListData?.list || []"
+                :key="item.id"
+                :value="item.id"
+                :label="item.conditionTypeName"
+              />
+            </ElSelect>
             <EBtn text @click="handleCancelUpdateConditionType">
               <Icon icon="ep:close" :size="5" class="mr-1" />
             </EBtn>
