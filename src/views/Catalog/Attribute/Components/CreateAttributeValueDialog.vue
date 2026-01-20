@@ -105,7 +105,7 @@ defineExpose({
 </script>
 
 <template>
-  <ElDrawer v-model="dialogVisible" :title="$t('attribute.add')" size="50%">
+  <ElDrawer v-model="dialogVisible" :title="$t('attribute.addAttributeValue')" size="50%">
     <ElForm ref="formRef" :model="form" :rules="rules" label-width="120px">
       <ElFormItem :label="$t('attribute.attributeValue')" prop="attributeValueContentString">
         <ElInput

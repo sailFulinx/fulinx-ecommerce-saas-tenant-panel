@@ -30,7 +30,7 @@ export function categoryShowApi(data: CategoryShowParams): Promise<IResponse<Cat
 // 删除分类
 export function categoryRemoveApi(data: RemoveCategoryParams): Promise<IResponse<boolean>> {
   return request.delete({
-    url: 'system/category/body',
+    url: 'system/category',
     data,
     token: true,
   })

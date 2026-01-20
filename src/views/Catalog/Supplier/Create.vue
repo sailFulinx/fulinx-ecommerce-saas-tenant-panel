@@ -100,48 +100,26 @@ const save = async () => {
     </div>
     <div class="view-main theme-card">
       <ElForm ref="supplierFormRef" :model="supplierForm" :rules="rules" label-width="120px">
-        <!-- 基础信息 -->
-        <ElCard shadow="never" class="mb-5">
+        <ElCard shadow="never" class="w-full mb-5">
           <template #header>
             <div class="card-header">
               <span>{{ $t('supplier.base') }}</span>
             </div>
           </template>
-        </ElCard>
-
-        <ElCard shadow="never" class="mb-5 theme-card">
-          <template #header>
-            <div class="flex justify-between">
-              <div>{{ $t('supplier.content') }}</div>
-            </div>
-          </template>
-          <div>
-            <div class="grid grid-cols-3 gap-5">
-              <div class="col-span-2">
-                <ElCard shadow="never" class="w-full mb-5">
-                  <template #header>
-                    <div class="card-header">
-                      <span>{{ $t('supplier.base') }}</span>
-                    </div>
-                  </template>
-                  <ElFormItem :label="$t('supplier.supplierName')" prop="supplierName">
-                    <ElInput
-                      v-model="supplierForm.supplierName"
-                      minlength="1"
-                      maxlength="120"
-                      :placeholder="$t('supplier.placeholder.supplierName')"
-                    />
-                  </ElFormItem>
-                  <ElFormItem :label="$t('supplier.supplierDescription')" prop="supplierDescription">
-                    <Editor ref="editorRef" v-model="supplierForm.supplierDescription" :height="300" />
-                  </ElFormItem>
-                  <ElFormItem :label="$t('supplier.supplierLogo')">
-                    <UploadSingleImage ref="uploadRef" />
-                  </ElFormItem>
-                </ElCard>
-              </div>
-            </div>
-          </div>
+          <ElFormItem :label="$t('supplier.supplierName')" prop="supplierName">
+            <ElInput
+              v-model="supplierForm.supplierName"
+              minlength="1"
+              maxlength="120"
+              :placeholder="$t('supplier.placeholder.supplierName')"
+            />
+          </ElFormItem>
+          <ElFormItem :label="$t('supplier.supplierDescription')" prop="supplierDescription">
+            <Editor ref="editorRef" v-model="supplierForm.supplierDescription" :height="300" />
+          </ElFormItem>
+          <ElFormItem :label="$t('supplier.supplierLogo')">
+            <UploadSingleImage ref="uploadRef" />
+          </ElFormItem>
         </ElCard>
       </ElForm>
     </div>

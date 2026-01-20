@@ -84,10 +84,10 @@ const handleMultiDelete = async () => {
     loading.list = false
     return
   }
-  // await removeProductApi({ productIds: selectedList.value }).catch(err => {
-  //   loading.list = false
-  //   throw err
-  // })
+  await removeProductApi({ productIds: selectedList.value }).catch(err => {
+    loading.list = false
+    throw err
+  })
   loading.list = false
   getList()
   ElMessage({

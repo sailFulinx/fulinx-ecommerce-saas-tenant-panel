@@ -5,8 +5,6 @@ const preferenceStore = usePreferenceStore()
 
 const router = useRouter()
 
-const sourceUrl = useFileRootUrl()
-
 const listResult = ref<TableResponse<SupplierListData & CommonField>>({
   list: [],
   total: 0,
@@ -182,7 +180,7 @@ const handleRedirectEdit = (val: SupplierListData & CommonField) => {
         <ElTableColumn type="selection" width="55" />
         <ElTableColumn :label="$t('supplier.supplierLogo')">
           <template #default="scope">
-            <SImg v-if="scope.row.supplierFileVo?.fileUrl" :src="sourceUrl + scope.row.supplierFileVo?.fileUrl" :alt="scope.row.supplierName" fit="cover" lazy width="120px" placeholder />
+            <SImg v-if="scope.row.supplierFileVo?.fileUrl" :src="scope.row.supplierFileVo?.fileUrl" :alt="scope.row.supplierName" fit="cover" lazy width="120px" placeholder />
             <div v-else>
               <div class="flex flex-col items-left">
                 <div class="flex items-center">

@@ -20,6 +20,7 @@ export default {
   status: '状态',
   isCustomLayout: '是否自定义布局',
   slug: '自定义URL',
+  selectCategory: '选择分类',
   warning: {
     noDetailData: '检测到您没有添加过此语言的文章名称，请添加',
     noSeoData: '检测到您没有添加过此语言的SEO信息，请添加',

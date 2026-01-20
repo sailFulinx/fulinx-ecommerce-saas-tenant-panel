@@ -42,6 +42,7 @@ const handleRemoveCategory = (val: CascaderNodeValue | CascaderNodePathValue) =>
 const getCategoryList = async () => {
   const payload = {
     languageId: props.languageId,
+    categoryType: 2,
   }
   const { data } = await categoryListApi(payload).catch(error => {
     throw error
@@ -109,12 +110,7 @@ const handleConfirmEditCategory = async () => {
             <EBtn type="primary" text @click="handleEditCategory">
               <Icon icon="ep:edit" :size="5" class="mr-2" />
             </EBtn>
-            <ElTag
-              v-for="(categoryName, index) in categoryNames"
-              :key="index"
-              type="info"
-              class="mr-2 mb-1"
-            >
+            <ElTag v-for="(categoryName, index) in categoryNames" :key="index" type="info" class="mr-2 mb-1">
               {{ categoryName }}
             </ElTag>
           </div>

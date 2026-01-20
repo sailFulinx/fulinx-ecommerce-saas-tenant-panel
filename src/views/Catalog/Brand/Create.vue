@@ -100,48 +100,26 @@ const save = async () => {
     </div>
     <div class="view-main theme-card">
       <ElForm ref="brandFormRef" :model="brandForm" :rules="rules" label-width="120px">
-        <!-- 基础信息 -->
-        <ElCard shadow="never" class="mb-5">
+        <ElCard shadow="never" class="w-full mb-5">
           <template #header>
             <div class="card-header">
               <span>{{ $t('brand.base') }}</span>
             </div>
           </template>
-        </ElCard>
-
-        <ElCard shadow="never" class="mb-5 theme-card">
-          <template #header>
-            <div class="flex justify-between">
-              <div>{{ $t('brand.content') }}</div>
-            </div>
-          </template>
-          <div>
-            <div class="grid grid-cols-3 gap-5">
-              <div class="col-span-2">
-                <ElCard shadow="never" class="w-full mb-5">
-                  <template #header>
-                    <div class="card-header">
-                      <span>{{ $t('brand.base') }}</span>
-                    </div>
-                  </template>
-                  <ElFormItem :label="$t('brand.brandName')" prop="brandName">
-                    <ElInput
-                      v-model="brandForm.brandName"
-                      minlength="1"
-                      maxlength="120"
-                      :placeholder="$t('brand.placeholder.brandName')"
-                    />
-                  </ElFormItem>
-                  <ElFormItem :label="$t('brand.brandDescription')" prop="brandDescription">
-                    <Editor ref="editorRef" v-model="brandForm.brandDescription" :height="300" />
-                  </ElFormItem>
-                  <ElFormItem :label="$t('brand.brandLogo')">
-                    <UploadSingleImage ref="uploadRef" />
-                  </ElFormItem>
-                </ElCard>
-              </div>
-            </div>
-          </div>
+          <ElFormItem :label="$t('brand.brandName')" prop="brandName">
+            <ElInput
+              v-model="brandForm.brandName"
+              minlength="1"
+              maxlength="120"
+              :placeholder="$t('brand.placeholder.brandName')"
+            />
+          </ElFormItem>
+          <ElFormItem :label="$t('brand.brandDescription')" prop="brandDescription">
+            <Editor ref="editorRef" v-model="brandForm.brandDescription" :height="300" />
+          </ElFormItem>
+          <ElFormItem :label="$t('brand.brandLogo')">
+            <UploadSingleImage ref="uploadRef" />
+          </ElFormItem>
         </ElCard>
       </ElForm>
     </div>
