@@ -1,4 +1,4 @@
-interface UpdateAgeGroupTypeParams {
+interface UpdateProductAgeGroupTypeParams {
   /* Product ID */
   productId: string
 
@@ -9,7 +9,7 @@ interface UpdateAgeGroupTypeParams {
   languageId: string
 }
 
-interface UpdateBrandParams {
+interface UpdateProductBrandParams {
   /* Product ID */
   productId: string
 
@@ -20,7 +20,7 @@ interface UpdateBrandParams {
   languageId: string
 }
 
-interface UpdateCategoryParams {
+interface UpdateProductCategoryParams {
   /* Product ID */
   productId: string
 
@@ -34,7 +34,7 @@ interface UpdateCategoryParams {
   languageId: string
 }
 
-interface UpdateConditionTypeParams {
+interface UpdateProductConditionTypeParams {
   /* Product ID */
   productId: string
 
@@ -45,7 +45,7 @@ interface UpdateConditionTypeParams {
   languageId: string
 }
 
-interface UpdateCustomsParams {
+interface UpdateProductCustomsParams {
   /* Product Detail ID */
   productDetailId: string
 
@@ -53,7 +53,7 @@ interface UpdateCustomsParams {
   customs?: string
 }
 
-interface UpdateFileParams {
+interface UpdateProductFileParams {
   /* Product ID */
   productId: string
 
@@ -85,7 +85,7 @@ interface UpdateFileParams {
   productFileDeletedIds?: Record<string, unknown>[]
 }
 
-interface UpdateGenderTypeParams {
+interface UpdateProductGenderTypeParams {
   /* Product ID */
   productId: string
 
@@ -96,7 +96,7 @@ interface UpdateGenderTypeParams {
   languageId: string
 }
 
-interface UpdateIsAdultParams {
+interface UpdateProductIsAdultParams {
   /* Product ID */
   productId: string
 
@@ -107,7 +107,7 @@ interface UpdateIsAdultParams {
   languageId: string
 }
 
-interface UpdateIsTopParams {
+interface UpdateProductIsTopParams {
   /* Product ID */
   productId: string
 
@@ -118,7 +118,7 @@ interface UpdateIsTopParams {
   languageId: string
 }
 
-interface UpdateLayoutParams {
+interface UpdateProductLayoutParams {
   /* Product Detail ID */
   productDetailId: string
 
@@ -132,7 +132,7 @@ interface UpdateLayoutParams {
   layoutContent?: string
 }
 
-interface UpdateParameterParams {
+interface UpdateProductParameterParams {
   /* Product ID */
   productId: string
 
@@ -173,4 +173,262 @@ interface UpdateProductDescriptionParams {
 
   /* Product Description */
   productDescription: string
+}
+
+interface UpdateProductMetaDescriptionParams {
+  /* Product Seo ID */
+  productSeoId: string
+
+  /* Meta Description */
+  metaDescription: string
+}
+
+interface UpdateProductMetaTitleParams {
+  /* Product Seo ID */
+  productSeoId: string
+
+  /* Meta Title */
+  metaTitle: string
+}
+
+interface UpdateProductNameParams {
+  /* Product Detail ID */
+  productDetailId: string
+
+  /* Product Name */
+  productName: string
+
+}
+
+interface UpdateProductShortDescriptionParams {
+  /* Product Detail ID */
+  productDetailId: string
+
+  /* Product Short Description */
+  productShortDescription: string
+}
+
+interface UpdateProductShortNameParams {
+  /* Product Detail ID */
+  productDetailId: string
+
+  /* Product Short Name */
+  productShortName: string
+}
+
+interface UpdateProductSkuParams {
+  productId: ''
+  languageId: ''
+  productSkuRequestDo: {
+    productAttributeRequestDo: {
+      attributeSummaryDos: [
+        {
+          attributeId: ''
+          languageId: ''
+          attributeName: ''
+          sort: 0
+          attributeValueDos: [
+            {
+              attributeValueId: ''
+              languageId: ''
+              attributeValueContent: ''
+              sort: 0
+              attributeImageFileId: ''
+              attributeImageFileVo: {
+                id: ''
+                bucketName: ''
+                etag: ''
+                s3Key: ''
+                isPublic: true
+                originalFileName: ''
+                fileName: ''
+                fileContentType: ''
+                fileExtensionName: ''
+                fileSize: ''
+                path: ''
+                fileUrl: ''
+                sha256: ''
+                isDelete: 0
+                remark: ''
+                recordVersion: 0
+                recordCreateName: ''
+                recordUpdateName: ''
+                recordCreateTime: ''
+                recordUpdateTime: ''
+              }
+            },
+          ]
+        },
+      ]
+      searchIndex: ''
+    }
+    productSkuItemRequestDos: [
+      {
+        id: ''
+        productId: ''
+        skuImageFileId: ''
+        skuCode: ''
+        currencyId: ''
+        price: 0
+        costPrice: 0
+        promotionPrice: 0
+        promotionStartedTime: ''
+        promotionEndedTime: ''
+        isRequiredShipping: true
+        weight: 0
+        weightUnit: 0
+        length: 0
+        width: 0
+        height: 0
+        lengthUnit: 0
+        mpn: ''
+        upc: ''
+        ean: ''
+        jan: ''
+        isbn: ''
+        issn: ''
+        status: true
+        remark: ''
+        productSkuAttributeRequestDos: [
+          {
+            id: ''
+            productSkuId: ''
+            languageId: ''
+            attributeId: ''
+            attributeName: ''
+            attributeValueId: ''
+            attributeValueContent: ''
+          },
+        ]
+        productSkuInventoryRequestDos: [
+          {
+            id: ''
+            productSkuId: ''
+            warehouseId: ''
+            quantity: 0
+            lockedQuantity: 0
+            remark: ''
+          },
+        ]
+      },
+    ]
+  }
+}
+
+interface UpdateProductSourceTypeParams {
+  /* Product ID */
+  productId: string
+
+  /* Product Source Type */
+  productSourceType: number
+
+  /* Language ID */
+  languageId: string
+}
+
+interface UpdateProductSupplierParams {
+  /* Product ID */
+  productId: string
+
+  /* Language ID */
+  languageId: string
+
+  /* Product Supplier Request Dos */
+  productSupplierRequestDos?: {
+    /* Product Supplier ID */
+    id?: string
+
+    /* Product ID */
+    productId?: string
+
+    /* Supplier ID */
+    supplierId?: string
+
+    /* Supplier Url */
+    supplierUrl?: string
+  }[]
+
+  /* Deleted Product Supplier IDs */
+  deletedProductSupplierIds?: string[]
+}
+
+interface UpdateProductSystemCategoryParams {
+  /* Product ID */
+  productId: string
+
+  /* Language ID */
+  languageId: string
+
+  /* System Category IDs */
+  systemCategoryIds?: string[]
+
+  /* Deleted System Category IDs */
+  deletedSystemCategoryIds?: string[]
+}
+
+interface UpdateProductRelatedParams {
+  /* Product ID */
+  productId: string
+
+  /* Language ID */
+  languageId: string
+
+  /* Product Related Request Dos */
+  productRelatedRequestDos?: {
+    /* Product ID */
+    productId?: string
+
+    /* Related Product ID */
+    relatedProductId?: string
+
+    /* Sort */
+    sort?: number
+  }[]
+
+  /* Deleted Product Related IDs */
+  deletedProductRelatedIds?: string
+}
+
+interface UpdateProductSlugParams {
+  /* Slug ID */
+  slugId: string
+
+  /* Slug */
+  slug: string
+
+  /* Language ID */
+  languageId: string
+}
+
+interface UpdateProductSortParams {
+  /* Product ID */
+  productId: string
+
+  /* Sort Order */
+  sort?: number
+
+  /* Language ID */
+  languageId: string
+}
+
+interface UpdateProductSpuParams {
+  /* Product ID */
+  productId: string
+
+  /* Spu */
+  spu: string
+
+  /* Language ID */
+  languageId: string
+}
+
+interface UpdateProductStatusParams {
+  /* Product ID */
+  productId: string
+
+  /* Status */
+  status: boolean
+
+  /* Language ID */
+  languageId: string
 }
