@@ -9,6 +9,7 @@ interface Props {
   productDetail?: ProductAdminLocalizedViewDo
   languageId: string
   productId: string
+  systemCategoryNames: string[]
 }
 
 const props = defineProps<Props>()
@@ -48,6 +49,41 @@ const {
   promise: stockStatusPromise,
 } = useProductStockStatusList()
 
+// 添加系统分类相关变量
+const inputSystemCategoryVisible = ref<boolean>(false)
+const currentSystemCategoryId = ref<string>('')
+const systemCategoryList = ref<SystemCategoryData[]>([])
+
+// 系统分类相关方法
+const handleClickUpdateSystemCategory = (systemCategoryId: string) => {
+  currentSystemCategoryId.value = systemCategoryId
+  inputSystemCategoryVisible.value = true
+}
+
+const handleCancelUpdateSystemCategory = () => {
+  inputSystemCategoryVisible.value = false
+}
+
+const editSystemCategory = async () => {
+  if (!currentSystemCategoryId.value) {
+    ElMessage.warning($t('product.error.systemCategory'))
+    return
+  }
+
+  await updateProductSystemCategoryApi({
+    productId: props.productId,
+    languageId: props.languageId,
+    systemCategoryIds: [currentSystemCategoryId.value],
+    deletedSystemCategoryIds: [], // 如果需要删除之前的分类，可以在这里添加
+  }).catch(error => {
+    throw error
+  })
+
+  inputSystemCategoryVisible.value = false
+  ElMessage.success($t('success.edit'))
+  emit('refreshData')
+}
+
 // 使用 watch 监听 props.languageId 的变化
 watch(
   () => props.languageId,
@@ -55,8 +91,6 @@ watch(
     if (!newLanguageId) {
       return
     }
-
-    console.log('Language ID changed:', newLanguageId)
     // 设置初始化加载状态
     loading.init = true
     try {
@@ -64,10 +98,11 @@ watch(
       const listSystemCategoryPayload = reactive<SystemCategoryListParams>({
         languageId: newLanguageId,
         systemCategoryName: null,
+        systemCategoryType: 1, // 1 表示产品类型
       })
 
       // 创建系统分类列表的 hook
-      const { promise } = useSystemCategoryList(listSystemCategoryPayload)
+      const { listData: systemCategoryListData, promise } = useSystemCategoryList(listSystemCategoryPayload)
 
       // 并行等待所有数据加载完成
       await Promise.all([
@@ -79,6 +114,9 @@ watch(
         brandPromise,
         stockStatusPromise,
       ])
+
+      // 将系统分类列表赋值给本地变量
+      systemCategoryList.value = systemCategoryListData.value.list
     } catch (error) {
       console.error('加载数据失败:', error)
     } finally {
@@ -537,9 +575,39 @@ const handleCopyProduct = async () => {
           {{ $t('product.systemCategory') }}:
         </div>
         <div class="flex-1 w-full flex items-center">
-          <span class="mr-2">
-            {{ productData?.productTypeLabel }}
+          <span v-if="!inputSystemCategoryVisible" class="mr-2">
+            {{ systemCategoryNames }}
           </span>
+          <span v-else>
+            <ElSelect
+              v-model="currentSystemCategoryId"
+              v-loading="loading.init"
+              clearable
+              filterable
+              placeholder="请选择系统分类"
+              style="width: 300px"
+              class="mr-2"
+              @blur="editSystemCategory"
+            >
+              <ElOption
+                v-for="category in systemCategoryList"
+                :key="category.id"
+                :label="category.systemCategoryName"
+                :value="category.id"
+              />
+            </ElSelect>
+            <EBtn text @click="handleCancelUpdateSystemCategory">
+              <Icon icon="ep:close" :size="5" class="mr-1" />
+            </EBtn>
+          </span>
+          <EBtn
+            v-if="!inputSystemCategoryVisible"
+            type="primary"
+            text
+            @click="handleClickUpdateSystemCategory(productData?.systemCategoryListResultDo?.id || '')"
+          >
+            <Icon icon="ep:edit" :size="5" class="mr-1" />
+          </EBtn>
         </div>
       </div>
       <!-- 产品类型 -->

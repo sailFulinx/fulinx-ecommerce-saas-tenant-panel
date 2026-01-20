@@ -1058,6 +1058,11 @@ interface ProductDetailListResultDo {
   /* Product Short Description */
   productShortDescription: string
 
+  customs: string
+
+  /* Custom List */
+  customList?: CustomDataType[]
+
   /* Layout Type, 1: default, 2: devCustomized, 3: userDefined  */
   layoutType: number
 
@@ -1125,65 +1130,6 @@ interface ProductParameterRelationListResultDo {
 
   /* Sort */
   sort: number
-
-  /* Soft Delete Flag */
-  isDelete: number
-
-  /* Remark */
-  remark: string
-
-  /* Record Version */
-  recordVersion: number
-
-  /* Record Create Name */
-  recordCreateName: string
-
-  /* Record Update Name */
-  recordUpdateName: string
-
-  /* Record Create Time */
-  recordCreateTime: string
-
-  /* Record Update Time */
-  recordUpdateTime: string
-}
-
-interface FileVo {
-  /* File ID */
-  id: string
-
-  /* Bucket Name */
-  bucketName: string
-
-  /* Etag */
-  etag: string
-
-  /* S3 Key */
-  s3Key: string
-
-  /* Is Public */
-  isPublic: boolean
-
-  /* Original File Name */
-  originalFileName: string
-
-  /* File Name */
-  fileName: string
-
-  /* File Content Type */
-  fileContentType: string
-
-  /* File Extension Name */
-  fileExtensionName: string
-
-  /* Path */
-  path: string
-
-  /* File Url */
-  fileUrl: string
-
-  /* sha256 */
-  sha256: string
 
   /* Soft Delete Flag */
   isDelete: number

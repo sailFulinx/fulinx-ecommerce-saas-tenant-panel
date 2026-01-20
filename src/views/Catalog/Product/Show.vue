@@ -138,6 +138,8 @@ const createFormData = (): ShowProduct & CommonField => {
           productShortName: '',
           productDescription: '',
           productShortDescription: '',
+          customs: '',
+          customList: [],
           layoutType: 0,
           layoutTypeLabel: '',
           devComponentName: '',
@@ -371,12 +373,55 @@ const createFormData = (): ShowProduct & CommonField => {
   }
 }
 
+const categoryNames = ref<string[]>([])
+
+const systemCategoryNames = ref<string[]>([])
+
 // form初始化
 const form = reactive<ShowProduct & CommonField>(createFormData())
 
 const resetFormData = async (val: ShowProduct) => {
   await nextTick(() => {
+    categoryNames.value = []
+    systemCategoryNames.value = []
     Object.assign(form, JSON.parse(JSON.stringify(val)))
+    const categoryNameList: string[] = []
+    const systemCategoryNameList: string[] = []
+    if (form.productAdminLocalizedViewDos && form.productAdminLocalizedViewDos.length > 0) {
+      form.productAdminLocalizedViewDos.forEach(item => {
+        item.categoryNameList = []
+        item.systemCategoryNameList = []
+        if (item.productCategoryRelationListResultDos && item.productCategoryRelationListResultDos.length > 0) {
+          item.productCategoryRelationListResultDos.forEach(cItem => {
+            if (item.languageId === languageId.value) {
+              categoryNameList.push(cItem.categoryName)
+            }
+          })
+          item.productSystemCategoryRelationListResultDos.forEach(cItem => {
+            if (item.languageId === languageId.value) {
+              systemCategoryNameList.push(cItem.systemCategoryName)
+            }
+          })
+        }
+        item.categoryNameList = categoryNameList
+        item.systemCategoryNameList = systemCategoryNameList
+        if (item.languageId === languageId.value) {
+          categoryNames.value = item.categoryNameList
+          systemCategoryNames.value = item.systemCategoryNameList
+        }
+        if (!item.productDetailListResultDo) {
+          return
+        }
+        if (item.productDetailListResultDo.customs) {
+          const customData = JSON.parse(item.productDetailListResultDo.customs)
+          if (customData && customData.length) {
+            item.productDetailListResultDo.customList = customData
+          }
+        } else {
+          item.productDetailListResultDo.customList = []
+        }
+      })
+    }
   })
 }
 
@@ -392,8 +437,6 @@ const showProductPayload = reactive<ShowProductParams>({
   id,
   languageId: selectLanguage.value.id,
 })
-
-const categoryNames = ref<string[]>([])
 
 // 获取数据
 const getProductData = async () => {
@@ -428,6 +471,7 @@ const getProductData = async () => {
           systemCategoryNameList.push(cItem.systemCategoryName)
         })
         item.systemCategoryNameList = systemCategoryNameList
+        systemCategoryNames.value = item.systemCategoryNameList
       }
     })
   }
@@ -513,6 +557,7 @@ const editProductStatus = async () => {
                 :product-detail="item"
                 :language-id="item.languageId"
                 :product-id="id"
+                :system-category-names="systemCategoryNames"
                 @refresh-data="initFormData"
               />
             </div>
