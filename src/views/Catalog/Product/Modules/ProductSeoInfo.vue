@@ -1,22 +1,28 @@
 <script setup lang="ts">
-import { createProductSeoApi, updateProductMetaDescriptionApi, updateProductMetaTitleApi } from '@/api/product'
 import { useLocale } from '@/hooks/useLocale'
-import { usePreferenceStore } from '@/stores/preference'
-import { ElMessage, ElSwitch, ElTableColumn } from 'element-plus'
 
-const { form } = defineProps<{ form: ShowProduct & CommonField }>()
+const { productId, languageId, productDetail } = defineProps<{
+  languageId: string
+  productId: string
+  productDetail: ProductAdminLocalizedViewDo
+}>()
 
 const emit = defineEmits(['resetFormData'])
 
-const id = useRoute().params.id as string
-
-const formData = ref<ShowProduct & CommonField>(form)
+// 创建本地响应式数据用于SEO信息编辑
+const localProductSeo = ref({
+  metaTitle: productDetail.productSeoListResultDo?.metaTitle || '',
+  metaDescription: productDetail.productSeoListResultDo?.metaDescription || '',
+})
 
 watch(
-  () => form,
+  () => productDetail,
   val => {
-    if (val) {
-      formData.value = JSON.parse(JSON.stringify(form))
+    if (val && val.productSeoListResultDo) {
+      localProductSeo.value = {
+        metaTitle: val.productSeoListResultDo.metaTitle || '',
+        metaDescription: val.productSeoListResultDo.metaDescription || '',
+      }
     }
   },
   { deep: true, immediate: true },
@@ -33,8 +39,8 @@ const inputProductMetaTitleVisible = ref(false)
 
 const editProductMetaTitle = async () => {
   const { data } = await updateProductMetaTitleApi({
-    productSeoId: formData.value.productSeoListResultDo.id,
-    metaTitle: formData.value.productSeoListResultDo.metaTitle,
+    productSeoId: productDetail.productSeoListResultDo.id,
+    metaTitle: localProductSeo.value.metaTitle,
   }).catch(error => {
     inputProductMetaTitleVisible.value = false
     loading.init = false
@@ -57,8 +63,8 @@ const inputProductMetaDescriptionVisible = ref(false)
 
 const editProductMetaDescription = async () => {
   const { data } = await updateProductMetaDescriptionApi({
-    productSeoId: formData.value.productSeoListResultDo.id,
-    metaDescription: formData.value.productSeoListResultDo.metaDescription,
+    productSeoId: productDetail.productSeoListResultDo.id,
+    metaDescription: localProductSeo.value.metaDescription,
   }).catch(error => {
     inputProductMetaDescriptionVisible.value = false
     loading.init = false
@@ -82,9 +88,9 @@ const handleClickUpdateProductMetaDescription = () => {
 const createProductMetaTitle = async () => {
   loading.init = true
   const { data } = await createProductSeoApi({
-    productId: id,
-    languageId: usePreferenceStore().preference?.language.id,
-    metaTitle: formData.value.productSeoListResultDo.metaTitle,
+    productId,
+    languageId,
+    metaTitle: localProductSeo.value.metaTitle,
   }).catch(error => {
     loading.init = false
     throw error
@@ -96,7 +102,7 @@ const createProductMetaTitle = async () => {
 </script>
 
 <template>
-  <ElCard v-if="form.productSeoListResultDo" shadow="never" class="mb-5">
+  <ElCard v-if="productDetail.productSeoListResultDo" shadow="never" class="mb-5">
     <div class="w-full mt-0 pt-0">
       <!-- 文章元标题 -->
       <div class="w-full grid grid-cols-12 gap-8 p-4 border-b border-gray-200">
@@ -105,11 +111,11 @@ const createProductMetaTitle = async () => {
         </div>
         <div class="col-span-11 w-full flex items-center">
           <span v-if="!inputProductMetaTitleVisible" class="mr-2">
-            {{ form.productSeoListResultDo.metaTitle }}
+            {{ localProductSeo.metaTitle }}
           </span>
           <span v-else>
             <ElInput
-              v-model="formData.productSeoListResultDo.metaTitle"
+              v-model="localProductSeo.metaTitle"
               style="width: 300px"
               class="mr-2"
               @blur="editProductMetaTitle"
@@ -130,11 +136,11 @@ const createProductMetaTitle = async () => {
         </div>
         <div class="col-span-11 w-full flex items-center">
           <span v-if="!inputProductMetaDescriptionVisible" class="mr-2">
-            {{ form.productSeoListResultDo.metaDescription }}
+            {{ localProductSeo.metaDescription }}
           </span>
           <span v-else>
             <ElInput
-              v-model="formData.productSeoListResultDo.metaDescription"
+              v-model="localProductSeo.metaDescription"
               style="width: 300px"
               class="mr-2"
               @blur="editProductMetaDescription"
@@ -160,7 +166,7 @@ const createProductMetaTitle = async () => {
       <ElAlert :title="$t('product.warning.noSeoData')" type="warning" show-icon />
     </div>
     <div class="flex justify-center items-center mb-5">
-      <ElInput v-model="formData.productSeoListResultDo.metaTitle" :placeholder="$t('product.placeholder.metaTitle')" />
+      <ElInput v-model="localProductSeo.metaTitle" :placeholder="$t('product.placeholder.metaTitle')" />
       <EBtn type="primary" class="ml-5" @click="createProductMetaTitle">
         <Icon icon="ant-design:save-outlined" :size="5" class="mr-1" />
         {{ $t('common.save') }}

@@ -6,7 +6,7 @@ import FileInfo from './Modules/FileInfo.vue'
 import ProductBaseInfo from './Modules/ProductBaseInfo.vue'
 // import Parameter from './Modules/Parameter.vue'
 // import Price from './Modules/Price.vue'
-// import Seo from './Modules/Seo.vue'
+import ProductSeoInfo from './Modules/ProductSeoInfo.vue'
 // import Technology from './Modules/Technology.vue'
 
 const { t: $t } = useLocale()
@@ -556,9 +556,9 @@ const editProductStatus = async () => {
             <ElTabs v-model="activeName" class="demo-tabs" @tab-change="handleChangeTab">
               <ElTabPane :label="$t('product.base')" name="base" />
               <ElTabPane :label="$t('product.file')" name="file" />
-              <!-- <ElTabPane :label="$t('product.seo')" name="seo" />
+              <ElTabPane :label="$t('product.seo')" name="seo" />
               <ElTabPane :label="$t('product.layout')" name="layout" />
-              <ElTabPane :label="$t('product.slug')" name="slug" /> -->
+              <ElTabPane :label="$t('product.slug')" name="slug" />
             </ElTabs>
           </ElTabPane>
         </ElTabs>
@@ -585,9 +585,11 @@ const editProductStatus = async () => {
               />
             </div>
             <div v-show="activeName === 'file'">
-              <FileInfo :language-id="item.languageId" :product-detail="item" :product-data="form" @refresh-data="initFormData" />
+              <FileInfo :language-id="item.languageId" :product-detail="item" :product-id="id" :product-data="form" @refresh-data="initFormData" />
             </div>
-            <div v-show="activeName === 'seo'" />
+            <div v-show="activeName === 'seo'">
+              <ProductSeoInfo :language-id="item.languageId" :product-id="id" :product-detail="item" @refresh-data="initFormData" />
+            </div>
             <div v-show="activeName === 'layout'" />
             <div v-show="activeName === 'slug'" />
           </div>
