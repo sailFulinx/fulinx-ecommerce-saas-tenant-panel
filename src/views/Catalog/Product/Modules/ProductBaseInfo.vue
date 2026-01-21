@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import type { InputInstance } from 'element-plus'
+import type { CascaderNodePathValue, CascaderNodeValue, InputInstance, Table } from 'element-plus'
 import { debounce } from 'lodash-es'
 import Editor from '@/components/common/Editor.vue'
+import { convertCategoryToCascaderOptions, convertSystemCategoryToCascaderOptions, formatTime } from '@/utils'
 import CustomsTable from './CustomsTable.vue'
 
 interface Props {
@@ -10,6 +11,13 @@ interface Props {
   languageId: string
   productId: string
   systemCategoryNames: string[]
+  systemCategoryListData: TableResponse<SystemCategoryData & CommonField>
+  productSourceTypeListData: TableResponse<ProductSourceTypeData>
+  ageGroupTypeListData: TableResponse<AgeGroupTypeData>
+  genderTypeListData: TableResponse<GenderTypeData>
+  conditionTypeListData: TableResponse<ConditionTypeData>
+  brandListData: TableResponse<BrandListData & CommonField>
+  stockStatusListData: TableResponse<ProductStockStatusData>
 }
 
 const props = defineProps<Props>()
@@ -29,34 +37,23 @@ const loading = reactive({
   init: false,
 })
 
-const {
-  loading: productSourceTypeLoading,
-  listData: productSourceTypeListData,
-  promise: productSourceTypePromise,
-} = useProductSourceTypeList()
-
-const { loading: ageGroupLoading, listData: ageGroupTypeListData, promise: ageGroupPromise } = useAgeGroupTypeList()
-
-const { loading: genderLoading, listData: genderTypeListData, promise: genderPromise } = useGenderTypeList()
-
-const { loading: conditionLoading, listData: conditionTypeListData, promise: conditionPromise } = useConditionTypeList()
-
-const { loading: brandLoading, listData: brandListData, promise: brandPromise } = useBrandList()
-
-const {
-  loading: stockStatusLoading,
-  listData: stockStatusListData,
-  promise: stockStatusPromise,
-} = useProductStockStatusList()
-
 // 添加系统分类相关变量
 const inputSystemCategoryVisible = ref<boolean>(false)
-const currentSystemCategoryId = ref<string>('')
-const systemCategoryList = ref<SystemCategoryData[]>([])
+const currentSystemCategoryId = ref<string[]>([])
+const systemCategoryProps = {
+  value: 'id',
+  label: 'systemCategoryName',
+  multiple: false,
+}
+const selectedSystemCategoryValue = ref<string[] | any>(props.productData?.systemCategoryIds || [])
+const deletedSystemCategoryValue = ref<string[] | any>([])
+
+const handleRemoveSystemCategory = (val: CascaderNodeValue | CascaderNodePathValue) => {
+  deletedSystemCategoryValue.value.push(val)
+}
 
 // 系统分类相关方法
-const handleClickUpdateSystemCategory = (systemCategoryId: string) => {
-  currentSystemCategoryId.value = systemCategoryId
+const handleClickUpdateSystemCategory = () => {
   inputSystemCategoryVisible.value = true
 }
 
@@ -64,67 +61,40 @@ const handleCancelUpdateSystemCategory = () => {
   inputSystemCategoryVisible.value = false
 }
 
-const editSystemCategory = async () => {
-  if (!currentSystemCategoryId.value) {
-    ElMessage.warning($t('product.error.systemCategory'))
+const handleConfirmEditSystemCategory = async () => {
+  if (!props.productId || !props.languageId) {
     return
   }
 
+  loading.init = true
+  inputSystemCategoryVisible.value = false
+
+  // 计算需要删除的分类ID
+  const originalIds = [...new Set((props.productData?.systemCategoryIds || []).flat() as string[])]
+  const currentIds = [...new Set(selectedSystemCategoryValue.value.flat() as string[])]
+
+  // 找出被删除的分类（原本有现在没有的）
+  const deletedIds = originalIds.filter(id => !currentIds.includes(id))
+  // 合并通过remove-tag删除的分类
+  const directlyDeletedIds = [...new Set(deletedSystemCategoryValue.value.flat() as string[])]
+  // 合并所有删除的分类
+  const deletedSystemCategoryIds = [...new Set([...deletedIds, ...directlyDeletedIds])]
+  loading.init = false
   await updateProductSystemCategoryApi({
     productId: props.productId,
     languageId: props.languageId,
-    systemCategoryIds: [currentSystemCategoryId.value],
-    deletedSystemCategoryIds: [], // 如果需要删除之前的分类，可以在这里添加
-  }).catch(error => {
+    systemCategoryIds: currentIds,
+    deletedSystemCategoryIds,
+  }).catch((error: any) => {
+    loading.init = false
     throw error
   })
-
-  inputSystemCategoryVisible.value = false
+  selectedSystemCategoryValue.value = []
+  deletedSystemCategoryValue.value = []
+  loading.init = false
   ElMessage.success($t('success.edit'))
   emit('refreshData')
 }
-
-// 使用 watch 监听 props.languageId 的变化
-watch(
-  () => props.languageId,
-  async newLanguageId => {
-    if (!newLanguageId) {
-      return
-    }
-    // 设置初始化加载状态
-    loading.init = true
-    try {
-      // 创建系统分类的 payload
-      const listSystemCategoryPayload = reactive<SystemCategoryListParams>({
-        languageId: newLanguageId,
-        systemCategoryName: null,
-        systemCategoryType: 1, // 1 表示产品类型
-      })
-
-      // 创建系统分类列表的 hook
-      const { listData: systemCategoryListData, promise } = useSystemCategoryList(listSystemCategoryPayload)
-
-      // 并行等待所有数据加载完成
-      await Promise.all([
-        productSourceTypePromise,
-        ageGroupPromise,
-        genderPromise,
-        conditionPromise,
-        promise,
-        brandPromise,
-        stockStatusPromise,
-      ])
-
-      // 将系统分类列表赋值给本地变量
-      systemCategoryList.value = systemCategoryListData.value.list
-    } catch (error) {
-      console.error('加载数据失败:', error)
-    } finally {
-      loading.init = false
-    }
-  },
-  { immediate: true }, // 立即执行一次，相当于 mounted 的效果
-)
 
 // 产品名称相关
 const inputProductNameVisible = ref<boolean>(false)
@@ -576,36 +546,34 @@ const handleCopyProduct = async () => {
         </div>
         <div class="flex-1 w-full flex items-center">
           <span v-if="!inputSystemCategoryVisible" class="mr-2">
-            {{ systemCategoryNames }}
+            <ElTag
+              v-for="(systemCategoryName, index) in systemCategoryNames"
+              :key="index"
+              type="info"
+              class="mr-2 mb-1"
+            >
+              {{ systemCategoryName }}
+            </ElTag>
           </span>
           <span v-else>
-            <ElSelect
+            <ElCascader
               v-model="currentSystemCategoryId"
-              v-loading="loading.init"
               clearable
               filterable
-              placeholder="请选择系统分类"
-              style="width: 300px"
+              :placeholder="`${$t('product.placeholder.systemCategory')}`"
+              :props="systemCategoryProps"
+              :options="convertSystemCategoryToCascaderOptions(systemCategoryListData.list)"
               class="mr-2"
-              @blur="editSystemCategory"
-            >
-              <ElOption
-                v-for="category in systemCategoryList"
-                :key="category.id"
-                :label="category.systemCategoryName"
-                :value="category.id"
-              />
-            </ElSelect>
+              @remove-tag="handleRemoveSystemCategory"
+            />
             <EBtn text @click="handleCancelUpdateSystemCategory">
               <Icon icon="ep:close" :size="5" class="mr-1" />
             </EBtn>
+            <EBtn type="primary" :loading="loading" @click="handleConfirmEditSystemCategory">
+              {{ $t('common.save') }}
+            </EBtn>
           </span>
-          <EBtn
-            v-if="!inputSystemCategoryVisible"
-            type="primary"
-            text
-            @click="handleClickUpdateSystemCategory(productData?.systemCategoryListResultDo?.id || '')"
-          >
+          <EBtn v-if="!inputSystemCategoryVisible" type="primary" text @click="handleClickUpdateSystemCategory">
             <Icon icon="ep:edit" :size="5" class="mr-1" />
           </EBtn>
         </div>
@@ -699,7 +667,6 @@ const handleCopyProduct = async () => {
           <span v-else>
             <ElSelect
               v-model="currentBrandId"
-              v-loading="brandLoading"
               clearable
               filterable
               placeholder="请选择品牌"
@@ -738,7 +705,7 @@ const handleCopyProduct = async () => {
             {{ productData?.stockStatusLabel }}
           </span>
           <span v-else class="flex items-center">
-            <ElRadioGroup v-model="currentStockStatus" :loading="stockStatusLoading" class="mr-2">
+            <ElRadioGroup v-model="currentStockStatus" class="mr-2">
               <ElRadio v-for="item in stockStatusListData.list" :key="item.id" :value="item.id">
                 {{ item.productStockStatusName }}
               </ElRadio>
@@ -772,7 +739,6 @@ const handleCopyProduct = async () => {
           <span v-else class="flex items-center">
             <ElSelect
               v-model="currentProductSourceType"
-              v-loading="productSourceTypeLoading"
               clearable
               filterable
               placeholder="请选择"
@@ -840,7 +806,6 @@ const handleCopyProduct = async () => {
           <span v-else class="flex items-center">
             <ElSelect
               v-model="currentAgeGroupType"
-              v-loading="ageGroupLoading"
               clearable
               filterable
               placeholder="请选择"
@@ -880,7 +845,6 @@ const handleCopyProduct = async () => {
           <span v-else>
             <ElSelect
               v-model="currentGenderType"
-              v-loading="genderLoading"
               clearable
               filterable
               :placeholder="`${$t('product.placeholder.genderType')}`"
@@ -920,7 +884,6 @@ const handleCopyProduct = async () => {
           <span v-else class="flex items-center">
             <ElSelect
               v-model="currentConditionType"
-              v-loading="conditionLoading"
               clearable
               filterable
               placeholder="请选择"

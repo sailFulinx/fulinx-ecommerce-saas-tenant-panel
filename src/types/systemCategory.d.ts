@@ -72,7 +72,7 @@ interface SystemCategoryListParams {
   languageCode?: string
 
   /* SystemCategory  Name */
-  systemCategoryName?: string | null
+  systemCategoryName?: string | undefined
 
   /* Status, 0: Disabled 1: Enabled */
   status?: boolean

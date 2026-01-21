@@ -15,13 +15,59 @@ const id = useRoute().params.id as string
 
 const selectLanguage = ref<LanguageData>(usePreferenceStore().preference?.language)
 
-const languageId = ref('')
+const languageId = ref(selectLanguage.value.id)
 
 const activeName = ref<string>('base')
 
 const loading = reactive({
   init: false,
   list: false,
+})
+
+const listSystemCategoryPayload = reactive<SystemCategoryListParams>({
+  languageId: languageId.value,
+  systemCategoryName: undefined,
+})
+
+const { listData: systemCategoryListData, promise: systemCategoryPromise }
+  = useSystemCategoryList(listSystemCategoryPayload)
+
+const {
+  listData: productSourceTypeListData,
+  promise: productSourceTypePromise,
+} = useProductSourceTypeList()
+
+const { listData: ageGroupTypeListData, promise: ageGroupPromise } = useAgeGroupTypeList()
+
+const { listData: genderTypeListData, promise: genderPromise } = useGenderTypeList()
+
+const { listData: conditionTypeListData, promise: conditionPromise } = useConditionTypeList()
+
+const { listData: brandListData, promise: brandPromise } = useBrandList()
+
+const {
+  listData: stockStatusListData,
+  promise: stockStatusPromise,
+} = useProductStockStatusList()
+
+onMounted(async () => {
+  // 设置初始化加载状态
+  loading.init = true
+  try {
+    // 并行等待所有数据加载完成
+    await Promise.all([
+      productSourceTypePromise,
+      stockStatusPromise,
+      ageGroupPromise,
+      genderPromise,
+      conditionPromise,
+      brandPromise,
+    ])
+  } catch (error) {
+    console.error('加载数据失败:', error)
+  } finally {
+    loading.init = false
+  }
 })
 
 // 创建product请求参数
@@ -491,6 +537,7 @@ watch(
       selectLanguage.value = val
       showProductPayload.languageId = val.id
       languageId.value = val.id
+      await systemCategoryPromise
       await initFormData()
     }
   },
@@ -558,6 +605,13 @@ const editProductStatus = async () => {
                 :language-id="item.languageId"
                 :product-id="id"
                 :system-category-names="systemCategoryNames"
+                :system-category-list-data="systemCategoryListData"
+                :product-source-type-list-data="productSourceTypeListData"
+                :age-group-type-list-data="ageGroupTypeListData"
+                :gender-type-list-data="genderTypeListData"
+                :condition-type-list-data="conditionTypeListData"
+                :brand-list-data="brandListData"
+                :stock-status-list-data="stockStatusListData"
                 @refresh-data="initFormData"
               />
             </div>

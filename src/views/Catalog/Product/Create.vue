@@ -4,7 +4,7 @@ import { datePickerShortcuts } from '@/data/date'
 import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
 import { useTagsViewStore } from '@/stores/tagsView'
-import { formatTime } from '@/utils'
+import { convertCategoryToCascaderOptions, convertSystemCategoryToCascaderOptions, formatTime } from '@/utils'
 import AttributeForm from './Modules/AttributeForm.vue'
 import CreateBrandDialog from './Modules/CreateBrandDialog.vue'
 import ParameterForm from './Modules/ParameterForm.vue'
@@ -73,7 +73,7 @@ const languageId = usePreferenceStore().preference.language.id
 // 系统分类
 const listSystemCategoryPayload = reactive<SystemCategoryListParams>({
   languageId,
-  systemCategoryName: null,
+  systemCategoryName: undefined,
 })
 
 const systemCategoryProps = {
@@ -135,26 +135,6 @@ const {
   listData: listCategoryData,
   promise: categoryPromise,
 } = useCategoryList(listCategoryPayload)
-
-// 类型转换函数，将 SystemCategoryData[] 转换为 CascaderOption[] 兼容格式
-const convertSystemCategoryToCascaderOptions = (categories: SystemCategoryData[]): any[] => {
-  return categories.map(category => ({
-    ...category,
-    value: category.id,
-    label: category.systemCategoryName,
-    children: category.children ? convertSystemCategoryToCascaderOptions(category.children) : undefined,
-  }))
-}
-
-// 类型转换函数，将 CategoryData[] 转换为 CascaderOption[] 兼容格式
-const convertCategoryToCascaderOptions = (categories: CategoryData[]): any[] => {
-  return categories.map(category => ({
-    ...category,
-    value: category.id,
-    label: category.categoryName,
-    children: category.children ? convertCategoryToCascaderOptions(category.children) : undefined,
-  }))
-}
 
 onMounted(async () => {
   // 设置初始化加载状态

@@ -214,3 +214,23 @@ export function validateTimes(startTime: string, endTime: string, limitDay: numb
 }
 
 export { cartesianProduct, cartesianProductToString }
+
+// 类型转换函数，将 SystemCategoryData[] 转换为 CascaderOption[] 兼容格式
+export const convertSystemCategoryToCascaderOptions = (categories: SystemCategoryData[]): any[] => {
+  return categories.map(category => ({
+    ...category,
+    value: category.id,
+    label: category.systemCategoryName,
+    children: category.children ? convertSystemCategoryToCascaderOptions(category.children) : undefined,
+  }))
+}
+
+// 类型转换函数，将 CategoryData[] 转换为 CascaderOption[] 兼容格式
+export const convertCategoryToCascaderOptions = (categories: CategoryData[]): any[] => {
+  return categories.map(category => ({
+    ...category,
+    value: category.id,
+    label: category.categoryName,
+    children: category.children ? convertCategoryToCascaderOptions(category.children) : undefined,
+  }))
+}
