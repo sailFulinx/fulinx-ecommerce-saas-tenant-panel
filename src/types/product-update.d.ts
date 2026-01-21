@@ -154,11 +154,11 @@ interface UpdateProductParameterParams {
     parameterValueContent?: string
 
     /* Sort */
-    sort: Record<string, unknown>
+    sort: number
   }[]
 
   /* Deleted Product Parameter Relation Ids */
-  deletedProductParameterRelationIds?: Record<string, unknown>[]
+  deletedProductParameterRelationIds: string[]
 
   /* Parameter GroupId */
   parameterGroupId?: string

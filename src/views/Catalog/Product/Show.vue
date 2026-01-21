@@ -5,8 +5,8 @@ import { usePreferenceStore } from '@/stores/preference'
 import FileInfo from './Modules/FileInfo.vue'
 import ProductBaseInfo from './Modules/ProductBaseInfo.vue'
 import ProductLayoutInfo from './Modules/ProductLayoutInfo.vue'
+import ProductParameter from './Modules/ProductParameter.vue'
 import ProductSeoInfo from './Modules/ProductSeoInfo.vue'
-// import Parameter from './Modules/Parameter.vue'
 import ProductSlugInfo from './Modules/ProductSlugInfo.vue'
 
 const { t: $t } = useLocale()
@@ -559,6 +559,8 @@ const editProductStatus = async () => {
             <ElTabs v-model="activeName" class="demo-tabs" @tab-change="handleChangeTab">
               <ElTabPane :label="$t('product.base')" name="base" />
               <ElTabPane :label="$t('product.file')" name="file" />
+              <ElTabPane :label="$t('product.parameter')" name="parameter" />
+              <ElTabPane :label="$t('product.attribute')" name="attribute" />
               <ElTabPane :label="$t('product.seo')" name="seo" />
               <ElTabPane :label="$t('product.layout')" name="layout" />
               <ElTabPane :label="$t('product.slug')" name="slug" />
@@ -589,6 +591,12 @@ const editProductStatus = async () => {
             </div>
             <div v-show="activeName === 'file'">
               <FileInfo :language-id="item.languageId" :product-detail="item" :product-id="id" :product-data="form" @refresh-data="initFormData" />
+            </div>
+            <div v-show="activeName === 'parameter'">
+              <ProductParameter :language-id="item.languageId" :product-detail="item" :product-id="id" :product-data="form" @refresh-data="initFormData" />
+            </div>
+            <div v-show="activeName === 'attribute'">
+              <!-- <ProductParameter :language-id="item.languageId" :product-detail="item" :product-id="id" :product-data="form" @refresh-data="initFormData" /> -->
             </div>
             <div v-show="activeName === 'seo'">
               <ProductSeoInfo :language-id="item.languageId" :product-id="id" :product-detail="item" @refresh-data="initFormData" />
