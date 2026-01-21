@@ -1615,7 +1615,7 @@ interface ShowProduct {
   spu: string
 
   /* Product Type: 1-physical,2-Virtual */
-  productType: number
+  productType: number | null
 
   productTypeLabel: string
 
@@ -1636,7 +1636,7 @@ interface ShowProduct {
   /* Is Top */
   isTop: boolean
 
-  stockStatus: number
+  stockStatus: number | null
 
   stockStatusLabel: string
 
@@ -1644,12 +1644,12 @@ interface ShowProduct {
   status: boolean
 
   /* System Status: 0-Draft, 1-Pending Review, 2-Approved, 3-Active, 4-Inactive, 5-Rejected, 6-Suspended, 7-Archived */
-  systemStatus: number
+  systemStatus: number | null
 
   systemStatusLabel: string
 
   /* Product Source Type, 1-own, 2-oem, 3-agency, 4-drop, 5-other */
-  productSourceType: number
+  productSourceType: number | null
 
   productSourceTypeLabel: string
 
@@ -1657,17 +1657,17 @@ interface ShowProduct {
   isAdult: boolean
 
   /* Age Group Type, 1-newborn,2-infant,3-toddler,4-kids,5-adult */
-  ageGroupType: number
+  ageGroupType: number | null
 
   ageGroupTypeLabel: string
 
   /* Gender Type, 1-male,2-female,3-unisex */
-  genderType: number
+  genderType: number | null
 
   genderTypeLabel: string
 
   /* Condition Type, 1-new,2-refurbished,3-used */
-  conditionType: number
+  conditionType: number | null
 
   conditionTypeLabel: string
 

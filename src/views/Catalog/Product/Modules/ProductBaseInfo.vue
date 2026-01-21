@@ -35,6 +35,7 @@ const { t: $t } = useLocale()
 
 const loading = reactive({
   init: false,
+  button: false,
 })
 
 // 添加系统分类相关变量
@@ -54,7 +55,6 @@ const handleRemoveSystemCategory = (val: CascaderNodeValue | CascaderNodePathVal
 // 系统分类相关方法
 const handleClickUpdateSystemCategory = () => {
   selectedSystemCategoryValue.value = props.productData?.systemCategoryIds || []
-  console.log(selectedSystemCategoryValue.value)
   inputSystemCategoryVisible.value = true
 }
 
@@ -67,7 +67,7 @@ const handleConfirmEditSystemCategory = async () => {
     return
   }
 
-  loading.init = true
+  loading.button = true
   inputSystemCategoryVisible.value = false
 
   // 计算需要删除的分类ID
@@ -80,19 +80,19 @@ const handleConfirmEditSystemCategory = async () => {
   const directlyDeletedIds = [...new Set(deletedSystemCategoryValue.value.flat() as string[])]
   // 合并所有删除的分类
   const deletedSystemCategoryIds = [...new Set([...deletedIds, ...directlyDeletedIds])]
-  loading.init = false
+  loading.button = false
   await updateProductSystemCategoryApi({
     productId: props.productId,
     languageId: props.languageId,
     systemCategoryIds: currentIds,
     deletedSystemCategoryIds,
   }).catch((error: any) => {
-    loading.init = false
+    loading.button = false
     throw error
   })
   selectedSystemCategoryValue.value = []
   deletedSystemCategoryValue.value = []
-  loading.init = false
+  loading.button = false
   ElMessage.success($t('success.edit'))
   emit('refreshData')
 }
@@ -110,11 +110,11 @@ const currentBrandId = ref<string>('')
 
 // 库存状态相关
 const inputStockStatusVisible = ref<boolean>(false)
-const currentStockStatus = ref<number>(1)
+const currentStockStatus = ref()
 
 // 产品来源类型相关
 const inputProductSourceTypeVisible = ref<boolean>(false)
-const currentProductSourceType = ref<number>(0)
+const currentProductSourceType = ref()
 
 // 成人用品相关
 const inputIsAdultVisible = ref<boolean>(false)
@@ -122,15 +122,15 @@ const currentIsAdult = ref<boolean>(false)
 
 // 年龄组类型相关
 const inputAgeGroupTypeVisible = ref<boolean>(false)
-const currentAgeGroupType = ref<number>(0)
+const currentAgeGroupType = ref()
 
 // 性别类型相关
 const inputGenderTypeVisible = ref<boolean>(false)
-const currentGenderType = ref<number>(0)
+const currentGenderType = ref()
 
 // 条件类型相关
 const inputConditionTypeVisible = ref<boolean>(false)
-const currentConditionType = ref<number>(0)
+const currentConditionType = ref()
 
 const handleClickUpdateProductName = (productName: string) => {
   currentProductName.value = productName
@@ -210,8 +210,10 @@ const editBrand = async () => {
 }
 
 // 库存状态相关方法
-const handleClickUpdateStockStatus = (stockStatus: number) => {
-  currentStockStatus.value = stockStatus
+const handleClickUpdateStockStatus = () => {
+  if (props.productData?.stockStatus) {
+    currentStockStatus.value = props.productData.stockStatus
+  }
   inputStockStatusVisible.value = true
 }
 
@@ -237,8 +239,10 @@ const editStockStatus = async () => {
 }
 
 // 产品来源类型相关方法
-const handleClickUpdateProductSourceType = (productSourceType: number) => {
-  currentProductSourceType.value = productSourceType
+const handleClickUpdateProductSourceType = () => {
+  if (props.productData?.productSourceType) {
+    currentProductSourceType.value = props.productData.productSourceType
+  }
   inputProductSourceTypeVisible.value = true
 }
 
@@ -287,8 +291,10 @@ const editIsAdult = async () => {
 }
 
 // 年龄组类型相关方法
-const handleClickUpdateAgeGroupType = (ageGroupType: number) => {
-  currentAgeGroupType.value = ageGroupType
+const handleClickUpdateAgeGroupType = () => {
+  if (props.productData?.ageGroupType) {
+    currentAgeGroupType.value = props.productData?.ageGroupType
+  }
   inputAgeGroupTypeVisible.value = true
 }
 
@@ -314,8 +320,10 @@ const editAgeGroupType = async () => {
 }
 
 // 性别类型相关方法
-const handleClickUpdateGenderType = (genderType: number) => {
-  currentGenderType.value = genderType
+const handleClickUpdateGenderType = () => {
+  if (props.productData?.genderType) {
+    currentGenderType.value = props.productData?.genderType
+  }
   inputGenderTypeVisible.value = true
 }
 
@@ -341,8 +349,10 @@ const editGenderType = async () => {
 }
 
 // 条件类型相关方法
-const handleClickUpdateConditionType = (conditionType: number) => {
-  currentConditionType.value = conditionType
+const handleClickUpdateConditionType = () => {
+  if (props.productData?.conditionType) {
+    currentConditionType.value = props.productData?.conditionType
+  }
   inputConditionTypeVisible.value = true
 }
 
@@ -564,13 +574,13 @@ const handleCopyProduct = async () => {
               :placeholder="`${$t('product.placeholder.systemCategory')}`"
               :props="systemCategoryProps"
               :options="convertSystemCategoryToCascaderOptions(systemCategoryListData.list)"
-              class="mr-2"
+              class="mr-2 min-w-[300px]"
               @remove-tag="handleRemoveSystemCategory"
             />
             <EBtn text @click="handleCancelUpdateSystemCategory">
               <Icon icon="ep:close" :size="5" class="mr-1" />
             </EBtn>
-            <EBtn type="primary" :loading="loading" @click="handleConfirmEditSystemCategory">
+            <EBtn type="primary" :loading="loading.button" @click="handleConfirmEditSystemCategory">
               {{ $t('common.save') }}
             </EBtn>
           </span>
@@ -722,7 +732,7 @@ const handleCopyProduct = async () => {
             v-if="!inputStockStatusVisible"
             type="primary"
             text
-            @click="handleClickUpdateStockStatus(productData?.stockStatus || 1)"
+            @click="handleClickUpdateStockStatus"
           >
             <Icon icon="ep:edit" :size="5" class="mr-1" />
           </EBtn>
@@ -757,12 +767,7 @@ const handleCopyProduct = async () => {
               <Icon icon="ep:close" :size="5" class="mr-1" />
             </EBtn>
           </span>
-          <EBtn
-            v-if="!inputProductSourceTypeVisible"
-            type="primary"
-            text
-            @click="handleClickUpdateProductSourceType(productData?.productSourceType || 0)"
-          >
+          <EBtn v-if="!inputProductSourceTypeVisible" type="primary" text @click="handleClickUpdateProductSourceType">
             <Icon icon="ep:edit" :size="5" class="mr-1" />
           </EBtn>
         </div>
@@ -824,12 +829,7 @@ const handleCopyProduct = async () => {
               <Icon icon="ep:close" :size="5" class="mr-1" />
             </EBtn>
           </span>
-          <EBtn
-            v-if="!inputAgeGroupTypeVisible"
-            type="primary"
-            text
-            @click="handleClickUpdateAgeGroupType(productData?.ageGroupType || 0)"
-          >
+          <EBtn v-if="!inputAgeGroupTypeVisible" type="primary" text @click="handleClickUpdateAgeGroupType">
             <Icon icon="ep:edit" :size="5" class="mr-1" />
           </EBtn>
         </div>
@@ -843,12 +843,13 @@ const handleCopyProduct = async () => {
           <span v-if="!inputGenderTypeVisible" class="mr-2">
             {{ productData?.genderTypeLabel }}
           </span>
-          <span v-else>
+          <span v-else class="flex items-center">
             <ElSelect
               v-model="currentGenderType"
               clearable
               filterable
               :placeholder="`${$t('product.placeholder.genderType')}`"
+              class="mr-2 min-w-[200px]"
               @blur="editGenderType"
             >
               <ElOption
@@ -863,12 +864,7 @@ const handleCopyProduct = async () => {
               <Icon icon="ep:close" :size="5" class="mr-1" />
             </EBtn>
           </span>
-          <EBtn
-            v-if="!inputGenderTypeVisible"
-            type="primary"
-            text
-            @click="handleClickUpdateGenderType(productData?.genderType || 0)"
-          >
+          <EBtn v-if="!inputGenderTypeVisible" type="primary" text @click="handleClickUpdateGenderType">
             <Icon icon="ep:edit" :size="5" class="mr-1" />
           </EBtn>
         </div>
@@ -902,12 +898,7 @@ const handleCopyProduct = async () => {
               <Icon icon="ep:close" :size="5" class="mr-1" />
             </EBtn>
           </span>
-          <EBtn
-            v-if="!inputConditionTypeVisible"
-            type="primary"
-            text
-            @click="handleClickUpdateConditionType(productData?.conditionType || 0)"
-          >
+          <EBtn v-if="!inputConditionTypeVisible" type="primary" text @click="handleClickUpdateConditionType">
             <Icon icon="ep:edit" :size="5" class="mr-1" />
           </EBtn>
         </div>
