@@ -133,10 +133,12 @@ const handleSave = async () => {
         </div>
       </div>
     </template>
-    <div class="w-full mt-5">
+    <div class="w-full mt-5 flex">
+      <div>图片：</div>
       <UploadImage ref="imageUploadRef" @remove-file="handleRemoveImage" />
     </div>
-    <div class="w-full mt-5">
+    <div class="w-full mt-5 flex">
+      <div>视频：</div>
       <UploadVideo ref="videoUploadRef" />
     </div>
   </ElCard>
