@@ -112,6 +112,7 @@ declare global {
   const createProductNameApi: typeof import('../api/product-create').createProductNameApi
   const createProductSeoApi: typeof import('../api/product-create').createProductSeoApi
   const createProductSkuApi: typeof import('../api/product-create').createProductSkuApi
+  const createProductSlugApi: typeof import('../api/product-create').createProductSlugApi
   const createProductSupplierApi: typeof import('../api/product-create').createProductSupplierApi
   const createProductTagApi: typeof import('../api/product-create').createProductTagApi
   const createReactiveFn: typeof import('@vueuse/core').createReactiveFn

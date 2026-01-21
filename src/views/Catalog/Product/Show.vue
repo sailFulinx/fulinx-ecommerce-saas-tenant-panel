@@ -5,9 +5,9 @@ import { usePreferenceStore } from '@/stores/preference'
 import FileInfo from './Modules/FileInfo.vue'
 import ProductBaseInfo from './Modules/ProductBaseInfo.vue'
 import ProductLayoutInfo from './Modules/ProductLayoutInfo.vue'
-// import Parameter from './Modules/Parameter.vue'
-// import Price from './Modules/Price.vue'
 import ProductSeoInfo from './Modules/ProductSeoInfo.vue'
+// import Parameter from './Modules/Parameter.vue'
+import ProductSlugInfo from './Modules/ProductSlugInfo.vue'
 
 const { t: $t } = useLocale()
 
@@ -596,7 +596,9 @@ const editProductStatus = async () => {
             <div v-show="activeName === 'layout'">
               <ProductLayoutInfo :product-data="form" :layout-type-list="layoutTypeListData.list" :language-id="item.languageId" :product-id="id" :product-detail="item" @refresh-data="initFormData" />
             </div>
-            <div v-show="activeName === 'slug'" />
+            <div v-show="activeName === 'slug'">
+              <ProductSlugInfo :product-data="form" :slug="form.slug" :slug-id="form.slugId" :language-id="item.languageId" :product-id="id" :product-detail="item" @refresh-data="initFormData" />
+            </div>
           </div>
         </div>
       </div>

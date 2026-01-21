@@ -286,3 +286,15 @@ interface CreateProductTagParams {
   /* Tag Name */
   tagName: string
 }
+
+interface CreateProductSlugParams {
+  /* Product ID */
+  productId: string
+
+  /* Language ID */
+  languageId: string
+
+  /* Slug */
+  slug: string
+
+}

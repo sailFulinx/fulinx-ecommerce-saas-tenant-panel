@@ -79,3 +79,11 @@ export function createProductTagApi(
     token: true,
   })
 }
+
+export function createProductSlugApi(params: CreateProductSlugParams): Promise<IResponse<ShowProduct & CommonField>> {
+  return request.post({
+    url: 'system/product/create/product/slug',
+    data: params,
+    token: true,
+  })
+}
