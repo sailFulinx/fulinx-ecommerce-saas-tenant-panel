@@ -443,6 +443,8 @@ const resetFormData = async (val: ShowProduct) => {
               categoryNameList.push(cItem.categoryName)
             }
           })
+        }
+        if (item.productSystemCategoryRelationListResultDos && item.productSystemCategoryRelationListResultDos.length > 0) {
           item.productSystemCategoryRelationListResultDos.forEach(cItem => {
             if (item.languageId === languageId.value) {
               systemCategoryNameList.push(cItem.systemCategoryName)
@@ -491,36 +493,6 @@ const getProductData = async () => {
     loading.init = false
     throw error
   })
-
-  const categoryNameList: string[] = []
-  const systemCategoryNameList: string[] = []
-  if (data.productAdminLocalizedViewDos && data.productAdminLocalizedViewDos.length > 0) {
-    data.productAdminLocalizedViewDos.forEach((item: ProductAdminLocalizedViewDo) => {
-      if (
-        item.languageId === languageId.value
-        && item.productCategoryRelationListResultDos
-        && item.productCategoryRelationListResultDos.length > 0
-      ) {
-        item.productCategoryRelationListResultDos.forEach(cItem => {
-          categoryNameList.push(cItem.categoryName)
-        })
-        item.categoryNameList = categoryNameList
-        categoryNames.value = item.categoryNameList
-      }
-
-      if (
-        item.languageId === languageId.value
-        && item.productSystemCategoryRelationListResultDos
-        && item.productSystemCategoryRelationListResultDos.length > 0
-      ) {
-        item.productSystemCategoryRelationListResultDos.forEach(cItem => {
-          systemCategoryNameList.push(cItem.systemCategoryName)
-        })
-        item.systemCategoryNameList = systemCategoryNameList
-        systemCategoryNames.value = item.systemCategoryNameList
-      }
-    })
-  }
   loading.init = false
   return data
 }

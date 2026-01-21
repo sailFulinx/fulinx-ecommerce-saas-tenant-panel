@@ -427,7 +427,7 @@ interface CreateProductParams {
   conditionType?: number | undefined
 
   /* System Category ID */
-  systemCategoryId?: string | undefined
+  systemCategoryIds: string[]
 
   /* Product Name */
   productName: string

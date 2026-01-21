@@ -6,7 +6,7 @@ import { convertCategoryToCascaderOptions, convertSystemCategoryToCascaderOption
 import CustomsTable from './CustomsTable.vue'
 
 interface Props {
-  productData?: ShowProduct
+  productData?: ShowProduct & CommonField
   productDetail?: ProductAdminLocalizedViewDo
   languageId: string
   productId: string
@@ -39,7 +39,6 @@ const loading = reactive({
 
 // 添加系统分类相关变量
 const inputSystemCategoryVisible = ref<boolean>(false)
-const currentSystemCategoryId = ref<string[]>([])
 const systemCategoryProps = {
   value: 'id',
   label: 'systemCategoryName',
@@ -54,6 +53,8 @@ const handleRemoveSystemCategory = (val: CascaderNodeValue | CascaderNodePathVal
 
 // 系统分类相关方法
 const handleClickUpdateSystemCategory = () => {
+  selectedSystemCategoryValue.value = props.productData?.systemCategoryIds || []
+  console.log(selectedSystemCategoryValue.value)
   inputSystemCategoryVisible.value = true
 }
 
@@ -557,7 +558,7 @@ const handleCopyProduct = async () => {
           </span>
           <span v-else>
             <ElCascader
-              v-model="currentSystemCategoryId"
+              v-model="selectedSystemCategoryValue"
               clearable
               filterable
               :placeholder="`${$t('product.placeholder.systemCategory')}`"

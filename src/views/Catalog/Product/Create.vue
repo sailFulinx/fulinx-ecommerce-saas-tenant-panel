@@ -37,7 +37,7 @@ const handleUpdateActiveHref = (href: string) => {
 
 const rules = reactive({
   languageId: [{ required: true, message: $t('common.placeholder.language'), trigger: 'change' }],
-  systemCategoryId: [{ required: true, message: $t('product.placeholder.systemCategory'), trigger: 'change' }],
+  systemCategoryIds: [{ required: true, message: $t('product.placeholder.systemCategory'), trigger: 'change' }],
   productName: [{ required: true, message: $t('product.placeholder.productName'), trigger: 'blur' }],
   productType: [{ required: true, message: $t('product.placeholder.productType'), trigger: 'change' }],
 })
@@ -71,6 +71,7 @@ const { loading: brandLoading, listData: brandListData, promise: brandPromise, g
 const languageId = usePreferenceStore().preference.language.id
 
 // 系统分类
+
 const listSystemCategoryPayload = reactive<SystemCategoryListParams>({
   languageId,
   systemCategoryName: undefined,
@@ -190,7 +191,7 @@ const createProductForm = (): CreateProductParams => {
     ageGroupType: undefined,
     genderType: undefined,
     conditionType: undefined,
-    systemCategoryId: '',
+    systemCategoryIds: [],
     productName: '',
     productShortName: '',
     productDescription: '',
@@ -232,11 +233,7 @@ const deleteTagView = (refresh: boolean) => {
 
 const save = async () => {
   loading.init = true
-  console.log(productForm.systemCategoryId)
-  if (productForm.systemCategoryId && productForm.systemCategoryId?.length > 0) {
-    productForm.systemCategoryId = productForm.systemCategoryId.at(-1)
-  }
-  console.log(productForm.systemCategoryId)
+  productForm.systemCategoryIds = [...new Set(productForm.systemCategoryIds.flat() as string[])]
   productForm.productParameterRelationRequestDos = []
   productForm.languageId = languageId
   const attributeForm = attributeFormRef.value.getData()
@@ -356,12 +353,12 @@ provide('ProductCreate', { productForm })
                 </div>
                 <div class="w-full">
                   <!-- 系统分类 -->
-                  <ElFormItem :label="$t('product.systemCategory')" prop="systemCategoryId">
+                  <ElFormItem :label="$t('product.systemCategory')" prop="systemCategoryIds">
                     <div class="w-full fs-14px text-gray">
                       选择一个恰当的系统分类，将会让产品的流量得到提升
                     </div>
                     <ElCascader
-                      v-model="productForm.systemCategoryId"
+                      v-model="productForm.systemCategoryIds"
                       clearable
                       filterable
                       :placeholder="`${$t('product.placeholder.systemCategory')}`"
