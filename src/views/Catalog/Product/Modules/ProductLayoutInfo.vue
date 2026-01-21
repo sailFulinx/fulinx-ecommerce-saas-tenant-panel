@@ -1,7 +1,8 @@
 ProductLayoutInfo.vue
 <script setup lang="ts">
 interface Props {
-  productDetail?: ProductDetailListResultDo & CommonField
+  productData?: ShowProduct & CommonField
+  productDetail: ProductAdminLocalizedViewDo
   productId: string
   languageId: string
   layoutTypeList: any[]
@@ -38,8 +39,8 @@ const toggleFullScreen = () => {
 const handleEditProductLayout = async () => {
   isShowLayoutEdit.value = true
   await nextTick()
-  if (props && props.productDetail?.layoutContent && simplifiedComponentLayoutRef.value) {
-    rows.value = JSON.parse(props.productDetail.layoutContent)
+  if (props && props.productDetail?.productDetailListResultDo.layoutContent && simplifiedComponentLayoutRef.value) {
+    rows.value = JSON.parse(props.productDetail?.productDetailListResultDo.layoutContent)
     simplifiedComponentLayoutRef.value.setData(rows.value)
   }
 
@@ -49,19 +50,19 @@ const handleEditProductLayout = async () => {
 watch(
   () => props.productDetail,
   () => {
-    if (props.productDetail?.layoutType) {
-      currentLayoutType.value = props.productDetail.layoutType
+    if (props.productDetail?.productDetailListResultDo?.layoutType) {
+      currentLayoutType.value = props.productDetail?.productDetailListResultDo.layoutType
       isShowLayoutEdit.value = true
     }
-    if (props.productDetail?.devComponentName) {
-      devComponentName.value = props.productDetail.devComponentName
+    if (props.productDetail?.productDetailListResultDo?.devComponentName) {
+      devComponentName.value = props.productDetail?.productDetailListResultDo.devComponentName
     }
     if (
-      props.productDetail?.layoutType === 3
-      && props.productDetail?.layoutContent
+      props.productDetail?.productDetailListResultDo?.layoutType === 3
+      && props.productDetail?.productDetailListResultDo?.layoutContent
       && simplifiedComponentLayoutRef.value
     ) {
-      rows.value = JSON.parse(props.productDetail?.layoutContent)
+      rows.value = JSON.parse(props.productDetail?.productDetailListResultDo?.layoutContent)
       simplifiedComponentLayoutRef.value.setData(rows.value)
     }
   },
@@ -76,7 +77,7 @@ const handleSubmitProductLayout = async () => {
     rows.value = simplifiedComponentLayoutRef.value.getData()
   }
   const payload = {
-    productDetailId: props.productDetail.id,
+    productDetailId: props.productDetail?.productDetailListResultDo.id,
     languageId: props.languageId,
     layoutType: currentLayoutType.value,
     devComponentName: devComponentName.value,
@@ -108,7 +109,7 @@ const handleCancel = () => {
           <div v-if="!isShowLayoutEdit">
             <div class="flex justify-start items-center">
               <span class="mr-2">
-                {{ productDetail?.layoutTypeLabel }}
+                {{ productDetail?.productDetailListResultDo?.layoutTypeLabel }}
               </span>
               <span>
                 <EBtn type="primary" text @click="handleEditProductLayout">

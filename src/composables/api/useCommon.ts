@@ -53,3 +53,8 @@ export const useWeightUnitList = (payload?: Partial<CommonEnumListParams>, optio
 export const useLengthUnitList = (payload?: Partial<CommonEnumListParams>, options: UseCommonOptions = {}) => {
   return useList<CommonEnumData, CommonEnumListParams>(fetchLengthUnitListApi, payload, options)
 }
+
+// 布局类型列表
+export const useLayoutTypeList = (payload?: Partial<ListLayoutTypeParams>, options: UseCommonOptions = {}) => {
+  return useList<LayoutTypeData, ListLayoutTypeParams>(fetchLayoutTypeListApi, payload, options)
+}

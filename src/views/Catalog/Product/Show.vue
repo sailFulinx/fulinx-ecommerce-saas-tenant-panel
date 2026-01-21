@@ -4,10 +4,10 @@ import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
 import FileInfo from './Modules/FileInfo.vue'
 import ProductBaseInfo from './Modules/ProductBaseInfo.vue'
+import ProductLayoutInfo from './Modules/ProductLayoutInfo.vue'
 // import Parameter from './Modules/Parameter.vue'
 // import Price from './Modules/Price.vue'
 import ProductSeoInfo from './Modules/ProductSeoInfo.vue'
-// import Technology from './Modules/Technology.vue'
 
 const { t: $t } = useLocale()
 
@@ -44,6 +44,8 @@ const { listData: brandListData, promise: brandPromise } = useBrandList()
 
 const { listData: stockStatusListData, promise: stockStatusPromise } = useProductStockStatusList()
 
+const { listData: layoutTypeListData, promise: layoutPromise } = useLayoutTypeList()
+
 onMounted(async () => {
   // 设置初始化加载状态
   loading.init = true
@@ -56,6 +58,7 @@ onMounted(async () => {
       genderPromise,
       conditionPromise,
       brandPromise,
+      layoutPromise,
     ])
   } catch (error) {
     console.error('加载数据失败:', error)
@@ -590,7 +593,9 @@ const editProductStatus = async () => {
             <div v-show="activeName === 'seo'">
               <ProductSeoInfo :language-id="item.languageId" :product-id="id" :product-detail="item" @refresh-data="initFormData" />
             </div>
-            <div v-show="activeName === 'layout'" />
+            <div v-show="activeName === 'layout'">
+              <ProductLayoutInfo :product-data="form" :layout-type-list="layoutTypeListData.list" :language-id="item.languageId" :product-id="id" :product-detail="item" @refresh-data="initFormData" />
+            </div>
             <div v-show="activeName === 'slug'" />
           </div>
         </div>
