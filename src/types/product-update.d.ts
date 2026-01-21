@@ -69,7 +69,7 @@ interface UpdateProductFileParams {
     languageId: string
 
     /* Product File Type, 1-Image, 2-Video, 3-Pdf */
-    productFileType: Record<string, unknown>
+    productFileType: number
 
     /* File ID */
     fileId: string
@@ -78,11 +78,11 @@ interface UpdateProductFileParams {
     isDefault: boolean
 
     /* Sort */
-    sort?: Record<string, unknown>
+    sort?: number
   }[]
 
   /* Product File Deleted IDs */
-  productFileDeletedIds?: Record<string, unknown>[]
+  productFileDeletedIds: string[]
 }
 
 interface UpdateProductGenderTypeParams {

@@ -2,8 +2,8 @@
 import type { InputInstance, TabPaneName } from 'element-plus'
 import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
+import FileInfo from './Modules/FileInfo.vue'
 import ProductBaseInfo from './Modules/ProductBaseInfo.vue'
-// import Image from './Modules/Image.vue'
 // import Parameter from './Modules/Parameter.vue'
 // import Price from './Modules/Price.vue'
 // import Seo from './Modules/Seo.vue'
@@ -32,10 +32,7 @@ const listSystemCategoryPayload = reactive<SystemCategoryListParams>({
 const { listData: systemCategoryListData, promise: systemCategoryPromise }
   = useSystemCategoryList(listSystemCategoryPayload)
 
-const {
-  listData: productSourceTypeListData,
-  promise: productSourceTypePromise,
-} = useProductSourceTypeList()
+const { listData: productSourceTypeListData, promise: productSourceTypePromise } = useProductSourceTypeList()
 
 const { listData: ageGroupTypeListData, promise: ageGroupPromise } = useAgeGroupTypeList()
 
@@ -45,10 +42,7 @@ const { listData: conditionTypeListData, promise: conditionPromise } = useCondit
 
 const { listData: brandListData, promise: brandPromise } = useBrandList()
 
-const {
-  listData: stockStatusListData,
-  promise: stockStatusPromise,
-} = useProductStockStatusList()
+const { listData: stockStatusListData, promise: stockStatusPromise } = useProductStockStatusList()
 
 onMounted(async () => {
   // 设置初始化加载状态
@@ -444,7 +438,10 @@ const resetFormData = async (val: ShowProduct) => {
             }
           })
         }
-        if (item.productSystemCategoryRelationListResultDos && item.productSystemCategoryRelationListResultDos.length > 0) {
+        if (
+          item.productSystemCategoryRelationListResultDos
+          && item.productSystemCategoryRelationListResultDos.length > 0
+        ) {
           item.productSystemCategoryRelationListResultDos.forEach(cItem => {
             if (item.languageId === languageId.value) {
               systemCategoryNameList.push(cItem.systemCategoryName)
@@ -558,8 +555,8 @@ const editProductStatus = async () => {
           >
             <ElTabs v-model="activeName" class="demo-tabs" @tab-change="handleChangeTab">
               <ElTabPane :label="$t('product.base')" name="base" />
-              <!-- <ElTabPane :label="$t('product.category')" name="category" />
-              <ElTabPane :label="$t('product.seo')" name="seo" />
+              <ElTabPane :label="$t('product.file')" name="file" />
+              <!-- <ElTabPane :label="$t('product.seo')" name="seo" />
               <ElTabPane :label="$t('product.layout')" name="layout" />
               <ElTabPane :label="$t('product.slug')" name="slug" /> -->
             </ElTabs>
@@ -587,7 +584,9 @@ const editProductStatus = async () => {
                 @refresh-data="initFormData"
               />
             </div>
-            <div v-show="activeName === 'category'" />
+            <div v-show="activeName === 'file'">
+              <FileInfo :language-id="item.languageId" :product-detail="item" :product-data="form" @refresh-data="initFormData" />
+            </div>
             <div v-show="activeName === 'seo'" />
             <div v-show="activeName === 'layout'" />
             <div v-show="activeName === 'slug'" />

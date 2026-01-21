@@ -34,6 +34,7 @@ export default {
   unitPrice: '单价',
   salePrice: '促销价格',
   productImage: '主图',
+  file: '图片/视频',
   video: '视频',
   productDescription: '产品描述',
   recordCreateTime: '创建时间',
