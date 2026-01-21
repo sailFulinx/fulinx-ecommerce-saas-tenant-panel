@@ -70,6 +70,18 @@ const { loading: brandLoading, listData: brandListData, promise: brandPromise, g
 
 const languageId = usePreferenceStore().preference.language.id
 
+const parameterPayload = reactive<ParameterListParams>({
+  languageId: usePreferenceStore().preference.language.id,
+  status: true,
+})
+
+const {
+  loading: _parameterLoading,
+  listData: parameterListData,
+  promise: parameterPromise,
+  getList: getParameterList,
+} = useParameterList(parameterPayload)
+
 // 系统分类
 
 const listSystemCategoryPayload = reactive<SystemCategoryListParams>({
@@ -151,6 +163,7 @@ onMounted(async () => {
       systemCategoryPromise,
       categoryPromise,
       brandPromise,
+      parameterPromise,
     ])
   } catch (error) {
     console.error('加载数据失败:', error)
@@ -477,7 +490,7 @@ provide('ProductCreate', { productForm })
                   </ElFormItem>
                   <!-- 参数 -->
                   <ElFormItem :label="$t('product.parameter')" prop="parameter">
-                    <ParameterForm ref="parameterFormRef" />
+                    <ParameterForm ref="parameterFormRef" :parameter-list-data="parameterListData" :parameter-payload="parameterPayload" :get-parameter-list="getParameterList" />
                   </ElFormItem>
                   <ElFormItem :label="$t('product.metaTitle')" prop="metaTitle">
                     <ElInput

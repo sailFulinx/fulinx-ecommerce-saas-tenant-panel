@@ -46,6 +46,18 @@ const { listData: stockStatusListData, promise: stockStatusPromise } = useProduc
 
 const { listData: layoutTypeListData, promise: layoutPromise } = useLayoutTypeList()
 
+const parameterPayload = reactive<ParameterListParams>({
+  languageId: languageId.value,
+  status: true,
+})
+
+const {
+  loading: _parameterLoading,
+  listData: parameterListData,
+  promise: parameterPromise,
+  getList: getParameterList,
+} = useParameterList(parameterPayload)
+
 onMounted(async () => {
   // 设置初始化加载状态
   loading.init = true
@@ -59,6 +71,7 @@ onMounted(async () => {
       conditionPromise,
       brandPromise,
       layoutPromise,
+      parameterPromise,
     ])
   } catch (error) {
     console.error('加载数据失败:', error)
@@ -593,7 +606,7 @@ const editProductStatus = async () => {
               <FileInfo :language-id="item.languageId" :product-detail="item" :product-id="id" :product-data="form" @refresh-data="initFormData" />
             </div>
             <div v-show="activeName === 'parameter'">
-              <ProductParameter :language-id="item.languageId" :product-detail="item" :product-id="id" :product-data="form" @refresh-data="initFormData" />
+              <ProductParameter :parameter-list-data="parameterListData" :parameter-payload="parameterPayload" :get-parameter-list="getParameterList" :language-id="item.languageId" :product-detail="item" :product-id="id" :product-data="form" @refresh-data="initFormData" />
             </div>
             <div v-show="activeName === 'attribute'">
               <!-- <ProductParameter :language-id="item.languageId" :product-detail="item" :product-id="id" :product-data="form" @refresh-data="initFormData" /> -->

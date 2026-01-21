@@ -325,6 +325,7 @@ interface ProductSkuItemRequestDo {
 }
 
 interface ProductParameterRelationRequestDo {
+  id?: string
   /* Parameter Group ID */
   parameterGroupId?: string
 

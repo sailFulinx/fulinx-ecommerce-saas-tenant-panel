@@ -3,38 +3,17 @@ import { VueDraggable } from 'vue-draggable-plus'
 import CreateParameterDialog from '../../Parameter/Components/CreateParameterDialog.vue'
 import CreateParameterValueDialog from './CreateParameterValueDialog.vue'
 
+const { parameterListData, parameterPayload, getParameterList } = defineProps<{
+  parameterListData: TableResponse<ParameterListData & CommonField>
+  parameterPayload: Partial<ParameterListParams>
+  getParameterList: (params?: Partial<ParameterListParams>) => Promise<TableResponse<ParameterListData & CommonField>>
+}>()
+
+const emit = defineEmits(['getDeletedProductParameterRelationId'])
+
 const { t: $t } = useLocale()
-const loading = reactive({
-  init: false,
-  button: false,
-  parameter: false,
-})
 
 const dragging = ref(false)
-
-const parameterPayload = reactive<ParameterListParams>({
-  languageId: usePreferenceStore().preference.language.id,
-  status: true,
-})
-
-const {
-  loading: _parameterLoading,
-  listData: parameterListData,
-  promise: parameterPromise,
-  getList,
-} = useParameterList(parameterPayload)
-onMounted(async () => {
-  // 设置初始化加载状态
-  loading.init = true
-  try {
-    // 并行等待所有数据加载完成
-    await Promise.all([parameterPromise])
-  } catch (error) {
-    console.error('加载数据失败:', error)
-  } finally {
-    loading.init = false
-  }
-})
 
 const productParameterRelationRequestDos = ref<ProductParameterRelationRequestDo[]>([])
 
@@ -45,11 +24,19 @@ const parameterFormVisible = ref(false)
 const editingIndex = ref<number | null>(null)
 
 const handleDeleteParameter = (index: number) => {
+  emit('getDeletedProductParameterRelationId', productParameterRelationRequestDos.value[index].id)
   productParameterRelationRequestDos.value.splice(index, 1)
 }
 
 const handleEditParameter = (index: number) => {
   currentParameter.value = { ...productParameterRelationRequestDos.value[index] }
+  if (!currentParameter.value.parameterValueListResultDos) {
+    parameterListData.list.forEach(item => {
+      if (item.id === currentParameter.value.parameterId) {
+        currentParameter.value.parameterValueListResultDos = item.parameterValueListResultDos
+      }
+    })
+  }
   editingIndex.value = index
   parameterFormVisible.value = true
 }
@@ -60,7 +47,7 @@ const dragEnd = () => {
 }
 
 const handleChangeParameter = (val: string) => {
-  const selectedParameter = parameterListData.value.list.find(item => item.id === val)
+  const selectedParameter = parameterListData.list.find(item => item.id === val)
   currentParameter.value = {
     ...selectedParameter,
     parameterId: val,
@@ -118,11 +105,11 @@ const handleCreateParameterValue = () => {
 }
 
 const getParameterValueList = async () => {
-  await getList()
-  if (!parameterListData.value.list || parameterListData.value.list.length === 0) {
+  await getParameterList(parameterPayload)
+  if (!parameterListData.list || parameterListData.list.length === 0) {
     return
   }
-  currentParameter.value.parameterValueListResultDos = parameterListData.value.list.find(item => item.id === currentParameter.value.parameterId)?.parameterValueListResultDos
+  currentParameter.value.parameterValueListResultDos = parameterListData.list.find(item => item.id === currentParameter.value.parameterId)?.parameterValueListResultDos
 }
 
 const setData = (data: ProductParameterRelationRequestDo[]) => {
@@ -249,7 +236,7 @@ defineExpose({
         </EBtn>
       </div>
     </div>
-    <CreateParameterDialog ref="createParameterRef" @get-list="getList" />
+    <CreateParameterDialog ref="createParameterRef" @get-list="() => getParameterList(parameterPayload)" />
     <CreateParameterValueDialog ref="createParameterValueRef" @get-list="getParameterValueList" />
   </div>
 </template>

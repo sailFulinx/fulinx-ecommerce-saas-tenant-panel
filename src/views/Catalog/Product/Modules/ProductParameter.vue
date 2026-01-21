@@ -2,22 +2,27 @@
 import { useLocale } from '@/hooks/useLocale'
 import ParameterForm from './ParameterForm.vue'
 
-const { productData, productDetail, languageId, productId } = defineProps<{
-  productData: ShowProduct & CommonField
-  productDetail: ProductAdminLocalizedViewDo
-  languageId: string
-  productId: string
-}>()
+const { productDetail, languageId, productId, parameterListData, parameterPayload, getParameterList }
+  = defineProps<{
+    productDetail: ProductAdminLocalizedViewDo
+    languageId: string
+    productId: string
+    parameterListData: TableResponse<ParameterListData & CommonField>
+    parameterPayload: Partial<ParameterListParams>
+    getParameterList: (params?: Partial<ParameterListParams>) => Promise<TableResponse<ParameterListData & CommonField>>
+  }>()
+
+const emit = defineEmits(['resetFormData'])
 
 const parameterFormRef = ref()
 
 onMounted(async () => {
   await nextTick(() => {
-    parameterFormRef.value.setData(productDetail.productParameterRelationListResultDos)
+    if (parameterFormRef.value) {
+      parameterFormRef.value.setData(productDetail.productParameterRelationListResultDos)
+    }
   })
 })
-
-// const emit = defineEmits(['resetFormData'])
 
 const { t: $t } = useLocale()
 
@@ -28,52 +33,30 @@ const loading = reactive({
   parameter: false,
 })
 
-// watch(
-//   () => productDetail,
-//   async val => {
-//     if (val) {
-//       await getParameterList()
-//       formData.value = JSON.parse(JSON.stringify(productData))
-//       productParameterData.value.productParameterRelationRequestDos = []
-//       if (
-//         formData.value.productParameterRelationListResultDos
-//         && formData.value.productParameterRelationListResultDos.length > 0
-//       ) {
-//         formData.value.productParameterRelationListResultDos.map(async (item, index) => {
-//           const parameterItemData: ProductParameterRequestDo = {
-//             productParameterRelationId: item.id,
-//             parameterId: item.parameterId,
-//             parameterName: item.parameterName,
-//             parameterType: item.parameterType,
-//             parameterValueId: item.parameterValueId,
-//             parameterValueContent: item.parameterValueContent,
-//             parameterValues: [],
-//             sort: index + 1,
-//           }
-//           if (item.parameterType === 1) {
-//             // 查找参数值列表
-//             listParameterResult.value.list.map(vItem => {
-//               if (vItem.id === item.parameterId) {
-//                 parameterItemData.parameterValues = vItem.parameterValueListResultDos
-//               }
-//             })
-//           }
-//           productParameterData.value.productParameterRelationRequestDos.push(parameterItemData)
-//         })
-//       }
-//     }
-//   },
-//   { deep: true, immediate: true },
-// )
+const deletedProductParameterRelationIds = ref<string[]>([])
+const getDeletedProductParameterRelationId = (id: string) => {
+  if (id) {
+    if (!deletedProductParameterRelationIds.value.includes(id)) {
+      deletedProductParameterRelationIds.value.push(id)
+    }
+  }
+}
 
 const handleSave = async () => {
   loading.init = true
-  // const { data } = await updateProductParameterApi(productParameterData.value).catch(error => {
-  //   loading.init = false
-  //   throw error
-  // })
+  const parameterFormData = parameterFormRef.value.getData()
+  const { data } = await updateProductParameterApi({
+    productId,
+    languageId,
+    productParameterRelationRequestDos: parameterFormData,
+    deletedProductParameterRelationIds: deletedProductParameterRelationIds.value,
+  }).catch(error => {
+    loading.init = false
+    throw error
+  })
   loading.init = false
-  // emit('resetFormData', data)
+  emit('resetFormData', data)
+  deletedProductParameterRelationIds.value = []
   ElMessage.success($t('success.edit'))
 }
 </script>
@@ -85,10 +68,22 @@ const handleSave = async () => {
         <div class="text-base font-bold">
           {{ $t('product.parameterInfo') }}
         </div>
+        <div class="flex items-center justify-end">
+          <EBtn type="primary" plain @click="handleSave">
+            <Icon icon="ant-design:save-outlined" class="mr-1" />
+            {{ $t('common.save') }}
+          </EBtn>
+        </div>
       </div>
     </template>
     <div class="w-full mt-5">
-      <ParameterForm ref="parameterFormRef" />
+      <ParameterForm
+        ref="parameterFormRef"
+        :parameter-list-data="parameterListData"
+        :parameter-payload="parameterPayload"
+        :get-parameter-list="getParameterList"
+        @get-deleted-product-parameter-relation-id="getDeletedProductParameterRelationId"
+      />
     </div>
   </ElCard>
 </template>
