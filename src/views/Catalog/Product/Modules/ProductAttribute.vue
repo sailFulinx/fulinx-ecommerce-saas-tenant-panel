@@ -44,6 +44,14 @@ onMounted(async () => {
   await nextTick(() => {
     if (attributeFormRef.value) {
       productSkuRequestDo.value.spu = productData.spu
+      productSkuRequestDo.value.stockStatus = productData.stockStatus as number
+      let currencyId = ''
+      if (productData.productSkuListResultDos && productData.productSkuListResultDos.length > 0) {
+        currencyId = productData.productSkuListResultDos[0].currencyId
+      }
+      productSkuRequestDo.value.currencyId = currencyId
+      productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos = JSON.parse(productData.productAttributeListResultDo.attributeSummary)
+      productSkuRequestDo.value.productSkuItemRequestDos = { ...productData.productSkuListResultDos }
       attributeFormRef.value.setData(productSkuRequestDo.value)
     }
   })
@@ -90,7 +98,7 @@ const handleSave = async () => {
     <template #header>
       <div class="flex items-center justify-between">
         <div class="text-base font-bold">
-          {{ $t('product.attributeInfo') }}
+          {{ $t('product.priceQuantity') }}
         </div>
         <div class="flex items-center justify-end">
           <EBtn type="primary" plain @click="handleSave">
@@ -101,7 +109,6 @@ const handleSave = async () => {
       </div>
     </template>
     <div class="w-full mt-5">
-      66666
       <AttributeFormEdit
         ref="attributeFormRef"
         :product-data="productData"

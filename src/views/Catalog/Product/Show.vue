@@ -635,7 +635,7 @@ provide('productData', { form })
             <div v-show="activeName === 'parameter'">
               <ProductParameter :parameter-list-data="parameterListData" :parameter-payload="parameterPayload" :get-parameter-list="getParameterList" :language-id="item.languageId" :product-detail="item" :product-id="id" :product-data="form" @refresh-data="initFormData" />
             </div>
-            <div v-show="activeName === 'attribute'">
+            <div v-show="activeName === 'priceQuantity'">
               <ProductAttribute
                 :language-id="item.languageId"
                 :product-id="id"
