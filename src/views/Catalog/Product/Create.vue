@@ -75,12 +75,31 @@ const parameterPayload = reactive<ParameterListParams>({
   status: true,
 })
 
+const attributePayload = reactive<AttributeListParams>({
+  languageId: usePreferenceStore().preference.language.id,
+  status: true,
+})
+
 const {
-  loading: _parameterLoading,
   listData: parameterListData,
   promise: parameterPromise,
   getList: getParameterList,
 } = useParameterList(parameterPayload)
+
+const {
+  listData: attributeListData,
+  promise: attributePromise,
+  getList: getAttributeDataList,
+} = useAttributeList(attributePayload)
+
+const { listData: stockStatusListData, promise: stockStatusPromise } = useProductStockStatusList()
+
+const { listData: warehouseListData, promise: warehousePromise } = useWarehouseList()
+
+// 添加重量单位和长度单位列表数据
+const { listData: weightUnitListData, promise: weightUnitPromise } = useWeightUnitList()
+
+const { listData: lengthUnitListData, promise: lengthUnitPromise } = useLengthUnitList()
 
 // 系统分类
 
@@ -164,6 +183,11 @@ onMounted(async () => {
       categoryPromise,
       brandPromise,
       parameterPromise,
+      attributePromise,
+      stockStatusPromise,
+      warehousePromise,
+      weightUnitPromise,
+      lengthUnitPromise,
     ])
   } catch (error) {
     console.error('加载数据失败:', error)
@@ -468,7 +492,17 @@ provide('ProductCreate', { productForm })
                 <div class="w-full fs-16px font-bold mb-4">
                   价格库存
                 </div>
-                <AttributeForm ref="attributeFormRef" />
+                <AttributeForm
+                  ref="attributeFormRef"
+                  :language-id="languageId"
+                  :attribute-payload="attributePayload"
+                  :attribute-list-data="attributeListData"
+                  :warehouse-list-data="warehouseListData"
+                  :stock-status-list-data="stockStatusListData"
+                  :weight-unit-list-data="weightUnitListData"
+                  :length-unit-list-data="lengthUnitListData"
+                  :get-attribute-data-list="getAttributeDataList"
+                />
               </div>
               <!-- 其它 -->
               <div id="productOther" class="bg-white mb-5 pa-4">
@@ -490,7 +524,12 @@ provide('ProductCreate', { productForm })
                   </ElFormItem>
                   <!-- 参数 -->
                   <ElFormItem :label="$t('product.parameter')" prop="parameter">
-                    <ParameterForm ref="parameterFormRef" :parameter-list-data="parameterListData" :parameter-payload="parameterPayload" :get-parameter-list="getParameterList" />
+                    <ParameterForm
+                      ref="parameterFormRef"
+                      :parameter-list-data="parameterListData"
+                      :parameter-payload="parameterPayload"
+                      :get-parameter-list="getParameterList"
+                    />
                   </ElFormItem>
                   <ElFormItem :label="$t('product.metaTitle')" prop="metaTitle">
                     <ElInput

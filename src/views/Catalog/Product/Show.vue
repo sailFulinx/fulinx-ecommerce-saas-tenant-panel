@@ -3,6 +3,7 @@ import type { InputInstance, TabPaneName } from 'element-plus'
 import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
 import FileInfo from './Modules/FileInfo.vue'
+import ProductAttribute from './Modules/ProductAttribute.vue'
 import ProductBaseInfo from './Modules/ProductBaseInfo.vue'
 import ProductLayoutInfo from './Modules/ProductLayoutInfo.vue'
 import ProductParameter from './Modules/ProductParameter.vue'
@@ -58,6 +59,30 @@ const {
   getList: getParameterList,
 } = useParameterList(parameterPayload)
 
+const attributePayload = reactive<AttributeListParams>({
+  languageId: usePreferenceStore().preference.language.id,
+  status: true,
+})
+
+const {
+  loading: attributeLoading,
+  listData: attributeListData,
+  promise: attributePromise,
+  getList: getAttributeDataList,
+} = useAttributeList(attributePayload)
+
+const {
+  loading: stockStatusLoading,
+  listData: stockStatusListData,
+  promise: stockStatusPromise,
+} = useProductStockStatusList()
+
+const { loading: warehouseLoading, listData: warehouseListData, promise: warehousePromise } = useWarehouseList()
+
+// 添加重量单位和长度单位列表数据
+const { loading: weightUnitLoading, listData: weightUnitListData, promise: weightUnitPromise } = useWeightUnitList()
+const { loading: lengthUnitLoading, listData: lengthUnitListData, promise: lengthUnitPromise } = useLengthUnitList()
+
 onMounted(async () => {
   // 设置初始化加载状态
   loading.init = true
@@ -72,6 +97,10 @@ onMounted(async () => {
       brandPromise,
       layoutPromise,
       parameterPromise,
+      attributePromise,
+      warehousePromise,
+      weightUnitPromise,
+      lengthUnitPromise,
     ])
   } catch (error) {
     console.error('加载数据失败:', error)
@@ -572,8 +601,8 @@ const editProductStatus = async () => {
             <ElTabs v-model="activeName" class="demo-tabs" @tab-change="handleChangeTab">
               <ElTabPane :label="$t('product.base')" name="base" />
               <ElTabPane :label="$t('product.file')" name="file" />
-              <ElTabPane :label="$t('product.parameter')" name="parameter" />
               <ElTabPane :label="$t('product.attribute')" name="attribute" />
+              <ElTabPane :label="$t('product.parameter')" name="parameter" />
               <ElTabPane :label="$t('product.seo')" name="seo" />
               <ElTabPane :label="$t('product.layout')" name="layout" />
               <ElTabPane :label="$t('product.slug')" name="slug" />
@@ -609,7 +638,7 @@ const editProductStatus = async () => {
               <ProductParameter :parameter-list-data="parameterListData" :parameter-payload="parameterPayload" :get-parameter-list="getParameterList" :language-id="item.languageId" :product-detail="item" :product-id="id" :product-data="form" @refresh-data="initFormData" />
             </div>
             <div v-show="activeName === 'attribute'">
-              <!-- <ProductParameter :language-id="item.languageId" :product-detail="item" :product-id="id" :product-data="form" @refresh-data="initFormData" /> -->
+              <ProductAttribute :language-id="item.languageId" :product-detail="item" :product-id="id" :product-data="form" @refresh-data="initFormData" />
             </div>
             <div v-show="activeName === 'seo'">
               <ProductSeoInfo :language-id="item.languageId" :product-id="id" :product-detail="item" @refresh-data="initFormData" />

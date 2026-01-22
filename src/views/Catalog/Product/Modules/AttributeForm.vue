@@ -5,6 +5,16 @@ import { cartesianProduct } from '@/utils/cartesianProduct'
 import CreateAttributeDialog from '../../Attribute/Components/CreateAttributeDialog.vue'
 import CreateAttributeValueDialog from './CreateAttributeValueDialog.vue'
 
+const { attributeListData, attributePayload, getAttributeDataList, warehouseListData, stockStatusListData, weightUnitListData, lengthUnitListData } = defineProps<{
+  attributeListData: TableResponse<AttributeListData & CommonField>
+  attributePayload: Partial<AttributeListParams>
+  getAttributeDataList: (params?: Partial<AttributeListParams>) => Promise<TableResponse<AttributeListData & CommonField>>
+  warehouseListData: TableResponse<WarehouseData & CommonField>
+  stockStatusListData: TableResponse<ProductStockStatusData>
+  weightUnitListData: TableResponse<CommonEnumData>
+  lengthUnitListData: TableResponse<CommonEnumData>
+}>()
+
 const currencies = useCurrencyStore().currencies
 
 interface ProductCreateProvider {
@@ -17,51 +27,13 @@ console.log(productForm)
 
 const { t: $t } = useLocale()
 
-const loading = reactive({
-  init: false,
-  button: false,
-  attribute: false,
-})
-
 const dragging = ref(false)
-
-const attributePayload = reactive<AttributeListParams>({
-  languageId: usePreferenceStore().preference.language.id,
-  status: true,
-})
-
-const {
-  loading: attributeLoading,
-  listData: attributeListData,
-  promise: attributePromise,
-  getList,
-} = useAttributeList(attributePayload)
-
-const {
-  loading: stockStatusLoading,
-  listData: stockStatusListData,
-  promise: stockStatusPromise,
-} = useProductStockStatusList()
-
-const { loading: warehouseLoading, listData: warehouseListData, promise: warehousePromise } = useWarehouseList()
-
-// 添加重量单位和长度单位列表数据
-const { loading: weightUnitLoading, listData: weightUnitListData, promise: weightUnitPromise } = useWeightUnitList()
-const { loading: lengthUnitLoading, listData: lengthUnitListData, promise: lengthUnitPromise } = useLengthUnitList()
 
 const currentWarehouseId = ref('')
 
-onMounted(async () => {
-  // 设置初始化加载状态
-  loading.init = true
-  try {
-    // 并行等待所有数据加载完成
-    await Promise.all([attributePromise, stockStatusPromise, warehousePromise, weightUnitPromise, lengthUnitPromise])
-    currentWarehouseId.value = warehouseListData.value.list.find(item => item.isDefault)?.id || ''
-  } catch (error) {
-    console.error('加载数据失败:', error)
-  } finally {
-    loading.init = false
+watch(() => warehouseListData, () => {
+  if (!currentWarehouseId.value) {
+    currentWarehouseId.value = warehouseListData.list.find(item => item.isDefault)?.id || ''
   }
 })
 
@@ -160,7 +132,7 @@ const generateSkus = () => {
 
       // 创建库存信息数组
       const productSkuInventoryRequestDos: ProductSkuInventoryRequestDo[] = []
-      warehouseListData.value.list.forEach(warehouse => {
+      warehouseListData.list.forEach(warehouse => {
         // 创建SKU库存信息
         const skuInventory: ProductSkuInventoryRequestDo = {
           warehouseId: warehouse.id,
@@ -232,7 +204,7 @@ const generateSkus = () => {
     // 如果没有规格组合，添加一个默认的SKU项
     if (productSkuRequestDo.value.spu) {
       const productSkuInventoryRequestDos: ProductSkuInventoryRequestDo[] = []
-      warehouseListData.value.list.forEach(warehouse => {
+      warehouseListData.list.forEach(warehouse => {
         // 创建SKU库存信息
         const skuInventory: ProductSkuInventoryRequestDo = {
           warehouseId: warehouse.id,
@@ -742,7 +714,7 @@ const applyBatchUpdate = () => {
 const attributeFormVisible = ref(true)
 
 const handleChangeAttribute = async (id: string) => {
-  attributeListData.value.list.find(item => {
+  attributeListData.list.find(item => {
     if (item.id === id) {
       currentAttribute.value.attributeValueListResultDos = item.attributeValueListResultDos
       currentAttribute.value.attributeName = item.attributeName
@@ -828,11 +800,11 @@ const handleCreateAttributeValue = () => {
 }
 
 const getAttributeList = async () => {
-  await getList()
-  if (!attributeListData.value.list || attributeListData.value.list.length === 0) {
+  await getAttributeDataList(attributePayload)
+  if (!attributeListData.list || attributeListData.list.length === 0) {
     return
   }
-  currentAttribute.value.attributeValueListResultDos = attributeListData.value.list.find(
+  currentAttribute.value.attributeValueListResultDos = attributeListData.list.find(
     item => item.id === currentAttribute.value.attributeId,
   )?.attributeValueListResultDos
 }
@@ -968,7 +940,7 @@ const getData = () => {
     }
 
     if (item.lengthUnit) {
-    // 精确检查每个字段是否有有效值（包括0）
+      // 精确检查每个字段是否有有效值（包括0）
       const hasLength = item.length !== null && item.length !== undefined
       const hasHeight = item.height !== null && item.height !== undefined
       const hasWidth = item.width !== null && item.width !== undefined
@@ -1002,7 +974,7 @@ defineExpose({
   <div class="w-full">
     <ElForm ref="formRef" :model="productSkuRequestDo" :rules="rules" class="w-full" label-width="100px">
       <ElFormItem label="库存状态" prop="stockStatus">
-        <ElRadioGroup v-model="productSkuRequestDo.stockStatus" :loading="stockStatusLoading">
+        <ElRadioGroup v-model="productSkuRequestDo.stockStatus">
           <ElRadio v-for="item in stockStatusListData.list" :key="item.id" :value="item.id">
             {{ item.productStockStatusName }}
           </ElRadio>
@@ -1122,7 +1094,7 @@ defineExpose({
               添加属性
             </div>
           </div>
-          <div v-loading="attributeLoading" class="w-full flex justify-between items-center p-4">
+          <div class="w-full flex justify-between items-center p-4">
             <div class="flex-1 flex items-center justify-between mr-2">
               <div class="w-1/4 mr-2">
                 <ElSelect
@@ -1328,7 +1300,6 @@ defineExpose({
                   <ElSelect
                     v-else-if="isSelectField(batchUpdateForm.field)"
                     v-model="batchUpdateForm.adjustmentValue"
-                    v-loading="batchUpdateForm.field === 'weightUnit' ? weightUnitLoading : lengthUnitLoading"
                     :placeholder="getPlaceholder()"
                     class="flex-1"
                     clearable
@@ -1392,7 +1363,7 @@ defineExpose({
 
             <ElTableColumn label="库存" width="120" align="center">
               <template #header>
-                <div v-loading="warehouseLoading">
+                <div>
                   <div class="flex flex-col">
                     <div>仓库库存</div>
                     <ElSelect v-model="currentWarehouseId" filterable placeholder="请选择仓库">
@@ -1674,7 +1645,7 @@ defineExpose({
         </div>
       </ElFormItem>
     </ElForm>
-    <CreateAttributeDialog ref="createAttributeRef" @get-list="getList" />
+    <CreateAttributeDialog ref="createAttributeRef" @get-list="getAttributeDataList" />
     <CreateAttributeValueDialog ref="createAttributeValueRef" @get-list="getAttributeList" />
   </div>
 </template>
