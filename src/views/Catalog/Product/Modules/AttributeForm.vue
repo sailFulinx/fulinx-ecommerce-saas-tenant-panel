@@ -87,18 +87,17 @@ const hasImageAttributeId = ref('')
 // 生成SKU函数
 const generateSkus = () => {
   hasImageAttributeId.value = ''
-  // 保存现有的图片信息
+  // 保存现有的图片信息，使用 attributeId 和 attributeValueId 的组合作为标识符
   const existingSkuImages = new Map()
   productSkuRequestDo.value.productSkuItemRequestDos.forEach(sku => {
     if (sku.skuImageFileId && sku.skuImageFileVo) {
-      // 创建一个标识符，由所有属性值组合而成
-      const key = sku.productSkuAttributeRequestDos
-        .map(attr => attr.attributeValueId)
-        .sort()
-        .join('-')
-      existingSkuImages.set(key, {
-        skuImageFileId: sku.skuImageFileId,
-        skuImageFileVo: sku.skuImageFileVo,
+      // 为每个属性值对创建一个唯一标识符
+      sku.productSkuAttributeRequestDos.forEach(attr => {
+        const key = `${attr.attributeId}-${attr.attributeValueId}`
+        existingSkuImages.set(key, {
+          skuImageFileId: sku.skuImageFileId,
+          skuImageFileVo: sku.skuImageFileVo,
+        })
       })
     }
   })
@@ -144,11 +143,21 @@ const generateSkus = () => {
         productSkuInventoryRequestDos.push(skuInventory)
       })
 
-      // 创建一个标识符，用于匹配现有图片
-      const key = combination
-        .map(attr => attr.attributeValueId)
-        .sort()
-        .join('-')
+      // 检查当前组合中是否有带图片的属性值
+      let imageToApply = null
+      // 使用 hasImageAttributeId 来确定哪个属性有图
+      const imageAttributeId = hasImageAttributeId.value
+      if (imageAttributeId) {
+        // 查找当前组合中是否有该属性的值
+        const imageAttributeValue = productSkuAttributes.find(attr => attr.attributeId === imageAttributeId)
+        if (imageAttributeValue) {
+          // 如果找到了，检查这个属性值是否在 existingSkuImages 中有对应的图片
+          const key = `${imageAttributeId}-${imageAttributeValue.attributeValueId}`
+          if (existingSkuImages.has(key)) {
+            imageToApply = existingSkuImages.get(key)
+          }
+        }
+      }
 
       // 创建SKU项
       const skuItem: ProductSkuItemRequestDo = {
@@ -158,10 +167,10 @@ const generateSkus = () => {
         price: 0, // 默认价格，用户后续设置
         status: true,
         // 保留原有的图片信息
-        ...(existingSkuImages.has(key)
+        ...(imageToApply
           ? {
-              skuImageFileId: existingSkuImages.get(key).skuImageFileId,
-              skuImageFileVo: existingSkuImages.get(key).skuImageFileVo,
+              skuImageFileId: imageToApply.skuImageFileId,
+              skuImageFileVo: imageToApply.skuImageFileVo,
             }
           : {
               skuImageFileId: undefined,
@@ -809,6 +818,7 @@ const getAttributeList = async () => {
   )?.attributeValueListResultDos
 }
 
+// 设置属性图片
 const setAttributeImage = ({
   attributeIndex,
   attributeValueIndex,
