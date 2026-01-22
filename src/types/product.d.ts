@@ -279,7 +279,7 @@ interface ProductSkuItemRequestDo {
   weight?: number | null
 
   /* Weight Unit */
-  weightUnit?: string | undefined
+  weightUnit?: number | null
 
   /* Length */
   length?: number | null
@@ -291,7 +291,7 @@ interface ProductSkuItemRequestDo {
   height?: number | null
 
   /* Length Unit */
-  lengthUnit?: string | undefined
+  lengthUnit?: number | null
 
   /* Mpn */
   mpn?: string | undefined

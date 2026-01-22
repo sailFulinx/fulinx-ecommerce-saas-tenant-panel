@@ -68,10 +68,7 @@ const {
   getList: getAttributeDataList,
 } = useAttributeList(attributePayload)
 
-const {
-  listData: stockStatusListData,
-  promise: stockStatusPromise,
-} = useProductStockStatusList()
+const { listData: stockStatusListData, promise: stockStatusPromise } = useProductStockStatusList()
 
 const { listData: warehouseListData, promise: warehousePromise } = useWarehouseList()
 
@@ -461,6 +458,17 @@ const systemCategoryNames = ref<string[]>([])
 // form初始化
 const form = reactive<ShowProduct & CommonField>(createFormData())
 
+const productSkuRequestDo = ref<ProductSkuRequestDo>({
+  stockStatus: 1,
+  spu: '',
+  currencyId: '',
+  productAttributeRequestDo: {
+    attributeSummaryDos: [],
+    searchIndex: '',
+  },
+  productSkuItemRequestDos: [],
+})
+
 const resetFormData = async (val: ShowProduct) => {
   await nextTick(() => {
     categoryNames.value = []
@@ -508,6 +516,82 @@ const resetFormData = async (val: ShowProduct) => {
         }
       })
     }
+
+    productSkuRequestDo.value.spu = form.spu
+    productSkuRequestDo.value.stockStatus = form.stockStatus as number
+    let currencyId = ''
+    if (form.productSkuListResultDos && form.productSkuListResultDos.length > 0) {
+      currencyId = form.productSkuListResultDos[0].currencyId
+    }
+    productSkuRequestDo.value.currencyId = currencyId
+
+    // 安全解析 attributeSummary
+    try {
+      if (form.productAttributeListResultDo?.attributeSummary) {
+        productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos = JSON.parse(
+          form.productAttributeListResultDo.attributeSummary,
+        )
+      } else {
+        productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos = []
+      }
+    } catch (error) {
+      console.error('Failed to parse attributeSummary:', error)
+      productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos = []
+    }
+
+    // 将 productData.productSkuListResultDos 转换并赋值给 productSkuRequestDo.value.productSkuItemRequestDos
+    form.productSkuListResultDos.forEach(sku => {
+      productSkuRequestDo.value.productSkuItemRequestDos.push({
+        id: sku.id,
+        productId: sku.productId,
+        skuImageFileId: sku.skuImageFileId,
+        skuCode: sku.skuCode,
+        currencyId: sku.currencyId,
+        price: sku.price,
+        costPrice: sku.costPrice,
+        promotionPrice: sku.promotionPrice,
+        promotionStartedTime: sku.promotionStartedTime,
+        promotionEndedTime: sku.promotionEndedTime,
+        isRequiredShipping: sku.isRequiredShipping,
+        weight: sku.weight,
+        weightUnit: sku.weightUnit, // Convert number to string
+        length: sku.length,
+        width: sku.width,
+        height: sku.height,
+        lengthUnit: sku.lengthUnit, // Convert number to string
+        mpn: sku.mpn,
+        upc: sku.upc,
+        ean: sku.ean,
+        jan: sku.jan,
+        isbn: sku.isbn,
+        issn: sku.issn,
+        status: sku.status,
+        remark: sku.remark,
+        productSkuAttributeRequestDos: sku.productSkuAttributeListResultDos
+          ? sku.productSkuAttributeListResultDos.map(attr => ({
+              id: attr.id,
+              productSkuId: attr.productSkuId,
+              languageId: attr.languageId,
+              attributeId: attr.attributeId,
+              attributeName: attr.attributeName,
+              attributeValueId: attr.attributeValueId,
+              attributeValueContent: attr.attributeValueContent,
+            }))
+          : [],
+        productSkuInventoryRequestDos: sku.productSkuInventoryListResultDos
+          ? sku.productSkuInventoryListResultDos.map(inv => ({
+              id: inv.id,
+              skuCode: sku.skuCode, // 添加必需的skuCode字段
+              productSkuId: inv.productSkuId,
+              warehouseId: inv.warehouseId,
+              quantity: inv.quantity,
+              lockedQuantity: inv.lockedQuantity,
+              remark: inv.remark,
+            }))
+          : [],
+      })
+      console.log(productSkuRequestDo.value.productSkuItemRequestDos)
+    })
   })
 }
 
@@ -630,10 +714,25 @@ provide('productData', { form })
               />
             </div>
             <div v-show="activeName === 'file'">
-              <FileInfo :language-id="item.languageId" :product-detail="item" :product-id="id" :product-data="form" @refresh-data="initFormData" />
+              <FileInfo
+                :language-id="item.languageId"
+                :product-detail="item"
+                :product-id="id"
+                :product-data="form"
+                @refresh-data="initFormData"
+              />
             </div>
             <div v-show="activeName === 'parameter'">
-              <ProductParameter :parameter-list-data="parameterListData" :parameter-payload="parameterPayload" :get-parameter-list="getParameterList" :language-id="item.languageId" :product-detail="item" :product-id="id" :product-data="form" @refresh-data="initFormData" />
+              <ProductParameter
+                :parameter-list-data="parameterListData"
+                :parameter-payload="parameterPayload"
+                :get-parameter-list="getParameterList"
+                :language-id="item.languageId"
+                :product-detail="item"
+                :product-id="id"
+                :product-data="form"
+                @refresh-data="initFormData"
+              />
             </div>
             <div v-show="activeName === 'priceQuantity'">
               <ProductAttribute
@@ -646,18 +745,39 @@ provide('productData', { form })
                 :weight-unit-list-data="weightUnitListData"
                 :length-unit-list-data="lengthUnitListData"
                 :get-attribute-data-list="getAttributeDataList"
+                :product-sku-request-do="productSkuRequestDo"
                 :product-data="form"
                 @refresh-data="initFormData"
               />
             </div>
             <div v-show="activeName === 'seo'">
-              <ProductSeoInfo :language-id="item.languageId" :product-id="id" :product-detail="item" @refresh-data="initFormData" />
+              <ProductSeoInfo
+                :language-id="item.languageId"
+                :product-id="id"
+                :product-detail="item"
+                @refresh-data="initFormData"
+              />
             </div>
             <div v-show="activeName === 'layout'">
-              <ProductLayoutInfo :product-data="form" :layout-type-list="layoutTypeListData.list" :language-id="item.languageId" :product-id="id" :product-detail="item" @refresh-data="initFormData" />
+              <ProductLayoutInfo
+                :product-data="form"
+                :layout-type-list="layoutTypeListData.list"
+                :language-id="item.languageId"
+                :product-id="id"
+                :product-detail="item"
+                @refresh-data="initFormData"
+              />
             </div>
             <div v-show="activeName === 'slug'">
-              <ProductSlugInfo :product-data="form" :slug="form.slug" :slug-id="form.slugId" :language-id="item.languageId" :product-id="id" :product-detail="item" @refresh-data="initFormData" />
+              <ProductSlugInfo
+                :product-data="form"
+                :slug="form.slug"
+                :slug-id="form.slugId"
+                :language-id="item.languageId"
+                :product-id="id"
+                :product-detail="item"
+                @refresh-data="initFormData"
+              />
             </div>
           </div>
         </div>

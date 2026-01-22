@@ -5,10 +5,21 @@ import { cartesianProduct } from '@/utils/cartesianProduct'
 import CreateAttributeDialog from '../../Attribute/Components/CreateAttributeDialog.vue'
 import CreateAttributeValueDialog from './CreateAttributeValueDialog.vue'
 
-const { attributeListData, attributePayload, getAttributeDataList, warehouseListData, stockStatusListData, weightUnitListData, lengthUnitListData, productData } = defineProps<{
+const {
+  attributeListData,
+  attributePayload,
+  getAttributeDataList,
+  warehouseListData,
+  stockStatusListData,
+  weightUnitListData,
+  lengthUnitListData,
+  productData,
+} = defineProps<{
   attributeListData: TableResponse<AttributeListData & CommonField>
   attributePayload: Partial<AttributeListParams>
-  getAttributeDataList: (params?: Partial<AttributeListParams>) => Promise<TableResponse<AttributeListData & CommonField>>
+  getAttributeDataList: (
+    params?: Partial<AttributeListParams>,
+  ) => Promise<TableResponse<AttributeListData & CommonField>>
   warehouseListData: TableResponse<WarehouseData & CommonField>
   stockStatusListData: TableResponse<ProductStockStatusData>
   weightUnitListData: TableResponse<CommonEnumData>
@@ -27,11 +38,14 @@ const currentWarehouseId = ref('')
 // 使用一个map来存储多个uploadSingleImageMiniRef实例
 const uploadSingleImageMiniRefs = ref<Record<string, any>>({})
 
-watch(() => warehouseListData, () => {
-  if (!currentWarehouseId.value) {
-    currentWarehouseId.value = warehouseListData.list.find(item => item.isDefault)?.id || ''
-  }
-})
+watch(
+  () => warehouseListData,
+  () => {
+    if (!currentWarehouseId.value) {
+      currentWarehouseId.value = warehouseListData.list.find(item => item.isDefault)?.id || ''
+    }
+  },
+)
 
 const formRef = ref()
 const multipleTable = ref() // 添加表格引用
@@ -814,8 +828,10 @@ const getAttributeList = async () => {
 }
 
 // 用于设置和存储uploadSingleImageMini组件的引用
-const setUploadSingleImageMiniRef = (el, attributeIndex, attributeValueIndex) => {
-  if (!el) return
+const setUploadSingleImageMiniRef = (el: any, attributeIndex: number, attributeValueIndex: number) => {
+  if (!el) {
+    return
+  }
   const key = `${attributeIndex}-${attributeValueIndex}`
   uploadSingleImageMiniRefs.value[key] = el
 }
@@ -877,20 +893,18 @@ const setAttributeImage = ({
 const setData = async (data: ProductSkuRequestDo) => {
   await nextTick()
   productSkuRequestDo.value = data
-  // 延迟执行，确保组件渲染完成
-  setTimeout(() => {
-    // 对图片进行赋值
-    productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos.forEach((item, index) => {
-      console.log(item)
-      item.attributeValueDos?.forEach((aItem, avIndex) => {
-        const key = `${index}-${avIndex}`
-        if (uploadSingleImageMiniRefs.value[key]) {
-          console.log(88888)
-          uploadSingleImageMiniRefs.value[key].setFileData([aItem.attributeImageFileVo])
-        }
-      })
+  console.log(222)
+  // 多次 nextTick 确保组件完全渲染
+  await nextTick() // 第一次等待数据更新
+  // 对图片进行赋值
+  productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos.forEach((item, index) => {
+    item.attributeValueDos?.forEach((aItem, avIndex) => {
+      const key = `${index}-${avIndex}`
+      if (uploadSingleImageMiniRefs.value[key]) {
+        uploadSingleImageMiniRefs.value[key].setFileData([aItem.attributeImageFileVo])
+      }
     })
-  }, 100)
+  })
 }
 
 const getData = () => {
