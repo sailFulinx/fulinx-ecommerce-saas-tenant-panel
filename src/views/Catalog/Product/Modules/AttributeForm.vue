@@ -23,8 +23,6 @@ interface ProductCreateProvider {
 
 const { productForm } = inject('ProductCreate') as ProductCreateProvider
 
-console.log(productForm)
-
 const { t: $t } = useLocale()
 
 const dragging = ref(false)
