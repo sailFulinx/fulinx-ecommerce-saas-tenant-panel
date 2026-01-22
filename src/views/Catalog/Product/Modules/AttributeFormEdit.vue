@@ -6,6 +6,7 @@ import CreateAttributeDialog from '../../Attribute/Components/CreateAttributeDia
 import CreateAttributeValueDialog from './CreateAttributeValueDialog.vue'
 
 const {
+  languageId,
   attributeListData,
   attributePayload,
   getAttributeDataList,
@@ -15,6 +16,7 @@ const {
   lengthUnitListData,
   productData,
 } = defineProps<{
+  languageId: string
   attributeListData: TableResponse<AttributeListData & CommonField>
   attributePayload: Partial<AttributeListParams>
   getAttributeDataList: (
@@ -74,7 +76,7 @@ const cartes = computed(() => {
       attributeValue: av.attributeValueContent,
       attributeImageFileVo: av.attributeImageFileVo,
       attributeId: attr.attributeId, // 添加 attributeId
-      attributeValueId: av.id, // 添加 attributeValueId
+      attributeValueId: av.attributeValueId, // 添加 attributeValueId
     })),
   )
 
@@ -115,12 +117,13 @@ const generateSkus = () => {
       // 生成SKU编码，格式为 spu-组合值
       const skuValues = combination.map(item => item.attributeValue)
       const skuCode = `${productSkuRequestDo.value.spu}-${skuValues.join('-')}`
-
+      console.log(combination)
       // 创建SKU属性数组
       const productSkuAttributes = combination.map(item => {
         if (item.attributeImageFileVo != null && item.attributeImageFileVo.id) {
           hasImageAttributeId.value = item.attributeId
         }
+        console.log(item.attributeValueId)
         return {
           attributeValueContent: item.attributeValue,
           attributeName: item.attributeName,
@@ -199,7 +202,7 @@ const generateSkus = () => {
             attributeName: attr.attributeName,
             attributeValueContent: attr.attributeValueContent,
             attributeImageFileVo: attr.attributeImageFileVo,
-            languageId: usePreferenceStore().preference.language.id,
+            languageId,
             attributeId: attr.attributeId,
             attributeValueId: attr.attributeValueId,
           }
@@ -307,7 +310,7 @@ const dragEndAttributeValue = (attributeSummaryDoIndex: number) => {
 }
 
 const currentAttribute = ref<AttributeSummaryDo>({
-  languageId: usePreferenceStore().preference.language.id,
+  languageId,
   attributeId: '',
   attributeName: '',
   sort: productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos.length + 1,
@@ -789,7 +792,7 @@ const handleAddAttributeSave = () => {
     productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos.push(currentAttribute.value)
   }
   currentAttribute.value = {
-    languageId: usePreferenceStore().preference.language.id,
+    languageId,
     attributeId: '',
     attributeName: '',
     sort: productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos.length + 1,

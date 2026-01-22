@@ -84,7 +84,7 @@ const cartes = computed(() => {
       attributeValue: av.attributeValueContent,
       attributeImageFileVo: av.attributeImageFileVo,
       attributeId: attr.attributeId, // 添加 attributeId
-      attributeValueId: av.id, // 添加 attributeValueId
+      attributeValueId: av.attributeValueId, // 添加 attributeValueId
     })),
   )
 

@@ -87,6 +87,7 @@ const handleSave = async () => {
     <div class="w-full mt-5">
       <AttributeFormEdit
         ref="attributeFormRef"
+        :language-id="languageId"
         :product-data="productData"
         :attribute-payload="attributePayload"
         :attribute-list-data="attributeListData"
