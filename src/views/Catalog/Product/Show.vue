@@ -102,156 +102,154 @@ onMounted(async () => {
   }
 })
 
-const createProductAdminLocalizedViewDo = ref<ProductAdminLocalizedViewDo>(
-  {
+const createProductAdminLocalizedViewDo = ref<ProductAdminLocalizedViewDo>({
+  languageId: '',
+  languageCode: '',
+  languageName: '',
+  productCategoryRelationListResultDos: [
+    {
+      id: '',
+      productId: '',
+      categoryId: '',
+      categoryName: '',
+      isDelete: 0,
+      remark: '',
+      recordVersion: 0,
+      recordCreateName: '',
+      recordUpdateName: '',
+      recordCreateTime: '',
+      recordUpdateTime: '',
+    },
+  ],
+  productSystemCategoryRelationListResultDos: [
+    {
+      id: '',
+      productId: '',
+      systemCategoryId: '',
+      systemCategoryName: '',
+      isDelete: 0,
+      remark: '',
+      recordVersion: 0,
+      recordCreateName: '',
+      recordUpdateName: '',
+      recordCreateTime: '',
+      recordUpdateTime: '',
+    },
+  ],
+  productDetailListResultDo: {
+    id: '',
+    productId: '',
     languageId: '',
-    languageCode: '',
-    languageName: '',
-    productCategoryRelationListResultDos: [
-      {
-        id: '',
-        productId: '',
-        categoryId: '',
-        categoryName: '',
-        isDelete: 0,
-        remark: '',
-        recordVersion: 0,
-        recordCreateName: '',
-        recordUpdateName: '',
-        recordCreateTime: '',
-        recordUpdateTime: '',
-      },
-    ],
-    productSystemCategoryRelationListResultDos: [
-      {
-        id: '',
-        productId: '',
-        systemCategoryId: '',
-        systemCategoryName: '',
-        isDelete: 0,
-        remark: '',
-        recordVersion: 0,
-        recordCreateName: '',
-        recordUpdateName: '',
-        recordCreateTime: '',
-        recordUpdateTime: '',
-      },
-    ],
-    productDetailListResultDo: {
-      id: '',
-      productId: '',
-      languageId: '',
-      productName: '',
-      productShortName: '',
-      productDescription: '',
-      productShortDescription: '',
-      customs: '',
-      customList: [],
-      layoutType: 0,
-      layoutTypeLabel: '',
-      devComponentName: '',
-      layoutContent: '',
-      isDelete: 0,
-      remark: '',
-      recordVersion: 0,
-      recordCreateName: '',
-      recordUpdateName: '',
-      recordCreateTime: '',
-      recordUpdateTime: '',
-    },
-    productParameterRelationListResultDos: [
-      {
-        id: '',
-        productId: '',
-        languageId: '',
-        parameterGroupId: '',
-        parameterGroupName: '',
-        parameterId: '',
-        parameterType: 0,
-        parameterName: '',
-        parameterValueId: '',
-        parameterValueContent: '',
-        sort: 0,
-        isDelete: 0,
-        remark: '',
-        recordVersion: 0,
-        recordCreateName: '',
-        recordUpdateName: '',
-        recordCreateTime: '',
-        recordUpdateTime: '',
-      },
-    ],
-    productFileRelationListResultDos: [
-      {
-        id: '',
-        productId: '',
-        languageId: '',
-        productFileType: 0,
-        fileId: '',
-        fileVo: {
-          id: '',
-          bucketName: '',
-          etag: '',
-          s3Key: '',
-          isPublic: true,
-          originalFileName: '',
-          fileName: '',
-          fileContentType: '',
-          fileExtensionName: '',
-          fileSize: '',
-          path: '',
-          fileUrl: '',
-          sha256: '',
-          isDelete: 0,
-          remark: '',
-          recordVersion: 0,
-          recordCreateName: '',
-          recordUpdateName: '',
-          recordCreateTime: '',
-          recordUpdateTime: '',
-        },
-        isDefault: true,
-        sort: 0,
-        isDelete: 0,
-        remark: '',
-        recordVersion: 0,
-        recordCreateName: '',
-        recordUpdateName: '',
-        recordCreateTime: '',
-        recordUpdateTime: '',
-      },
-    ],
-    productSeoListResultDo: {
-      id: '',
-      productId: '',
-      languageId: '',
-      metaTitle: '',
-      metaDescription: '',
-      isDelete: 0,
-      remark: '',
-      recordVersion: 0,
-      recordCreateName: '',
-      recordUpdateName: '',
-      recordCreateTime: '',
-      recordUpdateTime: '',
-    },
-    productTagListResultDos: [
-      {
-        id: '',
-        productId: '',
-        languageId: '',
-        tagName: '',
-        isDelete: 0,
-        remark: '',
-        recordVersion: 0,
-        recordCreateName: '',
-        recordUpdateName: '',
-        recordCreateTime: '',
-        recordUpdateTime: '',
-      },
-    ],
+    productName: '',
+    productShortName: '',
+    productDescription: '',
+    productShortDescription: '',
+    customs: '',
+    customList: [],
+    layoutType: 0,
+    layoutTypeLabel: '',
+    devComponentName: '',
+    layoutContent: '',
+    isDelete: 0,
+    remark: '',
+    recordVersion: 0,
+    recordCreateName: '',
+    recordUpdateName: '',
+    recordCreateTime: '',
+    recordUpdateTime: '',
   },
-)
+  productParameterRelationListResultDos: [
+    {
+      id: '',
+      productId: '',
+      languageId: '',
+      parameterGroupId: '',
+      parameterGroupName: '',
+      parameterId: '',
+      parameterType: 0,
+      parameterName: '',
+      parameterValueId: '',
+      parameterValueContent: '',
+      sort: 0,
+      isDelete: 0,
+      remark: '',
+      recordVersion: 0,
+      recordCreateName: '',
+      recordUpdateName: '',
+      recordCreateTime: '',
+      recordUpdateTime: '',
+    },
+  ],
+  productFileRelationListResultDos: [
+    {
+      id: '',
+      productId: '',
+      languageId: '',
+      productFileType: 0,
+      fileId: '',
+      fileVo: {
+        id: '',
+        bucketName: '',
+        etag: '',
+        s3Key: '',
+        isPublic: true,
+        originalFileName: '',
+        fileName: '',
+        fileContentType: '',
+        fileExtensionName: '',
+        fileSize: '',
+        path: '',
+        fileUrl: '',
+        sha256: '',
+        isDelete: 0,
+        remark: '',
+        recordVersion: 0,
+        recordCreateName: '',
+        recordUpdateName: '',
+        recordCreateTime: '',
+        recordUpdateTime: '',
+      },
+      isDefault: true,
+      sort: 0,
+      isDelete: 0,
+      remark: '',
+      recordVersion: 0,
+      recordCreateName: '',
+      recordUpdateName: '',
+      recordCreateTime: '',
+      recordUpdateTime: '',
+    },
+  ],
+  productSeoListResultDo: {
+    id: '',
+    productId: '',
+    languageId: '',
+    metaTitle: '',
+    metaDescription: '',
+    isDelete: 0,
+    remark: '',
+    recordVersion: 0,
+    recordCreateName: '',
+    recordUpdateName: '',
+    recordCreateTime: '',
+    recordUpdateTime: '',
+  },
+  productTagListResultDos: [
+    {
+      id: '',
+      productId: '',
+      languageId: '',
+      tagName: '',
+      isDelete: 0,
+      remark: '',
+      recordVersion: 0,
+      recordCreateName: '',
+      recordUpdateName: '',
+      recordCreateTime: '',
+      recordUpdateTime: '',
+    },
+  ],
+})
 
 // 创建product请求参数
 const createFormData = (): ShowProduct & CommonField => {
@@ -442,6 +440,9 @@ const resetFormData = async (val: ShowProduct) => {
       productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos = []
     }
 
+    // 清空原有的SKU数据，避免重复添加
+    productSkuRequestDo.value.productSkuItemRequestDos = []
+
     // 将 productData.productSkuListResultDos 转换并赋值给 productSkuRequestDo.value.productSkuItemRequestDos
     form.productSkuListResultDos.forEach(sku => {
       productSkuRequestDo.value.productSkuItemRequestDos.push({
@@ -597,11 +598,16 @@ provide('productData', { form })
         </ElTabs>
       </div>
       <div class="flex-1 overflow-auto pr-4 -mr-4">
-        <div v-if="activeName === 'base' && form.productAdminLocalizedViewDos.some(item => item.languageId === languageId)">
+        <div
+          v-if="activeName === 'base' && form.productAdminLocalizedViewDos.some(item => item.languageId === languageId)"
+        >
           <ProductBaseInfo
             v-model:product-admin-localized-view-dos="form.productAdminLocalizedViewDos"
             :product-data="form"
-            :product-detail="form.productAdminLocalizedViewDos.find(item => item.languageId === languageId) || createProductAdminLocalizedViewDo"
+            :product-detail="
+              form.productAdminLocalizedViewDos.find(item => item.languageId === languageId)
+                || createProductAdminLocalizedViewDo
+            "
             :language-id="languageId"
             :product-id="id"
             :system-category-names="systemCategoryNames"
@@ -615,28 +621,45 @@ provide('productData', { form })
             @refresh-data="initFormData"
           />
         </div>
-        <div v-if="activeName === 'file' && form.productAdminLocalizedViewDos.some(item => item.languageId === languageId)">
+        <div
+          v-if="activeName === 'file' && form.productAdminLocalizedViewDos.some(item => item.languageId === languageId)"
+        >
           <FileInfo
             :language-id="languageId"
-            :product-detail="form.productAdminLocalizedViewDos.find(item => item.languageId === languageId) || createProductAdminLocalizedViewDo"
+            :product-detail="
+              form.productAdminLocalizedViewDos.find(item => item.languageId === languageId)
+                || createProductAdminLocalizedViewDo
+            "
             :product-id="id"
             :product-data="form"
             @refresh-data="initFormData"
           />
         </div>
-        <div v-if="activeName === 'parameter' && form.productAdminLocalizedViewDos.some(item => item.languageId === languageId)">
+        <div
+          v-if="
+            activeName === 'parameter' && form.productAdminLocalizedViewDos.some(item => item.languageId === languageId)
+          "
+        >
           <ProductParameter
             :parameter-list-data="parameterListData"
             :parameter-payload="parameterPayload"
             :get-parameter-list="getParameterList"
             :language-id="languageId"
-            :product-detail="form.productAdminLocalizedViewDos.find(item => item.languageId === languageId) || createProductAdminLocalizedViewDo"
+            :product-detail="
+              form.productAdminLocalizedViewDos.find(item => item.languageId === languageId)
+                || createProductAdminLocalizedViewDo
+            "
             :product-id="id"
             :product-data="form"
             @refresh-data="initFormData"
           />
         </div>
-        <div v-if="activeName === 'priceQuantity' && form.productAdminLocalizedViewDos.some(item => item.languageId === languageId)">
+        <div
+          v-if="
+            activeName === 'priceQuantity'
+              && form.productAdminLocalizedViewDos.some(item => item.languageId === languageId)
+          "
+        >
           <ProductAttribute
             :language-id="languageId"
             :product-id="id"
@@ -649,36 +672,56 @@ provide('productData', { form })
             :get-attribute-data-list="getAttributeDataList"
             :product-sku-request-do="productSkuRequestDo"
             :product-data="form"
-            :product-detail="form.productAdminLocalizedViewDos.find(item => item.languageId === languageId) || createProductAdminLocalizedViewDo"
+            :product-detail="
+              form.productAdminLocalizedViewDos.find(item => item.languageId === languageId)
+                || createProductAdminLocalizedViewDo
+            "
             @refresh-data="initFormData"
           />
         </div>
-        <div v-if="activeName === 'seo' && form.productAdminLocalizedViewDos.some(item => item.languageId === languageId)">
+        <div
+          v-if="activeName === 'seo' && form.productAdminLocalizedViewDos.some(item => item.languageId === languageId)"
+        >
           <ProductSeoInfo
             :language-id="languageId"
             :product-id="id"
-            :product-detail="form.productAdminLocalizedViewDos.find(item => item.languageId === languageId) || createProductAdminLocalizedViewDo"
+            :product-detail="
+              form.productAdminLocalizedViewDos.find(item => item.languageId === languageId)
+                || createProductAdminLocalizedViewDo
+            "
             @refresh-data="initFormData"
           />
         </div>
-        <div v-if="activeName === 'layout' && form.productAdminLocalizedViewDos.some(item => item.languageId === languageId)">
+        <div
+          v-if="
+            activeName === 'layout' && form.productAdminLocalizedViewDos.some(item => item.languageId === languageId)
+          "
+        >
           <ProductLayoutInfo
             :product-data="form"
             :layout-type-list="layoutTypeListData.list"
             :language-id="languageId"
             :product-id="id"
-            :product-detail="form.productAdminLocalizedViewDos.find(item => item.languageId === languageId) || createProductAdminLocalizedViewDo"
+            :product-detail="
+              form.productAdminLocalizedViewDos.find(item => item.languageId === languageId)
+                || createProductAdminLocalizedViewDo
+            "
             @refresh-data="initFormData"
           />
         </div>
-        <div v-if="activeName === 'slug' && form.productAdminLocalizedViewDos.some(item => item.languageId === languageId)">
+        <div
+          v-if="activeName === 'slug' && form.productAdminLocalizedViewDos.some(item => item.languageId === languageId)"
+        >
           <ProductSlugInfo
             :product-data="form"
             :slug="form.slug"
             :slug-id="form.slugId"
             :language-id="languageId"
             :product-id="id"
-            :product-detail="form.productAdminLocalizedViewDos.find(item => item.languageId === languageId) || createProductAdminLocalizedViewDo"
+            :product-detail="
+              form.productAdminLocalizedViewDos.find(item => item.languageId === languageId)
+                || createProductAdminLocalizedViewDo
+            "
             @refresh-data="initFormData"
           />
         </div>

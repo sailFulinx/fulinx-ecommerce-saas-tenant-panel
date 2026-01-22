@@ -891,11 +891,19 @@ const setAttributeImage = ({
 }
 
 const setData = async (data: ProductSkuRequestDo) => {
+  console.log(data)
   await nextTick()
-  productSkuRequestDo.value = data
-  console.log(222)
-  // 多次 nextTick 确保组件完全渲染
-  await nextTick() // 第一次等待数据更新
+  // 逐个属性赋值，保持响应式引用
+  productSkuRequestDo.value.stockStatus = data.stockStatus
+  productSkuRequestDo.value.spu = data.spu
+  productSkuRequestDo.value.currencyId = data.currencyId
+  // 复制attributeSummaryDos数组
+  productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos = [...data.productAttributeRequestDo.attributeSummaryDos]
+  productSkuRequestDo.value.productAttributeRequestDo.searchIndex = data.productAttributeRequestDo.searchIndex
+  // 复制SKU项目数组
+  productSkuRequestDo.value.productSkuItemRequestDos = [...data.productSkuItemRequestDos]
+
+  console.log(productSkuRequestDo.value)
   // 对图片进行赋值
   productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos.forEach((item, index) => {
     item.attributeValueDos?.forEach((aItem, avIndex) => {

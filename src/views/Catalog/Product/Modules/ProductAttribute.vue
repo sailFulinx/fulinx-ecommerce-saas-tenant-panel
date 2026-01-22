@@ -30,8 +30,9 @@ const attributeFormRef = ref()
 onMounted(async () => {
   await nextTick(() => {
     if (attributeFormRef.value) {
-      console.log(productSkuRequestDo)
-      attributeFormRef.value.setData(productSkuRequestDo)
+      const newData = JSON.parse(JSON.stringify(productSkuRequestDo))
+      console.log(newData)
+      attributeFormRef.value.setData(newData)
     }
   })
 })
