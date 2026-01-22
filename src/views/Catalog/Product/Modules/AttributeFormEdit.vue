@@ -891,7 +891,6 @@ const setAttributeImage = ({
 }
 
 const setData = async (data: ProductSkuRequestDo) => {
-  await nextTick()
   // 使用深拷贝方式赋值，避免引用问题
   productSkuRequestDo.value.stockStatus = data.stockStatus
   productSkuRequestDo.value.spu = data.spu
@@ -902,6 +901,8 @@ const setData = async (data: ProductSkuRequestDo) => {
   // 深拷贝SKU项目数组及其中的对象
   productSkuRequestDo.value.productSkuItemRequestDos = JSON.parse(JSON.stringify(data.productSkuItemRequestDos))
   console.log(productSkuRequestDo.value.productSkuItemRequestDos)
+  // 多次 nextTick 确保组件完全渲染
+  await nextTick() // 第一次等待数据更新
   // 对图片进行赋值
   productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos.forEach((item, index) => {
     item.attributeValueDos?.forEach((aItem, avIndex) => {
