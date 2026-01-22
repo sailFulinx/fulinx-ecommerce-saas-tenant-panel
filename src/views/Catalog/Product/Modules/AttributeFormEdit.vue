@@ -269,11 +269,16 @@ const generateSkus = () => {
   }
 }
 
+// 添加一个标志来控制是否重新生成SKU
+const skipGenerateSkus = ref(false)
+
 // 监听spu变化，当spu改变时重新生成SKU
 watch(
   () => productSkuRequestDo.value.spu,
   () => {
-    generateSkus()
+    if (!skipGenerateSkus.value) {
+      generateSkus()
+    }
   },
   { deep: true },
 )
@@ -282,7 +287,9 @@ watch(
 watch(
   cartes,
   () => {
-    generateSkus()
+    if (!skipGenerateSkus.value) {
+      generateSkus()
+    }
   },
   { deep: true },
 )
@@ -891,16 +898,23 @@ const setAttributeImage = ({
 }
 
 const setData = async (data: ProductSkuRequestDo) => {
+  // 设置标志，暂时跳过SKU生成
+  skipGenerateSkus.value = true
+
   // 使用深拷贝方式赋值，避免引用问题
   productSkuRequestDo.value.stockStatus = data.stockStatus
   productSkuRequestDo.value.spu = data.spu
   productSkuRequestDo.value.currencyId = data.currencyId
   // 深拷贝attributeSummaryDos数组及其中的对象
-  productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos = JSON.parse(JSON.stringify(data.productAttributeRequestDo.attributeSummaryDos))
+  productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos = JSON.parse(
+    JSON.stringify(data.productAttributeRequestDo.attributeSummaryDos),
+  )
   productSkuRequestDo.value.productAttributeRequestDo.searchIndex = data.productAttributeRequestDo.searchIndex
   // 深拷贝SKU项目数组及其中的对象
   productSkuRequestDo.value.productSkuItemRequestDos = JSON.parse(JSON.stringify(data.productSkuItemRequestDos))
+
   console.log(productSkuRequestDo.value.productSkuItemRequestDos)
+
   // 多次 nextTick 确保组件完全渲染
   await nextTick() // 第一次等待数据更新
   // 对图片进行赋值
@@ -912,6 +926,9 @@ const setData = async (data: ProductSkuRequestDo) => {
       }
     })
   })
+
+  // 重置标志，允许后续的SKU生成
+  skipGenerateSkus.value = false
 }
 
 const getData = () => {
