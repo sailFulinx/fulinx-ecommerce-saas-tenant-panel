@@ -24,6 +24,9 @@ const dragging = ref(false)
 
 const currentWarehouseId = ref('')
 
+// 使用一个map来存储多个uploadSingleImageMiniRef实例
+const uploadSingleImageMiniRefs = ref<Record<string, any>>({})
+
 watch(() => warehouseListData, () => {
   if (!currentWarehouseId.value) {
     currentWarehouseId.value = warehouseListData.list.find(item => item.isDefault)?.id || ''
@@ -255,8 +258,7 @@ const generateSkus = () => {
 // 监听spu变化，当spu改变时重新生成SKU
 watch(
   () => productSkuRequestDo.value.spu,
-  newSpu => {
-    console.log('spu changed:', newSpu)
+  () => {
     generateSkus()
   },
   { deep: true },
@@ -811,6 +813,13 @@ const getAttributeList = async () => {
   )?.attributeValueListResultDos
 }
 
+// 用于设置和存储uploadSingleImageMini组件的引用
+const setUploadSingleImageMiniRef = (el, attributeIndex, attributeValueIndex) => {
+  if (!el) return
+  const key = `${attributeIndex}-${attributeValueIndex}`
+  uploadSingleImageMiniRefs.value[key] = el
+}
+
 // 设置属性图片
 const setAttributeImage = ({
   attributeIndex,
@@ -865,8 +874,23 @@ const setAttributeImage = ({
   })
 }
 
-const setData = (data: ProductSkuRequestDo) => {
+const setData = async (data: ProductSkuRequestDo) => {
+  await nextTick()
   productSkuRequestDo.value = data
+  // 延迟执行，确保组件渲染完成
+  setTimeout(() => {
+    // 对图片进行赋值
+    productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos.forEach((item, index) => {
+      console.log(item)
+      item.attributeValueDos?.forEach((aItem, avIndex) => {
+        const key = `${index}-${avIndex}`
+        if (uploadSingleImageMiniRefs.value[key]) {
+          console.log(88888)
+          uploadSingleImageMiniRefs.value[key].setFileData([aItem.attributeImageFileVo])
+        }
+      })
+    })
+  }, 100)
 }
 
 const getData = () => {
@@ -1075,6 +1099,7 @@ defineExpose({
                       <!-- 控制上传组件是否显示 -->
                       <UploadSingleImageMini
                         v-if="item.attributeId === hasImageAttributeId || !hasImageAttributeId"
+                        :ref="el => setUploadSingleImageMiniRef(el, index, avItemIndex)"
                         :attribute-index="index"
                         :attribute-value-index="avItemIndex"
                         class="mr-1"

@@ -16,9 +16,6 @@ const { languageId, productId, attributeListData, attributePayload, getAttribute
     productData: ShowProduct & CommonField
   }>()
 
-console.log(languageId)
-console.log(productData)
-
 // const emit = defineEmits(['resetFormData'])
 
 // interface ProductDataProvider {
@@ -50,8 +47,18 @@ onMounted(async () => {
         currencyId = productData.productSkuListResultDos[0].currencyId
       }
       productSkuRequestDo.value.currencyId = currencyId
-      productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos = JSON.parse(productData.productAttributeListResultDo.attributeSummary)
-      console.log(JSON.parse(productData.productAttributeListResultDo.attributeSummary))
+
+      // 安全解析 attributeSummary
+      try {
+        if (productData.productAttributeListResultDo?.attributeSummary) {
+          productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos = JSON.parse(productData.productAttributeListResultDo.attributeSummary)
+        } else {
+          productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos = []
+        }
+      } catch (error) {
+        console.error('Failed to parse attributeSummary:', error)
+        productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos = []
+      }
 
       // 将 productData.productSkuListResultDos 转换并赋值给 productSkuRequestDo.value.productSkuItemRequestDos
       productSkuRequestDo.value.productSkuItemRequestDos = productData.productSkuListResultDos.map(sku => ({
