@@ -2,9 +2,10 @@
 import { useLocale } from '@/hooks/useLocale'
 import AttributeFormEdit from './AttributeFormEdit.vue'
 
-const { languageId, attributeListData, attributePayload, getAttributeDataList, warehouseListData, stockStatusListData, weightUnitListData, lengthUnitListData }
+const { languageId, productId, attributeListData, attributePayload, getAttributeDataList, warehouseListData, stockStatusListData, weightUnitListData, lengthUnitListData, productData }
   = defineProps<{
     languageId: string
+    productId: string
     attributeListData: TableResponse<AttributeListData & CommonField>
     attributePayload: Partial<AttributeListParams>
     getAttributeDataList: (params?: Partial<AttributeListParams>) => Promise<TableResponse<AttributeListData & CommonField>>
@@ -12,19 +13,19 @@ const { languageId, attributeListData, attributePayload, getAttributeDataList, w
     stockStatusListData: TableResponse<ProductStockStatusData>
     weightUnitListData: TableResponse<CommonEnumData>
     lengthUnitListData: TableResponse<CommonEnumData>
+    productData: ShowProduct & CommonField
   }>()
 
 console.log(languageId)
+console.log(productData)
 
 // const emit = defineEmits(['resetFormData'])
 
-interface ProductDataProvider {
-  productData: ShowProduct & CommonField
-}
+// interface ProductDataProvider {
+//   productData: ShowProduct & CommonField
+// }
 
-const { productData } = inject('productData') as ProductDataProvider
-
-console.log(productData)
+// const { productData } = inject('productData') as ProductDataProvider
 
 const productSkuRequestDo = ref<ProductSkuRequestDo>({
   stockStatus: 1,
@@ -100,8 +101,10 @@ const handleSave = async () => {
       </div>
     </template>
     <div class="w-full mt-5">
+      66666
       <AttributeFormEdit
         ref="attributeFormRef"
+        :product-data="productData"
         :attribute-payload="attributePayload"
         :attribute-list-data="attributeListData"
         :warehouse-list-data="warehouseListData"

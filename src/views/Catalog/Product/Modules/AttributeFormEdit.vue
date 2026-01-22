@@ -5,7 +5,7 @@ import { cartesianProduct } from '@/utils/cartesianProduct'
 import CreateAttributeDialog from '../../Attribute/Components/CreateAttributeDialog.vue'
 import CreateAttributeValueDialog from './CreateAttributeValueDialog.vue'
 
-const { attributeListData, attributePayload, getAttributeDataList, warehouseListData, stockStatusListData, weightUnitListData, lengthUnitListData } = defineProps<{
+const { attributeListData, attributePayload, getAttributeDataList, warehouseListData, stockStatusListData, weightUnitListData, lengthUnitListData, productData } = defineProps<{
   attributeListData: TableResponse<AttributeListData & CommonField>
   attributePayload: Partial<AttributeListParams>
   getAttributeDataList: (params?: Partial<AttributeListParams>) => Promise<TableResponse<AttributeListData & CommonField>>
@@ -13,15 +13,10 @@ const { attributeListData, attributePayload, getAttributeDataList, warehouseList
   stockStatusListData: TableResponse<ProductStockStatusData>
   weightUnitListData: TableResponse<CommonEnumData>
   lengthUnitListData: TableResponse<CommonEnumData>
+  productData: ShowProduct & CommonField
 }>()
 
 const currencies = useCurrencyStore().currencies
-
-interface ProductDataProvider {
-  productData: ShowProduct & CommonField
-}
-
-const { productData } = inject('productData') as ProductDataProvider
 
 const { t: $t } = useLocale()
 
@@ -980,6 +975,7 @@ defineExpose({
 
 <template>
   <div class="w-full">
+    1111
     <ElForm ref="formRef" :model="productSkuRequestDo" :rules="rules" class="w-full" label-width="100px">
       <ElFormItem label="库存状态" prop="stockStatus">
         <ElRadioGroup v-model="productSkuRequestDo.stockStatus">

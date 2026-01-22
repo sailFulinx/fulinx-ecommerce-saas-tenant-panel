@@ -638,6 +638,7 @@ provide('productData', { form })
             <div v-show="activeName === 'attribute'">
               <ProductAttribute
                 :language-id="item.languageId"
+                :product-id="id"
                 :attribute-payload="attributePayload"
                 :attribute-list-data="attributeListData"
                 :warehouse-list-data="warehouseListData"
@@ -645,6 +646,7 @@ provide('productData', { form })
                 :weight-unit-list-data="weightUnitListData"
                 :length-unit-list-data="lengthUnitListData"
                 :get-attribute-data-list="getAttributeDataList"
+                :product-data="form"
                 @refresh-data="initFormData"
               />
             </div>
