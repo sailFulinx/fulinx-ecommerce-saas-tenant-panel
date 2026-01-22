@@ -51,7 +51,59 @@ onMounted(async () => {
       }
       productSkuRequestDo.value.currencyId = currencyId
       productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos = JSON.parse(productData.productAttributeListResultDo.attributeSummary)
-      productSkuRequestDo.value.productSkuItemRequestDos = { ...productData.productSkuListResultDos }
+      console.log(JSON.parse(productData.productAttributeListResultDo.attributeSummary))
+
+      // 将 productData.productSkuListResultDos 转换并赋值给 productSkuRequestDo.value.productSkuItemRequestDos
+      productSkuRequestDo.value.productSkuItemRequestDos = productData.productSkuListResultDos.map(sku => ({
+        id: sku.id,
+        productId: sku.productId,
+        skuImageFileId: sku.skuImageFileId,
+        skuCode: sku.skuCode,
+        currencyId: sku.currencyId,
+        price: sku.price,
+        costPrice: sku.costPrice,
+        promotionPrice: sku.promotionPrice,
+        promotionStartedTime: sku.promotionStartedTime,
+        promotionEndedTime: sku.promotionEndedTime,
+        isRequiredShipping: sku.isRequiredShipping,
+        weight: sku.weight,
+        weightUnit: String(sku.weightUnit), // Convert number to string
+        length: sku.length,
+        width: sku.width,
+        height: sku.height,
+        lengthUnit: String(sku.lengthUnit), // Convert number to string
+        mpn: sku.mpn,
+        upc: sku.upc,
+        ean: sku.ean,
+        jan: sku.jan,
+        isbn: sku.isbn,
+        issn: sku.issn,
+        status: sku.status,
+        remark: sku.remark,
+        productSkuAttributeRequestDos: sku.productSkuAttributeListResultDos
+          ? sku.productSkuAttributeListResultDos.map(attr => ({
+              id: attr.id,
+              productSkuId: attr.productSkuId,
+              languageId: attr.languageId,
+              attributeId: attr.attributeId,
+              attributeName: attr.attributeName,
+              attributeValueId: attr.attributeValueId,
+              attributeValueContent: attr.attributeValueContent,
+            }))
+          : [],
+        productSkuInventoryRequestDos: sku.productSkuInventoryListResultDos
+          ? sku.productSkuInventoryListResultDos.map(inv => ({
+              id: inv.id,
+              skuCode: sku.skuCode, // 添加必需的skuCode字段
+              productSkuId: inv.productSkuId,
+              warehouseId: inv.warehouseId,
+              quantity: inv.quantity,
+              lockedQuantity: inv.lockedQuantity,
+              remark: inv.remark,
+            }))
+          : [],
+      }))
+
       attributeFormRef.value.setData(productSkuRequestDo.value)
     }
   })
