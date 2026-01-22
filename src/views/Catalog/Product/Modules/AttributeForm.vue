@@ -5,10 +5,20 @@ import { cartesianProduct } from '@/utils/cartesianProduct'
 import CreateAttributeDialog from '../../Attribute/Components/CreateAttributeDialog.vue'
 import CreateAttributeValueDialog from './CreateAttributeValueDialog.vue'
 
-const { attributeListData, attributePayload, getAttributeDataList, warehouseListData, stockStatusListData, weightUnitListData, lengthUnitListData } = defineProps<{
+const {
+  attributeListData,
+  attributePayload,
+  getAttributeDataList,
+  warehouseListData,
+  stockStatusListData,
+  weightUnitListData,
+  lengthUnitListData,
+} = defineProps<{
   attributeListData: TableResponse<AttributeListData & CommonField>
   attributePayload: Partial<AttributeListParams>
-  getAttributeDataList: (params?: Partial<AttributeListParams>) => Promise<TableResponse<AttributeListData & CommonField>>
+  getAttributeDataList: (
+    params?: Partial<AttributeListParams>,
+  ) => Promise<TableResponse<AttributeListData & CommonField>>
   warehouseListData: TableResponse<WarehouseData & CommonField>
   stockStatusListData: TableResponse<ProductStockStatusData>
   weightUnitListData: TableResponse<CommonEnumData>
@@ -29,11 +39,14 @@ const dragging = ref(false)
 
 const currentWarehouseId = ref('')
 
-watch(() => warehouseListData, () => {
-  if (!currentWarehouseId.value) {
-    currentWarehouseId.value = warehouseListData.list.find(item => item.isDefault)?.id || ''
-  }
-})
+watch(
+  () => warehouseListData,
+  () => {
+    if (!currentWarehouseId.value) {
+      currentWarehouseId.value = warehouseListData.list.find(item => item.isDefault)?.id || ''
+    }
+  },
+)
 
 const formRef = ref()
 const multipleTable = ref() // 添加表格引用
@@ -1646,6 +1659,11 @@ defineExpose({
                 <div class="w-full flex items-center">
                   <ElInput v-model="scope.row.issn" clearable :placeholder="$t('product.placeholder.issn')" />
                 </div>
+              </template>
+            </ElTableColumn>
+            <ElTableColumn fixed="right" :label="$t('product.skuStatus')" min-width="90">
+              <template #default="scope">
+                <ElSwitch v-model="scope.row.status" />
               </template>
             </ElTableColumn>
           </ElTable>

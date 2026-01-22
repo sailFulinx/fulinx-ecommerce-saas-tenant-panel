@@ -1695,6 +1695,11 @@ defineExpose({
                 </div>
               </template>
             </ElTableColumn>
+            <ElTableColumn fixed="right" :label="$t('product.skuStatus')" min-width="90">
+              <template #default="scope">
+                <ElSwitch v-model="scope.row.status" />
+              </template>
+            </ElTableColumn>
           </ElTable>
           <ElEmpty v-else description="请输入SPU" />
         </div>
