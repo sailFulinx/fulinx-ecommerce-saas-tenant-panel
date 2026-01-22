@@ -953,10 +953,12 @@ const getData = () => {
     ElMessage.error($t('product.error.duplicateSkuCode')) // 你需要添加对应的国际化词条
     return
   }
-  // 校验库存是否小于等于0
-  skuItems.forEach(item => {
+
+  // 校验库存及价格等信息
+  for (const item of skuItems) {
     if (item.productSkuInventoryRequestDos.some(skuItem => skuItem.quantity != null && skuItem.quantity < 0)) {
       ElMessage.error($t('product.error.quantity'))
+      return
     }
 
     if (!item.price || item.price === 0) {
@@ -1013,7 +1015,7 @@ const getData = () => {
     if (item.promotionStartedTime) {
       item.promotionStartedTime = formatTime(item.promotionStartedTime)
     }
-  })
+  }
 
   return productSkuRequestDo.value
 }

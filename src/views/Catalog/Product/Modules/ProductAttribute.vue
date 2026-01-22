@@ -50,20 +50,22 @@ const deletedProductAttributeRelationIds = ref<string[]>([])
 // }
 
 const handleSave = async () => {
-  loading.init = true
   const attributeFormData = attributeFormRef.value.getData()
-  const { data } = await updateProductSkuApi({
-    productId,
-    languageId,
-    productSkuRequestDo: attributeFormData,
-  }).catch(error => {
+  if (attributeFormData) {
+    loading.init = true
+    const { data } = await updateProductSkuApi({
+      productId,
+      languageId,
+      productSkuRequestDo: attributeFormData,
+    }).catch(error => {
+      loading.init = false
+      throw error
+    })
     loading.init = false
-    throw error
-  })
-  loading.init = false
-  emit('resetFormData', data)
+    emit('resetFormData', data)
+    ElMessage.success($t('success.edit'))
+  }
   deletedProductAttributeRelationIds.value = []
-  ElMessage.success($t('success.edit'))
 }
 </script>
 
