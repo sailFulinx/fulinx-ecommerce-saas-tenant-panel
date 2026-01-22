@@ -22,6 +22,7 @@ const fileData = ref<FileData & CommonField>({
   fileExtensionName: '',
   path: '',
   fileUrl: '',
+  fileSize: '',
   sha256: '',
   isDelete: 0,
   remark: '',
@@ -61,6 +62,7 @@ const handleDelete = () => {
     fileExtensionName: '',
     path: '',
     fileUrl: '',
+    fileSize: '',
     sha256: '',
     isDelete: 0,
     remark: '',
@@ -75,7 +77,7 @@ const handleDelete = () => {
 }
 
 const setFileData = (data: (FileData & CommonField)[]) => {
-  if (data.length > 0) {
+  if (data.length > 0 && data[0] && data[0].fileUrl) {
     fileData.value = data[0]
     imageUrl.value = data[0].fileUrl
   }

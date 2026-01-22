@@ -913,8 +913,6 @@ const setData = async (data: ProductSkuRequestDo) => {
   // 深拷贝SKU项目数组及其中的对象
   productSkuRequestDo.value.productSkuItemRequestDos = JSON.parse(JSON.stringify(data.productSkuItemRequestDos))
 
-  console.log(productSkuRequestDo.value.productSkuItemRequestDos)
-
   // 多次 nextTick 确保组件完全渲染
   await nextTick() // 第一次等待数据更新
   // 对图片进行赋值
