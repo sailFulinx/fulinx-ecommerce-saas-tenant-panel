@@ -1,25 +1,49 @@
 <script setup lang="ts">
 import { useLocale } from '@/hooks/useLocale'
-import AttributeForm from './AttributeForm.vue'
+import AttributeFormEdit from './AttributeFormEdit.vue'
 
-const { productDetail, languageId, productId, attributeListData, attributePayload, getAttributeList }
+const { languageId, attributeListData, attributePayload, getAttributeDataList, warehouseListData, stockStatusListData, weightUnitListData, lengthUnitListData }
   = defineProps<{
-    productDetail: ProductAdminLocalizedViewDo
     languageId: string
-    productId: string
     attributeListData: TableResponse<AttributeListData & CommonField>
     attributePayload: Partial<AttributeListParams>
-    getAttributeList: (params?: Partial<AttributeListParams>) => Promise<TableResponse<AttributeListData & CommonField>>
+    getAttributeDataList: (params?: Partial<AttributeListParams>) => Promise<TableResponse<AttributeListData & CommonField>>
+    warehouseListData: TableResponse<WarehouseData & CommonField>
+    stockStatusListData: TableResponse<ProductStockStatusData>
+    weightUnitListData: TableResponse<CommonEnumData>
+    lengthUnitListData: TableResponse<CommonEnumData>
   }>()
 
-const emit = defineEmits(['resetFormData'])
+console.log(languageId)
+
+// const emit = defineEmits(['resetFormData'])
+
+interface ProductDataProvider {
+  productData: ShowProduct & CommonField
+}
+
+const { productData } = inject('productData') as ProductDataProvider
+
+console.log(productData)
+
+const productSkuRequestDo = ref<ProductSkuRequestDo>({
+  stockStatus: 1,
+  spu: '',
+  currencyId: '',
+  productAttributeRequestDo: {
+    attributeSummaryDos: [],
+    searchIndex: '',
+  },
+  productSkuItemRequestDos: [],
+})
 
 const attributeFormRef = ref()
 
 onMounted(async () => {
   await nextTick(() => {
     if (attributeFormRef.value) {
-      attributeFormRef.value.setData(productDetail.productAttributeRelationListResultDos)
+      productSkuRequestDo.value.spu = productData.spu
+      attributeFormRef.value.setData(productSkuRequestDo.value)
     }
   })
 })
@@ -34,28 +58,27 @@ const loading = reactive({
 })
 
 const deletedProductAttributeRelationIds = ref<string[]>([])
-const getDeletedProductAttributeRelationId = (id: string) => {
-  if (id) {
-    if (!deletedProductAttributeRelationIds.value.includes(id)) {
-      deletedProductAttributeRelationIds.value.push(id)
-    }
-  }
-}
+// const getDeletedProductAttributeRelationId = (id: string) => {
+//   if (id) {
+//     if (!deletedProductAttributeRelationIds.value.includes(id)) {
+//       deletedProductAttributeRelationIds.value.push(id)
+//     }
+//   }
+// }
 
 const handleSave = async () => {
   loading.init = true
-  const attributeFormData = attributeFormRef.value.getData()
-  const { data } = await updateProductAttributeApi({
-    productId,
-    languageId,
-    productAttributeRelationRequestDos: attributeFormData,
-    deletedProductAttributeRelationIds: deletedProductAttributeRelationIds.value,
-  }).catch(error => {
-    loading.init = false
-    throw error
-  })
+  // const attributeFormData = attributeFormRef.value.getData()
+  // const { data } = await updateProductSkuApi({
+  //   productId,
+  //   languageId,
+  //   productSkuRequestDo: null,
+  // }).catch(error => {
+  //   loading.init = false
+  //   throw error
+  // })
   loading.init = false
-  emit('resetFormData', data)
+  // emit('resetFormData', data)
   deletedProductAttributeRelationIds.value = []
   ElMessage.success($t('success.edit'))
 }
@@ -77,12 +100,15 @@ const handleSave = async () => {
       </div>
     </template>
     <div class="w-full mt-5">
-      <AttributeForm
+      <AttributeFormEdit
         ref="attributeFormRef"
-        :attribute-list-data="attributeListData"
         :attribute-payload="attributePayload"
-        :get-attribute-list="getAttributeList"
-        @get-deleted-product-attribute-relation-id="getDeletedProductAttributeRelationId"
+        :attribute-list-data="attributeListData"
+        :warehouse-list-data="warehouseListData"
+        :stock-status-list-data="stockStatusListData"
+        :weight-unit-list-data="weightUnitListData"
+        :length-unit-list-data="lengthUnitListData"
+        :get-attribute-data-list="getAttributeDataList"
       />
     </div>
   </ElCard>

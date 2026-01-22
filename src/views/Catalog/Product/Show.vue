@@ -43,8 +43,6 @@ const { listData: conditionTypeListData, promise: conditionPromise } = useCondit
 
 const { listData: brandListData, promise: brandPromise } = useBrandList()
 
-const { listData: stockStatusListData, promise: stockStatusPromise } = useProductStockStatusList()
-
 const { listData: layoutTypeListData, promise: layoutPromise } = useLayoutTypeList()
 
 const parameterPayload = reactive<ParameterListParams>({
@@ -65,23 +63,21 @@ const attributePayload = reactive<AttributeListParams>({
 })
 
 const {
-  loading: attributeLoading,
   listData: attributeListData,
   promise: attributePromise,
   getList: getAttributeDataList,
 } = useAttributeList(attributePayload)
 
 const {
-  loading: stockStatusLoading,
   listData: stockStatusListData,
   promise: stockStatusPromise,
 } = useProductStockStatusList()
 
-const { loading: warehouseLoading, listData: warehouseListData, promise: warehousePromise } = useWarehouseList()
+const { listData: warehouseListData, promise: warehousePromise } = useWarehouseList()
 
 // 添加重量单位和长度单位列表数据
-const { loading: weightUnitLoading, listData: weightUnitListData, promise: weightUnitPromise } = useWeightUnitList()
-const { loading: lengthUnitLoading, listData: lengthUnitListData, promise: lengthUnitPromise } = useLengthUnitList()
+const { listData: weightUnitListData, promise: weightUnitPromise } = useWeightUnitList()
+const { listData: lengthUnitListData, promise: lengthUnitPromise } = useLengthUnitList()
 
 onMounted(async () => {
   // 设置初始化加载状态
@@ -573,6 +569,8 @@ const editProductStatus = async () => {
   // await resetFormData(data)
   // ElMessage.success($t('success.edit'))
 }
+
+provide('productData', { form })
 </script>
 
 <template>
@@ -601,7 +599,7 @@ const editProductStatus = async () => {
             <ElTabs v-model="activeName" class="demo-tabs" @tab-change="handleChangeTab">
               <ElTabPane :label="$t('product.base')" name="base" />
               <ElTabPane :label="$t('product.file')" name="file" />
-              <ElTabPane :label="$t('product.attribute')" name="attribute" />
+              <ElTabPane :label="$t('product.priceQuantity')" name="priceQuantity" />
               <ElTabPane :label="$t('product.parameter')" name="parameter" />
               <ElTabPane :label="$t('product.seo')" name="seo" />
               <ElTabPane :label="$t('product.layout')" name="layout" />
@@ -638,7 +636,17 @@ const editProductStatus = async () => {
               <ProductParameter :parameter-list-data="parameterListData" :parameter-payload="parameterPayload" :get-parameter-list="getParameterList" :language-id="item.languageId" :product-detail="item" :product-id="id" :product-data="form" @refresh-data="initFormData" />
             </div>
             <div v-show="activeName === 'attribute'">
-              <ProductAttribute :language-id="item.languageId" :product-detail="item" :product-id="id" :product-data="form" @refresh-data="initFormData" />
+              <ProductAttribute
+                :language-id="item.languageId"
+                :attribute-payload="attributePayload"
+                :attribute-list-data="attributeListData"
+                :warehouse-list-data="warehouseListData"
+                :stock-status-list-data="stockStatusListData"
+                :weight-unit-list-data="weightUnitListData"
+                :length-unit-list-data="lengthUnitListData"
+                :get-attribute-data-list="getAttributeDataList"
+                @refresh-data="initFormData"
+              />
             </div>
             <div v-show="activeName === 'seo'">
               <ProductSeoInfo :language-id="item.languageId" :product-id="id" :product-detail="item" @refresh-data="initFormData" />

@@ -26,6 +26,7 @@ export default {
   category: '产品分类',
   layout: '布局设置',
   attribute: '属性管理',
+  priceQuantity: '价格库存',
   productName: '产品名称',
   productShortName: '产品短标题',
   productShortDescription: '产品简单描述',
