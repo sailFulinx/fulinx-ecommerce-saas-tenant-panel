@@ -1450,6 +1450,8 @@ interface ProductSkuListResultDo {
   /* SKU Image File ID */
   skuImageFileId: string
 
+  skuImageFileVo?: FileData & CommonField
+
   /* SKU */
   skuCode: string
 

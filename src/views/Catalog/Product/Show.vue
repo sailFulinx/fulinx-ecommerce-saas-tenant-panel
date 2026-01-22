@@ -448,6 +448,7 @@ const resetFormData = async (val: ShowProduct) => {
         id: sku.id,
         productId: sku.productId,
         skuImageFileId: sku.skuImageFileId,
+        skuImageFileVo: sku.skuImageFileVo,
         skuCode: sku.skuCode,
         currencyId: sku.currencyId,
         price: sku.price,
@@ -493,8 +494,8 @@ const resetFormData = async (val: ShowProduct) => {
             }))
           : [],
       })
-      console.log(productSkuRequestDo.value.productSkuItemRequestDos)
     })
+    console.log(productSkuRequestDo.value)
   })
 }
 
@@ -596,7 +597,7 @@ provide('productData', { form })
         </ElTabs>
       </div>
       <div class="flex-1 overflow-auto pr-4 -mr-4">
-        <div v-show="activeName === 'base'">
+        <div v-if="activeName === 'base' && form.productAdminLocalizedViewDos.some(item => item.languageId === languageId)">
           <ProductBaseInfo
             v-model:product-admin-localized-view-dos="form.productAdminLocalizedViewDos"
             :product-data="form"
@@ -614,7 +615,7 @@ provide('productData', { form })
             @refresh-data="initFormData"
           />
         </div>
-        <div v-show="activeName === 'file'">
+        <div v-if="activeName === 'file' && form.productAdminLocalizedViewDos.some(item => item.languageId === languageId)">
           <FileInfo
             :language-id="languageId"
             :product-detail="form.productAdminLocalizedViewDos.find(item => item.languageId === languageId) || createProductAdminLocalizedViewDo"
@@ -623,7 +624,7 @@ provide('productData', { form })
             @refresh-data="initFormData"
           />
         </div>
-        <div v-show="activeName === 'parameter'">
+        <div v-if="activeName === 'parameter' && form.productAdminLocalizedViewDos.some(item => item.languageId === languageId)">
           <ProductParameter
             :parameter-list-data="parameterListData"
             :parameter-payload="parameterPayload"
@@ -635,7 +636,7 @@ provide('productData', { form })
             @refresh-data="initFormData"
           />
         </div>
-        <div v-show="activeName === 'priceQuantity'">
+        <div v-if="activeName === 'priceQuantity' && form.productAdminLocalizedViewDos.some(item => item.languageId === languageId)">
           <ProductAttribute
             :language-id="languageId"
             :product-id="id"
@@ -652,7 +653,7 @@ provide('productData', { form })
             @refresh-data="initFormData"
           />
         </div>
-        <div v-show="activeName === 'seo'">
+        <div v-if="activeName === 'seo' && form.productAdminLocalizedViewDos.some(item => item.languageId === languageId)">
           <ProductSeoInfo
             :language-id="languageId"
             :product-id="id"
@@ -660,7 +661,7 @@ provide('productData', { form })
             @refresh-data="initFormData"
           />
         </div>
-        <div v-show="activeName === 'layout'">
+        <div v-if="activeName === 'layout' && form.productAdminLocalizedViewDos.some(item => item.languageId === languageId)">
           <ProductLayoutInfo
             :product-data="form"
             :layout-type-list="layoutTypeListData.list"
@@ -670,7 +671,7 @@ provide('productData', { form })
             @refresh-data="initFormData"
           />
         </div>
-        <div v-show="activeName === 'slug'">
+        <div v-if="activeName === 'slug' && form.productAdminLocalizedViewDos.some(item => item.languageId === languageId)">
           <ProductSlugInfo
             :product-data="form"
             :slug="form.slug"
