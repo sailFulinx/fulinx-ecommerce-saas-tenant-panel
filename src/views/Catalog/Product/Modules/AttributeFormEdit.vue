@@ -891,19 +891,17 @@ const setAttributeImage = ({
 }
 
 const setData = async (data: ProductSkuRequestDo) => {
-  console.log(data)
   await nextTick()
-  // 逐个属性赋值，保持响应式引用
+  // 使用深拷贝方式赋值，避免引用问题
   productSkuRequestDo.value.stockStatus = data.stockStatus
   productSkuRequestDo.value.spu = data.spu
   productSkuRequestDo.value.currencyId = data.currencyId
-  // 复制attributeSummaryDos数组
-  productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos = [...data.productAttributeRequestDo.attributeSummaryDos]
+  // 深拷贝attributeSummaryDos数组及其中的对象
+  productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos = JSON.parse(JSON.stringify(data.productAttributeRequestDo.attributeSummaryDos))
   productSkuRequestDo.value.productAttributeRequestDo.searchIndex = data.productAttributeRequestDo.searchIndex
-  // 复制SKU项目数组
-  productSkuRequestDo.value.productSkuItemRequestDos = [...data.productSkuItemRequestDos]
-
-  console.log(productSkuRequestDo.value)
+  // 深拷贝SKU项目数组及其中的对象
+  productSkuRequestDo.value.productSkuItemRequestDos = JSON.parse(JSON.stringify(data.productSkuItemRequestDos))
+  console.log(productSkuRequestDo.value.productSkuItemRequestDos)
   // 对图片进行赋值
   productSkuRequestDo.value.productAttributeRequestDo.attributeSummaryDos.forEach((item, index) => {
     item.attributeValueDos?.forEach((aItem, avIndex) => {
