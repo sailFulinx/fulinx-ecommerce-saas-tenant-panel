@@ -217,8 +217,8 @@ interface UpdateProductShortNameParams {
 }
 
 interface UpdateProductSkuParams {
-  productId: ''
-  languageId: ''
+  productId: string
+  languageId: string
   productSkuRequestDo: {
     productAttributeRequestDo: {
       attributeSummaryDos: [

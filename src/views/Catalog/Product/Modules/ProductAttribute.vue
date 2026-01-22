@@ -17,13 +17,7 @@ const { languageId, productId, attributeListData, attributePayload, getAttribute
     productSkuRequestDo: ProductSkuRequestDo
   }>()
 
-// const emit = defineEmits(['resetFormData'])
-
-// interface ProductDataProvider {
-//   productData: ShowProduct & CommonField
-// }
-
-// const { productData } = inject('productData') as ProductDataProvider
+const emit = defineEmits(['resetFormData'])
 
 const attributeFormRef = ref()
 
@@ -57,17 +51,17 @@ const deletedProductAttributeRelationIds = ref<string[]>([])
 
 const handleSave = async () => {
   loading.init = true
-  // const attributeFormData = attributeFormRef.value.getData()
-  // const { data } = await updateProductSkuApi({
-  //   productId,
-  //   languageId,
-  //   productSkuRequestDo: null,
-  // }).catch(error => {
-  //   loading.init = false
-  //   throw error
-  // })
+  const attributeFormData = attributeFormRef.value.getData()
+  const { data } = await updateProductSkuApi({
+    productId,
+    languageId,
+    productSkuRequestDo: attributeFormData,
+  }).catch(error => {
+    loading.init = false
+    throw error
+  })
   loading.init = false
-  // emit('resetFormData', data)
+  emit('resetFormData', data)
   deletedProductAttributeRelationIds.value = []
   ElMessage.success($t('success.edit'))
 }

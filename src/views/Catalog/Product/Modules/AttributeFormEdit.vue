@@ -33,19 +33,10 @@ const { t: $t } = useLocale()
 
 const dragging = ref(false)
 
-const currentWarehouseId = ref('')
+const currentWarehouseId = ref(warehouseListData.list.find(item => item.isDefault)?.id || '')
 
 // 使用一个map来存储多个uploadSingleImageMiniRef实例
 const uploadSingleImageMiniRefs = ref<Record<string, any>>({})
-
-watch(
-  () => warehouseListData,
-  () => {
-    if (!currentWarehouseId.value) {
-      currentWarehouseId.value = warehouseListData.list.find(item => item.isDefault)?.id || ''
-    }
-  },
-)
 
 const formRef = ref()
 const multipleTable = ref() // 添加表格引用
