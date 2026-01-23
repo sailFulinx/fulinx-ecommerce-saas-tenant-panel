@@ -53,6 +53,20 @@ const handleOpenDialog = async () => {
   dialogVisible.value = true
 }
 
+const handleRemoteSearch = async (query: string) => {
+  if (query !== '' && query.length >= 3) {
+    // 更新搜索关键词到查询参数中
+    productPayload.productName = query
+
+    // 调用 getProductList 进行搜索
+    await getProductList()
+  } else {
+    // 如果查询词为空，重置为初始状态
+    delete productPayload.productName
+    await getProductList()
+  }
+}
+
 const handleAddProduct = async () => {
   if (!selectedProducts.value || selectedProducts.value.length === 0) {
     ElMessage.warning($t('product.related.selectProduct'))
@@ -140,7 +154,13 @@ const handleSave = async () => {
                 </div>
               </div>
               <div class="p-2">
-                <SImg :src="item.relatedProductImageFileVo?.fileUrl" :alt="item.productName" fit="cover" lazy placeholder />
+                <SImg
+                  :src="item.relatedProductImageFileVo?.fileUrl"
+                  :alt="item.productName"
+                  fit="cover"
+                  lazy
+                  placeholder
+                />
               </div>
 
               <div class="p-2">
@@ -163,6 +183,8 @@ const handleSave = async () => {
           size="large"
           multiple
           filterable
+          remote
+          :remote-method="handleRemoteSearch"
           clearable
           placeholder="请选择产品"
         >
