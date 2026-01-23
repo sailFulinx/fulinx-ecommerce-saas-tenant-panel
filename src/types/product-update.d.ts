@@ -366,6 +366,25 @@ interface UpdateProductSystemCategoryParams {
   deletedSystemCategoryIds?: string[]
 }
 
+interface ProductRelatedRequestDo {
+  /* Product ID */
+  productId?: string
+
+  /* Related Product ID */
+  relatedProductId?: string
+
+  spu?: string
+
+  productName?: string
+
+  relatedProductImageFileId?: string
+
+  relatedProductImageFileVo?: (FileData & CommonField) | undefined
+
+  /* Sort */
+  sort?: number
+}
+
 interface UpdateProductRelatedParams {
   /* Product ID */
   productId: string
@@ -374,16 +393,7 @@ interface UpdateProductRelatedParams {
   languageId: string
 
   /* Product Related Request Dos */
-  productRelatedRequestDos?: {
-    /* Product ID */
-    productId?: string
-
-    /* Related Product ID */
-    relatedProductId?: string
-
-    /* Sort */
-    sort?: number
-  }[]
+  productRelatedRequestDos?: ProductRelatedRequestDo[]
 
   /* Deleted Product Related IDs */
   deletedProductRelatedIds?: string[]

@@ -36,11 +36,31 @@ const dialogVisible = ref(false)
 
 const handleOpenDialog = async () => {
   await productPromise
+  selectedProducts.value = []
   dialogVisible.value = true
 }
 
+const productRelatedRequestDos = ref<ProductRelatedRequestDo[]>([])
+
 const handleAddProduct = async () => {
-  selectedProducts.value = []
+  if (!selectedProducts.value || selectedProducts.value.length === 0) {
+    ElMessage.warning($t('product.related.selectProduct'))
+    return
+  }
+  selectedProducts.value.forEach(item => {
+    if (item.productFileRelationListResultDos && item.productFileRelationListResultDos.length > 0) {
+      const firstFile = item.productFileRelationListResultDos.find(item => item.productFileType === 1)
+      const pushData: ProductRelatedRequestDo = {
+        productId,
+        relatedProductId: item.id,
+        spu: item.spu,
+        productName: item.productName,
+        relatedProductImageFileVo: firstFile?.fileVo || undefined,
+        sort: productRelatedRequestDos.value.length + 1,
+      }
+      productRelatedRequestDos.value.push(pushData)
+    }
+  })
   dialogVisible.value = false
 }
 
@@ -49,7 +69,7 @@ const handleSave = async () => {
   const { data } = await updateProductRelatedApi({
     productId,
     languageId,
-    productRelatedRequestDos: [],
+    productRelatedRequestDos: productRelatedRequestDos.value,
     deletedProductRelatedIds: [],
   })
   emit('resetFormData', data)
@@ -93,10 +113,18 @@ const handleSave = async () => {
     </div>
     <ElDialog v-model="dialogVisible" title="添加关联产品" width="60%">
       <div class="w-full flex">
-        <ElSelect v-model="selectedProducts" value-key="id" size="large" multiple filterable clearable placeholder="请选择产品">
-          <ElOption v-for="item in productListData.list" :key="item.id" :value="item">
+        <ElSelect
+          v-model="selectedProducts"
+          value-key="id"
+          size="large"
+          multiple
+          filterable
+          clearable
+          placeholder="请选择产品"
+        >
+          <ElOption v-for="item in productListData.list" :key="item.id" :label="item.productName" :value="item">
             <div class="w-full flex items-center justify-start">
-              <div
+              <!-- <div
                 v-if="item.productMainImageUrl"
                 class="w-full min-h-10 h-auto mr-2"
               >
@@ -115,7 +143,7 @@ const handleSave = async () => {
                     </div>
                   </template>
                 </ElImage>
-              </div>
+              </div> -->
               <div>{{ item.productName }}</div>
             </div>
           </ElOption>

@@ -358,6 +358,14 @@ interface ProductRelatedRequestDo {
   /* Related Product ID */
   relatedProductId?: string
 
+  spu?: string
+
+  productName?: string
+
+  relatedProductImageFileId?: string
+
+  relatedProductImageFileVo?: (FileData & CommonField) | undefined
+
   /* Sort */
   sort?: number
 }
@@ -828,67 +836,7 @@ interface ProductListData {
     fileId: string
 
     /* */
-    fileVo: {
-      /* File ID */
-      id: string
-
-      /* Bucket Name */
-      bucketName: string
-
-      /* Etag */
-      etag: string
-
-      /* S3 Key */
-      s3Key: string
-
-      /* Is Public */
-      isPublic: boolean
-
-      /* Original File Name */
-      originalFileName: string
-
-      /* File Name */
-      fileName: string
-
-      /* File Content Type */
-      fileContentType: string
-
-      /* File Extension Name */
-      fileExtensionName: string
-
-      /* File Size */
-      fileSize: string
-
-      /* Path */
-      path: string
-
-      /* File Url */
-      fileUrl: string
-
-      /* sha256 */
-      sha256: string
-
-      /* Soft Delete Flag */
-      isDelete: number
-
-      /* Remark */
-      remark: string
-
-      /* Record Version */
-      recordVersion: number
-
-      /* Record Create Name */
-      recordCreateName: string
-
-      /* Record Update Name */
-      recordUpdateName: string
-
-      /* Record Create Time */
-      recordCreateTime: Record<string, unknown>
-
-      /* Record Update Time */
-      recordUpdateTime: Record<string, unknown>
-    }
+    fileVo: FileData & CommonField
 
     /* Is Default, 0 - No, 1 - Yes */
     isDefault: boolean
