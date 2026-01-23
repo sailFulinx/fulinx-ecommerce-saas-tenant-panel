@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { usePreferenceStore } from '@/stores/preference'
 import { formatTime } from '@/utils'
+import { convertStatus } from '@/utils/status'
 
 const router = useRouter()
 
@@ -104,6 +105,59 @@ const handleRedirectEdit = (val: ProductListData & CommonField) => {
   router.push({ name: 'ShowProduct', params: { id: val.id } })
 }
 
+// 处理排序变更
+const handleSortChange = async (row: ProductListData & CommonField, value: number | undefined) => {
+  // 如果值为 undefined，不执行更新操作
+  if (value === undefined) {
+    return
+  }
+
+  try {
+    await updateProductSortApi({
+      productId: row.id,
+      languageId: listQuery.languageId,
+      sort: value,
+    })
+    ElMessage({
+      message: '排序更新成功',
+      type: 'success',
+      duration: 2000,
+    })
+    getList()
+  } catch (err) {
+    ElMessage({
+      message: '排序更新失败',
+      type: 'error',
+      duration: 2000,
+    })
+    throw err
+  }
+}
+
+// 处理置顶变更
+const handleIsTopChange = async (row: ProductListData & CommonField, value: boolean) => {
+  try {
+    await updateProductIsTopApi({
+      productId: row.id,
+      languageId: listQuery.languageId,
+      isTop: value,
+    })
+    ElMessage({
+      message: value ? '已置顶' : '已取消置顶',
+      type: 'success',
+      duration: 2000,
+    })
+    getList()
+  } catch (err) {
+    ElMessage({
+      message: '置顶操作失败',
+      type: 'error',
+      duration: 2000,
+    })
+    throw err
+  }
+}
+
 // init()
 </script>
 
@@ -205,6 +259,33 @@ const handleRedirectEdit = (val: ProductListData & CommonField) => {
               {{ scope.row.currencyListResultDo?.symbolLeft || ''
               }}{{ scope.row.minPromotionPrice ? scope.row.minPromotionPrice?.toFixed(2) : '' }} - {{ scope.row.maxPromotionPrice ? scope.row.maxPromotionPrice?.toFixed(2) : '' }}
             </span>
+          </template>
+        </ElTableColumn>
+        <ElTableColumn prop="sort" :label="$t('common.sort')" width="150">
+          <template #default="scope">
+            <ElInputNumber
+              v-model="scope.row.sort"
+              :min="0"
+              controls-position="right"
+              size="small"
+              @change="handleSortChange(scope.row, $event)"
+            />
+          </template>
+        </ElTableColumn>
+        <ElTableColumn :label="$t('common.isTop')" width="120">
+          <template #default="scope">
+            <ElSwitch
+              v-model="scope.row.isTop"
+              inline-prompt
+              :active-text="$t('common.yes')"
+              :inactive-text="$t('common.no')"
+              @change="handleIsTopChange(scope.row, Boolean($event))"
+            />
+          </template>
+        </ElTableColumn>
+        <ElTableColumn :label="$t('common.status')" width="120">
+          <template #default="scope">
+            <span>{{ convertStatus(scope.row.status) }}</span>
           </template>
         </ElTableColumn>
         <ElTableColumn :label="$t('product.recordCreateTime')">

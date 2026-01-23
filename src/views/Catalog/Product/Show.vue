@@ -552,18 +552,18 @@ watch(
 
 // 更新状态
 const editProductStatus = async () => {
-  // loading.init = true
-  // const { data } = await updateProductStatusApi({
-  //   productId: id,
-  //   languageId: selectLanguage.value.id,
-  //   status: form.status,
-  // }).catch(error => {
-  //   loading.init = false
-  //   throw error
-  // })
-  // loading.init = false
-  // await resetFormData(data)
-  // ElMessage.success($t('success.edit'))
+  loading.init = true
+  const { data } = await updateProductStatusApi({
+    productId: id,
+    languageId: selectLanguage.value.id,
+    status: form.status,
+  }).catch(error => {
+    loading.init = false
+    throw error
+  })
+  loading.init = false
+  await resetFormData(data)
+  ElMessage.success($t('success.edit'))
 }
 
 provide('productData', { form })

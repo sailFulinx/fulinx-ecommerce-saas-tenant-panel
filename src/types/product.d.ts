@@ -516,7 +516,7 @@ interface CreateProductRes {
 
 interface ProductListParams {
   /* Language ID */
-  languageId: string | null
+  languageId: string
 
   /* Product Id */
   productId?: string | null
