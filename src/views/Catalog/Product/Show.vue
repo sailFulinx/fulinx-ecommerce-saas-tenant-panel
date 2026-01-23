@@ -676,7 +676,7 @@ provide('productData', { form })
               form.productAdminLocalizedViewDos.find(item => item.languageId === languageId)
                 || createProductAdminLocalizedViewDo
             "
-            @refresh-data="initFormData"
+            @reset-form-data="resetFormData"
           />
         </div>
         <div

@@ -108,10 +108,6 @@ const currentProductShortName = ref<string>('')
 const inputBrandVisible = ref<boolean>(false)
 const currentBrandId = ref<string>('')
 
-// 库存状态相关
-const inputStockStatusVisible = ref<boolean>(false)
-const currentStockStatus = ref()
-
 // 产品来源类型相关
 const inputProductSourceTypeVisible = ref<boolean>(false)
 const currentProductSourceType = ref()
@@ -205,35 +201,6 @@ const editBrand = async () => {
     throw error
   })
   inputBrandVisible.value = false
-  ElMessage.success($t('success.edit'))
-  emit('refreshData')
-}
-
-// 库存状态相关方法
-const handleClickUpdateStockStatus = () => {
-  if (props.productData?.stockStatus) {
-    currentStockStatus.value = props.productData.stockStatus
-  }
-  inputStockStatusVisible.value = true
-}
-
-const handleCancelUpdateStockStatus = () => {
-  inputStockStatusVisible.value = false
-}
-
-const editStockStatus = async () => {
-  if (currentStockStatus.value === undefined || currentStockStatus.value === null) {
-    ElMessage.warning($t('product.error.stockStatus'))
-    return
-  }
-  await updateProductStockStatusApi({
-    stockStatus: currentStockStatus.value,
-    productId: props.productId,
-    languageId: props.languageId,
-  }).catch(error => {
-    throw error
-  })
-  inputStockStatusVisible.value = false
   ElMessage.success($t('success.edit'))
   emit('refreshData')
 }
@@ -701,38 +668,6 @@ const handleCopyProduct = async () => {
             type="primary"
             text
             @click="handleClickUpdateBrand(productData?.brandListResultDo?.id || '')"
-          >
-            <Icon icon="ep:edit" :size="5" class="mr-1" />
-          </EBtn>
-        </div>
-      </div>
-      <!-- 库存状态 -->
-      <div class="w-full flex border-b border-gray-200 p-4">
-        <div class="w-30 font-semibold text-gray-700 flex-shrink-0">
-          {{ $t('product.stockStatus') }}:
-        </div>
-        <div class="flex-1 w-full flex items-center">
-          <span v-if="!inputStockStatusVisible" class="mr-2">
-            {{ productData?.stockStatusLabel }}
-          </span>
-          <span v-else class="flex items-center">
-            <ElRadioGroup v-model="currentStockStatus" class="mr-2">
-              <ElRadio v-for="item in stockStatusListData.list" :key="item.id" :value="item.id">
-                {{ item.productStockStatusName }}
-              </ElRadio>
-            </ElRadioGroup>
-            <EBtn text @click="editStockStatus">
-              <Icon icon="ep:check" :size="5" />
-            </EBtn>
-            <EBtn text @click="handleCancelUpdateStockStatus">
-              <Icon icon="ep:close" :size="5" />
-            </EBtn>
-          </span>
-          <EBtn
-            v-if="!inputStockStatusVisible"
-            type="primary"
-            text
-            @click="handleClickUpdateStockStatus"
           >
             <Icon icon="ep:edit" :size="5" class="mr-1" />
           </EBtn>
