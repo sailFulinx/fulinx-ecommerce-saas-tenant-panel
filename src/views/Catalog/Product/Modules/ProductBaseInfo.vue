@@ -104,7 +104,7 @@ const inputCategoryVisible = ref<boolean>(false)
 const categoryProps = {
   value: 'id',
   label: 'categoryName',
-  multiple: false,
+  multiple: true,
 }
 const selectedCategoryValue = ref<string[] | any>(props.productData?.categoryIds || [])
 const deletedCategoryValue = ref<string[] | any>([])

@@ -948,6 +948,11 @@ const getData = () => {
     ElMessage.error($t('product.error.spu'))
     return
   }
+
+  if (!productSkuRequestDo.value.currencyId) {
+    ElMessage.error($t('product.error.currency'))
+    return
+  }
   // 校验skuCode是否有重复和校验skuCode是否为空
   const skuItems = productSkuRequestDo.value.productSkuItemRequestDos
   // 检查是否有空值（包括只有空白字符的情况）
@@ -965,7 +970,7 @@ const getData = () => {
 
   // 校验库存及价格等信息
   for (const item of skuItems) {
-    if (item.productSkuInventoryRequestDos.some(skuItem => skuItem.quantity != null && skuItem.quantity < 0)) {
+    if (item.productSkuInventoryRequestDos.some(skuItem => !skuItem.quantity || skuItem.quantity <= 0)) {
       ElMessage.error($t('product.error.quantity'))
       return
     }

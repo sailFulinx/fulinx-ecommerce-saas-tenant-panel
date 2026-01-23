@@ -1,5 +1,3 @@
-import Price from '@/views/Catalog/Product/Modules/Price.vue'
-
 export default {
   show: '产品详情',
   add: '添加产品',
@@ -116,6 +114,8 @@ export default {
   },
   error: {
     spu: '请输入SPU',
+    image: '请上传图片',
+    currency: '请选择货币',
     skuCode: 'SKU不能为空或存在空白字符',
     duplicateSkuCode: 'SKU不能重复',
     quantity: '库存不能为空或小于0',

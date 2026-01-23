@@ -274,6 +274,9 @@ const save = async () => {
   productForm.productParameterRelationRequestDos = []
   productForm.languageId = languageId
   const attributeForm = attributeFormRef.value.getData()
+  if (!attributeForm) {
+    loading.init = false
+  }
   productForm.spu = attributeForm.spu
   if (categoryIds.value && categoryIds.value.length > 0) {
     productForm.categoryIds = categoryIds.value
@@ -284,6 +287,11 @@ const save = async () => {
   productForm.productParameterRelationRequestDos = parameterFormRef.value.getData()
   productForm.productSupplierRequestDos = supplierFormRef.value.getData()
   const images = imageUploadRef.value.getFileData()
+  if (!images || images.fileDataList.length === 0) {
+    ElMessage.error(t('product.error.image'))
+    loading.init = false
+    return
+  }
   productForm.productFileRequestDos = images.fileDataList
   productForm.productFileRequestDos?.forEach((item, index) => {
     item.productFileType = 1
@@ -301,15 +309,17 @@ const save = async () => {
 
   const video = videoUploadRef.value.getFileData()
 
-  const videoData = {
-    productFileType: 2,
-    fileId: video.fileData.id,
-    ...video.fileData,
-    languageId,
-    isDefault: false,
-  }
+  if (video && video.fileData && video.fileData.id) {
+    const videoData = {
+      productFileType: 2,
+      fileId: video.fileData.id,
+      ...video.fileData,
+      languageId,
+      isDefault: false,
+    }
 
-  productForm.productFileRequestDos = [...productForm.productFileRequestDos, videoData]
+    productForm.productFileRequestDos = [...productForm.productFileRequestDos, videoData]
+  }
 
   if (productForm.onlineTime) {
     productForm.onlineTime = formatTime(productForm.onlineTime)
@@ -471,7 +481,7 @@ provide('ProductCreate', { productForm })
                 <ElFormItem :label="$t('product.productImage')" required>
                   <UploadImage ref="imageUploadRef" />
                 </ElFormItem>
-                <ElFormItem :label="$t('product.video')" required>
+                <ElFormItem :label="$t('product.video')">
                   <UploadVideo ref="videoUploadRef" />
                 </ElFormItem>
                 <ElFormItem :label="$t('product.productShortDescription')" prop="productShortDescription">
