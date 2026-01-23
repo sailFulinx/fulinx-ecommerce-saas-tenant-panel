@@ -70,6 +70,14 @@ export function updateProductIsTopApi(params: UpdateProductIsTopParams): Promise
   })
 }
 
+export function updateProductCustomsApi(params: UpdateProductCustomsParams): Promise<IResponse<ShowProduct & CommonField>> {
+  return request.post({
+    url: 'system/product/update/customs',
+    data: params,
+    token: true,
+  })
+}
+
 export function updateProductLayoutApi(params: UpdateProductLayoutParams): Promise<IResponse<ShowProduct & CommonField>> {
   return request.post({
     url: 'system/product/update/layout',

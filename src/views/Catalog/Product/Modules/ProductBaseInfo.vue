@@ -512,6 +512,10 @@ const handleCopyProduct = async () => {
   fromLanguageId.value = ''
   // emit('resetFormData', data)
 }
+
+const resetData = (val: ShowProduct & CommonField) => {
+  emit('resetFormData', val)
+}
 </script>
 
 <template>
@@ -974,11 +978,11 @@ const handleCopyProduct = async () => {
           {{ $t('product.customs') }}:
         </div>
         <div class="flex-1 w-full flex items-center">
-          <!-- <CustomsTable
+          <CustomsTable
             :custom-list="productDetail.productDetailListResultDo.customList"
             :product-detail-id="productDetail.productDetailListResultDo.id"
-            @refresh-data="refreshFormData"
-          /> -->
+            @reset-form-data="resetData"
+          />
         </div>
       </div>
     </div>

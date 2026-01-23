@@ -4,11 +4,11 @@ import { convertCustomTypeValue } from '@/utils/general'
 
 const props = defineProps({
   customList: Array as any,
-  articleDetailId: String,
+  productDetailId: String,
 })
 
 const emit = defineEmits<{
-  refreshData: []
+  resetFormData: [ShowProduct & CommonField]
 }>()
 
 const { t: $t } = useLocale()
@@ -58,19 +58,19 @@ const handleAddCustom = async () => {
   initCustomData()
 }
 
-const updateArticleCustom = async () => {
-  if (!props.articleDetailId) {
+const updateProductCustom = async () => {
+  if (!props.productDetailId) {
     return
   }
   const payload = {
-    articleDetailId: props.articleDetailId,
+    productDetailId: props.productDetailId,
     customs: JSON.stringify(customs.value),
   }
-  await updateArticleCustomsApi(payload).catch((error: any) => {
+  const { data } = await updateProductCustomsApi(payload).catch((error: any) => {
     throw error
   })
   ElMessage.success($t('success.edit'))
-  emit('refreshData')
+  emit('resetFormData', data)
 }
 
 // 自动修复重复ID的方法
@@ -105,7 +105,7 @@ const fixDuplicateIds = () => {
 // Remove a custom entry by index
 const handleRemoveCustom = async (index: number) => {
   customs.value.splice(index, 1)
-  await updateArticleCustom()
+  await updateProductCustom()
 }
 
 // Move custom up
@@ -116,7 +116,7 @@ const moveUp = async (index: number) => {
   const temp = customs.value[index]
   customs.value[index] = customs.value[index - 1]
   customs.value[index - 1] = temp
-  await updateArticleCustom()
+  await updateProductCustom()
 }
 
 // Move custom down
@@ -127,7 +127,7 @@ const moveDown = async (index: number) => {
   const temp = customs.value[index]
   customs.value[index] = customs.value[index + 1]
   customs.value[index + 1] = temp
-  await updateArticleCustom()
+  await updateProductCustom()
 }
 
 // Edit a custom entry by index
@@ -172,7 +172,7 @@ const getCustomData = async (val: CustomDataType) => {
   }
   initCustomData()
 
-  await updateArticleCustom()
+  await updateProductCustom()
   customVisible.value = false
 }
 
@@ -196,7 +196,7 @@ watch(
       nextTick(async () => {
         if (fixDuplicateIds()) {
           // 如果修复了重复ID，则更新数据
-          await updateArticleCustom()
+          await updateProductCustom()
         }
       })
     }
