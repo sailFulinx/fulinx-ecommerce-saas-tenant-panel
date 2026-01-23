@@ -12,7 +12,7 @@ const props = defineProps<Props>()
 
 const emit = defineEmits<{
   editProductLayout: []
-  refreshData: []
+  resetFormData: [ShowProduct & CommonField]
 }>()
 
 const { t: $t } = useLocale()
@@ -83,12 +83,12 @@ const handleSubmitProductLayout = async () => {
     devComponentName: devComponentName.value,
     layoutContent: JSON.stringify(rows.value),
   }
-  await updateProductLayoutApi(payload).catch(error => {
+  const { data } = await updateProductLayoutApi(payload).catch(error => {
     throw error
   })
   isShowLayoutEdit.value = false
   ElMessage.success($t('success.edit'))
-  emit('refreshData')
+  emit('resetFormData', data)
 }
 
 const handleCancel = () => {

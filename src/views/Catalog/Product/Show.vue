@@ -2,9 +2,9 @@
 import type { InputInstance, TabPaneName } from 'element-plus'
 import { useLocale } from '@/hooks/useLocale'
 import { usePreferenceStore } from '@/stores/preference'
-import FileInfo from './Modules/FileInfo.vue'
 import ProductAttribute from './Modules/ProductAttribute.vue'
 import ProductBaseInfo from './Modules/ProductBaseInfo.vue'
+import ProductFileInfo from './Modules/ProductFileInfo.vue'
 import ProductLayoutInfo from './Modules/ProductLayoutInfo.vue'
 import ProductParameter from './Modules/ProductParameter.vue'
 import ProductSeoInfo from './Modules/ProductSeoInfo.vue'
@@ -618,13 +618,13 @@ provide('productData', { form })
             :condition-type-list-data="conditionTypeListData"
             :brand-list-data="brandListData"
             :stock-status-list-data="stockStatusListData"
-            @refresh-data="initFormData"
+            @reset-form-data="resetFormData"
           />
         </div>
         <div
           v-if="activeName === 'file' && form.productAdminLocalizedViewDos.some(item => item.languageId === languageId)"
         >
-          <FileInfo
+          <ProductFileInfo
             :language-id="languageId"
             :product-detail="
               form.productAdminLocalizedViewDos.find(item => item.languageId === languageId)
@@ -632,7 +632,7 @@ provide('productData', { form })
             "
             :product-id="id"
             :product-data="form"
-            @refresh-data="initFormData"
+            @reset-form-data="resetFormData"
           />
         </div>
         <div
@@ -651,7 +651,7 @@ provide('productData', { form })
             "
             :product-id="id"
             :product-data="form"
-            @refresh-data="initFormData"
+            @reset-form-data="resetFormData"
           />
         </div>
         <div
@@ -689,7 +689,7 @@ provide('productData', { form })
               form.productAdminLocalizedViewDos.find(item => item.languageId === languageId)
                 || createProductAdminLocalizedViewDo
             "
-            @refresh-data="initFormData"
+            @reset-form-data="resetFormData"
           />
         </div>
         <div
@@ -706,7 +706,7 @@ provide('productData', { form })
               form.productAdminLocalizedViewDos.find(item => item.languageId === languageId)
                 || createProductAdminLocalizedViewDo
             "
-            @refresh-data="initFormData"
+            @reset-form-data="resetFormData"
           />
         </div>
         <div
@@ -722,7 +722,7 @@ provide('productData', { form })
               form.productAdminLocalizedViewDos.find(item => item.languageId === languageId)
                 || createProductAdminLocalizedViewDo
             "
-            @refresh-data="initFormData"
+            @reset-form-data="resetFormData"
           />
         </div>
       </div>

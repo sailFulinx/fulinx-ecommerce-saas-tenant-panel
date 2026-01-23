@@ -23,7 +23,7 @@ interface Props {
 const props = defineProps<Props>()
 
 const emit = defineEmits<{
-  refreshData: []
+  resetFormData: [ShowProduct & CommonField]
   removeTag: [index: number]
   showInputTag: [index: number]
   inputTagConfirm: []
@@ -81,7 +81,7 @@ const handleConfirmEditSystemCategory = async () => {
   // 合并所有删除的分类
   const deletedSystemCategoryIds = [...new Set([...deletedIds, ...directlyDeletedIds])]
   loading.button = false
-  await updateProductSystemCategoryApi({
+  const { data } = await updateProductSystemCategoryApi({
     productId: props.productId,
     languageId: props.languageId,
     systemCategoryIds: currentIds,
@@ -94,7 +94,7 @@ const handleConfirmEditSystemCategory = async () => {
   deletedSystemCategoryValue.value = []
   loading.button = false
   ElMessage.success($t('success.edit'))
-  emit('refreshData')
+  emit('resetFormData', data)
 }
 
 // 产品名称相关
@@ -142,7 +142,7 @@ const editProductName = async (productDetailId: string) => {
     ElMessage.warning($t('product.error.productName'))
     return
   }
-  await updateProductNameApi({
+  const { data } = await updateProductNameApi({
     productName: currentProductName.value,
     productDetailId,
   }).catch(error => {
@@ -151,7 +151,7 @@ const editProductName = async (productDetailId: string) => {
   currentProductName.value = ''
   inputProductNameVisible.value = false
   ElMessage.success($t('success.edit'))
-  emit('refreshData')
+  emit('resetFormData', data)
 }
 
 // 产品短名称相关方法
@@ -166,7 +166,7 @@ const handleCancelUpdateProductShortName = () => {
 
 const editProductShortName = async (productDetailId: string) => {
   // 短名称可以为空
-  await updateProductShortNameApi({
+  const { data } = await updateProductShortNameApi({
     productShortName: currentProductShortName.value,
     productDetailId,
   }).catch(error => {
@@ -175,7 +175,7 @@ const editProductShortName = async (productDetailId: string) => {
   currentProductShortName.value = ''
   inputProductShortNameVisible.value = false
   ElMessage.success($t('success.edit'))
-  emit('refreshData')
+  emit('resetFormData', data)
 }
 
 // 品牌相关方法
@@ -193,7 +193,7 @@ const editBrand = async () => {
     ElMessage.warning($t('product.error.brand'))
     return
   }
-  await updateProductBrandApi({
+  const { data } = await updateProductBrandApi({
     brandId: currentBrandId.value,
     productId: props.productId,
     languageId: props.languageId,
@@ -202,7 +202,7 @@ const editBrand = async () => {
   })
   inputBrandVisible.value = false
   ElMessage.success($t('success.edit'))
-  emit('refreshData')
+  emit('resetFormData', data)
 }
 
 // 产品来源类型相关方法
@@ -222,7 +222,7 @@ const editProductSourceType = async () => {
     ElMessage.warning($t('product.error.productSourceType'))
     return
   }
-  await updateProductSourceTypeApi({
+  const { data } = await updateProductSourceTypeApi({
     productSourceType: currentProductSourceType.value,
     productId: props.productId,
     languageId: props.languageId,
@@ -231,7 +231,7 @@ const editProductSourceType = async () => {
   })
   inputProductSourceTypeVisible.value = false
   ElMessage.success($t('success.edit'))
-  emit('refreshData')
+  emit('resetFormData', data)
 }
 
 // 成人用品相关方法
@@ -245,7 +245,7 @@ const handleCancelUpdateIsAdult = () => {
 }
 
 const editIsAdult = async () => {
-  await updateProductIsAdultApi({
+  const { data } = await updateProductIsAdultApi({
     isAdult: currentIsAdult.value,
     languageId: props.languageId,
     productId: props.productId,
@@ -254,7 +254,7 @@ const editIsAdult = async () => {
   })
   inputIsAdultVisible.value = false
   ElMessage.success($t('success.edit'))
-  emit('refreshData')
+  emit('resetFormData', data)
 }
 
 // 年龄组类型相关方法
@@ -274,7 +274,7 @@ const editAgeGroupType = async () => {
     ElMessage.warning($t('product.error.ageGroupType'))
     return
   }
-  await updateProductAgeGroupTypeApi({
+  const { data } = await updateProductAgeGroupTypeApi({
     ageGroupType: currentAgeGroupType.value,
     languageId: props.languageId,
     productId: props.productId,
@@ -283,7 +283,7 @@ const editAgeGroupType = async () => {
   })
   inputAgeGroupTypeVisible.value = false
   ElMessage.success($t('success.edit'))
-  emit('refreshData')
+  emit('resetFormData', data)
 }
 
 // 性别类型相关方法
@@ -303,7 +303,7 @@ const editGenderType = async () => {
     ElMessage.warning($t('product.error.genderType'))
     return
   }
-  await updateProductGenderTypeApi({
+  const { data } = await updateProductGenderTypeApi({
     genderType: currentGenderType.value,
     productId: props.productId,
     languageId: props.languageId,
@@ -312,7 +312,7 @@ const editGenderType = async () => {
   })
   inputGenderTypeVisible.value = false
   ElMessage.success($t('success.edit'))
-  emit('refreshData')
+  emit('resetFormData', data)
 }
 
 // 条件类型相关方法
@@ -332,7 +332,7 @@ const editConditionType = async () => {
     ElMessage.warning($t('product.error.conditionType'))
     return
   }
-  await updateProductConditionTypeApi({
+  const { data } = await updateProductConditionTypeApi({
     conditionType: currentConditionType.value,
     languageId: props.languageId,
     productId: props.productId,
@@ -341,7 +341,7 @@ const editConditionType = async () => {
   })
   inputConditionTypeVisible.value = false
   ElMessage.success($t('success.edit'))
-  emit('refreshData')
+  emit('resetFormData', data)
 }
 
 const createProductName = async () => {
@@ -349,14 +349,14 @@ const createProductName = async () => {
     ElMessage.warning($t('product.error.productName'))
     return
   }
-  await createProductNameApi({
+  const { data } = await createProductNameApi({
     productName: currentProductName.value,
     productId: props.productId,
     languageId: props.languageId,
   })
   currentProductName.value = ''
   ElMessage.success($t('success.create'))
-  emit('refreshData')
+  emit('resetFormData', data)
 }
 
 // 产品描述相关
@@ -388,7 +388,7 @@ const editProductDescription = async (productDetailId: string) => {
   await nextTick()
   const editorInstance = editorRefs.value as any
   currentProductDescription.value = editorInstance?.getEditorContent()
-  await updateProductDescriptionApi({
+  const { data } = await updateProductDescriptionApi({
     productDetailId,
     productDescription: currentProductDescription.value,
   }).catch(error => {
@@ -397,7 +397,7 @@ const editProductDescription = async (productDetailId: string) => {
   currentProductDescription.value = ''
   inputProductDescriptionVisible.value = false
   ElMessage.success($t('success.edit'))
-  emit('refreshData')
+  emit('resetFormData', data)
 }
 
 // 产品短描述相关方法
@@ -412,7 +412,7 @@ const handleCancelUpdateProductShortDescription = () => {
 
 const editProductShortDescription = async (productDetailId: string) => {
   // 短描述可以为空
-  await updateProductShortDescriptionApi({
+  const { data } = await updateProductShortDescriptionApi({
     productDetailId,
     productShortDescription: currentProductShortDescription.value,
   }).catch(error => {
@@ -421,7 +421,7 @@ const editProductShortDescription = async (productDetailId: string) => {
   currentProductShortDescription.value = ''
   inputProductShortDescriptionVisible.value = false
   ElMessage.success($t('success.edit'))
-  emit('refreshData')
+  emit('resetFormData', data)
 }
 
 // 标签相关
@@ -445,14 +445,14 @@ const handleRemoveTag = async (index: number) => {
   if (!props.productDetail) {
     return
   }
-  await removeProductTagApi({
+  const { data } = await removeProductTagApi({
     productTagId: props.productDetail.productTagListResultDos[index].id,
     languageId: props.languageId,
   }).catch(error => {
     throw error
   })
   ElMessage.success($t('success.edit'))
-  emit('refreshData')
+  emit('resetFormData', data)
 }
 
 const handleInputTagConfirm = debounce(async () => {
@@ -467,7 +467,7 @@ const handleInputTagConfirm = debounce(async () => {
     ElMessage.warning($t('product.error.tagLimit'))
     return
   }
-  await createProductTagApi({
+  const { data } = await createProductTagApi({
     productId: props.productId,
     languageId: props.languageId,
     tagName: inputTagValue.value.trim(),
@@ -477,7 +477,7 @@ const handleInputTagConfirm = debounce(async () => {
   inputProductTagVisible.value = false
   inputTagValue.value = ''
   ElMessage.success($t('success.edit'))
-  emit('refreshData')
+  emit('resetFormData', data)
 }, 500)
 
 // 复制功能相关
@@ -510,7 +510,7 @@ const handleCopyProduct = async () => {
   ElMessage.success($t('success.copy'))
   copyLanguageCode.value = ''
   fromLanguageId.value = ''
-  emit('refreshData')
+  // emit('resetFormData', data)
 }
 </script>
 

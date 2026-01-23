@@ -9,7 +9,7 @@ interface Props {
 const props = defineProps<Props>()
 
 const emit = defineEmits<{
-  refreshData: []
+  resetFormData: [ShowProduct & CommonField]
 }>()
 
 const { t: $t } = useLocale()
@@ -32,7 +32,7 @@ const formatSlug = (slug: string): string => {
 const handleClickCreateProductSlug = async () => {
   const slugValue = formatSlug(currentSlug.value)
 
-  await createProductSlugApi({
+  const { data } = await createProductSlugApi({
     productId: props.productId,
     languageId: props.languageId,
     slug: slugValue,
@@ -40,7 +40,7 @@ const handleClickCreateProductSlug = async () => {
     throw error
   })
   ElMessage.success($t('success.create'))
-  emit('refreshData')
+  emit('resetFormData', data)
 }
 
 const handleClickUpdateProductSlug = () => {
@@ -60,7 +60,7 @@ const editProductSlug = async () => {
 
   const slugValue = formatSlug(currentSlug.value)
 
-  await updateProductSlugApi({
+  const { data } = await updateProductSlugApi({
     slugId: props.slugId || '',
     languageId: props.languageId,
     slug: slugValue,
@@ -69,7 +69,7 @@ const editProductSlug = async () => {
   })
   inputProductSlugVisible.value = false
   ElMessage.success($t('success.edit'))
-  emit('refreshData')
+  emit('resetFormData', data)
 }
 </script>
 

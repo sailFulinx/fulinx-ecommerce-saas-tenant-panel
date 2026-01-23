@@ -65,7 +65,7 @@ export function removeProductApi(
   })
 }
 
-export function removeProductTagApi(params: RemoveProductTagParams): Promise<IResponse<boolean>> {
+export function removeProductTagApi(params: RemoveProductTagParams): Promise<IResponse<ShowProduct & CommonField>> {
   return request.delete({
     url: 'system/product/tag',
     data: params,
