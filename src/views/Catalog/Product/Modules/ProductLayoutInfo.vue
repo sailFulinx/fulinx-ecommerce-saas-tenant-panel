@@ -47,24 +47,32 @@ const handleEditProductLayout = async () => {
   emit('editProductLayout')
 }
 
+const init = (data: ProductAdminLocalizedViewDo) => {
+  if (data?.productDetailListResultDo?.layoutType) {
+    currentLayoutType.value = data?.productDetailListResultDo.layoutType
+    isShowLayoutEdit.value = true
+  }
+  if (data?.productDetailListResultDo?.devComponentName) {
+    devComponentName.value = data?.productDetailListResultDo.devComponentName
+  }
+  if (
+    data?.productDetailListResultDo?.layoutType === 3
+    && data?.productDetailListResultDo?.layoutContent
+    && simplifiedComponentLayoutRef.value
+  ) {
+    rows.value = JSON.parse(data?.productDetailListResultDo?.layoutContent)
+    simplifiedComponentLayoutRef.value.setData(rows.value)
+  }
+}
+
+onMounted(() => {
+  init(props.productDetail)
+})
+
 watch(
   () => props.productDetail,
-  () => {
-    if (props.productDetail?.productDetailListResultDo?.layoutType) {
-      currentLayoutType.value = props.productDetail?.productDetailListResultDo.layoutType
-      isShowLayoutEdit.value = true
-    }
-    if (props.productDetail?.productDetailListResultDo?.devComponentName) {
-      devComponentName.value = props.productDetail?.productDetailListResultDo.devComponentName
-    }
-    if (
-      props.productDetail?.productDetailListResultDo?.layoutType === 3
-      && props.productDetail?.productDetailListResultDo?.layoutContent
-      && simplifiedComponentLayoutRef.value
-    ) {
-      rows.value = JSON.parse(props.productDetail?.productDetailListResultDo?.layoutContent)
-      simplifiedComponentLayoutRef.value.setData(rows.value)
-    }
+  (val: ProductAdminLocalizedViewDo) => {
+    init(val)
   },
   { deep: true, immediate: true },
 )
@@ -198,10 +206,7 @@ const handleCancel = () => {
           </EBtn>
         </div>
       </div>
-      <SimplifiedComponentLayout
-        ref="simplifiedComponentLayoutRef"
-        :is-full-screen="isFullScreen"
-      />
+      <SimplifiedComponentLayout ref="simplifiedComponentLayoutRef" :is-full-screen="isFullScreen" />
     </div>
   </div>
 </template>
