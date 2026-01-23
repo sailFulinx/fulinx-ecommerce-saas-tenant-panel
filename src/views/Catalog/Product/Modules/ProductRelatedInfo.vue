@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { VueDraggable } from 'vue-draggable-plus'
 import { useLocale } from '@/hooks/useLocale'
 
 const { productId, languageId, productData } = defineProps<{
@@ -15,6 +16,8 @@ const loading = reactive({
   init: false,
   list: false,
 })
+
+const dragging = ref(false)
 
 const productPayload = reactive<ProductListParams & Pagination>({
   pageSize: 10,
@@ -34,13 +37,21 @@ const selectedProducts = ref<(ProductListData & CommonField)[]>([])
 
 const dialogVisible = ref(false)
 
+// 存储新增的关联产品数据
+const addedRelatedProducts = ref<ProductRelatedRequestDo[]>([])
+
+// 计算属性，合并已有的关联产品和新增的关联产品
+const productRelatedRequestDos = computed(() => {
+  const existingRelatedProducts = productData.productRelatedListResultDos || []
+
+  return [...existingRelatedProducts, ...addedRelatedProducts.value]
+})
+
 const handleOpenDialog = async () => {
   await productPromise
   selectedProducts.value = []
   dialogVisible.value = true
 }
-
-const productRelatedRequestDos = ref<ProductRelatedRequestDo[]>([])
 
 const handleAddProduct = async () => {
   if (!selectedProducts.value || selectedProducts.value.length === 0) {
@@ -51,6 +62,7 @@ const handleAddProduct = async () => {
     if (item.productFileRelationListResultDos && item.productFileRelationListResultDos.length > 0) {
       const firstFile = item.productFileRelationListResultDos.find(item => item.productFileType === 1)
       const pushData: ProductRelatedRequestDo = {
+        id: productId,
         productId,
         relatedProductId: item.id,
         spu: item.spu,
@@ -58,10 +70,15 @@ const handleAddProduct = async () => {
         relatedProductImageFileVo: firstFile?.fileVo || undefined,
         sort: productRelatedRequestDos.value.length + 1,
       }
-      productRelatedRequestDos.value.push(pushData)
+      addedRelatedProducts.value.push(pushData)
     }
   })
   dialogVisible.value = false
+}
+
+const dragEnd = () => {
+  dragging.value = false
+  productRelatedRequestDos.value.map((item, index) => (item.sort = index + 1))
 }
 
 const handleSave = async () => {
@@ -73,6 +90,8 @@ const handleSave = async () => {
     deletedProductRelatedIds: [],
   })
   emit('resetFormData', data)
+  // 保存成功后清空临时添加的产品
+  addedRelatedProducts.value = []
   loading.list = false
 }
 </script>
@@ -96,18 +115,42 @@ const handleSave = async () => {
         </div>
       </div>
     </div>
-    <div v-if="productData.productRelatedListResultDos" class="flex-1 overflow-y-auto px-4 pb-4">
+    <div v-if="productRelatedRequestDos" class="flex-1 overflow-y-auto pb-4">
       <div class="w-full mt-0 pt-0">
-        <div class="w-full grid grid-cols-12 gap-8 p-4 border-b border-gray-200">
-          <div
-            v-for="item in productData.productRelatedListResultDos"
-            :key="item.id"
-            class="col-span-2 font-semibold text-gray-700"
+        <div class="w-full">
+          <VueDraggable
+            v-model="productRelatedRequestDos"
+            item-key="parameterId"
+            :animation="200"
+            :fallback-on-body="true"
+            :swap-threshold="0.65"
+            ghost-class="opacity-50"
+            class="w-full grid grid-cols-12 gap-4 p-4"
+            @start="dragging = true"
+            @end="dragEnd"
           >
-            <SImg :src="item.relatedProductImageFileVo?.fileUrl" :alt="item.productName" fit="cover" lazy placeholder />
-            <div>{{ item.spu }}</div>
-            <div>{{ item.productName }}</div>
-          </div>
+            <div
+              v-for="item in productRelatedRequestDos"
+              :key="item.id"
+              class="col-span-3 font-semibold text-gray-700 border border-gray-200"
+            >
+              <div class="bg-gray-100 h-6">
+                <div class="p-1">
+                  <Icon icon="ant-design:holder-outlined" />
+                </div>
+              </div>
+              <div class="p-2">
+                <SImg :src="item.relatedProductImageFileVo?.fileUrl" :alt="item.productName" fit="cover" lazy placeholder />
+              </div>
+
+              <div class="p-2">
+                <ElTag>{{ item.spu }}</ElTag>
+              </div>
+              <div class="text-gray-500 p-2">
+                {{ item.productName }}
+              </div>
+            </div>
+          </VueDraggable>
         </div>
       </div>
     </div>
@@ -115,6 +158,7 @@ const handleSave = async () => {
       <div class="w-full flex">
         <ElSelect
           v-model="selectedProducts"
+          :loading="productLoading"
           value-key="id"
           size="large"
           multiple

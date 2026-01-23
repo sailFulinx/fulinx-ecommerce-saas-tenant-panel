@@ -352,6 +352,7 @@ interface ProductParameterRelationRequestDo {
 }
 
 interface ProductRelatedRequestDo {
+  id?: string
   /* Product ID */
   productId?: string
 
