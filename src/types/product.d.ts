@@ -1588,6 +1588,14 @@ interface ProductRelatedListResultDo {
   /* Relation Product ID */
   relatedProductId: string
 
+  spu: string
+
+  productName: string
+
+  relatedProductImageFileId: string
+
+  relatedProductImageFileVo?: FileData & CommonField
+
   /* Sort */
   sort: number
 

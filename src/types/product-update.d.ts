@@ -386,7 +386,7 @@ interface UpdateProductRelatedParams {
   }[]
 
   /* Deleted Product Related IDs */
-  deletedProductRelatedIds?: string
+  deletedProductRelatedIds?: string[]
 }
 
 interface UpdateProductSlugParams {

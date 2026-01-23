@@ -60,6 +60,7 @@ export default {
   isAdult: '是否成人商品',
   parameterAdd: '添加参数',
   skuStatus: 'SKU状态',
+  related: '关联产品',
   placeholder: {
     systemCategory: '请选择系统分类',
     productNameQuery: '请输入产品名称查询',

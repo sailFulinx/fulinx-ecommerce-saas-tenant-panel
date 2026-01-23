@@ -7,6 +7,7 @@ import ProductBaseInfo from './Modules/ProductBaseInfo.vue'
 import ProductFileInfo from './Modules/ProductFileInfo.vue'
 import ProductLayoutInfo from './Modules/ProductLayoutInfo.vue'
 import ProductParameter from './Modules/ProductParameter.vue'
+import ProductRelatedInfo from './Modules/ProductRelatedInfo.vue'
 import ProductSeoInfo from './Modules/ProductSeoInfo.vue'
 import ProductSlugInfo from './Modules/ProductSlugInfo.vue'
 
@@ -599,6 +600,7 @@ provide('productData', { form })
               <ElTabPane :label="$t('product.parameter')" name="parameter" />
               <ElTabPane :label="$t('product.seo')" name="seo" />
               <ElTabPane :label="$t('product.layout')" name="layout" />
+              <ElTabPane :label="$t('product.related')" name="related" />
               <ElTabPane :label="$t('product.slug')" name="slug" />
             </ElTabs>
           </ElTabPane>
@@ -717,6 +719,9 @@ provide('productData', { form })
             "
             @reset-form-data="resetFormData"
           />
+        </div>
+        <div v-if="activeName === 'related' && form.productAdminLocalizedViewDos.some(item => item.languageId === languageId)">
+          <ProductRelatedInfo :product-id="id" :language-id="languageId" :product-data="form" @reset-form-data="resetFormData" />
         </div>
         <div
           v-if="activeName === 'slug' && form.productAdminLocalizedViewDos.some(item => item.languageId === languageId)"
