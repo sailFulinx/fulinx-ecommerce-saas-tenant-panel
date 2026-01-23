@@ -93,18 +93,18 @@ const handleSave = async () => {
     </div>
     <ElDialog v-model="dialogVisible" title="添加关联产品" width="60%">
       <div class="w-full flex">
-        <ElSelect v-model="selectedProducts" value-key="id" multiple filterable clearable placeholder="请选择产品">
+        <ElSelect v-model="selectedProducts" value-key="id" size="large" multiple filterable clearable placeholder="请选择产品">
           <ElOption v-for="item in productListData.list" :key="item.id" :value="item">
             <div class="w-full flex items-center justify-start">
               <div
                 v-if="item.productMainImageUrl"
-                class="mr-2"
+                class="w-full min-h-10 h-auto mr-2"
               >
                 <ElImage
                   :src="item.productMainImageUrl"
                   lazy
                   fit="cover"
-                  class="max-h-10 rounded object-cover p-1"
+                  class="w-full h-full min-h-10 rounded object-cover p-1"
                 >
                   <template #placeholder>
                     <div class="flex items-center justify-center h-full min-h-10">
