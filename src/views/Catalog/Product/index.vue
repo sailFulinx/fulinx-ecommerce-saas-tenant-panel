@@ -254,11 +254,12 @@ const handleIsTopChange = async (row: ProductListData & CommonField, value: bool
         </ElTableColumn>
         <ElTableColumn :label="$t('product.salePrice')">
           <template #default="scope">
-            <span>
+            <span v-if="scope.row.minPromotionPrice && scope.row.maxPromotionPrice">
               {{ scope.row.currencyListResultDo?.currencyCode || '' }}
               {{ scope.row.currencyListResultDo?.symbolLeft || ''
               }}{{ scope.row.minPromotionPrice ? scope.row.minPromotionPrice?.toFixed(2) : '' }} - {{ scope.row.maxPromotionPrice ? scope.row.maxPromotionPrice?.toFixed(2) : '' }}
             </span>
+            <span v-else>无</span>
           </template>
         </ElTableColumn>
         <ElTableColumn prop="sort" :label="$t('common.sort')" width="150">
