@@ -97,6 +97,7 @@ const generateSkus = () => {
       // 为每个属性值对创建一个唯一标识符
       sku.productSkuAttributeRequestDos.forEach(attr => {
         const key = `${attr.attributeId}-${attr.attributeValueId}`
+        console.log('SKuImageFileId:', sku.skuImageFileId)
         existingSkuImages.set(key, {
           skuImageFileId: sku.skuImageFileId,
           skuImageFileVo: sku.skuImageFileVo,
@@ -104,6 +105,7 @@ const generateSkus = () => {
       })
     }
   })
+  console.log(existingSkuImages)
 
   // 清空现有的SKU项
   productSkuRequestDo.value.productSkuItemRequestDos = []
@@ -117,13 +119,11 @@ const generateSkus = () => {
       // 生成SKU编码，格式为 spu-组合值
       const skuValues = combination.map(item => item.attributeValue)
       const skuCode = `${productSkuRequestDo.value.spu}-${skuValues.join('-')}`
-      console.log(combination)
       // 创建SKU属性数组
       const productSkuAttributes = combination.map(item => {
         if (item.attributeImageFileVo != null && item.attributeImageFileVo.id) {
           hasImageAttributeId.value = item.attributeId
         }
-        console.log(item.attributeValueId)
         return {
           attributeValueContent: item.attributeValue,
           attributeName: item.attributeName,
@@ -149,17 +149,15 @@ const generateSkus = () => {
 
       // 检查当前组合中是否有带图片的属性值
       let imageToApply = null
-      // 使用 hasImageAttributeId 来确定哪个属性有图
-      const imageAttributeId = hasImageAttributeId.value
-      if (imageAttributeId) {
-        // 查找当前组合中是否有该属性的值
-        const imageAttributeValue = productSkuAttributes.find(attr => attr.attributeId === imageAttributeId)
-        if (imageAttributeValue) {
-          // 如果找到了，检查这个属性值是否在 existingSkuImages 中有对应的图片
-          const key = `${imageAttributeId}-${imageAttributeValue.attributeValueId}`
-          if (existingSkuImages.has(key)) {
-            imageToApply = existingSkuImages.get(key)
-          }
+      console.log(existingSkuImages)
+      // 遍历当前SKU项的每个属性，看是否有对应的图片
+      for (const attr of productSkuAttributes) {
+        const key = `${attr.attributeId}-${attr.attributeValueId}`
+        console.log(key)
+        if (existingSkuImages.has(key)) {
+          imageToApply = existingSkuImages.get(key)
+          console.log(imageToApply)
+          break // 找到图片后立即退出循环
         }
       }
 
