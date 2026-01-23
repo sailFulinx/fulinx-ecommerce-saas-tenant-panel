@@ -883,6 +883,19 @@ const setAttributeImage = ({
   })
 }
 
+const handleChangeCurrency = (currencyId: string) => {
+  productSkuRequestDo.value.currencyId = currencyId
+  if (
+    !productSkuRequestDo.value.productSkuItemRequestDos
+    || productSkuRequestDo.value.productSkuItemRequestDos.length === 0
+  ) {
+    return
+  }
+  productSkuRequestDo.value.productSkuItemRequestDos.forEach(item => {
+    item.currencyId = currencyId
+  })
+}
+
 const setData = (data: ProductSkuRequestDo) => {
   productSkuRequestDo.value = data
 }
@@ -1004,7 +1017,7 @@ defineExpose({
         </ElRadioGroup>
       </ElFormItem>
       <ElFormItem label="货币" prop="currencyId">
-        <ElSelect v-model="productSkuRequestDo.currencyId" clearable filterable placeholder="请选择货币">
+        <ElSelect v-model="productSkuRequestDo.currencyId" clearable filterable placeholder="请选择货币" @change="handleChangeCurrency">
           <ElOption
             v-for="item in currencies"
             :key="item.id"
