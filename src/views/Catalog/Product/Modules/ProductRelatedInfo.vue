@@ -168,26 +168,6 @@ const handleSave = async () => {
         >
           <ElOption v-for="item in productListData.list" :key="item.id" :label="item.productName" :value="item">
             <div class="w-full flex items-center justify-start">
-              <!-- <div
-                v-if="item.productMainImageUrl"
-                class="w-full min-h-10 h-auto mr-2"
-              >
-                <ElImage
-                  :src="item.productMainImageUrl"
-                  lazy
-                  fit="cover"
-                  class="w-full h-full min-h-10 rounded object-cover p-1"
-                >
-                  <template #placeholder>
-                    <div class="flex items-center justify-center h-full min-h-10">
-                      <div class="flex flex-col items-center">
-                        <Icon icon="ep:loading" class="animate-spin" />
-                        <span class="mt-2 text-xs text-gray-500">加载中...</span>
-                      </div>
-                    </div>
-                  </template>
-                </ElImage>
-              </div> -->
               <div>{{ item.productName }}</div>
             </div>
           </ElOption>
