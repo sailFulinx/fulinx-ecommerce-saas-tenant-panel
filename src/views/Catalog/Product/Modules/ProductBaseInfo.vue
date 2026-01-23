@@ -12,6 +12,8 @@ interface Props {
   productId: string
   systemCategoryNames: string[]
   systemCategoryListData: TableResponse<SystemCategoryData & CommonField>
+  categoryNames: string[]
+  categoryListData: TableResponse<CategoryData & CommonField>
   productSourceTypeListData: TableResponse<ProductSourceTypeData>
   ageGroupTypeListData: TableResponse<AgeGroupTypeData>
   genderTypeListData: TableResponse<GenderTypeData>
@@ -92,6 +94,65 @@ const handleConfirmEditSystemCategory = async () => {
   })
   selectedSystemCategoryValue.value = []
   deletedSystemCategoryValue.value = []
+  loading.button = false
+  ElMessage.success($t('success.edit'))
+  emit('resetFormData', data)
+}
+
+// 添加系统分类相关变量
+const inputCategoryVisible = ref<boolean>(false)
+const categoryProps = {
+  value: 'id',
+  label: 'categoryName',
+  multiple: false,
+}
+const selectedCategoryValue = ref<string[] | any>(props.productData?.categoryIds || [])
+const deletedCategoryValue = ref<string[] | any>([])
+
+const handleRemoveCategory = (val: CascaderNodeValue | CascaderNodePathValue) => {
+  deletedCategoryValue.value.push(val)
+}
+
+// 系统分类相关方法
+const handleClickUpdateCategory = () => {
+  selectedCategoryValue.value = props.productData?.categoryIds || []
+  inputCategoryVisible.value = true
+}
+
+const handleCancelUpdateCategory = () => {
+  inputCategoryVisible.value = false
+}
+
+const handleConfirmEditCategory = async () => {
+  if (!props.productId || !props.languageId) {
+    return
+  }
+
+  loading.button = true
+  inputCategoryVisible.value = false
+
+  // 计算需要删除的分类ID
+  const originalIds = [...new Set((props.productData?.categoryIds || []).flat() as string[])]
+  const currentIds = [...new Set(selectedCategoryValue.value.flat() as string[])]
+
+  // 找出被删除的分类（原本有现在没有的）
+  const deletedIds = originalIds.filter(id => !currentIds.includes(id))
+  // 合并通过remove-tag删除的分类
+  const directlyDeletedIds = [...new Set(deletedCategoryValue.value.flat() as string[])]
+  // 合并所有删除的分类
+  const deletedCategoryIds = [...new Set([...deletedIds, ...directlyDeletedIds])]
+  loading.button = false
+  const { data } = await updateProductCategoryApi({
+    productId: props.productId,
+    languageId: props.languageId,
+    categoryIds: currentIds,
+    deletedCategoryIds,
+  }).catch((error: any) => {
+    loading.button = false
+    throw error
+  })
+  selectedCategoryValue.value = []
+  deletedCategoryValue.value = []
   loading.button = false
   ElMessage.success($t('success.edit'))
   emit('resetFormData', data)
@@ -556,6 +617,45 @@ const resetData = (val: ShowProduct & CommonField) => {
             </EBtn>
           </span>
           <EBtn v-if="!inputSystemCategoryVisible" type="primary" text @click="handleClickUpdateSystemCategory">
+            <Icon icon="ep:edit" :size="5" class="mr-1" />
+          </EBtn>
+        </div>
+      </div>
+      <!-- 产品分类 -->
+      <div class="w-full flex border-b border-gray-200 p-4">
+        <div class="w-30 font-semibold text-gray-700 flex-shrink-0">
+          {{ $t('product.category') }}:
+        </div>
+        <div class="flex-1 w-full flex items-center">
+          <span v-if="!inputCategoryVisible" class="mr-2">
+            <ElTag
+              v-for="(categoryName, index) in categoryNames"
+              :key="index"
+              type="info"
+              class="mr-2 mb-1"
+            >
+              {{ categoryName }}
+            </ElTag>
+          </span>
+          <span v-else>
+            <ElCascader
+              v-model="selectedCategoryValue"
+              clearable
+              filterable
+              :placeholder="`${$t('product.placeholder.category')}`"
+              :props="categoryProps"
+              :options="convertCategoryToCascaderOptions(categoryListData.list)"
+              class="mr-2 min-w-[300px]"
+              @remove-tag="handleRemoveCategory"
+            />
+            <EBtn text @click="handleCancelUpdateCategory">
+              <Icon icon="ep:close" :size="5" class="mr-1" />
+            </EBtn>
+            <EBtn type="primary" :loading="loading.button" @click="handleConfirmEditCategory">
+              {{ $t('common.save') }}
+            </EBtn>
+          </span>
+          <EBtn v-if="!inputSystemCategoryVisible" type="primary" text @click="handleClickUpdateCategory">
             <Icon icon="ep:edit" :size="5" class="mr-1" />
           </EBtn>
         </div>

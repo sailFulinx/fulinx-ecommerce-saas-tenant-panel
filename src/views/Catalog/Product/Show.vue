@@ -33,6 +33,13 @@ const listSystemCategoryPayload = reactive<SystemCategoryListParams>({
 const { listData: systemCategoryListData, promise: systemCategoryPromise }
   = useSystemCategoryList(listSystemCategoryPayload)
 
+const listCategoryPayload = reactive<CategoryListParams>({
+  languageId: languageId.value,
+  categoryName: undefined,
+})
+
+const { listData: categoryListData, promise: categoryPromise } = useCategoryList(listCategoryPayload)
+
 const { listData: productSourceTypeListData, promise: productSourceTypePromise } = useProductSourceTypeList()
 
 const { listData: ageGroupTypeListData, promise: ageGroupPromise } = useAgeGroupTypeList()
@@ -536,6 +543,7 @@ watch(
       showProductPayload.languageId = val.id
       languageId.value = val.id
       await systemCategoryPromise
+      await categoryPromise
       await initFormData()
     }
   },
@@ -611,6 +619,8 @@ provide('productData', { form })
             :product-id="id"
             :system-category-names="systemCategoryNames"
             :system-category-list-data="systemCategoryListData"
+            :category-names="categoryNames"
+            :category-list-data="categoryListData"
             :product-source-type-list-data="productSourceTypeListData"
             :age-group-type-list-data="ageGroupTypeListData"
             :gender-type-list-data="genderTypeListData"
