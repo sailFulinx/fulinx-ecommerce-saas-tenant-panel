@@ -97,7 +97,6 @@ const generateSkus = () => {
       // 为每个属性值对创建一个唯一标识符
       sku.productSkuAttributeRequestDos.forEach(attr => {
         const key = `${attr.attributeId}-${attr.attributeValueId}`
-        console.log('SKuImageFileId:', sku.skuImageFileId)
         existingSkuImages.set(key, {
           skuImageFileId: sku.skuImageFileId,
           skuImageFileVo: sku.skuImageFileVo,
@@ -105,7 +104,6 @@ const generateSkus = () => {
       })
     }
   })
-  console.log(existingSkuImages)
 
   // 清空现有的SKU项
   productSkuRequestDo.value.productSkuItemRequestDos = []
@@ -149,14 +147,11 @@ const generateSkus = () => {
 
       // 检查当前组合中是否有带图片的属性值
       let imageToApply = null
-      console.log(existingSkuImages)
       // 遍历当前SKU项的每个属性，看是否有对应的图片
       for (const attr of productSkuAttributes) {
         const key = `${attr.attributeId}-${attr.attributeValueId}`
-        console.log(key)
         if (existingSkuImages.has(key)) {
           imageToApply = existingSkuImages.get(key)
-          console.log(imageToApply)
           break // 找到图片后立即退出循环
         }
       }
