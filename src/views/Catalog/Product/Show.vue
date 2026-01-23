@@ -496,7 +496,6 @@ const resetFormData = async (val: ShowProduct) => {
           : [],
       })
     })
-    console.log(productSkuRequestDo.value)
   })
 }
 
