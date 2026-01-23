@@ -521,6 +521,8 @@ interface ProductListParams {
   /* Product Id */
   productId?: string | null
 
+  abandonProductId?: string | null
+
   /* SPU */
   spu?: string | null
 

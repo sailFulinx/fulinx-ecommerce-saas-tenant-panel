@@ -20,6 +20,7 @@ const productPayload = reactive<ProductListParams & Pagination>({
   pageSize: 10,
   languageId,
   pageNumber: 1,
+  abandonProductId: productId,
 })
 
 const {
