@@ -127,7 +127,7 @@ defineExpose({
 </script>
 
 <template>
-  <div class="w-full">
+  <div class="w-full mt-4">
     <div class="w-full">
       <EBtn plain type="primary" @click="handleAddParameter">
         {{ $t('product.parameterAdd') }}

@@ -74,7 +74,7 @@ const editProductSlug = async () => {
 </script>
 
 <template>
-  <ElCard shadow="never" class="mb-5">
+  <div shadow="never" class="border border-gray-200 rounded-lg mb-5 p-4">
     <div class="w-full mt-0 pt-0">
       <div v-if="!slug || !slugId" class="mb-5">
         <div class="w-full flex items-center mb-5">
@@ -114,5 +114,5 @@ const editProductSlug = async () => {
         </div>
       </div>
     </div>
-  </ElCard>
+  </div>
 </template>

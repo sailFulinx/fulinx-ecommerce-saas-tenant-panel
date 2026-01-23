@@ -62,9 +62,9 @@ const handleSave = async () => {
 </script>
 
 <template>
-  <ElCard shadow="never" class="mb-5">
-    <template #header>
-      <div class="flex items-center justify-between">
+  <div class="border border-gray-200 rounded-lg h-[67vh] flex flex-col overflow-hidden shadow-sm">
+    <div class="sticky top-0 z-10 bg-white rounded-t-lg border-b border-gray-200 py-3">
+      <div class="flex items-center justify-between px-4">
         <div class="text-base font-bold">
           {{ $t('product.parameterInfo') }}
         </div>
@@ -75,8 +75,8 @@ const handleSave = async () => {
           </EBtn>
         </div>
       </div>
-    </template>
-    <div class="w-full mt-5">
+    </div>
+    <div class="flex-1 overflow-y-auto px-4 pb-4">
       <ParameterForm
         ref="parameterFormRef"
         :parameter-list-data="parameterListData"
@@ -85,5 +85,5 @@ const handleSave = async () => {
         @get-deleted-product-parameter-relation-id="getDeletedProductParameterRelationId"
       />
     </div>
-  </ElCard>
+  </div>
 </template>

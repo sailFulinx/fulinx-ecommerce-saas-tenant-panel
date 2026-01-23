@@ -1043,7 +1043,7 @@ defineExpose({
 </script>
 
 <template>
-  <div class="w-full">
+  <div class="w-full mt-4">
     <ElForm ref="formRef" :model="productSkuRequestDo" :rules="rules" class="w-full" label-width="100px">
       <ElFormItem label="库存状态" prop="stockStatus">
         <ElRadioGroup v-model="productSkuRequestDo.stockStatus">

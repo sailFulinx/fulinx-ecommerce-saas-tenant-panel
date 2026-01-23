@@ -519,7 +519,7 @@ const resetData = (val: ShowProduct & CommonField) => {
 </script>
 
 <template>
-  <ElCard v-if="productDetail?.productDetailListResultDo" shadow="never" class="mb-5">
+  <div v-if="productDetail?.productDetailListResultDo" shadow="never" class="border border-gray-200 rounded-lg mb-5">
     <div class="w-full mt-0 pt-0">
       <!-- 系统分类 -->
       <div class="w-full flex border-b border-gray-200 p-4">
@@ -986,8 +986,8 @@ const resetData = (val: ShowProduct & CommonField) => {
         </div>
       </div>
     </div>
-  </ElCard>
-  <ElCard v-else>
+  </div>
+  <div v-else class="border border-gray-200 rounded-lg mb-5">
     <div class="flex-col justify-center items-center mb-5">
       <div class="w-full mb-5">
         <ElAlert :title="$t('product.warning.noDetailData')" type="warning" show-icon />
@@ -1016,5 +1016,5 @@ const resetData = (val: ShowProduct & CommonField) => {
         {{ $t('common.save') }}
       </EBtn>
     </div>
-  </ElCard>
+  </div>
 </template>

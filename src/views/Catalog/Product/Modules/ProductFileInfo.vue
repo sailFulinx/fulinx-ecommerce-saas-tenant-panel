@@ -119,9 +119,9 @@ const handleSave = async () => {
 </script>
 
 <template>
-  <ElCard shadow="never" class="mb-5">
-    <template #header>
-      <div class="flex items-center justify-between">
+  <div class="border border-gray-200 rounded-lg h-[67vh] flex flex-col overflow-hidden shadow-sm">
+    <div class="sticky top-0 z-10 bg-white rounded-t-lg border-b border-gray-200 py-3">
+      <div class="flex items-center justify-between px-4">
         <div class="text-base font-bold">
           {{ $t('product.file') }}
         </div>
@@ -132,14 +132,16 @@ const handleSave = async () => {
           </EBtn>
         </div>
       </div>
-    </template>
-    <div class="w-full mt-5 flex">
-      <div>图片：</div>
-      <UploadImage ref="imageUploadRef" @remove-file="handleRemoveImage" />
     </div>
-    <div class="w-full mt-5 flex">
-      <div>视频：</div>
-      <UploadVideo ref="videoUploadRef" />
+    <div class="flex-1 overflow-y-auto px-4 pb-4">
+      <div class="w-full mt-5 flex">
+        <div>图片：</div>
+        <UploadImage ref="imageUploadRef" @remove-file="handleRemoveImage" />
+      </div>
+      <div class="w-full mt-5 flex">
+        <div>视频：</div>
+        <UploadVideo ref="videoUploadRef" />
+      </div>
     </div>
-  </ElCard>
+  </div>
 </template>

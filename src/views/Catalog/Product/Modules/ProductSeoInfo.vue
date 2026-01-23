@@ -102,7 +102,7 @@ const createProductMetaTitle = async () => {
 </script>
 
 <template>
-  <ElCard v-if="productDetail.productSeoListResultDo" shadow="never" class="mb-5">
+  <div v-if="productDetail.productSeoListResultDo" shadow="never" class="border border-gray-200 rounded-lg mb-5">
     <div class="w-full mt-0 pt-0">
       <!-- 文章元标题 -->
       <div class="w-full grid grid-cols-12 gap-8 p-4 border-b border-gray-200">
@@ -160,8 +160,8 @@ const createProductMetaTitle = async () => {
         </div>
       </div>
     </div>
-  </ElCard>
-  <ElCard v-else>
+  </div>
+  <div v-else class="border border-gray-200 rounded-lg mb-5">
     <div class="flex justify-center items-center mb-5">
       <ElAlert :title="$t('product.warning.noSeoData')" type="warning" show-icon />
     </div>
@@ -172,5 +172,5 @@ const createProductMetaTitle = async () => {
         {{ $t('common.save') }}
       </EBtn>
     </div>
-  </ElCard>
+  </div>
 </template>

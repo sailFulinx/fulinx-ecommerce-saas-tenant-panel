@@ -2,20 +2,33 @@
 import { useLocale } from '@/hooks/useLocale'
 import AttributeFormEdit from './AttributeFormEdit.vue'
 
-const { languageId, productId, attributeListData, attributePayload, getAttributeDataList, warehouseListData, stockStatusListData, weightUnitListData, lengthUnitListData, productData, productSkuRequestDo }
-  = defineProps<{
-    languageId: string
-    productId: string
-    attributeListData: TableResponse<AttributeListData & CommonField>
-    attributePayload: Partial<AttributeListParams>
-    getAttributeDataList: (params?: Partial<AttributeListParams>) => Promise<TableResponse<AttributeListData & CommonField>>
-    warehouseListData: TableResponse<WarehouseData & CommonField>
-    stockStatusListData: TableResponse<ProductStockStatusData>
-    weightUnitListData: TableResponse<CommonEnumData>
-    lengthUnitListData: TableResponse<CommonEnumData>
-    productData: ShowProduct & CommonField
-    productSkuRequestDo: ProductSkuRequestDo
-  }>()
+const {
+  languageId,
+  productId,
+  attributeListData,
+  attributePayload,
+  getAttributeDataList,
+  warehouseListData,
+  stockStatusListData,
+  weightUnitListData,
+  lengthUnitListData,
+  productData,
+  productSkuRequestDo,
+} = defineProps<{
+  languageId: string
+  productId: string
+  attributeListData: TableResponse<AttributeListData & CommonField>
+  attributePayload: Partial<AttributeListParams>
+  getAttributeDataList: (
+    params?: Partial<AttributeListParams>,
+  ) => Promise<TableResponse<AttributeListData & CommonField>>
+  warehouseListData: TableResponse<WarehouseData & CommonField>
+  stockStatusListData: TableResponse<ProductStockStatusData>
+  weightUnitListData: TableResponse<CommonEnumData>
+  lengthUnitListData: TableResponse<CommonEnumData>
+  productData: ShowProduct & CommonField
+  productSkuRequestDo: ProductSkuRequestDo
+}>()
 
 const emit = defineEmits(['resetFormData'])
 
@@ -70,9 +83,9 @@ const handleSave = async () => {
 </script>
 
 <template>
-  <ElCard shadow="never" class="mb-5">
-    <template #header>
-      <div class="flex items-center justify-between">
+  <div class="border border-gray-200 rounded-lg h-[67vh] flex flex-col overflow-hidden shadow-sm">
+    <div class="sticky top-0 z-10 bg-white rounded-t-lg border-b border-gray-200 py-3">
+      <div class="flex items-center justify-between px-4">
         <div class="text-base font-bold">
           {{ $t('product.priceQuantity') }}
         </div>
@@ -83,8 +96,9 @@ const handleSave = async () => {
           </EBtn>
         </div>
       </div>
-    </template>
-    <div class="w-full mt-5">
+    </div>
+
+    <div class="flex-1 overflow-y-auto px-4 pb-4">
       <AttributeFormEdit
         ref="attributeFormRef"
         :language-id="languageId"
@@ -98,5 +112,5 @@ const handleSave = async () => {
         :get-attribute-data-list="getAttributeDataList"
       />
     </div>
-  </ElCard>
+  </div>
 </template>
