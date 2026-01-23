@@ -699,6 +699,7 @@ declare global {
   const usePreferredReducedMotion: typeof import('@vueuse/core').usePreferredReducedMotion
   const usePreferredReducedTransparency: typeof import('@vueuse/core').usePreferredReducedTransparency
   const usePrevious: typeof import('@vueuse/core').usePrevious
+  const useProductPagination: typeof import('../composables/api/useProduct').useProductPagination
   const useProductSourceTypeList: typeof import('../composables/api/useCommon').useProductSourceTypeList
   const useProductStockStatusList: typeof import('../composables/api/useCommon').useProductStockStatusList
   const useProductTypeList: typeof import('../composables/api/useCommon').useProductTypeList
