@@ -40,11 +40,13 @@ const dialogVisible = ref(false)
 // 存储新增的关联产品数据
 const addedRelatedProducts = ref<ProductRelatedRequestDo[]>([])
 
-// 计算属性，合并已有的关联产品和新增的关联产品
-const productRelatedRequestDos = computed(() => {
-  const existingRelatedProducts = productDetail.productRelatedListResultDos || []
+// 使用可变的响应式数组来管理关联产品列表
+const productRelatedList = ref<ProductRelatedRequestDo[]>([])
 
-  return [...existingRelatedProducts, ...addedRelatedProducts.value]
+// 初始化列表
+watchEffect(() => {
+  const existingRelatedProducts = productDetail.productRelatedListResultDos || []
+  productRelatedList.value = [...existingRelatedProducts, ...addedRelatedProducts.value]
 })
 
 const handleOpenDialog = async () => {
@@ -82,7 +84,7 @@ const handleAddProduct = async () => {
         spu: item.spu,
         productName: item.productName,
         relatedProductImageFileVo: firstFile?.fileVo || undefined,
-        sort: productRelatedRequestDos.value.length + 1,
+        sort: productRelatedList.value.length + 1,
       }
       addedRelatedProducts.value.push(pushData)
     }
@@ -92,13 +94,30 @@ const handleAddProduct = async () => {
 
 const dragEnd = () => {
   dragging.value = false
-  productRelatedRequestDos.value.map((item, index) => (item.sort = index + 1))
+  productRelatedList.value.forEach((item, index) => {
+    item.sort = index + 1
+  })
 }
 
-const handleDeleteProduct = (index: number) => {
-  console.log(index)
-  console.log(productRelatedRequestDos.value)
-  productRelatedRequestDos.value.splice(index, 1)
+// 添加新的响应式变量来存储需要删除的ID
+const deletedProductRelatedIds = ref<string[]>([])
+
+const handleDeleteProduct = (item: ProductRelatedRequestDo) => {
+  // 尝试从新增的产品列表中删除
+  const addedIndex = addedRelatedProducts.value.findIndex(p => p.relatedProductId === item.relatedProductId)
+  if (addedIndex > -1) {
+    addedRelatedProducts.value.splice(addedIndex, 1)
+    return
+  }
+
+  // 如果不在新增列表中，则需要从显示列表中移除，并记录ID用于提交
+  const listIndex = productRelatedList.value.findIndex(p => p.id === item.id)
+  if (listIndex > -1 && item.id) {
+    productRelatedList.value.splice(listIndex, 1)
+    if (!deletedProductRelatedIds.value.includes(item.id)) {
+      deletedProductRelatedIds.value.push(item.id)
+    }
+  }
 }
 
 const handleSave = async () => {
@@ -106,13 +125,15 @@ const handleSave = async () => {
   const { data } = await updateProductRelatedApi({
     productId,
     languageId,
-    productRelatedRequestDos: productRelatedRequestDos.value,
-    deletedProductRelatedIds: [],
+    productRelatedRequestDos: productRelatedList.value,
+    deletedProductRelatedIds: deletedProductRelatedIds.value,
   })
   emit('resetFormData', data)
-  // 保存成功后清空临时添加的产品
+  // 保存成功后清空临时添加和删除的产品
   addedRelatedProducts.value = []
+  deletedProductRelatedIds.value = []
   loading.list = false
+  ElMessage.success($t('success.edit'))
 }
 </script>
 
@@ -135,11 +156,11 @@ const handleSave = async () => {
         </div>
       </div>
     </div>
-    <div v-if="productRelatedRequestDos" class="flex-1 overflow-y-auto pb-4">
+    <div v-if="productRelatedList" class="flex-1 overflow-y-auto pb-4">
       <div class="w-full mt-0 pt-0">
         <div class="w-full">
           <VueDraggable
-            v-model="productRelatedRequestDos"
+            v-model="productRelatedList"
             item-key="parameterId"
             :animation="200"
             :fallback-on-body="true"
@@ -150,7 +171,7 @@ const handleSave = async () => {
             @end="dragEnd"
           >
             <div
-              v-for="(item, index) in productRelatedRequestDos"
+              v-for="item in productRelatedList"
               :key="item.id"
               class="col-span-3 font-semibold text-gray-700 border border-gray-200 relative"
             >
@@ -168,7 +189,7 @@ const handleSave = async () => {
                   placeholder
                 />
                 <div class="absolute -top-9 -right-3">
-                  <EBtn type="danger" link class="text-red-500 hover:text-red-700" @click="handleDeleteProduct(index)">
+                  <EBtn type="danger" link class="text-red-500 hover:text-red-700" @click="handleDeleteProduct(item)">
                     <Icon icon="typcn:delete" :size="6" />
                   </EBtn>
                 </div>
