@@ -2,10 +2,10 @@
 import { VueDraggable } from 'vue-draggable-plus'
 import { useLocale } from '@/hooks/useLocale'
 
-const { productId, languageId, productData } = defineProps<{
+const { productId, languageId, productDetail } = defineProps<{
   productId: string
   languageId: string
-  productData: ShowProduct & CommonField
+  productDetail: ProductAdminLocalizedViewDo
 }>()
 
 const emit = defineEmits(['resetFormData'])
@@ -42,7 +42,7 @@ const addedRelatedProducts = ref<ProductRelatedRequestDo[]>([])
 
 // 计算属性，合并已有的关联产品和新增的关联产品
 const productRelatedRequestDos = computed(() => {
-  const existingRelatedProducts = productData.productRelatedListResultDos || []
+  const existingRelatedProducts = productDetail.productRelatedListResultDos || []
 
   return [...existingRelatedProducts, ...addedRelatedProducts.value]
 })

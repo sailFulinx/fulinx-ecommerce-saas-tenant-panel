@@ -1261,6 +1261,9 @@ interface ProductAdminLocalizedViewDo {
 
   /* Product Tag List Result Dos */
   productTagListResultDos: ProductTagListResultDo[]
+
+  /* Product Related List Result Dos */
+  productRelatedListResultDos: ProductRelatedListResultDo[]
 }
 
 interface ProductAttributeListResultDo {
@@ -1650,9 +1653,6 @@ interface ShowProduct {
 
   /* Product Supplier List Result Dos */
   productSupplierListResultDos: ProductSupplierListResultDo[]
-
-  /* Product Related List Result Dos */
-  productRelatedListResultDos: ProductRelatedListResultDo[]
 
   /* Slug ID */
   slugId: string

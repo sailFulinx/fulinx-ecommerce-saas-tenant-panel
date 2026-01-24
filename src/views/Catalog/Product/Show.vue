@@ -257,6 +257,7 @@ const createProductAdminLocalizedViewDo = ref<ProductAdminLocalizedViewDo>({
       recordUpdateTime: '',
     },
   ],
+  productRelatedListResultDos: [],
 })
 
 // 创建product请求参数
@@ -347,7 +348,6 @@ const createFormData = (): ShowProduct & CommonField => {
     },
     productSkuListResultDos: [],
     productSupplierListResultDos: [],
-    productRelatedListResultDos: [],
     slugId: '',
     slug: '',
     isDelete: 0,
@@ -721,7 +721,12 @@ provide('productData', { form })
           />
         </div>
         <div v-if="activeName === 'related' && form.productAdminLocalizedViewDos.some(item => item.languageId === languageId)">
-          <ProductRelatedInfo :product-id="id" :language-id="languageId" :product-data="form" @reset-form-data="resetFormData" />
+          <ProductRelatedInfo
+            :product-id="id" :language-id="languageId" :product-data="form" :product-detail="
+              form.productAdminLocalizedViewDos.find(item => item.languageId === languageId)
+                || createProductAdminLocalizedViewDo
+            " @reset-form-data="resetFormData"
+          />
         </div>
         <div
           v-if="activeName === 'slug' && form.productAdminLocalizedViewDos.some(item => item.languageId === languageId)"
