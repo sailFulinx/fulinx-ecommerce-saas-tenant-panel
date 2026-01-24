@@ -95,6 +95,12 @@ const dragEnd = () => {
   productRelatedRequestDos.value.map((item, index) => (item.sort = index + 1))
 }
 
+const handleDeleteProduct = (index: number) => {
+  console.log(index)
+  console.log(productRelatedRequestDos.value)
+  productRelatedRequestDos.value.splice(index, 1)
+}
+
 const handleSave = async () => {
   loading.list = true
   const { data } = await updateProductRelatedApi({
@@ -144,16 +150,16 @@ const handleSave = async () => {
             @end="dragEnd"
           >
             <div
-              v-for="item in productRelatedRequestDos"
+              v-for="(item, index) in productRelatedRequestDos"
               :key="item.id"
-              class="col-span-3 font-semibold text-gray-700 border border-gray-200"
+              class="col-span-3 font-semibold text-gray-700 border border-gray-200 relative"
             >
               <div class="bg-gray-100 h-6">
                 <div class="p-1">
                   <Icon icon="ant-design:holder-outlined" />
                 </div>
               </div>
-              <div class="p-2">
+              <div class="p-2 relative">
                 <SImg
                   :src="item.relatedProductImageFileVo?.fileUrl"
                   :alt="item.productName"
@@ -161,6 +167,11 @@ const handleSave = async () => {
                   lazy
                   placeholder
                 />
+                <div class="absolute -top-9 -right-3">
+                  <EBtn type="danger" link class="text-red-500 hover:text-red-700" @click="handleDeleteProduct(index)">
+                    <Icon icon="typcn:delete" :size="6" />
+                  </EBtn>
+                </div>
               </div>
 
               <div class="p-2">
