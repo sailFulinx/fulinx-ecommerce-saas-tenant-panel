@@ -133,15 +133,15 @@ const handleChangeVisible = () => {
 
 const leftScreenHeight = window.innerHeight - 340
 
-const screenHeight = window.innerHeight - 104
+const screenHeight = window.innerHeight - 44
 </script>
 
 <template>
   <div class="view-page">
-    <div v-loading="loading" class="w-full overflow-hidden" :style="{ height: `${screenHeight}px` }">
-      <div class="grid grid-cols-12 gap-5">
+    <div v-loading="loading" class="p-4 w-full overflow-hidden bg-[var(--bg-100)]" :style="{ height: `${screenHeight}px` }">
+      <div class="grid grid-cols-12 gap-4">
         <div
-          class="col-span-3 lg:col-span-3 xl:col-span-3 2xl:col-span-3 bg-white pa-5 border-r border-gray-200"
+          class="col-span-3 lg:col-span-3 xl:col-span-3 2xl:col-span-3 bg-white pa-5 border border-gray-200"
           :style="{ height: `${screenHeight}px` }"
         >
           <div class="w-full flex items-center justify-between mb-5 fix">
@@ -206,7 +206,7 @@ const screenHeight = window.innerHeight - 104
           class="col-span-9 lg:col-span-9 xl:col-span-9 2xl:col-span-9 bg-white border border-gray-200 overflow-y-auto"
           :style="{ height: `${screenHeight}px` }"
         >
-          <div v-show="actionType === 'none'" class="flex justify-center items-center h-full min-h-screen">
+          <div v-show="actionType === 'none'" class="flex justify-center items-center h-full">
             <div class="w-full">
               <div class="flex justify-center">
                 <div class="flex justify-center w-full">
