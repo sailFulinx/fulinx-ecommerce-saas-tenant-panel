@@ -30,8 +30,8 @@ service.interceptors.request.use(
 
     // 获取租户store实例，添加X-TENANT-STORE-ID到请求头
     const tenantStore = useTenantStore()
-    if (tenantStore.defaultStoreId) {
-      config.headers['X-TENANT-STORE-ID'] = tenantStore.defaultStoreId
+    if (tenantStore.currentTenantStoreId) {
+      config.headers['X-TENANT-STORE-ID'] = tenantStore.currentTenantStoreId
     }
 
     if (

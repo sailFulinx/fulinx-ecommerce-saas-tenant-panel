@@ -60,10 +60,10 @@ interface SiteData {
 }
 
 interface SiteRequest {
-  themeId: string
 
-  /* Domain */
-  domain: string
+  tenantStoreId: string
+
+  themeId: string
 
   /* Language ID */
   languageId: string

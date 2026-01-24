@@ -3,7 +3,7 @@ import { ElMessage } from 'element-plus'
 import { ref } from 'vue'
 import { uploadFileApi } from '@/api/file'
 
-const uploadPathPrefix = useTenantStore().defaultStoreId
+const uploadPathPrefix = useTenantStore().currentTenantStoreId
 
 interface UseUploadImageOptions {
   /** 最大上传文件数量限制 */

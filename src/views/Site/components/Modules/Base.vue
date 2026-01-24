@@ -15,11 +15,14 @@ const router = useRouter()
 
 const id = useRoute().params.id as string
 
+const currentTenantStoreId = useTenantStore().currentTenantStoreId
+
+console.log('currentTenantStoreId', currentTenantStoreId)
+
 const rules = reactive({
   languageId: [{ required: true, message: '语言必须选择', trigger: 'blur' }],
   siteName: [{ required: true, message: '网站名称必须填写', trigger: 'blur' }],
   status: [{ required: true, message: '状态必填', trigger: 'blur' }],
-  domain: [{ required: true, message: '域名必须填写', trigger: 'blur' }],
   metaTitle: [{ required: true, message: '元标题必须填写', trigger: 'blur' }],
 })
 
@@ -82,9 +85,9 @@ getLanguageList()
 const siteFormRef = ref()
 
 const siteForm = ref<SiteRequest>({
+  tenantStoreId: currentTenantStoreId.value,
   themeId: '',
   languageId: '',
-  domain: '',
   siteName: '',
   metaDescription: '',
   metaTitle: '',
@@ -102,6 +105,7 @@ const siteForm = ref<SiteRequest>({
     fileExtensionName: '',
     path: '',
     fileUrl: '',
+    fileSize: '',
     sha256: '',
     isDelete: 0,
     remark: '',
@@ -123,6 +127,7 @@ const siteForm = ref<SiteRequest>({
     fileExtensionName: '',
     path: '',
     fileUrl: '',
+    fileSize: '',
     sha256: '',
     isDelete: 0,
     remark: '',
@@ -148,6 +153,7 @@ const siteLogo = ref<FileData & CommonField>({
   fileExtensionName: '',
   path: '',
   fileUrl: '',
+  fileSize: '',
   sha256: '',
   isDelete: 0,
   remark: '',
@@ -170,6 +176,7 @@ const siteFavicon = ref<FileData & CommonField>({
   fileExtensionName: '',
   path: '',
   fileUrl: '',
+  fileSize: '',
   sha256: '',
   isDelete: 0,
   remark: '',
@@ -228,6 +235,10 @@ const save = async () => {
     ElMessage.error('请上传网站logo')
     return
   }
+  if (!siteForm.value.tenantStoreId || siteForm.value.tenantStoreId === '') {
+    siteForm.value.tenantStoreId = currentTenantStoreId.value
+  }
+  console.log(siteForm.value)
   siteForm.value.logoFileId = logo.fileData.id
   const favicon = uploadFaviconRef.value.getFileData()
   siteForm.value.faviconFileId = favicon.fileData.id
@@ -277,15 +288,6 @@ defineExpose({
             <ElSelect v-model="siteForm.languageId">
               <ElOption v-for="item in languages.list" :key="item.id" :value="item.id" :label="item.languageName" />
             </ElSelect>
-          </ElFormItem>
-          <ElFormItem label="域名" prop="domain">
-            <ElInput
-              v-model="siteForm.domain"
-              class="input-line"
-              minlength="1"
-              maxlength="120"
-              placeholder="请输入域名"
-            />
           </ElFormItem>
           <ElFormItem label="网站名称" prop="siteName">
             <ElInput

@@ -3,7 +3,7 @@ import { storeToRefs } from 'pinia'
 import { useTenantStore } from '@/stores/tenant'
 
 const tenantStore = useTenantStore()
-const { tenantStoreList, defaultStoreId, getDefaultStore } = storeToRefs(tenantStore)
+const { tenantStoreList, currentTenantStoreId, getDefaultStore } = storeToRefs(tenantStore)
 
 // 切换店铺
 const switchStore = (storeId: string) => {
@@ -34,12 +34,12 @@ const switchStore = (storeId: string) => {
             v-for="item in tenantStoreList"
             :key="item.id"
             :divided="true"
-            :class="{ 'bg-blue-100': item.id === defaultStoreId }"
+            :class="{ 'bg-blue-100': item.id === currentTenantStoreId }"
             @click="switchStore(item.id)"
           >
             <div class="flex items-center justify-between">
               <span>{{ item.storeName }}</span>
-              <span v-if="item.id === defaultStoreId" class="text-blue-500">
+              <span v-if="item.id === currentTenantStoreId" class="text-blue-500">
                 <Icon name="ep:check" :size="4" />
               </span>
             </div>

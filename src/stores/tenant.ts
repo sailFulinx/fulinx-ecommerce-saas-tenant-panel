@@ -14,7 +14,7 @@ export const useTenantStore = defineStore('tenant', () => {
 
   const tenantStoreList = ref<(TenantStoreListData & CommonField)[]>([])
   // 添加默认店铺ID
-  const defaultStoreId = ref<string>('')
+  const currentTenantStoreId = ref<string>('')
 
   // 登录
   const login = async ({ email, password, captchaKey, captchaValue }: LoginRequestType) => {
@@ -28,7 +28,7 @@ export const useTenantStore = defineStore('tenant', () => {
 
     // 设置第一个店铺为默认店铺
     if (data.tenantStoreList && data.tenantStoreList.length > 0) {
-      defaultStoreId.value = data.tenantStoreList[0].id
+      currentTenantStoreId.value = data.tenantStoreList[0].id
     }
 
     return data
@@ -45,7 +45,7 @@ export const useTenantStore = defineStore('tenant', () => {
 
     // 设置第一个店铺为默认店铺
     if (res.data.list && res.data.list.length > 0) {
-      defaultStoreId.value = res.data.list[0].id
+      currentTenantStoreId.value = res.data.list[0].id
     }
 
     tenantDetail.value = data
@@ -62,15 +62,15 @@ export const useTenantStore = defineStore('tenant', () => {
 
   // 设置默认店铺ID
   const setDefaultStoreId = (storeId: string) => {
-    defaultStoreId.value = storeId
+    currentTenantStoreId.value = storeId
   }
 
   // 获取默认店铺
   const getDefaultStore = computed(() => {
-    if (!defaultStoreId.value) {
+    if (!currentTenantStoreId.value) {
       return null
     }
-    return tenantStoreList.value.find(store => store.id === defaultStoreId.value) || null
+    return tenantStoreList.value.find(store => store.id === currentTenantStoreId.value) || null
   })
 
   const resetTenant = () => {
@@ -86,7 +86,7 @@ export const useTenantStore = defineStore('tenant', () => {
       gender: 0,
     }
     tenantStoreList.value = []
-    defaultStoreId.value = ''
+    currentTenantStoreId.value = ''
   }
 
   return {
@@ -94,7 +94,7 @@ export const useTenantStore = defineStore('tenant', () => {
     setTenantDetail,
     tenantStoreList,
     setTenantStoreList,
-    defaultStoreId,
+    currentTenantStoreId,
     setDefaultStoreId,
     getDefaultStore,
     login,
