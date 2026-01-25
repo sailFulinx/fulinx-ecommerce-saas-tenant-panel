@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
 import { fetchLanguageListApi } from '@/api/language'
 import { createSite, editSite, showSite } from '@/api/site'
 import { themeList } from '@/api/theme'
@@ -15,7 +16,7 @@ const router = useRouter()
 
 const id = useRoute().params.id as string
 
-const currentTenantStoreId = useTenantStore().currentTenantStoreId
+const { currentTenantStoreId } = storeToRefs(useTenantStore())
 
 console.log('currentTenantStoreId', currentTenantStoreId)
 
